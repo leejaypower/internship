@@ -8,6 +8,7 @@
 ```
 intro
 ├── node_modules
+│
 ├── README.md
 ├── babel.config.js
 ├── jsconfig.json
@@ -18,11 +19,15 @@ intro
 │   └── index.html
 ├── src
 │   ├── App.vue
-│   ├── assets
-│   │   └── logo.png
 │   ├── components
-│   │   └── TitleHeader.vue
-│   └── main.js
+│   │   ├── TitleHeader.vue
+│   │   └── TodoList
+│   │       ├── TodoListInput.vue
+│   │       ├── TodoListItem.vue
+│   │       └── TodoListItems.vue
+│   ├── main.js
+│   └── plugins
+│       └── vuetify.js
 └── vue.config.js
 ```
 현재 셋업 구조만 작성하였습니다.
@@ -30,15 +35,9 @@ intro
 --- 
 ## 프로젝트 스크립트 명령어
 
-### Project 패키지 초기화 후 개발 환경 실행
-```
-npm run dev:init
-```
-해당 옵션은 패키지 초기화 및 lint 검사 후 포맷까지 진행한 후 개발 환경을 실행해줍니다.
-
 ### Project 패키지 개발 환경으로 실행
 ```
-npm run dev
+npm run serve
 ```
 
 ### Project 빌드

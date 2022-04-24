@@ -3,14 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "vue-cli-service serve",
-    "dev:init" : "rm -rf node_modules && npm i && npm run lint && npm run dev",
+    "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
     "core-js": "^3.8.3",
-    "vue": "^2.6.14"
+    "vue": "^2.6.14",
+    "vuetify": "^2.6.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",
@@ -23,7 +23,12 @@
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-vue": "^8.6.0",
-    "vue-template-compiler": "^2.6.14"
+    "eslint-plugin-vuejs-accessibility": "^1.1.1",
+    "sass": "~1.32.0",
+    "sass-loader": "^10.0.0",
+    "vue-cli-plugin-vuetify": "~2.4.8",
+    "vue-template-compiler": "^2.6.14",
+    "vuetify-loader": "^1.7.0"
   },
   "browserslist": [
     "> 1%",

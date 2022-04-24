@@ -1,5 +1,5 @@
 <template>
-  <h1>{{title}}</h1>
+  <h1>{{ title }}</h1>
 </template>
 <script>
 export default {
@@ -10,20 +10,12 @@ export default {
       default: '타이틀을 입력해주세요',
     },
   },
-  components: {},
-  data() {
-    return {
-      sampleDate: '',
-    }
-  },
-  beforeCreate() {},
-  created() {},
-  beforeMount() {},
-  mounted() {},
-  beforeUpdate() {},
-  update() {},
-  beforeUnmount() {},
-  unmounted() {},
-  methods: {},
 }
 </script>
+
+<style scoped>
+  h1 {
+    text-align: center;
+    border-bottom: 1px solid black;
+  }
+</style>
