@@ -5,6 +5,7 @@ module.exports = {
   },
   extends: [
     'plugin:vue/essential',
+    'plugin:vue/recommended',
     'airbnb-base',
   ],
   parserOptions: {
@@ -19,5 +20,6 @@ module.exports = {
     'array-bracket-spacing': [ 'error', 'always' ],
     'no-console': process.env.NODE_ENV === 'development' ? 0 : 1,
     'no-debugger': process.env.NODE_ENV === 'development' ? 0 : 1,
+    'no-alert': 0,
   },
 }
