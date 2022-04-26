@@ -1,17 +1,48 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <Main></Main>
+  <div id="app" @keydown.esc="closeCard">
+    <app-header></app-header>
+    <app-nav></app-nav>
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
-import Main from './views/Main.vue'
+import Header from './components/layout/AppHeader.vue'
+import Nav from './components/layout/AppNav.vue'
 
 export default {
   name: 'App',
   components: {
-    Main,
+    'app-header': Header,
+    'app-nav': Nav,
+  },
+  methods: {
+    closeCard(e) {
+      if (e.keyCode) {
+        this.$store.dispatch('cardChange', false)
+      }
+    },
+    fetchTodos() {
+      const data = JSON.parse(window.localStorage.getItem('todos'))
+      if (!data) return
+      data.forEach((todo) => {
+        this.$store.dispatch('addTodos', todo)
+      })
+    },
+  },
+  computed: {
+    todos() {
+      return this.$store.getters.getTodos
+    },
+  },
+  watch: {
+    todos() {
+      const todos = JSON.stringify(this.todos)
+      window.localStorage.setItem('todos', todos)
+    },
+  },
+  mounted() {
+    this.fetchTodos()
   },
 }
 </script>
@@ -23,6 +54,12 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  display: grid;
+  height: 98vh;
+  grid-template-rows: 8% 92%;
+  grid-template-columns: 10% 20% 50% 20%;
+  grid-template-areas:
+  'h h h h'
+  'n . m .'
 }
 </style>
