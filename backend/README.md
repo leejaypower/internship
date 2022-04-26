@@ -1,7 +1,0 @@
-# internship
-
-Barogo internship project
-
-
-
-

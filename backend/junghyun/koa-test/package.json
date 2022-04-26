@@ -1,0 +1,36 @@
+{
+  "name": "koa-test",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "cross-env NODE_ENV=development nodemon --exec babel-node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "./node_modules/.bin/eslint .",
+    "lint-fix": "./node_modules/.bin/eslint . --fix"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "bcrypt": "5.0.1",
+    "cross-env": "^7.0.3",
+    "dotenv": "16.0.0",
+    "jsonwebtoken": "8.5.1",
+    "koa": "2.13.4",
+    "koa-parser": "1.0.8",
+    "koa-router": "10.1.1",
+    "lodash": "4.17.21",
+    "pg": "8.7.3",
+    "postgres": "3.0.5",
+    "sequelize": "6.19.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.17.9",
+    "@babel/node": "^7.16.8",
+    "@babel/preset-env": "^7.16.11",
+    "eslint": "8.13.0",
+    "eslint-config-airbnb-base": "15.0.0",
+    "eslint-plugin-import": "2.26.0",
+    "nodemon": "2.0.15",
+    "sequelize-cli": "6.4.1"
+  }
+}
