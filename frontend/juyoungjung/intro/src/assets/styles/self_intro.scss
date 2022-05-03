@@ -1,0 +1,25 @@
+@import './constants';
+
+section {
+  background-color: black;
+  color: white;
+
+  ::v-deep {
+    .typed {
+      color: #fff;
+    }
+    .custom.caret {
+      background-color: white;
+    }
+  }
+
+}
+.text_container{
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.about {
+  padding: 0 24px;
+  background: url('~@/assets/images/calculation_formula.png') 100% / cover
+    no-repeat;
+}

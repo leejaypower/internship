@@ -1,0 +1,16 @@
+@font-face {
+    font-family: "Montserrat-Regular";
+    src: url("~@/assets/fonts/Montserrat-Medium.ttf");
+}
+@font-face {
+    font-family: "NotoSansKR";
+    font-style: normal;
+    font-weight: normal;
+    src: local("Noto Sans Regular"), local("NotoSans-Regular"),
+      url(~@/assets/fonts/NotoSans-Regular.eot);
+    src: url(~@/assets/fonts/NotoSans-Regular.eot?#iefix)
+        format("embedded-opentype"),
+      url(~@/assets/fonts/NotoSansKR-Regular.woff2) format("woff2"),
+      url(~@/assets/fonts/NotoSansKR-Regular.woff) format("woff"),
+      url(~@/assets/fonts/NotoSansKR-Regular.otf) format("opentype");
+  }
