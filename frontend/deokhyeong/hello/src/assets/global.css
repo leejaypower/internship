@@ -1,0 +1,12 @@
+/* G는 global이라는 prefix입니다. */
+
+.G-v-card-margin-top {
+  margin-top: 2rem;
+}
+
+.G-input-disabled-font-color 
+.v-text-field__slot 
+input:disabled,
+textarea:disabled {
+  color: black !important;
+}
