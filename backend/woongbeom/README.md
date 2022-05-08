@@ -1,24 +1,34 @@
-# barogo internship project
-
+# About
+---
+Barogo Internship project
 backend / Woongbeom Heo
 
-### 최신의 file tree 는 다음과 같습니다.
-.
-├── README.md
-├── api
-│   ├── index.js
-│   └── testapi.js
-├── config
-│   └── config.json
-├── controller
-│   └── testapi.controller.js
-├── migrations
-├── models
-│   └── index.js
-├── package-lock.json
-├── package.json
-├── seeders
-└── src
-    └── index.js
+## Get Started
+```
+// 1. docker 실행
+// 해당 경로(/internship/docker/)로 이동하여 docker-compose.yml 실행
+$ cd internship/docker
+$ docker-compose up -d --build
+// 2. npm 패키지 설치
+// internship/backend/woongbeom 에서
+$ npm install
+// 3. 서버 실행
+$ npm run start:dev
+```
 
-### 프로젝트 README 파일입니다. 지속적으로 업데이트 예정입니다.
+## 환경 변수 설정
+현재 .env 환경에서 사용하고 있습니다.
+```
+// .env
+$ npm run start:dev
+```
+
+### DB Config 환경변수명
+```
+DATABASE_USERNAME=DB_USERNAME
+DATABASE_PASSWORD=DB_PASSWORD
+DATABASE_NAME=DB_DATABASE
+DATABASE_HOST=DB_HOST
+DATABASE_PORT=DB_PORT
+DATABASE_DIALECT=DB_DIALECT
+```
