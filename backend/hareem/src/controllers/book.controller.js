@@ -1,11 +1,11 @@
 const { createBookDto, updateBookDto } = require('../dtos/book.dtos');
-const bookService = require('../services/book.service');
+const { bookService } = require('../services');
 
 // Controller 역할
 // data 검증 (dto logic)
 // status code 및 res return
 
-const booksController = {
+const bookController = {
   async getBooks(ctx) {
     ctx.body = await bookService.getBooks();
   },
@@ -28,4 +28,4 @@ const booksController = {
   },
 };
 
-module.exports = booksController;
+module.exports = bookController;

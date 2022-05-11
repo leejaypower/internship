@@ -16,6 +16,7 @@ const app = new Koa();
 app.use(cors({
   origin: '*',
 }));
+
 app.use(bodyParser());
 
 app.use(bookRouter.routes());

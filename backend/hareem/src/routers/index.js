@@ -1,5 +1,2 @@
-const bookRouter = require('./books.router');
-
-module.exports = {
-  bookRouter,
-};
+exports.bookRouter = require('./book.router');
+exports.settingRouter = require('./setting.router');
