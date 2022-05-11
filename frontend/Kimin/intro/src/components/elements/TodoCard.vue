@@ -1,8 +1,8 @@
 <template>
-  <div v-if="cardOpen" id="background" @click.stop="clickOthers">
+  <div v-if="cardStatus" id="background" @click.stop="clickOthers">
     <div id="todoCard"
       ref="todoCard"
-      @click.stop="clickCard"
+      @click.stop
     >
     <div id="contentsContainer">
       <div id="cardTitle">
@@ -11,8 +11,8 @@
           type="text"
           placeholder="제목"
           ref="title"
-          @keydown.enter="saveTodo"
-          v-model="item.title"
+          @keydown="saveTodo"
+          :value="cardDetail.title"
           >
       </div>
       <div id="contents">
@@ -21,7 +21,7 @@
         type="text"
         placeholder="내용"
         ref="contents"
-        v-model="item.contents"
+        :value="cardDetail.contents"
         ></textarea>
       </div>
     </div>
@@ -29,20 +29,21 @@
       <div id="dropDownContainer">
         <button
         id="categotyButton"
-        ref="category"
+        ref="categoryButton"
         @click="openCategory"
+        v-text="cardDetail.category"
         >
-        {{ item.category }}
         </button>
         <drop-down-menu
-          :categoryOptions="categoryOptions"
+          v-if="categoryOpen"
+          :liGroup="liGroup"
           @selectCategory="decideCategory"
         ></drop-down-menu>
       </div>
       <input
-      v-model="item.date"
+      :value="cardDetail.date"
       ref="date"
-      type="date"
+      type="datetime-local"
       id="dateButton"/>
     </div>
     <div id="actions">
@@ -65,95 +66,72 @@ export default {
   name: 'todoCard',
   data() {
     return {
-      dropDownStatus: false,
-      item: {
-        title: this.cardData.title,
-        category: this.cardData.category,
-        contents: this.cardData.contents,
-        date: this.cardData.date,
-      },
+      categoryOpen: false,
+      category: '기타',
     }
   },
-  props: [
-    'cardData', 'cardOpen',
-  ],
   components: {
     'drop-down-menu': DropDownMenu,
   },
   computed: {
-    categoryOptions() {
+    liGroup() {
       return this.$store.getters.getCategories
     },
     todos() {
       return this.$store.getters.getTodos
     },
-    defaltDate() {
+    cardStatus() {
+      return this.$store.getters.getCardStatus
+    },
+    cardDetail() {
+      return this.$store.getters.getcardDetail
+    },
+    date() {
       const today = new Date()
-      const year = today.getFullYear()
-      let month = today.getMonth() + 1
-      if (month.length === 1) {
-        month = String(today.getMonth() + 1).padStart(2, '0')
-      }
-      const day = String(today.getDate()).padStart(2, '0')
-      return `${year}-${month}-${day}`
+      return today.toISOString().substr(0, 16)
     },
   },
   methods: {
     clickOthers() {
-      this.item = {
-        title: this.cardData.title,
-        category: this.cardData.category,
-        contents: this.cardData.contents,
-        date: this.cardData.date,
-      }
-      this.$emit('closeCard')
-    },
-    clickCard() {
-      this.dropDownStatus = false
+      this.$store.dispatch('cardChange', false)
     },
     generateID() { // eslint-disable-next-line
       return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {  
         // eslint-disable-next-line
         var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-        return v.toString(16)
-      })
+        return v.toString(16) // eslint-disable-next-line
+      });
     },
-    saveTodo() {
+    saveTodo(e) {
+      const title = this.$refs.title.value
+      if ((e.type !== 'click' && e.key !== 'Enter') || !title) return
       const ID = this.generateID()
-      const { title, contents } = this.item
-      let { date } = this.item
-      if (!title.trim()) return
-      if (this.item.date === null) {
-        date = this.defaltDate
+      const contents = this.$refs.contents.value
+      let { date } = this
+      if (this.$refs.date.value) {
+        date = this.$refs.date.value
       }
-      let category = '기타'
-      if (this.$refs.category.innerText !== '카테고리') {
-        category = this.$refs.category.innerText
-      }
+      const { category } = this
       const itemSet = {
         title, contents, category, date, ID,
       }
-      const isEditing = this.cardData.ID
+      const isEditing = this.cardDetail.title
       if (isEditing) {
-        this.$store.dispatch('editItems', { item: itemSet, ID: this.cardData.ID })
+        this.$store.dispatch('editItems', { item: itemSet, ID: this.cardDetail.ID })
+        console.log(itemSet)
       } else {
         this.$store.dispatch('addTodos', itemSet)
       }
+      this.category = '카테고리'
       this.clickOthers()
     },
     openCategory() {
-      const dropDownMenu = document.querySelector('#dropDownDiv')
-      if (!this.dropDownStatus) {
-        dropDownMenu.classList.remove('displayNone')
-      } else {
-        dropDownMenu.classList.add('displayNone')
-      }
-      this.dropDownStatus = !this.dropDownStatus
+      this.categoryOpen = true
     },
     decideCategory(category) {
-      this.item.category = category
-      const dropDownMenu = document.querySelector('#dropDownDiv')
-      dropDownMenu.classList.add('displayNone')
+      this.category = category
+      this.$refs.categoryButton.textContent = category
+      this.categoryOpen = false
     },
   },
 }
@@ -208,7 +186,6 @@ export default {
     min-width: 60px;
     border-radius: 5px;
     border: 0.5px solid rgba(190, 178, 178, 0.39);
-    cursor: pointer;
   }
 
   #actions{
@@ -239,5 +216,4 @@ export default {
     position: relative;
     padding: 0;
   }
-
 </style>

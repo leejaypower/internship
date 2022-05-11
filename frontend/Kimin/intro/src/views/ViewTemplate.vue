@@ -2,39 +2,37 @@
   <div id="main">
     <h1> {{`Kimin's To-Do-List(${this.myName})`}} </h1>
     <to-do-item
-    v-for="item in todos" :key="item.ID"
-    @showItem="showItem(item.ID)"
-    :cardData=item
+    v-for="(item,i) in todos" :key="i"
+    @deleteItem="eleminateItem(i)"
+    @checkItem="checkItem(item.ID)"
     >
-      <h2>{{ item.title }}</h2>
-      <div id="detailContainer">
-        <h3>{{ `${item.date.substr(5,2)}/${item.date.substr(8,2)}` }}</h3>
-        <div id="categoryContainer"
-        :class=classMatch[item.category]
-        >{{ item.category }}
-        </div>
-      </div>
+    <h2>{{ item.title }}</h2>
+    <div id="detailContainer">
+      <h3>{{ `${item.date.substr(5, 2)}/${item.date.substr(8, 2)}` }}</h3>
+      <div id="categoryContainer"
+      :class=classMatch[item.category]
+      >{{ item.category }}</div>
+    </div>
     </to-do-item>
   </div>
 </template>
 
 <script>
-import ToDoItem from '../components/TodoItem.vue'
+import toDoItem from '../components/TodoItem.vue'
 
 export default {
   name: 'viewTemplate',
   components: {
-    ToDoItem,
+    'to-do-item': toDoItem,
   },
   data() {
     return {
       classMatch: {
-        가정: 'Home',
+        가정: 'home',
         바로고: 'Barogo',
         기타: 'etc',
       },
       myName: this.$route.name,
-      cardOpen: false,
     }
   },
   computed: {
@@ -49,20 +47,12 @@ export default {
     },
   },
   methods: {
-    showItem(ID) {
+    eleminateItem(i) {
+      this.$store.dispatch('eleminateItem', i)
+    },
+    checkItem(ID) {
       this.$store.dispatch('cardChange', true)
       this.$store.dispatch('checkItem', ID)
-      const selectedData = this.todos.filter((item) => item.ID === ID)[0]
-      this.cardData = selectedData
-    },
-    initData() {
-      this.cardData = {
-        ID: null,
-        title: null,
-        contents: null,
-        date: null,
-        category: '카테고리',
-      }
     },
   },
 }

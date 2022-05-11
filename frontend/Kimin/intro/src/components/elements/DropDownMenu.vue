@@ -1,10 +1,10 @@
 <template>
-  <div id="dropDownDiv" class="displayNone">
+  <div id="dropDownDiv">
     <ul>
-      <li v-for="(category,i) of categoryOptions" :key= i
+      <li v-for="(li,i) of liGroup" :key= i
       @click="selectCategory(i)"
       >
-        {{ category }}
+        {{ li }}
       </li>
     </ul>
   </div>
@@ -16,17 +16,10 @@ export default {
     return {
     }
   },
-  props: {
-    categoryOptions: {
-      type: Array,
-      validator(value) {
-        return value.length > 0
-      },
-    },
-  },
+  props: [ 'liGroup' ],
   methods: {
     selectCategory(i) {
-      const selectedCategory = this.categoryOptions[i]
+      const selectedCategory = this.liGroup[i]
       this.$emit('selectCategory', selectedCategory)
     },
   },
@@ -38,11 +31,7 @@ export default {
     position: relative;
     left: 0;
     top: 0;
-    border: 0.5px solid rgba(190, 178, 178, 0.39);
-    cursor: pointer;
-  }
-  .displayNone{
-    display: none;
+    border: 0.5px solid rgba(190, 178, 178, 0.39)
   }
 
   #dropDownDiv ul{

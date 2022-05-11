@@ -3,46 +3,24 @@
     @click="openTodoCard"
   >
     <slot></slot>
-    <to-do-card
-    :cardOpen="cardOpen"
-    :cardData="cardData"
-    @closeCard="closeCard"
-    ></to-do-card>
   </button>
 </template>
 
 <script>
-import toDoCard from './TodoCard.vue'
 
 export default {
   name: 'headerButton',
-  components: {
-    toDoCard,
-  },
   data() {
     return {
       cardOpen: false,
-      cardData: {
-        title: null,
-        contents: null,
-        date: this.defaltDate(),
-        category: '카테고리',
-      },
     }
   },
   methods: {
     openTodoCard() {
-      this.cardOpen = true
+      this.$store.dispatch('cardChange', true)
     },
-    closeCard() {
-      this.cardOpen = false
-    },
-    defaltDate() {
-      const today = new Date()
-      const year = today.getFullYear()
-      const month = String(today.getMonth() + 1).padStart(2, '0')
-      const day = String(today.getDate()).padStart(2, '0')
-      return `${year}-${month}-${day}`
+    cardClose() {
+      this.$store.cardOpen = false
     },
   },
 }

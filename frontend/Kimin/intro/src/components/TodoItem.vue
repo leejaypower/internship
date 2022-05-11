@@ -1,39 +1,21 @@
 <template>
-  <div class="todoItem" @click="showItem">
+  <div class="todoItem" @click="checkItem">
     <input type="radio" @click.stop="checkFinish"/>
     <div>
       <slot></slot>
     </div>
-    <to-do-card
-    :cardData="cardData"
-    :cardOpen="cardOpen"
-    @closeCard="closeCard"
-    ></to-do-card>
   </div>
 </template>
 
 <script>
-import ToDoCard from './elements/TodoCard.vue'
-
 export default {
-  components: {
-    ToDoCard,
-  },
-  props: [ 'cardData' ],
-  data() {
-    return {
-      cardOpen: false,
-    }
-  },
+  props: [ 'toDoItem' ],
   methods: {
     checkFinish() {
-      this.$store.dispatch('eleminateItem', this.cardData.ID)
+      this.$emit('deleteItem')
     },
-    showItem() {
-      this.cardOpen = true
-    },
-    closeCard() {
-      this.cardOpen = false
+    checkItem() {
+      this.$emit('checkItem')
     },
   },
 }

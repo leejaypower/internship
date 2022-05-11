@@ -6,18 +6,24 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     todos: [],
-    categories: [ '가정', '바로고', '기타' ],
+    categories: [ 'All', '가정', '바로고', '기타' ],
     cardDetail: { category: '카테고리' },
+    cardOpen: false,
   },
   mutations: {
     addTodos(state, item) {
       state.todos.push(item)
     },
-    eleminateItem(state, ID) {
-      for (let i = 0; i < state.todos.length; i += 1) {
-        if (state.todos[i].ID === ID) {
-          state.todos.splice(i, 1)
-        }
+    addCategories(state, category) {
+      state.todos.push(category)
+    },
+    eleminateItem(state, order) {
+      state.todos.splice(order, 1)
+    },
+    cardChange(state, order) {
+      this.state.cardOpen = order
+      if (order) {
+        this.state.cardDetail = { category: '카테고리' }
       }
     },
     checkItem(state, ID) {
@@ -39,8 +45,14 @@ export default new Vuex.Store({
     addTodos({ commit }, item) {
       commit('addTodos', item)
     },
+    addCategories({ commit }, category) {
+      commit('addCategories', category)
+    },
     eleminateItem({ commit }, ID) {
       commit('eleminateItem', ID)
+    },
+    cardChange({ commit }, ID) {
+      commit('cardChange', ID)
     },
     checkItem({ commit }, ID) {
       commit('checkItem', ID)
@@ -55,6 +67,12 @@ export default new Vuex.Store({
     },
     getCategories(state) {
       return [ ...state.categories ]
+    },
+    getCardStatus(state) {
+      return state.cardOpen
+    },
+    getcardDetail(state) {
+      return { ...state.cardDetail }
     },
   },
 })

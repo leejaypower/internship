@@ -1,23 +1,27 @@
 <template>
-  <div id="app" @keydown.esc="closeCard">
+  <div id="app" @keydown.esc="kimin">
     <app-header></app-header>
     <app-nav></app-nav>
     <router-view></router-view>
+    <todo-card
+    ></todo-card>
   </div>
 </template>
 
 <script>
 import Header from './components/layout/AppHeader.vue'
 import Nav from './components/layout/AppNav.vue'
+import TodoCard from './components/elements/TodoCard.vue'
 
 export default {
   name: 'App',
   components: {
     'app-header': Header,
     'app-nav': Nav,
+    'todo-card': TodoCard,
   },
   methods: {
-    closeCard(e) {
+    kimin(e) {
       if (e.keyCode) {
         this.$store.dispatch('cardChange', false)
       }
