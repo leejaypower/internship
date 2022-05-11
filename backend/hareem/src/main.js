@@ -1,20 +1,7 @@
-import Koa from 'koa';
-import Router from '@koa/router';
-import bodyParser from 'koa-bodyparser';
+const app = require('./app');
 
-const PORT = 3000;
-
-const app = new Koa();
-const router = new Router();
-
-app.use(bodyParser());
-
-router.get('/(.*)', (ctx) => {
-  ctx.body = 'hello world';
-});
-
-app.use(router.routes());
+const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-  console.log(`server run on port http://localhost:${PORT}`);
+  console.log(`server run on port ${PORT}`);
 });
