@@ -1,5 +1,3 @@
-const booksRepository = require('./book');
+const book = require('./book');
 
-module.exports = {
-  booksRepository,
-};
+module.exports = { book };

@@ -1,3 +1,3 @@
-const bookListService = require('./book/bookListService');
+const book = require('./book');
 
-module.exports = bookListService;
+module.exports = { book };

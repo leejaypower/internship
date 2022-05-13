@@ -4,6 +4,7 @@ const booksController = require('../../controller');
 
 const booksRouter = new Router();
 
-booksRouter.get('/', booksController.getBooksTable);
+booksRouter.post('/', booksController.createBook);
+booksRouter.get('/', booksController.getListAll);
 
 module.exports = booksRouter;
