@@ -1,2 +1,2 @@
-exports.bookService = require('./book.service');
-exports.settingService = require('./setting.service');
+exports.userService = require('./userService');
+exports.bookService = require('./bookService');

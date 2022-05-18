@@ -1,24 +1,18 @@
 const Koa = require('koa');
 const bodyParser = require('koa-bodyparser');
-const cors = require('@koa/cors');
 
-require('./config');
+require('./utils/env');
 
-const { bookRouter } = require('./routers');
-const { sequelize } = require('./database/models');
+const db = require('./database/models');
+const router = require('./routers');
 
-sequelize.sync()
+db.sequelize.sync()
   .then(() => console.log('db is connected'))
   .catch((err) => console.log(err));
 
 const app = new Koa();
 
-app.use(cors({
-  origin: '*',
-}));
-
 app.use(bodyParser());
-
-app.use(bookRouter.routes());
+app.use(router.routes());
 
 module.exports = app;

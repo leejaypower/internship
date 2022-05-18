@@ -4,9 +4,11 @@
   "description": "library project",
   "main": "index.js",
   "scripts": {
-    "start": "cross-env NODE_ENV=prod node ./src/main.js",
-    "start:test": "cross-env NODE_ENV=test nodemon ./src/main.js",
-    "start:dev": "cross-env NODE_ENV=dev nodemon ./src/main.js",
+    "preMigrate": "npx sequelize db:migrate:undo:all",
+    "migrate": "npm run preMigrate && npx sequelize db:migrate",
+    "start": "cross-env NODE_ENV=production node ./src/index.js",
+    "start:test": "cross-env NODE_ENV=test nodemon ./src/index.js",
+    "start:dev": "cross-env NODE_ENV=development nodemon ./src/index.js",
     "lint": "./node_modules/.bin/eslint src",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -20,7 +22,8 @@
     "koa-bodyparser": "^4.3.0",
     "pg": "^8.7.3",
     "pg-hstore": "^2.3.4",
-    "sequelize": "^6.19.0"
+    "sequelize": "^6.19.0",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "cross-env": "^7.0.3",

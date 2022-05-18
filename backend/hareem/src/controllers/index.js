@@ -1,2 +1,2 @@
-exports.bookController = require('./book.controller');
-exports.settingController = require('./setting.controller');
+exports.userController = require('./userController');
+exports.bookController = require('./bookController');
