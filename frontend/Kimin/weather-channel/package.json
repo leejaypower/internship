@@ -11,6 +11,7 @@
   "dependencies": {
     "core-js": "^3.8.3",
     "vue": "^2.6.14",
+    "vue-moment": "^4.1.0",
     "vue-router": "^3.5.1",
     "vuetify": "^2.6.5",
     "vuex": "^3.6.2"
@@ -40,7 +41,7 @@
     "vuetify-loader": "^1.7.0"
   },
   "browserslist": [
-    "> 3% in KR", 
+    "> 3% in KR",
     "last 2 chrome versions"
   ]
 }

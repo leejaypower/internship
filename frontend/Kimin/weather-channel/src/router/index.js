@@ -1,15 +1,10 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import weather from './weather/index'
 
 Vue.use(VueRouter)
 
-const routes = [
-  {
-    path: '/',
-    name: 'home',
-    component: () => import(/* webpackChunkName: "about" */ '../views/LogInPage.vue'),
-  },
-]
+const routes = weather
 
 const router = new VueRouter({
   mode: 'history',

@@ -5,13 +5,27 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-  },
-  getters: {
+    userAccount: null,
   },
   mutations: {
+    saveFetchedUserAccount(state, userAccount) {
+      state.userAccount = (userAccount)
+    },
+    saveSignedUpData(state, signUpData) {
+      state.userAccount = { ...state.userAccount, ...signUpData }
+    },
   },
   actions: {
+    forwardingFetchedUserAccount({ commit }, userAccount) {
+      commit('saveFetchedUserAccount', userAccount)
+    },
+    forwardingSignedUpData({ commit }, signUpData) {
+      commit('saveSignedUpData', signUpData)
+    },
   },
-  modules: {
+  getters: {
+    getUserAccount(state) {
+      return state.userAccount
+    },
   },
 })
