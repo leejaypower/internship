@@ -1,3 +1,4 @@
 const book = require('./book');
+const rental = require('./rental');
 
-module.exports = { book };
+module.exports = { book, rental };

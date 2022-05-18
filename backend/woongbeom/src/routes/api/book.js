@@ -1,10 +1,10 @@
 const Router = require('koa-router');
 
-const booksController = require('../../controller');
+const controller = require('../../controller');
 
 const booksRouter = new Router();
 
-booksRouter.post('/', booksController.createBook);
-booksRouter.get('/', booksController.getListAll);
+booksRouter.post('/', controller.books.createBook);
+booksRouter.get('/', controller.books.getListAll);
 
 module.exports = booksRouter;

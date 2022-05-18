@@ -13,6 +13,12 @@ module.exports = {
         comment: '책의 제목을 의미합니다.',
         allowNull: false,
       },
+      status: {
+        type: Sequelize.INTEGER,
+        comment: '책의 대출 가능 상태를 의미합니다. 0은 대출 가능, 1은 대출 불가 입니다.',
+        defaultValue: 0,
+        allowNull: false,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

@@ -1,3 +1,4 @@
-const booksController = require('./book');
+const books = require('./book');
+const rental = require('./rental');
 
-module.exports = booksController;
+module.exports = { books, rental };
