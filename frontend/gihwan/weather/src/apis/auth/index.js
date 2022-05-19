@@ -54,3 +54,41 @@ export const loginFetchByStorage = (loginData) => {
 
   return { isSuccess: true, id, name: findIdByDBResult.name }
 }
+
+export const idDuplicateCheckByAxios = async (id) => {
+  try {
+    const signupResult = await axios.post(`${SERVER_URL + END_POINT}/idCheck`, id)
+    return signupResult
+  } catch (error) {
+    return error
+  }
+}
+
+export const signupFetchByAxios = async (signupData) => {
+  try {
+    const signupResult = await axios.post(`${SERVER_URL + END_POINT}/signup`, signupData)
+    return signupResult
+  } catch (error) {
+    return error
+  }
+}
+
+export const idDuplicateCheckByStorage = (id) => {
+  const DB = JSON.parse(localStorage.getItem('user'))
+  if (!DB) return true
+
+  const idCheck = DB.some((user) => user.id === id)
+  if (!idCheck) return true
+
+  return false
+}
+
+export const signupFetchByStorage = (signupData) => {
+  const DB = JSON.parse(localStorage.getItem('user'))
+  if (!DB) {
+    localStorage.setItem('user', JSON.stringify([signupData]))
+    return
+  }
+  const newDB = [...DB, signupData]
+  localStorage.setItem('user', JSON.stringify(newDB))
+}

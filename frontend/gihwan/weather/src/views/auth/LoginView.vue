@@ -100,12 +100,13 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import { DESKTOP_INPUT_WIDTH_RATIO, MOBILE_INPUT_WIDTH_RATIO } from '@/constants'
+import authMixins from '@/mixins/auth'
 import { idRules, pwRules } from '@/utils/inputRules'
 import logo from '@/assets/logo.png'
-import { failLoginAlert, reFailLoginAlert, successLoginAlert } from '@/utils/sweetalert/auth'
+import alert from '@/utils/sweetalert'
 
 export default {
+  mixins: [authMixins],
   data: () => ({
     valid: false,
     id: '',
@@ -117,14 +118,21 @@ export default {
     loading: false,
     prevId: '',
     prevPw: '',
+    constants: {
+      LOGIN_SUCCESS_TITLE: '로그인 성공',
+      LOGIN_FAIL_TITLE: '로그인 실패',
+      RE_LOGIN_TRY_TITLE: '로그인 실패',
+      RE_LOGIN_TRY_TEXT: `
+        <span style="font-size: 15px;">이미 시도한 아이디와 비밀번호입니다.</span>
+        <br/>
+        <span style="font-size: 14px;">다른 아이디와 비밀번호를 입력해 주세요.</span>
+      `,
+    },
   }),
   computed: {
     ...mapGetters('user', ['userName', 'isSuccess', 'failMessage']),
     isButtonDisabeld() {
       return !this.valid || this.loading
-    },
-    responsiveInputCols() {
-      return this.$vuetify.breakpoint.mobile ? MOBILE_INPUT_WIDTH_RATIO : DESKTOP_INPUT_WIDTH_RATIO
     },
     failUserReTry() {
       return this.prevId === this.id && this.prevPw === this.pw
@@ -134,7 +142,7 @@ export default {
     ...mapActions('user', ['login']),
     onSubmit() {
       if (this.failUserReTry) {
-        this.$swal(reFailLoginAlert())
+        alert.warning(this.constants.RE_LOGIN_TRY_TITLE, this.constants.RE_LOGIN_TRY_TEXT)
         return
       }
       this.loading = true
@@ -142,10 +150,10 @@ export default {
       this.login({ id: this.id, pw: this.pw, autoLogin: this.autoLogin })
       this.loading = false
       if (this.isSuccess) {
-        this.$swal(successLoginAlert(this.userName, this.$vuetify.breakpoint.mobile))
+        alert.success(this.constants.LOGIN_SUCCESS_TITLE, `${this.userName}님 환영합니다.`, this.alertPositioin)
         this.$router.push('/')
       } else {
-        this.$swal(failLoginAlert(this.failMessage))
+        alert.error(this.constants.LOGIN_FAIL_TITLE, this.failMessage)
       }
     },
     updateIdAndPasswordByUserInput(id, pw) {

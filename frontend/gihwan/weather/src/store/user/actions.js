@@ -15,4 +15,12 @@ export default {
       commit('loginFail', failMessage)
     }
   },
+  autoLogin({ commit }, payload) {
+    commit('login', payload)
+  },
+  logout({ commit }) {
+    commit('logout')
+    localStorage.removeItem('loginInfo')
+    sessionStorage.removeItem('loginInfo')
+  },
 }

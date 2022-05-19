@@ -1,15 +1,18 @@
 export default {
   login(state, payload) {
-    const { id, name } = payload
-    const { userInfo, loginResult } = state
-    userInfo.id = id
-    userInfo.name = name
-    loginResult.isSuccess = true
-    loginResult.failMessage = ''
+    state.userInfo.id = payload.id
+    state.userInfo.name = payload.name
+    state.loginResult.isSuccess = true
+    state.loginResult.failMessage = ''
   },
   loginFail(state, payload) {
-    const { loginResult } = state
-    loginResult.isSuccess = false
-    loginResult.failMessage = payload
+    state.loginResult.isSuccess = false
+    state.loginResult.failMessage = payload
+  },
+  logout(state) {
+    state.userInfo.id = ''
+    state.userInfo.name = ''
+    state.loginResult.isSuccess = false
+    state.loginResult.failMessage = ''
   },
 }
