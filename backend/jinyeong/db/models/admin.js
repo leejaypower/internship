@@ -25,6 +25,8 @@ module.exports = (sequelize, DataTypes) => {
     Admin.belongsTo(models.Employee, {
       foreignKey: 'employeeId',
       type: DataTypes.INTEGER,
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
     });
   };
 

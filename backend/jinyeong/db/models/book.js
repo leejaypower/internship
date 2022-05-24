@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     state: {
       type: DataTypes.STRING(5),
-      allowNull: false,
+      defaultValue: '대기',
     },
   }, {
     // 추가 옵션 설정
@@ -33,22 +33,32 @@ module.exports = (sequelize, DataTypes) => {
     Book.hasMany(models.Reservation, {
       foreignKey: 'bookId',
       type: DataTypes.INTEGER,
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
     });
     Book.hasMany(models.Rental, {
       foreignKey: 'bookId',
       type: DataTypes.INTEGER,
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
     });
     Book.hasMany(models.Review, {
       foreignKey: 'bookId',
       type: DataTypes.INTEGER,
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
     });
     Book.hasMany(models.MissedBook, {
       foreignKey: 'bookId',
       type: DataTypes.INTEGER,
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
     });
     Book.hasOne(models.BookPurchase, {
       foreignKey: 'bookId',
       type: DataTypes.INTEGER,
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
     });
   };
 

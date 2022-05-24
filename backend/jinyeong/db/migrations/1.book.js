@@ -34,7 +34,7 @@ module.exports = {
       },
       state: {
         type: Sequelize.STRING(5),
-        allowNull: false,
+        defaultValue: '대기',
         comment: '도서 상태(대기,대출,예약,분실)',
       },
       createdAt: {

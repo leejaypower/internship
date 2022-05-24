@@ -17,6 +17,8 @@ module.exports = {
           key: 'id',
         },
         comment: '도서 ID',
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
       },
       vendorId: {
         type: Sequelize.INTEGER,
@@ -28,6 +30,8 @@ module.exports = {
           key: 'id',
         },
         comment: '거래처 ID',
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
       },
       historicalCost: {
         type: Sequelize.INTEGER,

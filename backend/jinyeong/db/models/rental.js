@@ -14,6 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: DataTypes.NOW,
     },
     returnDate: DataTypes.DATE,
+    dueDate: DataTypes.DATE,
     isExtended: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
@@ -26,10 +27,14 @@ module.exports = (sequelize, DataTypes) => {
     Rental.belongsTo(models.User, {
       foreignKey: 'userId',
       type: DataTypes.UUID,
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
     });
     Rental.belongsTo(models.Book, {
       foreignKey: 'bookId',
       type: DataTypes.INTEGER,
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
     });
   };
 

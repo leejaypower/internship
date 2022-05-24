@@ -33,14 +33,20 @@ module.exports = (sequelize, DataTypes) => {
     User.hasMany(models.Reservation, {
       foreignKey: 'userId',
       type: DataTypes.UUID,
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
     });
     User.hasMany(models.Rental, {
       foreignKey: 'userId',
       type: DataTypes.UUID,
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
     });
     User.hasMany(models.Review, {
       foreignKey: 'userId',
       type: DataTypes.UUID,
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
     });
   };
 

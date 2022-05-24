@@ -25,10 +25,14 @@ module.exports = (sequelize, DataTypes) => {
     BookPurchase.belongsTo(models.Book, {
       foreignKey: 'bookId',
       type: DataTypes.INTEGER,
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
     });
     BookPurchase.belongsTo(models.Vendor, {
       foreignKey: 'vendorId',
       type: DataTypes.INTEGER,
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
     });
   };
 

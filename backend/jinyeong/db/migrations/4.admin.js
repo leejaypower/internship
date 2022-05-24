@@ -17,6 +17,8 @@ module.exports = {
           key: 'id',
           comment: '계정 소유직원ID',
         },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
       },
       email: {
         type: Sequelize.STRING(20),

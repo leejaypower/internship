@@ -23,6 +23,8 @@ module.exports = (sequelize, DataTypes) => {
     MissedBook.belongsTo(models.Book, {
       foreignKey: 'bookId',
       type: DataTypes.INTEGER,
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
     });
   };
 

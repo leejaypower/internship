@@ -13,9 +13,9 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW,
     },
-    isDone: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: false,
+    state: {
+      type: DataTypes.STRING(5),
+      defaultValue: '대기',
     },
   }, {
     // 추가 옵션 설정
@@ -25,10 +25,14 @@ module.exports = (sequelize, DataTypes) => {
     Reservation.belongsTo(models.User, {
       foreignKey: 'userId',
       type: DataTypes.UUID,
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
     });
     Reservation.belongsTo(models.Book, {
       foreignKey: 'bookId',
       type: DataTypes.INTEGER,
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
     });
   };
 

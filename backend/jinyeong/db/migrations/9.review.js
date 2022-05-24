@@ -17,6 +17,8 @@ module.exports = {
           key: 'id',
         },
         comment: '리뷰 유저ID',
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
       },
       bookId: {
         type: Sequelize.INTEGER,
@@ -28,6 +30,8 @@ module.exports = {
           key: 'id',
         },
         comment: '리뷰 도서ID',
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
       },
       comment: {
         type: Sequelize.STRING(100),

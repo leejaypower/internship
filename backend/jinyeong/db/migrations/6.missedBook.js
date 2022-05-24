@@ -17,6 +17,8 @@ module.exports = {
           key: 'id',
         },
         comment: '분실도서 ID',
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
       },
       missedDate: {
         type: Sequelize.DATE,

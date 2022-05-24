@@ -18,6 +18,8 @@ module.exports = (sequelize, DataTypes) => {
     Vendor.hasMany(models.BookPurchase, {
       foreignKey: 'vendorId',
       type: DataTypes.INTEGER,
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
     });
   };
 

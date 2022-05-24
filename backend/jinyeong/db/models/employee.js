@@ -17,6 +17,8 @@ module.exports = (sequelize, DataTypes) => {
     Employee.hasOne(models.Admin, {
       foreignKey: 'employeeId',
       type: DataTypes.INTEGER,
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
     });
   };
   return Employee;

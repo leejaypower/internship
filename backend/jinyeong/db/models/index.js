@@ -1,8 +1,13 @@
 /* eslint-disable global-require */
 /* eslint-disable import/no-dynamic-require */
+const cls = require('cls-hooked'); // 트랜잭션을 서비스단에서 비지니스로직으로 처리하기 위한 모듈
 const fs = require('fs');
 const path = require('path');
 const Sequelize = require('sequelize');
+
+// enable CLS
+const namespace = cls.createNamespace('transaction');
+Sequelize.useCLS(namespace); // Sequelize Constructor -> 모든 인스턴스에 동일하게 적용
 
 const basename = path.basename(__filename);
 

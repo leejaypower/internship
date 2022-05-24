@@ -22,10 +22,14 @@ module.exports = (sequelize, DataTypes) => {
     Review.belongsTo(models.User, {
       foreignKey: 'userId',
       type: DataTypes.UUID,
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
     });
     Review.belongsTo(models.Book, {
       foreignKey: 'bookId',
       type: DataTypes.INTEGER,
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
     });
   };
 
