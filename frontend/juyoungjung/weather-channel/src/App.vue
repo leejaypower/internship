@@ -1,31 +1,22 @@
 <template>
-  <v-app>
-    <v-app-bar
-      app
-      dark
-    />
-
-    <v-main>
+  <v-app class="mx-auto overflow-hidden">
+    <app-bar />
+    <v-main class="mt-16 pa-10 d-flex justify-center">
       <router-view />
     </v-main>
   </v-app>
 </template>
 
 <script>
-import { getOneCallApiData } from '@/api'
+import AppBar from '@/components/AppBar.vue'
 
 export default {
   name: 'App',
-  data: () => ({
-
-  }),
-  mounted() {
-    const pos = {
-      lat: '34.80902964688691',
-      lon: '141.00673176487695',
-    }
-    const exclude = ['minutely', 'alerts']
-    getOneCallApiData(pos, exclude)
-  },
+  components: { AppBar },
+  // created() {
+  //   localStorage.setItem('email', 'test@test.com')
+  //   localStorage.setItem('password', 'test')
+  //   localStorage.setItem('nickname', 'test')
+  // },
 }
 </script>
