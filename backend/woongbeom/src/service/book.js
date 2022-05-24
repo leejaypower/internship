@@ -1,4 +1,4 @@
-const repository = require('../repository/index');
+const repository = require('../repository');
 
 const createBook = async (bookData) => {
   try {

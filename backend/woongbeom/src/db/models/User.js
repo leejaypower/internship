@@ -6,8 +6,19 @@ module.exports = (sequelize, DataTypes) => {
         autoIncrement: true,
         type: DataTypes.INTEGER,
         allowNull: false,
-        comment: '유저 등록번호를 의미합니다',
+        comment: '유저 등록번호를 의미합니다.',
         primaryKey: true,
+      },
+      email: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+        comment: '유저 이메일 주소를 의미합니다.',
+      },
+      password: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        comment: '유저 비밀번호를 의미합니다.',
       },
       name: {
         type: DataTypes.STRING,

@@ -1,4 +1,4 @@
-const service = require('../service/index');
+const service = require('../service');
 
 const createBook = async (ctx) => {
   ctx.body = await service.book.createBook(ctx.request.body);
