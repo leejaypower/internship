@@ -13,17 +13,18 @@ module.exports = {
         comment: '유저 이름',
       },
       contact: {
-        type: Sequelize.STRING(13),
+        type: Sequelize.STRING(32), // secret hex code(32bytes)
         allowNull: false,
         comment: '유저 연락처',
       },
       email: {
-        type: Sequelize.STRING(20),
+        type: Sequelize.STRING(30),
         allowNull: false,
+        unique: true, // 이메일로 유저를 식별하기 위해 중복되지 않도록 설정.
         comment: '유저 이메일',
       },
       password: {
-        type: Sequelize.STRING(16),
+        type: Sequelize.STRING(60),
         allowNull: false,
         comment: '유저 비밀번호',
       },

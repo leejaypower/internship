@@ -10,15 +10,16 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
     },
     contact: {
-      type: DataTypes.STRING(13),
+      type: DataTypes.STRING(32), // secret hex code(32bytes)
       allowNull: false,
     },
     email: {
-      type: DataTypes.STRING(20),
+      type: DataTypes.STRING(30),
       allowNull: false,
+      unique: true, // 이메일로 유저를 식별하기 위해 중복되지 않도록 설정.
     },
     password: {
-      type: DataTypes.STRING(16),
+      type: DataTypes.STRING(60),
       allowNull: false,
     },
     isBlacklist: {
