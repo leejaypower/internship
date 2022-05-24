@@ -6,10 +6,11 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import StoreModuleNames from '@/constants/storeModuleNames'
 
 export default {
   computed: {
-    ...mapGetters('authStore', ['token']),
+    ...mapGetters(StoreModuleNames.Auth, ['token']),
   },
   created() {
     if (!this.token) {

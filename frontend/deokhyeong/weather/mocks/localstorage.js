@@ -36,8 +36,18 @@ const fetchSignIn = (body) => {
 
 const fetchSignUp = (body = {}) => {
   const users = JSON.parse(localStorage.getItem('users'))
-  const newUser = { email: body.email, password: body.password }
+  const isOverlap = users.find((user) => user.email === body.email)
 
+  if (isOverlap) {
+    return Promise.reject({
+      status: 404,
+      data: {
+        message: '이미 가입이 완료된 이메일입니다.',
+      },
+    })
+  }
+
+  const newUser = { email: body.email, password: body.password, token: Math.random() }
   localStorage.setItem('users', JSON.stringify([...users, newUser]))
 
   return Promise.resolve({

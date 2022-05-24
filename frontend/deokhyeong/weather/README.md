@@ -66,7 +66,7 @@ src
 │           ├── index.js
 │           └── validations.js
 ├── store
-│   ├── authStore
+│   ├── auth
 │   │   ├── actions.js
 │   │   ├── index.js
 │   │   └── mutations.js

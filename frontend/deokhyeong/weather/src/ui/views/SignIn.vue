@@ -1,15 +1,11 @@
 <template>
   <v-container>
-    <v-row
-      justify="center"
-    >
-      <logo-and-title
-        logo-src="/images/logo.png"
-        logo-position="right"
-        :logo-height="96"
-        title="오늘의 날씨"
-      />
-    </v-row>
+    <logo-and-title
+      src="/images/logo.png"
+      position="right"
+      :height="96"
+      title="오늘의 날씨"
+    />
     <v-row
       justify="center"
     >
@@ -42,7 +38,8 @@
 <script>
 import SubmitCardForm from '@/ui/components/SubmitCardForm.vue'
 import { mapActions } from 'vuex'
-import validationHooks from '@/hooks/validationHooks'
+import auth from '@/service/domain/auth'
+import StoreModuleNames from '@/constants/storeModuleNames'
 import LogoAndTitle from '../components/LogoAndTitle.vue'
 
 export default {
@@ -65,14 +62,13 @@ export default {
   computed: {
     isInactiveSubmitButton() {
       const { email, password } = this.inputs
-      const { useEmailValidationHook } = validationHooks
       const isPasswordLengthOverSix = password.value.length >= 6
 
-      return !useEmailValidationHook(email.value) || !isPasswordLengthOverSix
+      return !auth.emailValidation(email.value) || !isPasswordLengthOverSix
     },
   },
   methods: {
-    ...mapActions('authStore', [
+    ...mapActions(StoreModuleNames.Auth, [
       'signIn',
     ]),
     onChangeInput({ inputKey, value }) {
@@ -80,7 +76,10 @@ export default {
     },
     async onSubmitCardForm() {
       const { email, password } = this.inputs
-      await this.signIn({ email: email.value, password: password.value })
+      const response = await this.signIn({ email: email.value, password: password.value })
+      if (response.status === 200) {
+        this.$router.push('/')
+      }
     },
   },
 }

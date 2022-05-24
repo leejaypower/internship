@@ -1,40 +1,30 @@
 <template>
-  <v-row
-    no-gutters
-  >
-    <v-col
-      cols="6"
+  <div class="d-flex align-center justify-center pb-12">
+    <img
+      :src="src"
+      :height="height"
+      alt="로고사진"
+      contain
+      :position="position"
     >
-      <v-img
-        :src="logoSrc"
-        :height="logoHeight"
-        contain
-        :position="logoPosition"
-      />
-    </v-col>
-    <v-col
-      cols="6"
-      align-self="center"
-    >
-      <span class="text-h6">{{ title }}</span>
-    </v-col>
-  </v-row>
+    <span class="text-h6">{{ title }}</span>
+  </div>
 </template>
 
 <script>
 export default {
   props: {
-    logoSrc: {
+    src: {
       type: String,
       default: '/',
       required: true,
     },
-    logoHeight: {
+    height: {
       type: Number,
       default: 0,
       required: true,
     },
-    logoPosition: {
+    position: {
       type: String,
       default: '',
       required: true,

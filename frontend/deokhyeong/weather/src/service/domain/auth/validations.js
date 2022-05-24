@@ -9,7 +9,6 @@ const emailValidation = (email) => {
 const passwordValidaion = (password) => {
   const reggex = /(?=.*\d)(?=.*[a-zA-Z]).{6,}/
   const isPass = reggex.test(password)
-
   return isPass
 }
 

@@ -15,9 +15,11 @@
       :label="input.label"
       dense
       outlined
+      :validate-on-blur="input.isValidateOnBlur === false ? false : true"
       :value="input.value"
       :rules="input.rules"
       :type="input.type"
+      :placeholder="input.placeholder"
       @input="$emit('onChangeInput', {inputKey: key, value: $event} )"
     />
     <v-btn
@@ -46,6 +48,8 @@ export default {
           label: '',
           value: '',
           rules: [],
+          placeholder: '',
+          isValidateOnBlur: true,
         },
       }),
     },

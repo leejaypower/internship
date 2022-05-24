@@ -1,13 +1,13 @@
 <template>
   <v-app>
     <v-snackbar
-      v-model="isViewError"
+      v-model="isSnackbarError"
       color="error"
       absolute
       top
       timeout="1000"
     >
-      {{ viewErrorMessage }}
+      {{ clientErrorMessages }}
     </v-snackbar>
     <v-main>
       <router-view />
@@ -16,32 +16,35 @@
 </template>
 
 <script>
-import errorHooks from '@/hooks/errorHooks/index'
+import error from '@/service/domain/error'
 import localstorage from '../mocks/localstorage'
 
 export default {
   name: 'App',
   data: () => ({
-    isViewError: false,
-    viewErrorMessage: '',
+    isSnackbarError: false,
+    clientErrorMessages: '',
   }),
   created() {
     localstorage.setLocalStorageUsers()
   },
   errorCaptured(err) {
-    errorHooks.useErrorHook(err.data.message, this)
+    error.setClientError(err.data.message, this)
     return false
   },
 }
 </script>
 
 <style>
-html {
+#app {
   background: #dbdbdb;
 }
-#app {
-  background: white;
-  max-width: 600px;
+
+#app .v-main {
+  width: 600px;
   margin: 0 auto;
+  background: white;
+  display: flex;
+  justify-content: center;
 }
 </style>

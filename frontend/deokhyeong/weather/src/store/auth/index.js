@@ -2,7 +2,7 @@ import authActions from './actions'
 import authMutations from './mutations'
 import authGetters from './getters'
 
-const authStore = {
+const auth = {
   namespaced: true,
   state: {
     email: '',
@@ -20,4 +20,4 @@ const authStore = {
   },
 }
 
-export default authStore
+export default auth
