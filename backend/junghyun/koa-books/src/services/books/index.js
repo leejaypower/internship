@@ -1,16 +1,11 @@
-const { bookRepository, bookInfoRepository } = require('../../repository/index');
-const { sequelize } = require('../../db/models');
+const { bookRepository } = require('../../repository');
 
 // 도서 데이터 생성
 const createBook = async (bookData) => {
-  const transaction = await sequelize.transaction();
   try {
-    const [BookInfo] = await bookInfoRepository.findOrCreateBookInfo(bookData, transaction);
-    const Book = await bookRepository.create(BookInfo.id, bookData.bookType, transaction);
-    await transaction.commit();
-    return Book;
+    const newBook = bookRepository.createBookTransaction(bookData);
+    return newBook;
   } catch (err) {
-    await transaction.rollback();
     return err.message;
   }
 };
@@ -31,7 +26,7 @@ const getBooks = async (data) => {
     const queryData = {
       offset, limit, title, author, category,
     };
-    const BookList = await bookInfoRepository.getBookInfo(queryData);
+    const BookList = await bookRepository.getBooks(queryData);
     return BookList;
   } catch (err) { return err.message; }
 };
@@ -47,8 +42,8 @@ const getBookById = async (bookId) => {
 // 도서 삭제 -> 삭제할 것인지, 상태에 삭제라고 남겨놓을 것인지 고민후 수정 필요
 const deleteBook = async (bookId) => {
   try {
-    const BookObject = await bookRepository.destroy(bookId);
-    return BookObject.id;
+    const deletedBook = await bookRepository.destroy(bookId);
+    return deletedBook;
   } catch (err) { return err.message; }
 };
 

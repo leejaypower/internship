@@ -1,5 +1,7 @@
+const userService = require('./users/index');
 const bookService = require('./books');
+const { rentalService, reservationService } = require('./rental');
 
 module.exports = {
-  bookService,
+  userService, bookService, rentalService, reservationService,
 };
