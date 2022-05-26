@@ -10,9 +10,9 @@ module.exports = (sequelize, DataTypes) => {
         autoIncrement: true,
         primaryKey: true,
       },
-      loginStatus: {
-        type: DataTypes.BOOLEAN,
-        comment: '해당 컬럼은 사용자의 로그인 여부를 나타냅니다. ',
+      iat: {
+        type: DataTypes.STRING(100),
+        comment: '해당 컬럼은 로그인 시 발급되는 refresh token의 iat입니다. ',
       },
 
     },

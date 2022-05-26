@@ -1,13 +1,14 @@
 const Router = require('@koa/router');
+const { authMiddleware } = require('../middleware');
 
 const bookRouter = new Router();
 const { bookController } = require('../controller');
 
 bookRouter.get('/', bookController.getBook);
 bookRouter.get('/:bookId', bookController.getSingleBook);
-bookRouter.post('/', bookController.createBook);
-bookRouter.patch('/:bookId', bookController.updateBook);
-bookRouter.delete('/', bookController.deleteBook);
-bookRouter.delete('/:bookId', bookController.deleteBook);
+bookRouter.post('/', authMiddleware.verifyToken('admin'), bookController.createBook);
+bookRouter.patch('/:bookId', authMiddleware.verifyToken('admin'), bookController.updateBook);
+bookRouter.delete('/', authMiddleware.verifyToken('admin'), bookController.deleteBook);
+bookRouter.delete('/:bookId', authMiddleware.verifyToken('admin'), bookController.deleteBook);
 
 module.exports = bookRouter;

@@ -21,7 +21,7 @@ sequelize
   .then(() => {
     console.log('Connection has been established successfully!');
   })
-  .then(sequelize.sync()) // { force: true }
+  .then(sequelize.sync())
   .catch((err) => {
     console.error('Unable to connect to the database', err);
   });

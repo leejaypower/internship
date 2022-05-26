@@ -3,10 +3,10 @@ module.exports = (sequelize, DataTypes) => {
     'User',
     {
       id: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
         primaryKey: true,
-        comment: '해당 컬럼은 사용자의 UUID를 나타냅니다. ',
+        comment: '해당 컬럼은 사용자의 ID 나타냅니다. ',
       },
       name: {
         type: DataTypes.STRING(100),
@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
         comment: '해당 컬럼은 사용자의 email을 나타냅니다. ',
       },
       password: {
-        type: DataTypes.STRING(100),
+        type: DataTypes.STRING(300),
         allowNull: false,
       },
       phone: {
@@ -68,12 +68,12 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     User.belongsTo(models.Group, {
-      foreignKey: 'groupId',
+      foreignKey: 'groupName',
       onDelete: 'set null',
-      sourceKey: 'id',
+      targetKey: 'groupName',
       allowNull: false,
-      uniqu: true,
-      comment: '해당 컬럼은 사용자의 Role 아이디를 나타냅니다. ',
+      unique: true,
+      comment: '해당 컬럼은 사용자의 Role을 나타냅니다. (user , admin) ',
     });
 
     User.hasMany(models.Review, {
