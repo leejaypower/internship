@@ -2,23 +2,42 @@ const { v4: uuidv4 } = require('uuid');
 
 module.exports = {
   async up(queryInterface, Sequelize) {
-    const testers = [];
+    const dummy = [{
+      id: '6b832069-d199-4b11-9c2c-a0454e39cd7f',
+      email: 'admin@barogo.com',
+      password: 'admin',
+      phone: `010${String(new Date().getTime() - 2).substring(5, 13)}`,
+      name: 'admin',
+      warningCount: 0,
+      rentalCount: 0,
+      createdAt: new Date(),
+      deletedAt: null,
+    }, {
+      id: '26637c74-34ae-4de0-a129-6a040b7a3bba',
+      email: 'user@barogo.com',
+      password: 'user',
+      phone: `010${String(new Date().getTime() - 1).substring(5, 13)}`,
+      name: 'user',
+      warningCount: 0,
+      rentalCount: 0,
+      createdAt: new Date(),
+      deletedAt: null,
+    }];
     for (let i = 0; i < 20; i += 1) {
-      testers.push({
+      dummy.push({
         id: uuidv4(),
         email: `test${i}@barogo.com`,
         password: `test${i}`,
         phone: `010${String(new Date().getTime() + i).substring(5, 13)}`,
         name: `test${i}`,
         warningCount: 0,
+        rentalCount: 0,
         createdAt: new Date(),
         deletedAt: null,
       });
     }
 
-    console.log(testers);
-
-    await queryInterface.bulkInsert('Users', testers);
+    await queryInterface.bulkInsert('Users', dummy);
   },
 
   async down(queryInterface, Sequelize) {

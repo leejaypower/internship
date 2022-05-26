@@ -34,10 +34,6 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'bookId',
       sourceKey: 'id',
     });
-    Book.hasMany(models.LostBook, {
-      foreignKey: 'bookId',
-      sourceKey: 'id',
-    });
   };
   return Book;
 };

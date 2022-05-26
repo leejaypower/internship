@@ -1,15 +1,16 @@
-// eslint-disable-next-line no-unused-vars
-const { Model } = require('sequelize');
+const { TABLE } = require('../../utils/constants');
 
 module.exports = (sequelize, DataTypes) => {
   const Auth = sequelize.define('Auth', {
     role: {
       type: DataTypes.STRING(10),
-      defaultValue: 'user',
-      comment: '해당 컬럼은 사용자의 Role을 나타냅니다 Role에는 "user", "manager" 가 있습니다.',
+      allowNull: false,
+      defaultValue: TABLE.USER_ROLE.USER,
+      comment: '해당 컬럼은 사용자의 Role을 나타냅니다 Role에는 "USER", "ADMIN" 가 있습니다.',
     },
     refreshToken: {
       type: DataTypes.STRING(200),
+      allowNull: true,
       defaultValue: null,
       comment: '해당 컬럼은 user의 Refresh token을 나타냅니다.',
     },

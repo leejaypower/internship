@@ -5,16 +5,11 @@ module.exports = (sequelize, DataTypes) => {
       autoIncrement: true,
       primaryKey: true,
     },
-    rentalDate: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: new Date(),
-      comment: '해당 컬럼은 대여 예약 날짜를 나타냅니다.',
-    },
   }, {
     timestamps: true,
     createdAt: true,
     updatedAt: false,
+    paranoid: true,
   });
   Reservation.associate = (models) => {
     Reservation.belongsTo(models.User, {
@@ -25,8 +20,8 @@ module.exports = (sequelize, DataTypes) => {
       onDelete: 'set null',
       onUpdate: 'cascade',
     });
-    Reservation.belongsTo(models.Book, {
-      foreignKey: 'bookId',
+    Reservation.belongsTo(models.BookInfo, {
+      foreignKey: 'bookInfoId',
       targetKey: 'id',
       allowNull: false,
     }, {

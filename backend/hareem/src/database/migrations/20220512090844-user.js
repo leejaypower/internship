@@ -34,13 +34,19 @@ module.exports = {
         defaultValue: 0,
         comment: '해당 컬럼은 사용자의 경고 횟수를 나타냅니다.',
       },
-      createdAt: {
+      rentalCount: {
+        type: Sequelize.INTEGER,
         allowNull: false,
+        defaultValue: 0,
+        comment: '해당 컬럼은 사용자가 대여한 도서 권수를 나타냅니다.',
+      },
+      createdAt: {
         type: Sequelize.DATE,
+        allowNull: false,
       },
       deletedAt: {
-        allowNull: true,
         type: Sequelize.DATE,
+        allowNull: true,
       },
     });
   },

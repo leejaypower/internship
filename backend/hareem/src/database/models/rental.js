@@ -1,3 +1,6 @@
+const { timer } = require('../../utils');
+const { TABLE, BUSINESS } = require('../../utils/constants');
+
 module.exports = (sequelize, DataTypes) => {
   const Rental = sequelize.define('Rental', {
     id: {
@@ -8,8 +11,14 @@ module.exports = (sequelize, DataTypes) => {
     state: {
       type: DataTypes.STRING(10),
       allowNull: false,
-      defaultValue: 'RENTAL',
-      comment: '해당 컬럼은 도서의 대여 또는 연장 또는 반납 상태를 나타냅니다. (RENTAL, EXTEND, RETURN)',
+      defaultValue: TABLE.RENTAL_STATE.START,
+      comment: '해당 컬럼은 도서의 대여 또는 연장 또는 반납 상태를 나타냅니다. (START, EXTEND, END)',
+    },
+    dueDate: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: timer.afterNDate(BUSINESS.RENTAL_PERIOD),
+      comment: '해당 컬럼은 도서의 반납 예정일을 나타냅니다.',
     },
   }, {
     timestamps: true,
@@ -21,7 +30,6 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'userId',
       targetKey: 'id',
       allowNull: false,
-    }, {
       onDelete: 'set null',
       onUpdate: 'cascade',
     });
@@ -29,9 +37,18 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'bookId',
       targetKey: 'id',
       allowNull: false,
-    }, {
       onDelete: 'set null',
       onUpdate: 'cascade',
+    });
+    Rental.hasMany(Rental, {
+      foreignKey: 'parentId',
+      sourceKey: 'id',
+      allowNull: true,
+    });
+    Rental.belongsTo(Rental, {
+      foreignKey: 'parentId',
+      sourceKey: 'id',
+      allowNull: true,
     });
   };
   return Rental;

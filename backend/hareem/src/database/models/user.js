@@ -1,6 +1,3 @@
-// eslint-disable-next-line no-unused-vars
-const { Model } = require('sequelize');
-
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define('User', {
     id: {
@@ -9,7 +6,7 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
     },
     email: {
-      type: DataTypes.STRING(320),
+      type: DataTypes.STRING(50),
       allowNull: false,
       unique: true,
       comment: '해당 컬럼은 사용자의 email을 나타냅니다.',
@@ -36,11 +33,11 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: 0,
       comment: '해당 컬럼은 사용자의 경고 횟수를 나타냅니다.',
     },
-    isBlack: {
-      type: DataTypes.VIRTUAL,
-      get() {
-        return this.warningCount >= process.env.MAX_WARNING_COUNT;
-      },
+    rentalCount: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0,
+      comment: '해당 컬럼은 사용자가 대여한 도서 권수를 나타냅니다.',
     },
   }, {
     timestamps: true,
@@ -58,14 +55,6 @@ module.exports = (sequelize, DataTypes) => {
       sourceKey: 'id',
     });
     User.hasMany(models.Reservation, {
-      foreignKey: 'userId',
-      sourceKey: 'id',
-    });
-    User.hasMany(models.LostBook, {
-      foreignKey: 'userId',
-      sourceKey: 'id',
-    });
-    User.hasMany(models.Review, {
       foreignKey: 'userId',
       sourceKey: 'id',
     });

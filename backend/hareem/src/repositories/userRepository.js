@@ -1,119 +1,176 @@
-// Repository 역할
-// DB와 데이터 통신
-
-// return undefined => error 핸들링 관련 주차에 정리 예정
-
-const { userDao, common, authDao } = require('../daos');
-
-const getUsers = async (query) => {
-  try {
-    const {
-      page = 1,
-      email,
-      warningCount = 0,
-    } = query;
-
-    const Op = common.getOperator();
-
-    const limit = process.env.PER_PAGE;
-    const offset = (page - 1) * limit;
-
-    const where = {};
-    if (email !== undefined) { where.email = { [Op.like]: `%${email}%` }; }
-    if (warningCount !== undefined) { where.warningCount = { [Op.gte]: warningCount }; }
-
-    const users = await userDao.findAll({
-      where,
-      limit,
-      offset,
-      attributes: { exclude: ['password'] },
-      order: [['createdAt', 'DESC'], ['warningCount', 'DESC']],
-    });
-    return users;
-  } catch (error) {
-    console.log(error);
-    return error;
-  }
-};
-
-const getUser = async (id) => {
-  try {
-    const user = await userDao.findById(id, {});
-    return user;
-  } catch (error) {
-    console.log(error);
-    return error;
-  }
-};
+const {
+  User, Auth, sequelize, Sequelize,
+} = require('../database/models');
+const { timer } = require('../utils');
+const { QUERY, TABLE, BUSINESS } = require('../utils/constants');
 
 const createUser = async (createUserData) => {
-  const transaction = await common.getTransaction();
-  try {
+  const result = await sequelize.transaction(async (transaction) => {
     const {
       email,
       password,
       phone,
       name,
+      role = TABLE.USER_ROLE.USER,
     } = createUserData;
 
-    const [user, created] = await userDao.findOrCreate({
-      where: { email },
-      defaults: {
-        email,
-        password,
-        phone,
-        name,
-      },
-      attributes: { exclude: ['password'] },
+    const user = await User.create({
+      email,
+      password,
+      phone,
+      name,
+    }, {
       transaction,
     });
-    if (!created) {
-      throw Error('User already exist');
-    }
 
-    await authDao.create({
-      role: 'user',
+    const auth = await Auth.create({
+      role,
       userId: user.id,
     }, {
       transaction,
     });
 
-    await transaction.commit();
+    user.password = undefined;
+    user.dataValues.role = auth.role;
     return user;
-  } catch (error) {
-    await transaction.rollback();
-    return error.message;
+  });
+  return result;
+};
+
+const getUsers = async (getUsersQuery) => {
+  const {
+    page = BUSINESS.PAGE_DEFAULT,
+    email,
+    warningCount = 0,
+    role,
+    from,
+    to,
+    filter,
+  } = getUsersQuery;
+
+  const { Op } = Sequelize;
+
+  const limit = BUSINESS.PER_PAGE;
+  const offset = (page - 1) * limit;
+
+  const where = {};
+  const authWhere = {};
+  const order = [['createdAt', 'DESC']];
+  let paranoid = true;
+  if (email) { where.email = { [Op.like]: `%${email}%` }; }
+  if (warningCount !== undefined) {
+    where.warningCount = { [Op.gte]: warningCount };
+    order.push(['warningCount', 'DESC']);
   }
+  if (role) { authWhere.role = { [Op.eq]: role }; }
+  where.createdAt = { [Op.gte]: timer.beforeNDate(30) };
+  if (from && to) {
+    where.createdAt = { [Op.between]: [timer.stringToDate(from), timer.stringToDate(to)] };
+  } else if (from) {
+    where.createdAt = { [Op.gte]: timer.stringToDate(from) };
+  } else if (to) {
+    where.createdAt = { [Op.lte]: timer.stringToDate(to) };
+  }
+  if (filter === QUERY.FILTER.ALL) {
+    paranoid = false;
+  } else if (filter === QUERY.FILTER.DELETED) {
+    paranoid = false;
+    where.deletedAt = { [Op.not]: null };
+  }
+
+  const users = await User.findAll({
+    where,
+    limit,
+    offset,
+    attributes: { exclude: ['password'] },
+    paranoid,
+    include: {
+      model: Auth,
+      attributes: ['role', 'updatedAt'],
+      where: authWhere,
+    },
+    order,
+  });
+  return users;
+};
+
+const getUser = async (id) => {
+  const user = await User.findByPk(id, {
+    attributes: { exclude: ['password'] },
+    include: {
+      model: Auth,
+      attributes: ['role', 'updatedAt'],
+    },
+  });
+  return user;
+};
+
+const getUserByEmail = async (email) => {
+  const user = await User.findOne({
+    where: { email },
+    attributes: { exclude: ['password'] },
+    include: {
+      model: Auth,
+      attributes: ['role', 'updatedAt'],
+    },
+  });
+  return user;
 };
 
 const updateUser = async (id, updateUserData) => {
-  try {
-    await userDao.update(updateUserData, {
-      where: { id },
-    });
-    return await userDao.findById(id, {});
-  } catch (error) {
-    console.log(error);
-    return error;
-  }
+  const {
+    password,
+    phone,
+    name,
+  } = updateUserData;
+
+  const result = await User.update({
+    password,
+    phone,
+    name,
+  }, {
+    where: { id },
+  });
+  return result;
+};
+
+const updateUserByAdmin = async (id, updateUserByAdminData) => {
+  // 해당 함수는 차후 admin 권한을 가진 유저에게만 허용되는 update 입니다
+  const {
+    password,
+    phone,
+    name,
+    warningCount,
+    rentalCount,
+    role,
+  } = updateUserByAdminData;
+
+  const result = await User.update({
+    password,
+    phone,
+    name,
+    warningCount,
+    rentalCount,
+    role,
+  }, {
+    where: { id },
+  });
+  return result;
 };
 
 const deleteUser = async (id) => {
-  try {
-    const result = await userDao.destroy({
-      where: { id },
-    });
-    return result === 1 ? 'User delete done' : 'User delete fail';
-  } catch (error) {
-    console.log(error);
-    return error;
-  }
+  const result = await User.destroy({
+    where: { id },
+  });
+  return result;
 };
 
 module.exports = {
+  createUser,
   getUsers,
   getUser,
-  createUser,
+  getUserByEmail,
   updateUser,
+  updateUserByAdmin,
   deleteUser,
 };

@@ -3,14 +3,10 @@ const { bookController } = require('../controllers');
 
 const bookRouter = new Router();
 
-// todo
-// [] 책 정보 확인
-// [x] 책 list 확인
-// [] 책 입고
-// [x] 책 출고
-// bookRouter.get('/', userController.getUsers);
-// bookRouter.get('/:id', userController.getUser);
-bookRouter.post('/', bookController.createBook);
-// bookRouter.delete('/:id', userController.deleteUser);
+bookRouter.get('/', bookController.getBookInfos);
+bookRouter.get('/:bookInfoId', bookController.getBookInfo);
+bookRouter.post('/', bookController.createBookInfoWithBook);
+bookRouter.patch('/:bookInfoId', bookController.updateBookInfo);
+bookRouter.delete('/:id', bookController.deleteBook);
 
 module.exports = bookRouter;

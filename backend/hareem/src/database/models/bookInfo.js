@@ -16,15 +16,10 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       comment: '해당 컬럼은 책 제목을 나타냅니다.',
     },
-    authors: {
-      type: DataTypes.ARRAY(DataTypes.STRING(50)),
+    author: {
+      type: DataTypes.STRING(50),
       allowNull: false,
       comment: '해당 컬럼은 저자들을 나타냅니다.',
-    },
-    price: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      comment: '해당 컬럼은 책은 가격을 나타냅니다.',
     },
     publisher: {
       type: DataTypes.STRING(50),
@@ -37,7 +32,7 @@ module.exports = (sequelize, DataTypes) => {
       comment: '해당 컬럼은 책 발행일을 나타냅니다. ex) "220428"',
     },
     description: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(100),
       allowNull: true,
       comment: '해당 컬럼은 책에 대한 소개를 나타냅니다.',
     },
@@ -46,17 +41,8 @@ module.exports = (sequelize, DataTypes) => {
     BookInfo.hasMany(models.Book, {
       foreignKey: 'bookInfoId',
       sourceKey: 'id',
-      allowNull: false,
     });
-    BookInfo.belongsTo(models.Category, {
-      foreignKey: 'categoryId',
-      targetKey: 'id',
-      allowNull: true,
-    }, {
-      onDelete: 'set null',
-      onUpdate: 'cascade',
-    });
-    BookInfo.hasMany(models.Review, {
+    BookInfo.hasMany(models.Reservation, {
       foreignKey: 'bookInfoId',
       sourceKey: 'id',
     });
