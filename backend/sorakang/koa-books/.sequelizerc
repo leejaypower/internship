@@ -1,5 +1,4 @@
 const path = require('path');
-const { test } = require('./src/database/config');
 module.exports = {
   config: path.join('./src/database/config/index.js'),
   'models-path': path.resolve('./src/database/models'),

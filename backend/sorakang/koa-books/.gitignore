@@ -13,6 +13,6 @@ yarn-debug.log
 pnpm-debug.log
 
 .envrc
-.env.*
+.env.development
 .env.local
 .env.*.local

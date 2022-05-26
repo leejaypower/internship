@@ -3,24 +3,31 @@
 const fs = require('fs');
 const path = require('path');
 const Sequelize = require('sequelize');
+require('../../utils/env');
 
 const basename = path.basename(__filename);
 
 const db = {};
 
 const sequelize = new Sequelize(
-  process.env.POSTGRES_DB,
-  process.env.POSTGRES_USER,
-  process.env.POSTGRES_PASSWORD,
+  process.env.DATABASE_NAME,
+  process.env.DATABASE_USERNAME,
+  process.env.DATABASE_PASSWORD,
   {
-    host: process.env.POSTGRES_HOST,
-    dialect: process.env.POSTGRES_DIALECT,
-    port: process.env.POSTGRES_PORT,
+    host: process.env.DATABASE_HOST,
+    dialect: process.env.DATABASE_DIALECT,
+    port: process.env.DATABASE_PORT,
     pool: {
-      max: 5,
+      max: 20,
       min: 0,
       acquire: 30000,
       idle: 10000,
+    },
+    define: {
+      charset: 'utf8',
+      dialectOptions: {
+        collate: 'utf8_general_ci',
+      },
     },
   },
 );
