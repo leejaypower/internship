@@ -4,8 +4,8 @@ const createDemoData = () => {
   for (let i = 1; i <= 5; i += 1) {
     data.push({
       id: i,
-      name: `직원 샘플${i}`,
-      contact: '010-1234-5678',
+      KDC: i * 100,
+      name: `카테고리 샘플${i}`,
       createdAt: new Date(),
       updatedAt: new Date(),
     });
@@ -15,10 +15,9 @@ const createDemoData = () => {
 
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.bulkInsert('Employees', createDemoData());
-    await queryInterface.sequelize.query('ALTER SEQUENCE "Employees_id_seq" RESTART WITH 6');
+    return queryInterface.bulkInsert('BookCategories', createDemoData());
   },
   async down(queryInterface, Sequelize) {
-    return queryInterface.bulkDelete('Employees', null, {});
+    return queryInterface.bulkDelete('BookCategories', null, {});
   },
 };

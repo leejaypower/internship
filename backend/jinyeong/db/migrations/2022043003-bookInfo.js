@@ -1,6 +1,6 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Books', {
+    await queryInterface.createTable('BookInfo', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -12,10 +12,18 @@ module.exports = {
         allowNull: false,
         comment: '도서명',
       },
-      category: {
-        type: Sequelize.STRING(10),
+      categoryId: {
+        type: Sequelize.INTEGER,
         allowNull: false,
-        comment: '도서 카테고리',
+        references: {
+          model: {
+            tableName: 'BookCategories',
+          },
+          key: 'id',
+        },
+        onDelete: 'NO ACTION', // paranoid 옵션을 통해 참조하는 데이터가 삭제되었음을 표시(deletedAt)
+        onUpdate: 'CASCADE',
+        comment: '외래키(FK), 도서 카테고리 정보를 담은 테이블 연결',
       },
       author: {
         type: Sequelize.STRING(10),
@@ -45,9 +53,12 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE,
       },
+      deletedAt: {
+        type: Sequelize.DATE,
+      },
     });
   },
   async down(queryInterface) {
-    await queryInterface.dropTable('Books');
+    await queryInterface.dropTable('BookInfo');
   },
 };

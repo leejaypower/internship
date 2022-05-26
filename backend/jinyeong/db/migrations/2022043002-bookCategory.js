@@ -1,25 +1,21 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Vendors', {
+    await queryInterface.createTable('BookCategories', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      vendorName: {
-        type: Sequelize.STRING(20),
+      KDC: {
+        type: Sequelize.INTEGER,
         allowNull: false,
-        comment: '거래처명',
+        comment: '도서 한국십진분류표(KDC) 분류코드',
       },
-      managerName: {
+      name: {
         type: Sequelize.STRING(10),
-        comment: '담당자 이름',
-      },
-      contact: {
-        type: Sequelize.STRING(13),
         allowNull: false,
-        comment: '연락처',
+        comment: 'KDC 코드에 해당하는 카테고리 이름',
       },
       createdAt: {
         allowNull: false,
@@ -29,9 +25,12 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE,
       },
+      deletedAt: {
+        type: Sequelize.DATE,
+      },
     });
   },
   async down(queryInterface) {
-    await queryInterface.dropTable('Vendors');
+    await queryInterface.dropTable('BookCategories');
   },
 };

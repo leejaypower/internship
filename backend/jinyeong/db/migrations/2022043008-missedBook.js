@@ -1,6 +1,6 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('BookPurchases', {
+    await queryInterface.createTable('MissedBooks', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -16,32 +16,29 @@ module.exports = {
           },
           key: 'id',
         },
-        comment: '도서 ID',
+        onDelete: 'NO ACTION', // paranoid 옵션을 통해 참조하는 데이터가 삭제되었음을 표시(deletedAt)
+        onUpdate: 'CASCADE',
+        comment: '분실도서 ID',
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
       },
-      vendorId: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: {
-            tableName: 'Vendors',
-          },
-          key: 'id',
-        },
-        comment: '거래처 ID',
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE',
-      },
-      historicalCost: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        comment: '도서 구매가',
-      },
-      purchaseDate: {
+      missedDate: {
         type: Sequelize.DATE,
         allowNull: false,
-        comment: '도서 구입일',
+        comment: '도서 분실일 또는 분실사실을 알게된 날',
+      },
+      missedReason: {
+        type: Sequelize.STRING(100),
+        allowNull: false,
+        comment: '도서 분실사유',
+      },
+      returnDate: {
+        type: Sequelize.DATE,
+        comment: '분실도서 회수일',
+      },
+      returnReason: {
+        type: Sequelize.STRING(100),
+        comment: '분실도서 회수사유',
       },
       createdAt: {
         allowNull: false,
@@ -51,9 +48,12 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE,
       },
+      deletedAt: {
+        type: Sequelize.DATE,
+      },
     });
   },
   async down(queryInterface) {
-    await queryInterface.dropTable('BookPurchases');
+    await queryInterface.dropTable('MissedBooks');
   },
 };

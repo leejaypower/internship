@@ -5,11 +5,10 @@ const createDemoData = () => {
     data.push({
       id: i,
       name: `도서명 샘플${i}`,
-      category: '카테고리 샘플',
+      categoryId: i,
       author: '작자 샘플',
       publisher: '발행사 샘플',
       discription: '책 설명 샘플',
-      state: '대기',
       createdAt: new Date(),
       updatedAt: new Date(),
     });
@@ -19,10 +18,9 @@ const createDemoData = () => {
 
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.bulkInsert('Books', createDemoData());
-    await queryInterface.sequelize.query('ALTER SEQUENCE "Books_id_seq" RESTART WITH 6');
+    return queryInterface.bulkInsert('BookInfo', createDemoData());
   },
   async down(queryInterface, Sequelize) {
-    return queryInterface.bulkDelete('Books', null, {});
+    return queryInterface.bulkDelete('BookInfo', null, {});
   },
 };

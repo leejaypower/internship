@@ -30,6 +30,7 @@ module.exports = {
       },
       isBlacklist: {
         type: Sequelize.BOOLEAN,
+        allowNull: false,
         defaultValue: false,
         comment: '블랙리스트 여부',
       },
@@ -39,6 +40,9 @@ module.exports = {
       },
       updatedAt: {
         allowNull: false,
+        type: Sequelize.DATE,
+      },
+      deletedAt: {
         type: Sequelize.DATE,
       },
     });

@@ -1,6 +1,6 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Reservations', {
+    await queryInterface.createTable('Reviews', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -16,9 +16,9 @@ module.exports = {
           },
           key: 'id',
         },
-        comment: '예약신청 유저ID',
-        onDelete: 'CASCADE',
+        onDelete: 'NO ACTION', // paranoid 옵션을 통해 참조하는 데이터가 삭제되었음을 표시(deletedAt)
         onUpdate: 'CASCADE',
+        comment: '리뷰 유저ID',
       },
       bookId: {
         type: Sequelize.INTEGER,
@@ -29,19 +29,18 @@ module.exports = {
           },
           key: 'id',
         },
-        comment: '예약된 도서ID',
-        onDelete: 'CASCADE',
+        onDelete: 'NO ACTION', // paranoid 옵션을 통해 참조하는 데이터가 삭제되었음을 표시(deletedAt)
         onUpdate: 'CASCADE',
+        comment: '리뷰 도서ID',
       },
-      reservedDate: {
-        type: Sequelize.DATE,
+      comment: {
+        type: Sequelize.STRING(100),
+        comment: '리뷰 코멘트',
+      },
+      score: {
+        type: Sequelize.INTEGER,
         allowNull: false,
-        comment: '예약 신청일',
-      },
-      state: {
-        type: Sequelize.STRING(5),
-        defaultValue: '대기',
-        comment: '예약이력에 대한 상태정보입니다. [대기, 실행, 취소]로 구분됩니다.',
+        comment: '리뷰 평점',
       },
       createdAt: {
         allowNull: false,
@@ -51,9 +50,12 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE,
       },
+      deletedAt: {
+        type: Sequelize.DATE,
+      },
     });
   },
   async down(queryInterface) {
-    await queryInterface.dropTable('Reservations');
+    await queryInterface.dropTable('Reviews');
   },
 };

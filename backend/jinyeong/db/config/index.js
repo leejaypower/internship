@@ -7,6 +7,7 @@ const development = {
   host: process.env.DB_HOST,
   dialect: process.env.DB_DIALECT,
   port: process.env.DB_PORT,
+  timezone: process.env.DB_TIMEZONE,
 };
 
 const production = {
@@ -16,6 +17,7 @@ const production = {
   host: process.env.DB_HOST,
   dialect: process.env.DB_DIALECT,
   port: process.env.DB_PORT,
+  timezone: process.env.DB_TIMEZONE,
 };
 
 const test = {
@@ -25,6 +27,7 @@ const test = {
   host: process.env.DB_HOST,
   dialect: process.env.DB_DIALECT,
   port: process.env.DB_PORT,
+  timezone: process.env.DB_TIMEZONE,
 };
 
 module.exports = { development, production, test };

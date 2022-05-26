@@ -21,12 +21,12 @@ module.exports = {
         onUpdate: 'CASCADE',
       },
       email: {
-        type: Sequelize.STRING(20),
+        type: Sequelize.STRING(30),
         allowNull: false,
         comment: '관리자 계정 이메일',
       },
       password: {
-        type: Sequelize.STRING(16),
+        type: Sequelize.STRING(60),
         allowNull: false,
         comment: '관리자 계정 비밀번호',
       },
@@ -36,6 +36,9 @@ module.exports = {
       },
       updatedAt: {
         allowNull: false,
+        type: Sequelize.DATE,
+      },
+      deletedAt: {
         type: Sequelize.DATE,
       },
     });
