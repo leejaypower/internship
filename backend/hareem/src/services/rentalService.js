@@ -13,7 +13,7 @@ const createRentalStart = async (userId, createRentalData) => {
   } = createRentalData;
   // 유저가 빌릴 수 있는 최대 권수를 이미 빌리고 있다면,
   // 또는 경고가 일정 이상 있는데 빌리려 한다면, error
-  const user = await userService.getUser(userId);
+  const user = await userService.getUserById(userId);
   if (user.warningCount >= BUSINESS.MAX_WARNING_COUNT) {
     throw new CustomError(400, '연체 이력이 많아 대여할 수 없습니다');
   }

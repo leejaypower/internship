@@ -3,7 +3,7 @@ const { reservationService } = require('../services');
 const createReservation = async (ctx) => {
   try {
     const { bookInfoId } = ctx.params;
-    const { userId } = ctx.request.body; // 차후 ctx.user.id 로 수정 필요
+    const { id: userId } = ctx.user;
     const reservation = await reservationService.createReservation(userId, bookInfoId);
     ctx.body = reservation;
   } catch (error) {
@@ -22,7 +22,7 @@ const getUsersReservations = async (ctx) => {
 
 const getUserReservations = async (ctx) => {
   try {
-    const { userId } = ctx.request.body; // 차후 ctx.user.id 로 수정 필요
+    const { id: userId } = ctx.user;
     const reservations = await reservationService.getUserReservations(userId, ctx.request.query);
     ctx.body = reservations;
   } catch (error) {
@@ -32,8 +32,8 @@ const getUserReservations = async (ctx) => {
 
 const deleteReservation = async (ctx) => {
   try {
-    const { userId } = ctx.request.body;
     const { id } = ctx.params;
+    const { id: userId } = ctx.user;
     const reservation = await reservationService.deleteReservation(userId, id);
     ctx.body = reservation;
   } catch (error) {

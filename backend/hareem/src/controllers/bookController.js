@@ -1,6 +1,3 @@
-// Controller 역할
-// status code 및 res return
-
 const { bookService } = require('../services');
 
 const createBookInfoWithBook = async (ctx) => {

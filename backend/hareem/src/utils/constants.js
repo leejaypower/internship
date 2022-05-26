@@ -13,6 +13,7 @@ const BUSINESS = {
   BOOK_REGIGISTATION_LIMIT: 5,
   PAGE_DEFAULT: 1,
   PER_PAGE: 10,
+  HASH_SALT: 10,
 };
 
 // 테이블 관련 상수
@@ -26,8 +27,20 @@ const QUERY = {
   FILTER: { ALL: 'ALL', DELETED: 'DELETED' },
 };
 
+// 메시지
+const MESSAGE = {
+  AUTH_ERROR: '유효하지 않은 접근입니다',
+};
+
+// 쿠키 이름 관련 상수
+const COOKIE_NAME = {
+  REFRESH_TOKEN: 'refresh_token',
+};
+
 module.exports = {
   BUSINESS,
   TABLE,
   QUERY,
+  MESSAGE,
+  COOKIE_NAME,
 };

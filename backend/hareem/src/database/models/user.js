@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
       comment: '해당 컬럼은 사용자의 email을 나타냅니다.',
     },
     password: {
-      type: DataTypes.STRING(100),
+      type: DataTypes.STRING(60),
       allowNull: false,
       comment: '해당 컬럼은 사용자의 비밀번호를 나타냅니다. 해당값은 복호화 불가능한 해시값 입니다.',
     },
@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
       comment: '해당 컬럼은 사용자의 핸드폰 번호를 나타냅니다. ex) "01021215353"',
     },
     name: {
-      type: DataTypes.STRING(10),
+      type: DataTypes.STRING(20),
       allowNull: false,
       comment: '해당 컬럼은 사용자의 이름을 나타냅니다.',
     },

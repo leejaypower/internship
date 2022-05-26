@@ -5,7 +5,7 @@ module.exports = {
     const dummy = [{
       id: '6b832069-d199-4b11-9c2c-a0454e39cd7f',
       email: 'admin@barogo.com',
-      password: 'admin',
+      password: '$2b$10$WrkaBRbCjyhRI41JwFfV9eJKRvSelvFwalf/SoSAaRRaYQJyTSDRC',
       phone: `010${String(new Date().getTime() - 2).substring(5, 13)}`,
       name: 'admin',
       warningCount: 0,
@@ -15,7 +15,7 @@ module.exports = {
     }, {
       id: '26637c74-34ae-4de0-a129-6a040b7a3bba',
       email: 'user@barogo.com',
-      password: 'user',
+      password: '$2b$10$Y7oYvngSAREYh8GpHWaGi.M2gzJpxht/DsuQzevvgO3HrA37Y90AS',
       phone: `010${String(new Date().getTime() - 1).substring(5, 13)}`,
       name: 'user',
       warningCount: 0,

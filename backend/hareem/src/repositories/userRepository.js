@@ -4,7 +4,7 @@ const {
 const { timer } = require('../utils');
 const { QUERY, TABLE, BUSINESS } = require('../utils/constants');
 
-const createUser = async (createUserData) => {
+const createUser = async (createData) => {
   const result = await sequelize.transaction(async (transaction) => {
     const {
       email,
@@ -12,7 +12,7 @@ const createUser = async (createUserData) => {
       phone,
       name,
       role = TABLE.USER_ROLE.USER,
-    } = createUserData;
+    } = createData;
 
     const user = await User.create({
       email,
@@ -94,7 +94,7 @@ const getUsers = async (getUsersQuery) => {
   return users;
 };
 
-const getUser = async (id) => {
+const getUserById = async (id) => {
   const user = await User.findByPk(id, {
     attributes: { exclude: ['password'] },
     include: {
@@ -105,10 +105,10 @@ const getUser = async (id) => {
   return user;
 };
 
-const getUserByEmail = async (email) => {
+const getUser = async (getBy, selectPassword = false) => {
   const user = await User.findOne({
-    where: { email },
-    attributes: { exclude: ['password'] },
+    where: getBy,
+    attributes: { exclude: [selectPassword ? '' : 'password'] },
     include: {
       model: Auth,
       attributes: ['role', 'updatedAt'],
@@ -117,50 +117,60 @@ const getUserByEmail = async (email) => {
   return user;
 };
 
-const updateUser = async (id, updateUserData) => {
+const updateUser = async (updateBy, updateData) => {
   const {
     password,
     phone,
     name,
-  } = updateUserData;
+  } = updateData;
 
   const result = await User.update({
     password,
     phone,
     name,
   }, {
-    where: { id },
+    where: updateBy,
   });
   return result;
 };
 
-const updateUserByAdmin = async (id, updateUserByAdminData) => {
-  // 해당 함수는 차후 admin 권한을 가진 유저에게만 허용되는 update 입니다
-  const {
-    password,
-    phone,
-    name,
-    warningCount,
-    rentalCount,
-    role,
-  } = updateUserByAdminData;
+const updateUserByAdmin = async (id, updateData) => {
+  const result = await sequelize.transaction(async (transaction) => {
+    const {
+      password,
+      phone,
+      name,
+      warningCount,
+      rentalCount,
+      role,
+      refreshToken,
+    } = updateData;
 
-  const result = await User.update({
-    password,
-    phone,
-    name,
-    warningCount,
-    rentalCount,
-    role,
-  }, {
-    where: { id },
+    const updateResult = await User.update({
+      password,
+      phone,
+      name,
+      warningCount,
+      rentalCount,
+    }, {
+      where: { id },
+      transaction,
+    });
+    await Auth.update({
+      role,
+      refreshToken,
+    }, {
+      where: { userId: id },
+      transaction,
+    });
+    return updateResult;
   });
   return result;
 };
 
-const deleteUser = async (id) => {
+const deleteUser = async (deleteBy) => {
   const result = await User.destroy({
-    where: { id },
+    where: deleteBy,
   });
   return result;
 };
@@ -168,8 +178,8 @@ const deleteUser = async (id) => {
 module.exports = {
   createUser,
   getUsers,
+  getUserById,
   getUser,
-  getUserByEmail,
   updateUser,
   updateUserByAdmin,
   deleteUser,

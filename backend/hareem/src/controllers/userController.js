@@ -21,10 +21,10 @@ const getUsers = async (ctx) => {
   }
 };
 
-const getUser = async (ctx) => {
+const getUserById = async (ctx) => {
   try {
     const { id } = ctx.params;
-    ctx.body = await userService.getUser(id);
+    ctx.body = await userService.getUserById(id);
   } catch (error) {
     ctx.throw(error);
   }
@@ -33,7 +33,7 @@ const getUser = async (ctx) => {
 const updateUser = async (ctx) => {
   try {
     const { id } = ctx.params;
-    ctx.body = await userService.updateUser(id, ctx.request.body);
+    ctx.body = await userService.updateUserByAdmin(id, ctx.request.body);
   } catch (error) {
     ctx.throw(error);
   }
@@ -48,10 +48,40 @@ const deleteUser = async (ctx) => {
   }
 };
 
+const getUserSelf = async (ctx) => {
+  try {
+    const { id } = ctx.user;
+    ctx.body = await userService.getUserById(id);
+  } catch (error) {
+    ctx.throw(error);
+  }
+};
+
+const updateUserSelf = async (ctx) => {
+  try {
+    const { id } = ctx.user;
+    ctx.body = await userService.updateUser(id, ctx.request.body);
+  } catch (error) {
+    ctx.throw(error);
+  }
+};
+
+const deleteUserSelf = async (ctx) => {
+  try {
+    const { id } = ctx.user;
+    ctx.body = await userService.deleteUser(id);
+  } catch (error) {
+    ctx.throw(error);
+  }
+};
+
 module.exports = {
   createUser,
   getUsers,
-  getUser,
+  getUserById,
   updateUser,
   deleteUser,
+  getUserSelf,
+  updateUserSelf,
+  deleteUserSelf,
 };
