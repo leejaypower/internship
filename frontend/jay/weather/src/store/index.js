@@ -1,15 +1,13 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import mutations from '@/store/mutations'
-import actions from '@/store/actions'
+import userStore from '@/store/modules/userStore'
+import alertStore from '@/store/modules/alertStore'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
-  state: {
+  modules: {
+    userStore,
+    alertStore,
   },
-  getters: {
-  },
-  mutations,
-  actions,
 })

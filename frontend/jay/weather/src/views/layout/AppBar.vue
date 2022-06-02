@@ -18,6 +18,7 @@
         v-for="link in links"
         :key="link.name"
         :to="{ path: link.path }"
+        @click="checkAuth(link.path)"
       >
         {{ link.name }}
       </v-tab>
@@ -49,6 +50,17 @@ export default {
       },
     ],
   }),
+  methods: {
+    checkAuth(link) {
+      if (link.path !== '/here-weather' && !this.$store.getters['userStore/isLogin']) {
+        this.$store.dispatch('alertStore/setAlertInfo', {
+          type: 'warning',
+          message: '로그인 후 이용가능합니다.',
+        })
+        this.$store.dispatch('alertStore/removeAlert')
+      }
+    },
+  },
 }
 </script>
 

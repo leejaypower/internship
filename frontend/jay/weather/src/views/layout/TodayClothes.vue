@@ -1,7 +1,9 @@
 <template>
   <v-col
     cols="12"
-    sm="2"
+    lg="2"
+    md="2"
+    sm="10"
   >
     <v-sheet
       rounded="lg"

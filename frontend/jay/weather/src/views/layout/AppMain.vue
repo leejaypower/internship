@@ -1,7 +1,9 @@
 <template>
   <v-col
     cols="12"
-    sm="8"
+    lg="8"
+    md="7"
+    sm="10"
   >
     <v-sheet
       min-height="70vh"
