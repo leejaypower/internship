@@ -6,4 +6,6 @@ const fakeHttp = new FakeAxios({
   baseURL,
 })
 
+fakeHttp.config.headers.Authentication = localStorage.getItem('accessToken')
+
 export default fakeHttp

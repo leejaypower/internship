@@ -5,9 +5,7 @@ import authGetters from './getters'
 const auth = {
   namespaced: true,
   state: {
-    email: '',
-    password: '',
-    token: '',
+    level: null,
   },
   getters: {
     ...authGetters,

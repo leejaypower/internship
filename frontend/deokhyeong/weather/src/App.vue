@@ -9,6 +9,9 @@
     >
       {{ clientErrorMessages }}
     </v-snackbar>
+    <v-btn @click="testSubmit">
+      비동기 테스트
+    </v-btn>
     <v-main>
       <router-view />
     </v-main>
@@ -16,7 +19,7 @@
 </template>
 
 <script>
-import error from '@/service/domain/error'
+import auth from '@/service/api/auth'
 import localstorage from '../mocks/localstorage'
 
 export default {
@@ -28,9 +31,12 @@ export default {
   created() {
     localstorage.setLocalStorageUsers()
   },
-  errorCaptured(err) {
-    error.setClientError(err.data.message, this)
-    return false
+  methods: {
+    testSubmit() {
+      auth.getUserInfo()
+        .then((res) => console.log('성공부', res))
+        .catch((err) => console.log('에러부', err))
+    },
   },
 }
 </script>

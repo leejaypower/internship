@@ -9,19 +9,22 @@
     >
       {{ cardTitle }}
     </v-card-title>
-    <v-text-field
-      v-for="(input, key) in inputs"
-      :key="key"
-      :label="input.label"
-      dense
-      outlined
-      :validate-on-blur="input.isValidateOnBlur === false ? false : true"
-      :value="input.value"
-      :rules="input.rules"
-      :type="input.type"
-      :placeholder="input.placeholder"
-      @input="$emit('onChangeInput', {inputKey: key, value: $event} )"
-    />
+    <form>
+      <v-text-field
+        v-for="(input, key) in inputs"
+        :key="key"
+        :label="input.label"
+        dense
+        outlined
+        :validate-on-blur="input.isValidateOnBlur"
+        :value="input.value"
+        :rules="input.rules"
+        :type="input.type"
+        :placeholder="input.placeholder"
+        :autocomplete="input.autocomplete"
+        @input="$emit('onChangeInput', {inputKey: key, value: $event} )"
+      />
+    </form>
     <v-btn
       color="primary"
       block
@@ -49,6 +52,7 @@ export default {
           value: '',
           rules: [],
           placeholder: '',
+          autocomplete: 'off',
           isValidateOnBlur: true,
         },
       }),

@@ -17,6 +17,10 @@ module.exports = {
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-unused-vars': 'warn',
     semi: [2, 'never'],
+    'import/extensions': ['error', 'ignorePackages', {
+      vue: 'never',
+      js: 'never',
+    }],
   },
   overrides: [
     {

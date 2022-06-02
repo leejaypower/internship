@@ -36,15 +36,15 @@
 </template>
 
 <script>
-import SubmitCardForm from '@/ui/components/SubmitCardForm.vue'
+import SubmitCardForm from '@/ui/components/SubmitCardForm'
 import { mapActions } from 'vuex'
-import StoreModuleNames from '@/constants/storeModuleNames'
 import auth from '@/service/domain/auth/validations'
-import shared from '@/service/domain/shared'
+import utils from '@/utils'
 import ruleSentences from '@/constants/ruleSentences'
-import LogoAndTitle from '../components/LogoAndTitle.vue'
+import LogoAndTitle from '@/ui/components/LogoAndTitle'
 
 export default {
+  name: 'SignUp',
   components: { SubmitCardForm, LogoAndTitle },
   data() {
     return {
@@ -53,22 +53,27 @@ export default {
           label: '이메일',
           value: '',
           rules: [(v) => auth.emailValidation(v) || ruleSentences.CORRECT_EMAIL_FORMAT],
+          isValidateOnBlur: true,
         },
         password: {
           label: '비밀번호',
           placeholder: `비밀번호: ${ruleSentences.CORRECT_PASSWORD_FORMAT}`,
           value: '',
           type: 'password',
+          autocomplete: 'off',
           rules: [(v) => auth.passwordValidaion(v) || ruleSentences.CORRECT_PASSWORD_FORMAT],
+          isValidateOnBlur: true,
         },
         comparisonPassword: {
           label: '비밀번호 확인',
           value: '',
           type: 'password',
+          autocomplete: 'off',
           rules: [
             (v) => auth.passwordValidaion(v) || ruleSentences.CORRECT_PASSWORD_FORMAT,
-            (v) => shared.isEqual(this.inputs.password.value, v) || ruleSentences.NOT_SYNC_PASSWORD,
+            (v) => utils.isEqual(this.inputs.password.value, v) || ruleSentences.NOT_SYNC_PASSWORD,
           ],
+          isValidateOnBlur: true,
         },
       },
     }
@@ -78,11 +83,11 @@ export default {
       const { email, password, comparisonPassword } = this.inputs
       return !auth.emailValidation(email.value)
       || !auth.passwordValidaion(password.value)
-      || !shared.isEqual(password.value, comparisonPassword.value)
+      || !utils.isEqual(password.value, comparisonPassword.value)
     },
   },
   methods: {
-    ...mapActions(StoreModuleNames.Auth, ['signUp']),
+    ...mapActions('auth', ['signUp']),
     onChangeInput({ inputKey, value }) {
       this.inputs[inputKey].value = value
     },

@@ -36,13 +36,13 @@
 </template>
 
 <script>
-import SubmitCardForm from '@/ui/components/SubmitCardForm.vue'
+import SubmitCardForm from '@/ui/components/SubmitCardForm'
 import { mapActions } from 'vuex'
 import auth from '@/service/domain/auth'
-import StoreModuleNames from '@/constants/storeModuleNames'
-import LogoAndTitle from '../components/LogoAndTitle.vue'
+import LogoAndTitle from '@/ui/components/LogoAndTitle'
 
 export default {
+  name: 'SignIn',
   components: { SubmitCardForm, LogoAndTitle },
   data() {
     return {
@@ -55,6 +55,7 @@ export default {
           label: '비밀번호',
           value: '',
           type: 'password',
+          autocomplete: 'off',
         },
       },
     }
@@ -68,7 +69,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(StoreModuleNames.Auth, [
+    ...mapActions('auth', [
       'signIn',
     ]),
     onChangeInput({ inputKey, value }) {
@@ -78,6 +79,10 @@ export default {
       const { email, password } = this.inputs
       const response = await this.signIn({ email: email.value, password: password.value })
       if (response.status === 200) {
+        auth.setTokens({
+          accessToken: response.data.accessToken,
+          refreshToken: response.data.refreshToken,
+        })
         this.$router.push('/')
       }
     },
