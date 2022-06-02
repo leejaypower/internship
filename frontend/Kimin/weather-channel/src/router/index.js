@@ -12,4 +12,13 @@ const router = new VueRouter({
   routes,
 })
 
+router.beforeEach(async (to, from, next) => {
+  const hasToken = localStorage.getItem('accessToken')
+  if (to.meta.authRequired && !hasToken) {
+    router.push('/')
+  } else {
+    next()
+  }
+})
+
 export default router

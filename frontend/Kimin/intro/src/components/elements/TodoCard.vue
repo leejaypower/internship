@@ -118,7 +118,6 @@ export default {
       const isEditing = this.cardDetail.title
       if (isEditing) {
         this.$store.dispatch('editItems', { item: itemSet, ID: this.cardDetail.ID })
-        console.log(itemSet)
       } else {
         this.$store.dispatch('addTodos', itemSet)
       }

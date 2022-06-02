@@ -21,27 +21,54 @@
       class="d-flex justify-space-between"
     >
       <time-box />
-      <sign-in-box />
+      <sign-in-box v-if="signInBox" />
+      <greeting-box v-if="!signInBox" />
     </v-row>
   </v-container>
 </template>
 
 <script>
-import TimeBox from './components/TimeBox.vue'
-import SignInBox from './components/SignInBox.vue'
+import TimeBox from '@/views/signInPage/components/TimeBox.vue'
+import SignInBox from '@/views/signInPage/components/SignInBox.vue'
+import GreetingBox from '@/views/signInPage/components/GreetingBox.vue'
+import logInAxios from '@/services/fakeAxios'
+import { mapActions } from 'vuex'
+import requestNewTokens from '../../services/auth/requestNewTokens'
 
 export default {
   name: 'SignInPage',
   components: {
-    TimeBox, SignInBox,
+    TimeBox, SignInBox, GreetingBox,
   },
-  mounted() {
-    this.fetchUserAccount()
+  data() {
+    return {
+      signInBox: true,
+    }
+  },
+  async mounted() {
+    await this.checkLogIn()
   },
   methods: {
-    fetchUserAccount() {
-      const userAccountDB = JSON.parse(localStorage.getItem('userAccount'))
-      this.$store.dispatch('forwardingFetchedUserAccount', userAccountDB)
+    ...mapActions([
+      'requestVerifyingToken', 'forwardingMyInfo', 'getMyInfo',
+    ]),
+    async checkLogIn() {
+      try {
+        await this.requestVerifyingToken()
+        const myInfo = await this.getMyInfo()
+        await this.forwardingMyInfo(myInfo)
+        this.signInBox = false
+      } catch {
+        try {
+          await requestNewTokens()
+          await this.requestVerifyingToken()
+          const myInfo = await this.getMyInfo()
+          await this.forwardingMyInfo(myInfo)
+          this.signInBox = false
+        } catch {
+          this.signInBox = true
+        }
+      }
     },
   },
 }

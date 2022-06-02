@@ -1,10 +1,20 @@
 /* eslint-disable */ 
 /* 긴 로직의 가독성을 올리기 위해 함수를 쪼갰고, hoisting을 활용해서 읽는 순서를 조정해주는게 의미가 있다고 생각하여 hoisting방지 Rule을 껐습니다.
 다른 코드에서도 function hoisting을 활용할 예정은 없는것같고, 이 페이지에서만 예외적으로 적용하겠습니다.*/
+import {
+  ID_MAX_LENGTH,
+  ID_MIN_LENGTH,
+  PASSWORD_MIN_LENGTH,
+  PASSWORD_MAX_LENGTH,
+  NAME_MIN_LENGTH,
+  NAME_MAX_LENGTH,
+} from '@/constant'
+
+
 const IDValidationRule = [
   (value) => skipNeverRule(value, 'ID'),
-  (value) => minLengthRule(value, 'ID', 6),
-  (value) => maxLengthRule(value, 'ID', 10),
+  (value) => minLengthRule(value, 'ID', ID_MIN_LENGTH),
+  (value) => maxLengthRule(value, 'ID', ID_MAX_LENGTH),
   (value) => blankNeverRule(value, 'ID'),
   (value) => KoreanNeverRule(value, 'ID'),
   (value) => englishEssentialRule(value, 'ID'),
@@ -13,8 +23,8 @@ const IDValidationRule = [
 
 const nameValidationRule = [
   (value) => skipNeverRule(value, 'name'),
-  (value) => minLengthRule(value, 'name', 2),
-  (value) => maxLengthRule(value, 'name', 7),
+  (value) => minLengthRule(value, 'name', NAME_MIN_LENGTH),
+  (value) => maxLengthRule(value, 'name', NAME_MAX_LENGTH),
   (value) => blankNeverStartOrFinishRule(value, 'name'),
   (value) => singleKoreanNeverRule(value, 'name'),
   (value) => englishOrKoreanEssentialRule(value, 'name'),
@@ -22,8 +32,8 @@ const nameValidationRule = [
 
 const passwordValidationRule = [
   (value) => skipNeverRule(value, 'password'),
-  (value) => minLengthRule(value, 'password', 8),
-  (value) => maxLengthRule(value, 'password', 12),
+  (value) => minLengthRule(value, 'password', PASSWORD_MIN_LENGTH),
+  (value) => maxLengthRule(value, 'password', PASSWORD_MAX_LENGTH),
   (value) => numberEssentialRule(value, 'password'),
   (value) => blankNeverRule(value, 'password'),
   (value) => KoreanNeverRule(value, 'password'),

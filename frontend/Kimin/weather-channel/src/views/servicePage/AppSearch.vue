@@ -1,15 +1,11 @@
 <template>
   <div>
-    대시보드
+    검색하기
   </div>
 </template>
 
 <script>
 export default {
-  name: 'AppDashboard',
+  name: 'AppSearch',
 }
 </script>
-
-<style scoped>
-
-</style>

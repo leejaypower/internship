@@ -2,9 +2,9 @@
   <v-card
     class="d-flex justify-end sign-in-box"
   >
-    <signUp-box
-      :show="signUpShow"
-      @succeedSignUp="signedUp"
+    <extend-box
+      :show="extendShow"
+      @succeedSignUp="copyNewAccount"
     />
     <div v-show="show">
       <v-img
@@ -38,19 +38,19 @@
       </v-card-text>
       <v-card-actions>
         <v-btn
-          v-show="signUpShow"
+          v-show="extendShow"
           icon
           color="blue lighten-2"
-          @click="signUpShow = !signUpShow"
+          @click="extendShow = !extendShow"
         >
           <v-icon>
             {{ 'mdi-chevron-right' }}
           </v-icon>
         </v-btn>
         <v-btn
-          v-show="!signUpShow"
+          v-show="!extendShow"
           color="blue lighten-2 white--text"
-          @click="signUpShow = !signUpShow"
+          @click="extendShow = !extendShow"
         >
           <span>
             see more
@@ -61,42 +61,36 @@
           :disabled="!valid"
           color="success"
           class="mr-2"
+          width="100px"
           @click="signIn"
         >
-          SignIn
+          <span v-show="!signing">SignIn</span>
+          <v-progress-circular
+            v-show="signing"
+            indeterminate
+            color="primary"
+          />
         </v-btn>
       </v-card-actions>
     </div>
-    <div class="text-center">
-      <v-snackbar
-        v-model="alarm"
-      >
-        {{ text }}
-        <template #action="{ attrs }">
-          <v-btn
-            :color="alarmColor"
-            text
-            v-bind="attrs"
-            @click="alarm = false"
-          >
-            Close
-          </v-btn>
-        </template>
-      </v-snackbar>
-    </div>
+    <div class="text-center" />
   </v-card>
 </template>
 
 <script>
-import SignUpBox from './SignUpBox.vue'
+import giveMessage from '@/utils/showSnackBar'
+import saveAuthTokens from '@/services/auth/saveAuthTokens'
+import logInAxios from '@/services/fakeAxios'
+import { mapActions } from 'vuex'
+import ExtendBox from './ExtendBox.vue'
 
 export default {
   components: {
-    SignUpBox,
+    ExtendBox,
   },
   data: () => ({
     show: true,
-    signUpShow: false,
+    extendShow: false,
     valid: true,
     ID: '',
     IDRules: [
@@ -109,38 +103,34 @@ export default {
     alarm: false,
     alarmColor: 'pink',
     text: '축하합니다. 회원가입에 성공하셨습니다.',
+    signing: false,
   }),
   methods: {
+    ...mapActions([
+      'requestVerifyingToken', 'forwardingMyInfo', 'getMyInfo', 'getTokens',
+    ]),
     signIn() {
       if (!this.$refs.form.validate()) return
-      const signInResult = this.checkAccountTrue(this.ID, this.password)
-      if (signInResult) {
-        this.giveMessage(`로그인에 성공하셨습니다. ID:${this.ID}`, 'blue')
-        this.show = false
-      } else {
-        this.text = '존재하지 않는 계정이거나 비밀번호가 일치하지 않습니다.'
-        this.giveMessage('존재하지 않는 계정이거나 비밀번호가 일치하지 않습니다.', 'red')
-      }
-      this.ID = null
-      this.password = null
+      this.signing = true
+      this.getTokens({ ID: this.ID, password: this.password })
+        .then(async (tokens) => {
+          giveMessage(`로그인에 성공하셨습니다. ID:${this.ID}`, 'blue') // TODO : 스낵바가 화면과 같이 사라짐
+          saveAuthTokens(tokens)
+          localStorage.setItem('myInfo', JSON.stringify({ ID: this.ID }))
+          const myInfo = await this.getMyInfo()
+          this.forwardingMyInfo(myInfo)
+          this.$router.push('/Home')
+        })
+        .catch(() => {
+          this.text = '존재하지 않는 계정이거나 비밀번호가 일치하지 않습니다.'
+          giveMessage('존재하지 않는 계정이거나 비밀번호가 일치하지 않습니다.', 'red')
+          this.signing = false
+        })
     },
-    signedUp(ID, password, name) {
-      this.signUpShow = false
-      this.ID = ID
-      this.password = password
-      this.giveMessage(`${name}님, 가입에 성공하셨습니다.ID:${ID}`, 'green')
-    },
-    giveMessage(text, color = 'pink') {
-      this.alarm = true
-      this.text = text
-      this.alarmColor = color
-    },
-    checkAccountTrue(inputID, inputPW) {
-      const accountSets = this.$store.getters.getUserAccount
-      if (!accountSets || !accountSets[`${inputID}`] || accountSets[`${inputID}`].password !== inputPW) {
-        return false
-      }
-      return true
+    copyNewAccount(accountInfo) {
+      this.extendShow = false
+      this.ID = accountInfo.ID
+      this.password = accountInfo.password
     },
   },
 }
