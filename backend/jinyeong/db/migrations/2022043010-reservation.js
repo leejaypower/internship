@@ -35,7 +35,7 @@ module.exports = {
       },
       reservedDate: {
         type: Sequelize.DATE,
-        allowNull: false,
+        defaultValue: Sequelize.DataTypes.NOW,
         comment: '예약 신청일',
       },
       state: {

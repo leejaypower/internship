@@ -4,7 +4,7 @@ const { Rental } = require('../db');
 const getAll = async () => {
   const rentalList = await Rental.findAll({
     order: [['createdAt', 'DESC']], // 생성일 기준 최신순 정렬
-    raw: true,
+    returning: true,
   });
   return rentalList;
 };
@@ -14,7 +14,7 @@ const getByBookId = async (query) => {
   const rentalList = await Rental.findAll({
     where: { bookId: query.bookId },
     order: [['createdAt', 'DESC']], // 생성일 기준 최신순 정렬
-    raw: true,
+    returning: true,
   });
 
   return rentalList;
@@ -25,7 +25,7 @@ const getByUserId = async (query) => {
   const rentalList = await Rental.findAll({
     where: { userId: query.userId },
     order: [['createdAt', 'DESC']], // 생성일 기준 최신순 정렬
-    raw: true,
+    returning: true,
   });
 
   return rentalList;

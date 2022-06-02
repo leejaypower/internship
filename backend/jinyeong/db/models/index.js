@@ -21,6 +21,7 @@ const sequelize = new Sequelize(
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
     dialect: process.env.DB_DIALECT,
+    timezone: process.env.DB_TIMEZONE,
     pool: {
       max: 5,
       idle: 30000,

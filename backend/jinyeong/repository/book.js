@@ -4,7 +4,7 @@ const { Book } = require('../db');
 
 // Books SELECT ALL
 const getAll = async () => {
-  const bookInfoList = await Book.findAll({ raw: true });
+  const bookInfoList = await Book.findAll({ returning: true });
   return bookInfoList;
 };
 
@@ -19,7 +19,7 @@ const getByQuery = async (query) => {
           { category: query.category },
         ],
       },
-      raw: true,
+      returning: true,
     });
 
     return bookInfoList;
@@ -33,7 +33,7 @@ const getByQuery = async (query) => {
         { category: query.category || '' },
       ],
     },
-    raw: true,
+    returning: true,
   });
 
   return bookInfoList;
@@ -41,7 +41,7 @@ const getByQuery = async (query) => {
 
 // Books SELECT ONE By ID
 const getById = async (id) => {
-  const bookInfo = await Book.findOne({ where: { id }, raw: true });
+  const bookInfo = await Book.findOne({ where: { id }, returning: true });
   return bookInfo;
 };
 

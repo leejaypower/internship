@@ -7,13 +7,16 @@ const createOne = async (inputData) => {
 
 // User 테이블의 전체 유저정보 조회
 const getAll = async () => {
-  const userInfoList = await User.findAll();
-  return userInfoList.map((userInfo) => userInfo.dataValues);
+  const userInfoList = await User.findAll({ returning: true });
+  return userInfoList;
 };
 
 // User 테이블에서 입력되는 특정 조건에 따라 유저정보 조회
 const getOneByInputData = async (inputData) => {
-  const userInfo = await User.findOne({ where: inputData });
+  const userInfo = await User.findOne({
+    where: inputData,
+    returning: true,
+  });
   return userInfo?.dataValues;
 };
 

@@ -19,8 +19,6 @@ module.exports = {
         onDelete: 'NO ACTION', // paranoid 옵션을 통해 참조하는 데이터가 삭제되었음을 표시(deletedAt)
         onUpdate: 'CASCADE',
         comment: '도서 ID',
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE',
       },
       vendorId: {
         type: Sequelize.INTEGER,
@@ -34,8 +32,6 @@ module.exports = {
         onDelete: 'NO ACTION', // paranoid 옵션을 통해 참조하는 데이터가 삭제되었음을 표시(deletedAt)
         onUpdate: 'CASCADE',
         comment: '거래처 ID',
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE',
       },
       historicalCost: {
         type: Sequelize.INTEGER,
