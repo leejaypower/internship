@@ -130,11 +130,11 @@
 <script>
 import authMixins from '@/mixins/auth'
 import {
-  idRules, pwRules, nameRules, pwCheckRulesfunc,
+  idRules, pwRules, nameRules, pwCheckRules,
 } from '@/utils/inputRules'
 import alert from '@/utils/sweetalert'
-import { idDuplicateCheckByStorage, signupFetchByStorage } from '@/apis/auth'
 import logo from '@/assets/logo.png'
+import { idDuplicateFetch, signupFetch } from '@/apis/auth'
 
 export default {
   mixins: [authMixins],
@@ -153,8 +153,9 @@ export default {
     constants: {
       SIGNUP_SUCCESS_TITLE: '회원가입 성공',
       SIGNUP_SUCCESS_TEXT: '로그인을 시도해 보세요.',
-      ID_DUPLICATE_CHECK_TITlE: '중복 체크',
-      ID_DUPLICATE_CHECK_TEXT: '아이디 중복 체크를 해주세요.',
+      SIGNUP_FAIL_TITLE: '회원가입 실패',
+      SIGNUP_FAIL_TEXT: '내용을 다시 확인해 주세요.',
+      ID_DUPLICATE_ERROR_TITLE: '중복 체크 에러',
     },
   }),
   computed: {
@@ -162,10 +163,10 @@ export default {
       return this.isIdCheck || !this.id || this.id.length < 5
     },
     pwCheckRules() {
-      return pwCheckRulesfunc(this.pw)
+      return pwCheckRules(this.pw)
     },
     isSignUpButtonDisabeld() {
-      return !this.valid || this.loading
+      return !this.valid || this.loading || !this.isIdCheck
     },
     idErrorMessages() {
       return this.isIdCheck === false ? '이미 사용중인 아이디' : ''
@@ -175,30 +176,38 @@ export default {
     },
   },
   methods: {
-    idDuplicateCheck() {
+    async idDuplicateCheck() {
       this.loading = true
-      if (!idDuplicateCheckByStorage(this.id)) {
+      try {
+        const isIdCheckResult = await idDuplicateFetch(this.id)
+        if (isIdCheckResult) {
+          this.isIdCheck = true
+          this.loading = false
+          return
+        }
         this.isIdCheck = false
         this.loading = false
-        return
+      } catch (error) {
+        alert.error(this.constants.ID_DUPLICATE_ERROR_TITLE, error.message, 'top')
+      } finally {
+        this.loading = false
       }
-      this.isIdCheck = true
-      this.loading = false
     },
-    onSubmit() {
-      if (!this.isIdCheck) {
-        alert.error(this.constants.ID_DUPLICATE_CHECK_TITlE, this.constants.ID_DUPLICATE_CHECK_TEXT)
-        return
-      }
+    async onSubmit() {
       this.loading = true
-      signupFetchByStorage({ id: this.id, pw: this.pw, name: this.name })
-      this.loading = false
-      alert.success(
-        this.constants.SIGNUP_SUCCESS_TITLE,
-        this.constants.SIGNUP_SUCCESS_TEXT,
-        this.alertPositioin,
-      )
-      this.$router.push('login')
+      try {
+        await signupFetch({ id: this.id, pw: this.pw, name: this.name })
+        alert.success(
+          this.constants.SIGNUP_SUCCESS_TITLE,
+          this.constants.SIGNUP_SUCCESS_TEXT,
+          'top',
+        )
+        this.$router.push('login')
+      } catch (error) {
+        alert.error(this.constants.SIGNUP_FAIL_TITLE, this.constants.SIGNUP_FAIL_TEXT, 'top')
+      } finally {
+        this.loading = false
+      }
     },
   },
 }

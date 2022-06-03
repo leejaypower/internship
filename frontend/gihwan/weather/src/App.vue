@@ -5,12 +5,18 @@
       app
       color="primary"
     >
-      <v-btn
-        v-if="isLogin"
-        @click="logout"
-      >
-        로그아웃
-      </v-btn>
+      <template v-if="isLogin">
+        <router-link to="/auth">
+          <v-btn @click="logout">
+            로그아웃
+          </v-btn>
+        </router-link>
+        <router-link to="/user">
+          <v-btn>
+            내 정보 수정
+          </v-btn>
+        </router-link>
+      </template>
       <v-btn
         v-else
         @click="goLoginPage"
@@ -25,30 +31,32 @@
 </template>
 
 <script>
+import tokenCheck from '@/utils/interceptor'
+import fakeAxios from './utils/fakeAxios'
 
 export default {
   name: 'App',
   computed: {
     isLogin() {
-      return this.$store.getters['user/isSuccess']
+      return this.$store.getters['user/isLoginSuccess']
     },
     isAuth() {
       return this.$route.path.includes('auth')
     },
   },
-  mounted() {
+  async mounted() {
     const loginInfo = localStorage.getItem('loginInfo') || sessionStorage.getItem('loginInfo')
     if (loginInfo) {
-      this.$store.dispatch('user/autoLogin', JSON.parse(loginInfo))
+      await this.$store.dispatch('user/autoLogin', JSON.parse(loginInfo))
     }
+    fakeAxios.setInterceptor(tokenCheck)
   },
   methods: {
-    logout() {
-      this.$store.dispatch('user/logout')
-      this.goLoginPage()
-    },
     goLoginPage() {
       this.$router.push('/auth/login')
+    },
+    async logout() {
+      await this.$store.dispatch('user/logout')
     },
   },
 }

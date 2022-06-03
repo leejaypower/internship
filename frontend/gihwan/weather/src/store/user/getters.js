@@ -1,11 +1,20 @@
 export default {
+  userIdx(state) {
+    return state.userInfo.idx
+  },
   userName(state) {
     return state.userInfo.name
   },
-  isSuccess(state) {
+  isLoginSuccess(state) {
     return state.loginResult.isSuccess
   },
-  failMessage(state) {
+  loginFailMessage(state) {
     return state.loginResult.failMessage
+  },
+  isChangeNameSuccess(state) {
+    return state.changeNameResult.isSuccess
+  },
+  changeNameFailMessage(state) {
+    return state.changeNameResult.failMessage
   },
 }

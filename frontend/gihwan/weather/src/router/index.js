@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import { AuthHub, LoginView, SignupView } from '@/views/auth'
+import { UserHub, UserInfo } from '@/views/user'
 
 Vue.use(VueRouter)
 
@@ -20,6 +21,19 @@ const routes = [
         path: 'signup',
         name: 'signup',
         component: SignupView,
+      },
+    ],
+  },
+  {
+    path: '/user',
+    name: 'user',
+    redirect: { name: 'edit' },
+    component: UserHub,
+    children: [
+      {
+        path: 'edit',
+        name: 'edit',
+        component: UserInfo,
       },
     ],
   },
@@ -54,6 +68,8 @@ router.beforeEach((to, from, next) => {
   } else if (!isLogin) {
     if (to.path === '/') {
       next('/auth/login')
+    } else if (to.path.includes('user')) {
+      next('/auth')
     } else {
       next()
     }

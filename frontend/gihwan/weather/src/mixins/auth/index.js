@@ -5,7 +5,7 @@ const authMixins = {
     responsiveInputCols() {
       return this.$vuetify.breakpoint.mobile ? MOBILE_INPUT_WIDTH_RATIO : DESKTOP_INPUT_WIDTH_RATIO
     },
-    alertPositioin() {
+    alertPosition() {
       return this.$vuetify.breakpoint.mobile ? 'top' : 'top-end'
     },
   },
