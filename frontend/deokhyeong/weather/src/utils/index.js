@@ -1,11 +1,13 @@
 import isExpiredTime from './isExpiredTime'
-import validations from './validations'
 import delay from './delay'
 import deepClone from './deepClone'
+import isShallowEqual from './isShallowEqual'
+import catchAsync from './catchAsync'
 
 export default {
-  ...validations,
   isExpiredTime,
   delay,
   deepClone,
+  isShallowEqual,
+  catchAsync,
 }

@@ -1,5 +1,15 @@
-const token = (state) => state.token
+const userId = (state) => state.userId
+const email = (state) => state.email
+const password = (state) => state.password
+const expire = (state) => state.expire
+const refreshExpire = (state) => state.refreshExpire
+const level = (state) => state.level
 
 export default {
-  token,
+  userId,
+  email,
+  password,
+  expire,
+  refreshExpire,
+  level,
 }

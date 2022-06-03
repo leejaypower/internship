@@ -1,42 +1,36 @@
 <template>
   <v-app>
-    <v-snackbar
-      v-model="isSnackbarError"
-      color="error"
-      absolute
-      top
-      timeout="1000"
-    >
-      {{ clientErrorMessages }}
-    </v-snackbar>
-    <v-btn @click="testSubmit">
-      비동기 테스트
-    </v-btn>
-    <v-main>
+    <toast-message />
+    <v-main v-if="isAppLoading">
       <router-view />
     </v-main>
   </v-app>
 </template>
 
 <script>
-import auth from '@/service/api/auth'
-import localstorage from '../mocks/localstorage'
+import { mapActions } from 'vuex'
+import mockUserInit from '../mocks/mockUsersInit'
+import auth from './service/domain/auth'
+import ToastMessage from './ui/components/ToastMessage'
 
 export default {
   name: 'App',
-  data: () => ({
-    isSnackbarError: false,
-    clientErrorMessages: '',
-  }),
-  created() {
-    localstorage.setLocalStorageUsers()
+  components: { ToastMessage },
+  data() {
+    return {
+      isAppLoading: false,
+    }
+  },
+  async created() {
+    mockUserInit()
+    const { accessToken } = auth.getTokens()
+    if (accessToken) {
+      await this.getUserInfo()
+    }
+    this.isAppLoading = true
   },
   methods: {
-    testSubmit() {
-      auth.getUserInfo()
-        .then((res) => console.log('성공부', res))
-        .catch((err) => console.log('에러부', err))
-    },
+    ...mapActions('auth', ['getUserInfo']),
   },
 }
 </script>

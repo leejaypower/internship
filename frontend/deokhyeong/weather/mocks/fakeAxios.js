@@ -1,5 +1,5 @@
 /* eslint-disable class-methods-use-this */
-import localstorage from './localstorage'
+import fakeServer from './fakeServer'
 
 class FakeAxios {
   constructor({ baseURL }) {
@@ -21,7 +21,7 @@ class FakeAxios {
       console.log('get 요청=>', this.config)
       let response
       if (endPoint === '/auth/get-user') {
-        response = await localstorage.fetchGetUserInfo(this.config.headers)
+        response = await fakeServer.fetchGetUserInfo(this.config.headers)
       }
 
       return response
@@ -45,19 +45,19 @@ class FakeAxios {
 
       let response
       if (endPoint === '/auth/login') {
-        response = await localstorage.fetchSignIn(this.config.headers, body)
+        response = await fakeServer.fetchSignIn(this.config.headers, body)
       }
       if (endPoint === '/auth/sign-up') {
-        response = await localstorage.fetchSignUp(this.config.headers, body)
+        response = await fakeServer.fetchSignUp(this.config.headers, body)
       }
       if (endPoint === '/auth/refresh') {
-        response = await localstorage.fetchRefreshSignIn(this.config.headers, body)
+        response = await fakeServer.fetchRefreshSignIn(this.config.headers, body)
       }
       if (endPoint === '/auth/repair') {
-        response = await localstorage.fetchRepairUserInfo(this.config.headers, body)
+        response = await fakeServer.patchRepairUserInfo(this.config.headers, body)
       }
       if (endPoint === '/auth/logout') {
-        response = await localstorage.fetchLogout(this.config.headers, body)
+        response = await fakeServer.fetchLogout(this.config.headers, body)
       }
 
       console.log('post 요청', this.config)
