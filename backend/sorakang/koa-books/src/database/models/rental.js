@@ -26,13 +26,17 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         comment: '해당 컬럼은 해당 도서가 연체된 일수를 나타냅니다. ',
       },
+      isExtend: {
+        type: DataTypes.INTEGER,
+        comment: '해당 컬럼은 대출기간 연장 가능 횟수를 나타냅니다. ',
+      },
     },
   );
   Rental.associate = (models) => {
     Rental.belongsTo(models.User, {
       foreignKey: 'userId',
       onDelete: 'cascade',
-      sourceKey: 'id',
+      targetKey: 'id',
       allowNull: false,
       comment: '해당 컬럼은 해당 도서를 대여한 사용자 아이디를 나타냅니다. ',
     });
@@ -40,7 +44,7 @@ module.exports = (sequelize, DataTypes) => {
     Rental.belongsTo(models.BookSerial, {
       foreignKey: 'bookId',
       onDelete: 'cascade',
-      sourceKey: 'id',
+      targetKey: 'id',
       allowNull: false,
       comment: '해당 컬럼은 대여한 도서의 시리얼넘버를 나타냅니다. ',
     });

@@ -10,6 +10,6 @@ userRouter.post('/', hashMiddleware.hash, userController.createUser);
 userRouter.patch('/:userId', authMiddleware.verifyToken('user', 'admin'), hashMiddleware.hash, userController.updateUser);
 userRouter.delete('/:userId', authMiddleware.verifyToken('user', 'admin'), userController.deleteUser);
 userRouter.post('/signin', userController.signIn);
-userRouter.post('/sigout', authMiddleware.verifyToken('user', 'admin'), userController.signOut);
+userRouter.post('/signout', authMiddleware.verifyToken('user', 'admin'), userController.signOut);
 
 module.exports = userRouter;

@@ -35,7 +35,7 @@ module.exports = (sequelize, DataTypes) => {
         comment: '해당 컬럼은 출판사 정보를 나타냅니다. ',
         allowNull: false,
       },
-      pubDate: {
+      publicationDate: {
         type: DataTypes.DATE,
         comment: '해당 컬럼은 도서의 출간일을 나타냅니다.',
         allowNull: false,
@@ -65,7 +65,7 @@ module.exports = (sequelize, DataTypes) => {
 
     Book.hasMany(models.BookSerial, {
       foreignKey: 'bookId',
-      onDelete: 'cascade',
+      sourceKey: 'id',
       allowNull: false,
       comment: '해당 컬럼은 해당 시리얼 넘버의 책 ID를 나타냅니다. ',
     });
@@ -75,6 +75,14 @@ module.exports = (sequelize, DataTypes) => {
       onDelete: 'cascade',
       allowNull: false,
       comment: '해당 컬럼은 해당 리뷰에 대응되는 책 ID를 나타냅니다. ',
+    });
+
+    Book.hasMany(models.Reservation, {
+      foreignKey: 'bookId',
+      onDelete: 'cascade',
+      sourceKey: 'id',
+      allowNull: false,
+      comment: '해당 컬럼은 예약한 도서의 id를 나타냅니다. ',
     });
   };
   return Book;

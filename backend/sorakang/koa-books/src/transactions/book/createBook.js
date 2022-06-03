@@ -1,20 +1,18 @@
 const { sequelize } = require('../../database/models');
+
 const { bookRepository, bookSerialRepository } = require('../../repositories');
 
 const createBook = async (bookData) => {
-  const t = await sequelize.transaction();
   try {
-    const book = await bookRepository.createBook(bookData, t);
-    const serial = await bookSerialRepository.createBookSerial(book[0].dataValues, t);
+    const result = await sequelize.transaction(async (t) => {
+      const { bookInfo, _ } = await bookRepository.createBook(bookData, t);
 
-    if (!book || !serial) {
-      // error handling
-    }
+      const bookSerial = await bookSerialRepository.createBookSerial(bookInfo, t);
 
-    await t.commit();
-    return { message: 'successfully created' };
+      return { bookInfo, bookSerial };
+    });
+    return result;
   } catch (err) {
-    await t.rollback();
     throw new Error(err);
   }
 };

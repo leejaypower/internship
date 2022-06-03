@@ -9,11 +9,11 @@ module.exports = (sequelize, DataTypes) => {
         autoIncrement: true,
         primaryKey: true,
       },
-      reservationDate: {
-        type: DataTypes.DATE,
+      isAvailable: {
+        type: DataTypes.BOOLEAN,
         allowNull: false,
-        defaultValue: new Date(),
-        comment: '해당 컬럼은 예약 날짜를 나타냅니다.',
+        defaultValue: false,
+        comment: '해당 컬럼은 예약 가능 유무를 나타냅니다.',
       },
 
     },
@@ -22,18 +22,18 @@ module.exports = (sequelize, DataTypes) => {
   Reservation.associate = (models) => {
     Reservation.belongsTo(models.User, {
       foreignKey: 'userId',
-      sourceKey: 'id',
+      targetKey: 'id',
       allowNull: false,
       onDelete: 'cascade',
       comment: '해당 컬럼은 해당 도서를 얘약한 사용자의 아이디를 나타냅니다. ',
     });
 
-    Reservation.belongsTo(models.BookSerial, {
+    Reservation.belongsTo(models.Book, {
       foreignKey: 'bookId',
-      sourceKey: 'id',
+      targetKey: 'id',
       allowNull: false,
       onDelete: 'cascade',
-      comment: '해당 컬럼은 예약한 도서의 시리얼넘버를 나타냅니다. ',
+      comment: '해당 컬럼은 예약한 도서의 id를 나타냅니다. ',
     });
   };
 

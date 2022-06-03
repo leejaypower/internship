@@ -26,7 +26,7 @@ async function getBookDataApi(genre, display) {
       isbn: book.isbn,
       content: book.description,
       publisher: book.publisher,
-      pubDate: book.pubdate,
+      publicationDate: book.pubdate,
       thumbnail: book.image,
       category: 'Horror',
       bookLocation: undefined,

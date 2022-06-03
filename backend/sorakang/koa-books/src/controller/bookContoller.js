@@ -1,6 +1,6 @@
 const { bookService } = require('../services');
 
-const getBook = async (ctx) => {
+const getAllBook = async (ctx) => {
   try {
     // 입력 값에 대한 Validation이 필요함. 타입에 대한 validation , err -> 해당 주차에서 진행
     const {
@@ -11,7 +11,7 @@ const getBook = async (ctx) => {
     const dateCursor = new Date(Number(cursorArray[0]));
     const bookId = Number(cursorArray[1]);
 
-    ctx.body = await bookService.getBook(Number(limit), dateCursor, bookId, search);
+    ctx.body = await bookService.getAllBook(Number(limit), dateCursor, bookId, search);
   } catch (err) {
     throw new Error(err); // 임시 error handling
   }
@@ -34,12 +34,10 @@ const getSingleBook = async (ctx) => {
 };
 
 const createBook = async (ctx) => {
-  // 입력 값에 대한 Validation이 필요함. 타입에 대한 validation , err -> 해당 주차에서 진행
-
   try {
     const { bookList } = ctx.request.body;
 
-    if (!bookList.length) { /* error handling 필요 */ }
+    if (!bookList?.length === 0) { /* error handling 필요 */ }
 
     const body = await bookService.createBook(bookList);
 
@@ -55,7 +53,7 @@ const updateBook = async (ctx) => {
     const { bookId } = ctx.params;
 
     if (!bookId || !bookInfo) {
-      throw new Error(404, 'No Found');
+      throw new Error(404, 'Invalid request body or query');
     }
 
     const { state, message } = await bookService.updateBook(bookId, bookInfo);
@@ -69,15 +67,10 @@ const updateBook = async (ctx) => {
 
 const deleteBook = async (ctx) => {
   try {
-    const { bookId } = ctx.params;
+    const idList = ctx.request.body.bookIdList;
 
-    const idList = [];
-    if (!ctx.request.body) {
-      idList.push(...ctx.request.body.bookIdList);
-    } else if (bookId) {
-      idList.push(bookId);
-    } else {
-      throw new Error(400, 'Invalid request body or query'); // 임시 error handling
+    if (!idList) {
+      throw new Error(404, 'Invalid request body ');
     }
 
     const result = await bookService.deleteBook(idList);
@@ -91,6 +84,26 @@ const deleteBook = async (ctx) => {
   }
 };
 
+const deleteSingleBook = async (ctx) => {
+  try {
+    const { bookId } = ctx.params;
+
+    if (!bookId) {
+      throw new Error(404, 'Invalid request params ');
+    }
+
+    const result = await bookService.deleteSingleBook(bookId);
+
+    if (result === 0) {
+      throw new Error(404, 'Not Found');
+    }
+
+    ctx.body = { message: 'successfully deleted' };
+  } catch (err) {
+    throw new Error(err.message);/// 임시 error handling
+  }
+};
+
 module.exports = {
-  getBook, getSingleBook, createBook, updateBook, deleteBook,
+  getAllBook, getSingleBook, createBook, updateBook, deleteBook, deleteSingleBook,
 };

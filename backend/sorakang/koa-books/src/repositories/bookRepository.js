@@ -1,22 +1,25 @@
 const { Op } = require('sequelize');
 const { Book } = require('../database/models');
 
-const getBook = async (limit, cursor, bookId, search) => {
-  //  pubData기준으로 정렬하고 cursor 기반 pagenation, 검색조회
+const getAllBook = async (limit, cursor, bookId, search) => {
+  //  publicationDate 기준으로 정렬하고 cursor 기반 pagenation, 검색조회
   try {
     const bookList = await Book.findAll({
       limit,
       where: {
+        title: {
+          [Op.like]: `%${search}%`,
+        },
         [Op.or]: [
           {
-            pubdate: {
+            publicationDate: {
               [Op.lt]: cursor,
             },
           },
           {
             [Op.and]: [
               {
-                pubdate: {
+                publicationDate: {
                   [Op.eq]: cursor,
                 },
               },
@@ -29,15 +32,14 @@ const getBook = async (limit, cursor, bookId, search) => {
           },
 
         ],
-        title: {
-          [Op.like]: `%${search}%`,
-        },
+
       },
-      order: [['pubdate', 'DESC'], ['id', 'ASC']],
+      order: [['publicationDate', 'DESC'], ['id', 'ASC']],
     });
 
     return bookList;
   } catch (err) {
+    console.error(err);
     throw new Error(err); // 임시 error handling
   }
 };
@@ -48,33 +50,33 @@ const getSingleBook = async (bookId) => {
       where: {
         id: bookId,
       },
+      raw: true,
     });
-
     return book;
   } catch (err) {
+    console.error(err);
     throw new Error(err); // 임시 error handling
   }
 };
 
 const createBook = async (book, t) => {
-  // ? 책 등록의 경우 무조건 book의 시리얼 넘버와 같이 작업이 되어야 하는데,
-  // ? 이 코드와 Transaction 부분을 따로 만들어 놓을 필요가 있을까..?
-  // ?그냥 여기서 한번에 transaction 처리를 하는게 나을까 ? => bookSerial과 경계가 모호함
   try {
     const {
-      title, authors, isbn, content, publisher, pubdate, thumbnail, category, bookLocation,
+      title, authors, isbn, content, publisher, publicationDate, thumbnail, category, bookLocation,
     } = book;
-    const bookInfo = await Book.findOrCreate({
+    const [bookInfo, isCreated] = await Book.findOrCreate({
       where: {
         isbn,
       },
       defaults: {
-        title, authors, isbn, content, publisher, pubdate, thumbnail, category, bookLocation,
+        title, authors, isbn, content, publisher, publicationDate, thumbnail, category, bookLocation,
       },
       t,
+      raw: true,
     });
-    return bookInfo;
+    return { bookInfo, isCreated };
   } catch (err) {
+    console.error(err);
     throw new Error(err.message);// 임시 error handling
   }
 };
@@ -95,13 +97,24 @@ const updateBook = async (bookId, bookInfo) => {
 
 const deleteBook = async (bookIdList) => {
   try {
-    const result = await Book.destroy({ where: { id: [...bookIdList] } });
-    return result;
+    const deletedCount = await Book.destroy({ where: { id: [...bookIdList] } });
+    return deletedCount;
   } catch (err) {
+    console.log(err);
+    throw new Error(err); // 임시 error handling
+  }
+};
+
+const deleteSingleBook = async (bookId) => {
+  try {
+    const deletedCount = await Book.destroy({ where: { id: bookId } });
+    return deletedCount;
+  } catch (err) {
+    console.error(err);
     throw new Error(err); // 임시 error handling
   }
 };
 
 module.exports = {
-  getBook, getSingleBook, createBook, updateBook, deleteBook,
+  getAllBook, getSingleBook, createBook, updateBook, deleteBook, deleteSingleBook,
 };
