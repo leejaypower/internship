@@ -34,7 +34,7 @@ services:
       - '8092:8092'
       - '8093:8093'
     depends_on:
-      - zookeeper
+      - internship-zookeeper
     environment:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2182
       KAFKA_LISTENERS: INTERNAL://kafka:8092,EXTERNAL://kafka:8093
