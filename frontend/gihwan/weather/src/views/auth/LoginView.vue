@@ -130,7 +130,7 @@ export default {
     },
   }),
   computed: {
-    ...mapGetters('user', ['userName', 'isSuccess', 'failMessage']),
+    ...mapGetters('user', ['userName', 'isLoginSuccess', 'loginFailMessage']),
     isButtonDisabeld() {
       return !this.valid || this.loading
     },
@@ -140,20 +140,20 @@ export default {
   },
   methods: {
     ...mapActions('user', ['login']),
-    onSubmit() {
+    async onSubmit() {
       if (this.failUserReTry) {
         alert.warning(this.constants.RE_LOGIN_TRY_TITLE, this.constants.RE_LOGIN_TRY_TEXT)
         return
       }
       this.loading = true
       this.updateIdAndPasswordByUserInput(this.id, this.pw)
-      this.login({ id: this.id, pw: this.pw, autoLogin: this.autoLogin })
+      await this.login({ id: this.id, pw: this.pw, autoLogin: this.autoLogin })
       this.loading = false
-      if (this.isSuccess) {
+      if (this.isLoginSuccess) {
         alert.success(this.constants.LOGIN_SUCCESS_TITLE, `${this.userName}님 환영합니다.`, this.alertPositioin)
         this.$router.push('/')
       } else {
-        alert.error(this.constants.LOGIN_FAIL_TITLE, this.failMessage)
+        alert.error(this.constants.LOGIN_FAIL_TITLE, this.loginFailMessage)
       }
     },
     updateIdAndPasswordByUserInput(id, pw) {

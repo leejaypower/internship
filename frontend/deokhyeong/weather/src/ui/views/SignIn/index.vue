@@ -77,7 +77,9 @@ export default {
     },
     async onSubmitCardForm() {
       const { email, password } = this.inputs
-      const response = await this.signIn({ email: email.value, password: password.value })
+      const response = await this.signIn(
+        { email: email.value, password: password.value },
+      )
       if (response.status === 200) {
         auth.setTokens({
           accessToken: response.data.accessToken,

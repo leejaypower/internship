@@ -1,31 +1,18 @@
 <template>
   <div>
-    <v-btn @click="onClickLogout">
-      로그아웃 테스트
-    </v-btn>
+    홈페이지
+    <bottom-navigation />
   </div>
 </template>
 
 <script>
-import auth from '@/service/api/auth'
+import BottomNavigation from '@/ui/components/layout/BottomNavigation'
 
 export default {
   name: 'MainHome',
-  computed: {
-  },
-  created() {
-  },
-  methods: {
-    async onClickLogout() {
-      const response = await auth.logout()
-      if (response.status === 200) {
-        localStorage.removeItem('accessToken')
-        localStorage.removeItem('refreshToken')
+  components: { BottomNavigation },
 
-        this.$router.push('/sign-in')
-      }
-    },
-  },
+  methods: {},
 }
 </script>
 

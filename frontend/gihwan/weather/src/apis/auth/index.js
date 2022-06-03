@@ -1,76 +1,35 @@
-import axios from 'axios'
+import fakeAxios from '@/utils/fakeAxios'
 
-const SERVER_URL = '127.234.23.1' // 임의의 주소
-const END_POINT = '/auth'
+const END_POINT = 'auth'
 
-export const loginFetchByAxios = async (loginData) => {
-  try {
-    const loginResult = await axios.post(`${SERVER_URL + END_POINT}/login`, loginData)
-    return loginResult
-  } catch (error) {
-    return error
-  }
+/**
+ * 서버에게 로그인 요청을 하는 함수
+ * @param {object} data {id: string, pw: string}
+ * @returns 실패 시 에러 문구, 성공 시 유저 정보와 토큰 정보
+ */
+export const loginFetch = (data) => {
+  const result = fakeAxios.post(`${END_POINT}/login`, data)
+  return result
 }
 
 /**
- * DB에서 아이디 값에 맞는 데이터를 찾는 함수
- * @param {Array} DB user정보가 들어있는 DB
- * @param {String} id 찾고자하는 아이디 값
- * @returns 있으면 데이터 반환 {id:string, pw: string, name: string}, 없으면 false
+ * 서버에게 아이디 중복 체크를 요청하는 함수
+ * @param {string} id 체크할 아이디 값
+ * @returns 중복된 아이디가 있으면 true, 없으면 false
  */
-const findIdByDB = (DB, id) => {
-  const result = DB.filter((userInfo) => userInfo.id === id)[0]
-  if (result) return result
-  return false
+export const idDuplicateFetch = (id) => {
+  const result = fakeAxios.post(`${END_POINT}/idDuplicate`, id)
+  return result
 }
 
 /**
- * DB에서 찾은 아이디 값의 비밀번호와 사용자가 입력한 비밀번호를 대조하는 함수
- * @param {String} pwOfFindIdByDB DB에서 찾은 아이디 값의 비밀번호
- * @param {String} pwOfUserInput 사용자가 입력한 비밀번호
- * @returns 맞으면 true, 틀리면 false
+ * 서버에게 회원가입을 요청하는 함수
+ * @param {object} data { id: string, pw: string, name: string }
+ * @returns 성공 시 성공 문구
  */
-const comparePw = (pwOfFindIdByDB, pwOfUserInput) => {
-  const result = pwOfFindIdByDB === pwOfUserInput
-  if (result) return true
-  return false
-}
-
-export const loginFetchByStorage = (loginData) => {
-  const { id, pw } = loginData
-  const DB = JSON.parse(localStorage.getItem('user'))
-
-  if (!DB) return { isSuccess: false, failMessage: '존재하지 않는 아이디입니다.' }
-
-  const findIdByDBResult = findIdByDB(DB, id)
-  if (!findIdByDBResult) {
-    return { isSuccess: false, failMessage: '존재하지 않는 아이디입니다.' }
-  }
-
-  const comparePwResult = comparePw(findIdByDBResult.pw, pw)
-  if (!comparePwResult) {
-    return { isSuccess: false, failMessage: '비밀번호를 다시 확인해 주세요.' }
-  }
-
-  return { isSuccess: true, id, name: findIdByDBResult.name }
-}
-
-export const idDuplicateCheckByAxios = async (id) => {
-  try {
-    const signupResult = await axios.post(`${SERVER_URL + END_POINT}/idCheck`, id)
-    return signupResult
-  } catch (error) {
-    return error
-  }
-}
-
-export const signupFetchByAxios = async (signupData) => {
-  try {
-    const signupResult = await axios.post(`${SERVER_URL + END_POINT}/signup`, signupData)
-    return signupResult
-  } catch (error) {
-    return error
-  }
+export const signupFetch = (data) => {
+  const result = fakeAxios.post(`${END_POINT}/signup`, data)
+  return result
 }
 
 export const idDuplicateCheckByStorage = (id) => {

@@ -22,6 +22,7 @@
         :type="input.type"
         :placeholder="input.placeholder"
         :autocomplete="input.autocomplete"
+        :disabled="input.disabled"
         @input="$emit('onChangeInput', {inputKey: key, value: $event} )"
       />
     </form>
@@ -54,6 +55,7 @@ export default {
           placeholder: '',
           autocomplete: 'off',
           isValidateOnBlur: true,
+          disabled: false,
         },
       }),
     },

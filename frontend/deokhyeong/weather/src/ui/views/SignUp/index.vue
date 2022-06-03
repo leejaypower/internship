@@ -43,6 +43,8 @@ import utils from '@/utils'
 import ruleSentences from '@/constants/ruleSentences'
 import LogoAndTitle from '@/ui/components/LogoAndTitle'
 
+const { CORRECT_EMAIL_FORMAT, CORRECT_PASSWORD_FORMAT, NOT_SYNC_PASSWORD } = ruleSentences
+
 export default {
   name: 'SignUp',
   components: { SubmitCardForm, LogoAndTitle },
@@ -52,17 +54,15 @@ export default {
         email: {
           label: '이메일',
           value: '',
-          rules: [(v) => auth.emailValidation(v) || ruleSentences.CORRECT_EMAIL_FORMAT],
-          isValidateOnBlur: true,
+          rules: [(v) => auth.emailValidation(v) || CORRECT_EMAIL_FORMAT],
         },
         password: {
           label: '비밀번호',
-          placeholder: `비밀번호: ${ruleSentences.CORRECT_PASSWORD_FORMAT}`,
+          placeholder: `비밀번호: ${CORRECT_PASSWORD_FORMAT}`,
           value: '',
           type: 'password',
           autocomplete: 'off',
-          rules: [(v) => auth.passwordValidaion(v) || ruleSentences.CORRECT_PASSWORD_FORMAT],
-          isValidateOnBlur: true,
+          rules: [(v) => auth.passwordValidaion(v) || CORRECT_PASSWORD_FORMAT],
         },
         comparisonPassword: {
           label: '비밀번호 확인',
@@ -70,8 +70,8 @@ export default {
           type: 'password',
           autocomplete: 'off',
           rules: [
-            (v) => auth.passwordValidaion(v) || ruleSentences.CORRECT_PASSWORD_FORMAT,
-            (v) => utils.isEqual(this.inputs.password.value, v) || ruleSentences.NOT_SYNC_PASSWORD,
+            (v) => auth.passwordValidaion(v) || CORRECT_PASSWORD_FORMAT,
+            (v) => utils.isShallowEqual(this.inputs.password.value, v) || NOT_SYNC_PASSWORD,
           ],
           isValidateOnBlur: true,
         },
@@ -83,7 +83,7 @@ export default {
       const { email, password, comparisonPassword } = this.inputs
       return !auth.emailValidation(email.value)
       || !auth.passwordValidaion(password.value)
-      || !utils.isEqual(password.value, comparisonPassword.value)
+      || !utils.isShallowEqual(password.value, comparisonPassword.value)
     },
   },
   methods: {
@@ -93,7 +93,9 @@ export default {
     },
     async onSubmitCardForm() {
       const { email, password } = this.inputs
-      const response = await this.signUp({ email: email.value, password: password.value })
+      const response = await this.signUp(
+        { email: email.value, password: password.value },
+      )
       if (response.status === 200) {
         this.$router.push('/sign-in')
       }
