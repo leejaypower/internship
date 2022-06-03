@@ -21,7 +21,7 @@ services:
     ports:
       - '3181:3181'
     environment:
-      ZOOKEEPER_CLIENT_PORT: 3181
+      ZOOKEEPER_CLIENT_PORT: 2182
     volumes:
       - internship-zk-data:/var/lib/zookeeper/data
       - internship-zk-log:/var/lib/zookeeper/log
