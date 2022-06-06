@@ -13,12 +13,12 @@
         class="btn-padding"
         v-on="on"
       >
-        회원가입
+        내 정보 수정
       </v-btn>
     </template>
     <v-card>
       <v-card-title>
-        <span class="text-h5">회원 가입</span>
+        <span class="text-h5">내 정보 수정</span>
       </v-card-title>
       <v-card-text>
         <v-form
@@ -32,53 +32,36 @@
                 cols="12"
               >
                 <v-text-field
-                  v-model="user.name"
+                  v-model="user.password"
+                  :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+                  :type="show1 ? 'text' : 'password'"
+                  name="input-10-2"
+                  class="input-group--focused"
                   color="teal"
-                  :rules="registerNameRules"
-                  label="이름"
+                  label="현재 비밀번호"
+                  :rules="registerPasswordRules"
+                  persistent-hint
                   required
                   clearable
+                  @click:append="show1 = !show1"
                 />
-              </v-col>
-              <v-col cols="12">
-                <v-text-field
-                  ref="idform"
-                  v-model="user.id"
-                  color="teal"
-                  :rules="registerIdRules"
-                  label="아이디(이메일 형식)"
-                  required
-                  clearable
-                />
-                <v-card-actions>
-                  <v-spacer />
-                  <v-btn
-                    color="blue darken-1"
-                    text
-                    class="btn-padding"
-                    :disabled="idValidate"
-                    @click="checkId(user.id)"
-                  >
-                    아이디 중복검사
-                  </v-btn>
-                </v-card-actions>
               </v-col>
               <v-col
                 cols="12"
               >
                 <v-text-field
-                  v-model="user.password"
-                  :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
-                  :type="show ? 'text' : 'password'"
+                  v-model="user.changedPassword"
+                  :append-icon="show2 ? 'mdi-eye' : 'mdi-eye-off'"
+                  :type="show2 ? 'text' : 'password'"
                   name="input-10-2"
                   class="input-group--focused"
                   color="teal"
-                  label="비밀번호"
+                  label="비밀번호 변경"
                   :rules="registerPasswordRules"
                   persistent-hint
                   required
                   clearable
-                  @click:append="show = !show"
+                  @click:append="show2 = !show2"
                 />
               </v-col>
               <v-col cols="12">
@@ -86,7 +69,7 @@
                   v-model="confirmedPassword"
                   color="teal"
                   label="비밀번호 확인"
-                  :rules="getConfirmPasswordRules(user.password)"
+                  :rules="getConfirmPasswordRules(user.changedPassword)"
                   type="password"
                   required
                   clearable
@@ -110,9 +93,9 @@
           text
           :disabled="hasAnyEmptyInput"
           class="mr-4"
-          @click="submitForm(user)"
+          @click="submitForm(user.changedPassword)"
         >
-          가입하기
+          수정하기
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -121,71 +104,63 @@
 
 <script>
 import {
-  registerNameRules, registerIdRules, registerPasswordRules, getConfirmPasswordRules,
+  registerPasswordRules, getConfirmPasswordRules,
 } from '@/util/formRules'
+
 import { createNamespacedHelpers } from 'vuex'
 import DialogMixin from '@/mixins/FormDialog'
 
 const { mapGetters } = createNamespacedHelpers('alertStore')
+
 export default {
   mixins: [DialogMixin],
   data: () => ({
     dialog: false,
     valid: false,
-    show: false,
+    show1: false,
+    show2: false,
     register: false,
-    idCheck: false,
     chekedId: '',
     user: {
-      name: '',
-      id: '',
       password: '',
+      changedPassword: '',
     },
     confirmedPassword: '',
-    registerNameRules,
-    registerIdRules,
     registerPasswordRules,
     getConfirmPasswordRules,
   }),
   computed: {
     ...mapGetters(['sheetInfo']),
-    idValidate() {
-      return !this.user.id || !this.$refs.idform.validate()
-    },
     hasAnyEmptyInput() {
-      return !this.user.id || !this.user.name || !this.user.password || !this.confirmedPassword
+      return !this.user.password || !this.user.changedPassword || !this.confirmedPassword
     },
     hasAnyValueInput() {
-      return this.user.id || this.user.name || this.user.password || this.confirmedPassword
+      return this.user.password || this.user.changedPassword || this.confirmedPassword
     },
   },
   methods: {
-    async checkId(userId) {
-      const validation = this.$refs.idform.validate()
-      if (!validation) {
-        return
-      }
-      const response = await this.$store.dispatch('userStore/checkUserId', userId)
-      if (response === userId) {
-        this.idCheck = true
-        this.chekedId = this.user.id
-      }
-    },
-    async submitForm(newUser) {
+    async submitForm(changedPassword) {
+      this.$refs.form.validate()
       if (!this.valid) {
         return
       }
-      if (!this.idCheck || this.chekedId !== this.user.id) {
-        this.$store.dispatch('alertStore/setAlertInfo', {
-          type: 'warning',
-          message: '아이디 중복 검사가 필요합니다!',
-        })
-        this.$store.dispatch('alertStore/removeAlert')
-        return
-      }
-      const response = await this.$store.dispatch('userStore/registerUser', newUser)
-      if (response === newUser) {
-        this.register = true
+      const user = this.$store.getters['userStore/userInfo']
+      const { id } = user // 현재 로그인되어 있는 아이디
+      const { password } = this.user // 수정을 위해 필요한 현재 비밀번호
+      const checkResult = await this.$store.dispatch('userStore/checkPassword', { id, password })
+      if (checkResult === id) {
+        if (this.user.password === this.user.changedPassword) {
+          this.$store.dispatch('alertStore/setAlertInfo', {
+            type: 'warning',
+            message: '비밀번호가 변경되지 않았습니다!',
+          })
+          this.$store.dispatch('alertStore/removeAlert')
+          return
+        }
+        const response = await this.$store.dispatch('userStore/modifyPassword', { id, changedPassword })
+        if (response === id) {
+          this.register = true
+        }
       }
       this.closeDialog()
     },

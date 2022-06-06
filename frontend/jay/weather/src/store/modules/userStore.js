@@ -1,21 +1,21 @@
+import {
+  checkUserId, tryRegister, matchPassword, modifyPassword,
+} from '@/sevices/user/index'
+
 export default {
   namespaced: true,
   state: {
     user: {
       id: '',
       name: '',
-      pw: '',
     },
   },
   getters: {
-    getUserInfo(state) {
+    userInfo(state) {
       return state.user
     },
     isLogin(state) {
       return state.user.id !== ''
-    },
-    isRegister(state) {
-      return state.register !== ''
     },
   },
   mutations: {
@@ -25,14 +25,10 @@ export default {
     SET_USER(state, userInfo) {
       state.user.name = userInfo.name
       state.user.id = userInfo.id
-      state.user.pw = userInfo.password
-      state.user.email = userInfo.email
     },
     CLEAR_USER(state) {
       state.user.id = ''
       state.user.name = ''
-      state.user.pw = ''
-      state.user.email = ''
     },
   },
   actions: {
@@ -44,6 +40,69 @@ export default {
     },
     clearUserInfo({ commit }) {
       commit('CLEAR_USER')
+    },
+    async checkUserId({ dispatch }, userId) {
+      try {
+        const response = await checkUserId(userId)
+        dispatch('alertStore/setAlertInfo', {
+          type: 'success',
+          message: '사용 가능한 아이디입니다.',
+        }, { root: true })
+        dispatch('alertStore/removeAlert', null, { root: true })
+        return response
+      } catch (error) {
+        if (error.message === 'duplicated') {
+          dispatch('alertStore/setAlertInfo', {
+            type: 'error',
+            message: '이미 사용되는 아이디입니다.',
+          }, { root: true })
+          dispatch('alertStore/removeAlert', null, { root: true })
+        }
+        return 'failed'
+      }
+    },
+    async registerUser({ dispatch }, newUser) {
+      try {
+        const response = await tryRegister(newUser)
+        dispatch('alertStore/setAlertInfo', {
+          type: 'success',
+          message: '회원가입이 정상적으로 완료되었습니다!',
+        }, { root: true })
+        dispatch('alertStore/removeAlert', null, { root: true })
+        return response
+      } catch (error) {
+        dispatch('alertStore/setAlertInfo', { type: 'error', message: error.message }, { root: true })
+        dispatch('alertStore/removeAlert', null, { root: true })
+        return 'failed'
+      }
+    },
+    async checkPassword({ dispatch }, checkData) {
+      try {
+        const response = await matchPassword(checkData)
+        return response
+      } catch (error) {
+        dispatch('alertStore/setAlertInfo', {
+          type: 'warning',
+          message: '현재 비밀번호가 맞지않습니다. 다시 확인해주세요.',
+        }, { root: true })
+        dispatch('alertStore/removeAlert', null, { root: true })
+      }
+      return 'failed'
+    },
+    async modifyPassword({ dispatch }, modifyData) {
+      try {
+        const response = await modifyPassword(modifyData)
+        dispatch('alertStore/setAlertInfo', {
+          type: 'success',
+          message: '비밀번호 변경이 정상적으로 완료되었습니다!',
+        }, { root: true })
+        dispatch('alertStore/removeAlert', null, { root: true })
+        return response
+      } catch (error) {
+        dispatch('alertStore/setAlertInfo', { type: 'error', message: error.message }, { root: true })
+        dispatch('alertStore/removeAlert', null, { root: true })
+        return 'failed'
+      }
     },
   },
 }

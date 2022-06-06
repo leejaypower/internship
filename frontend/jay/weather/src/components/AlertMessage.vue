@@ -1,12 +1,12 @@
 <template>
   <transition name="fade">
     <v-alert
-      v-if="getAlertInfo.show"
+      v-if="alertInfo.show"
       dense
       dark
-      :type="getAlertInfo.type"
+      :type="alertInfo.type"
     >
-      {{ getAlertInfo.message }}
+      {{ alertInfo.message }}
     </v-alert>
   </transition>
 </template>
@@ -18,7 +18,7 @@ const { mapGetters } = createNamespacedHelpers('alertStore')
 
 export default {
   computed: {
-    ...mapGetters(['getAlertInfo']),
+    ...mapGetters(['alertInfo']),
   },
 }
 </script>

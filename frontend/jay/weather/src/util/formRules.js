@@ -17,7 +17,7 @@ const registerPasswordRules = [
   (v) => !(v && v.length >= 20) || '비밀번호는 20자 이상 입력할 수 없습니다.',
 ]
 
-const confirmPassword = (pw) => [
+const getConfirmPasswordRules = (pw) => [
   (v) => !!v || '비밀번호를 확인해주세요.',
   (v) => v === pw || '비밀번호가 일치하지 않습니다.',
 ]
@@ -31,6 +31,6 @@ const loginPasswordRules = [
 ]
 
 export {
-  registerNameRules, registerIdRules, registerPasswordRules, confirmPassword,
+  registerNameRules, registerIdRules, registerPasswordRules, getConfirmPasswordRules,
   loginIdRules, loginPasswordRules,
 }

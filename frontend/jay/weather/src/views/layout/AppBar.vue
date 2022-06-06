@@ -51,13 +51,47 @@ export default {
     ],
   }),
   methods: {
-    checkAuth(link) {
-      if (link.path !== '/here-weather' && !this.$store.getters['userStore/isLogin']) {
+    checkAuth(path) {
+      if (path !== '/here-weather' && !this.$store.getters['userStore/isLogin']) {
         this.$store.dispatch('alertStore/setAlertInfo', {
           type: 'warning',
           message: '로그인 후 이용가능합니다.',
         })
         this.$store.dispatch('alertStore/removeAlert')
+        return
+      }
+      if (path !== '/here-weather' && this.$store.getters['userStore/isLogin']) {
+        const today = new Date()
+        const now = today.getMonth() + 1
+        const rightNow = today.getTime()
+        const storeToken = this.$store.getters['authStore/token']
+
+        if (storeToken.exp < 13 && storeToken.exp < now) {
+          // jwt token으로 로그인 되어있을 경우(관리자 로그인) 토큰 유효기간이 월 단위입니다.
+          this.$store.dispatch('userStore/clearUserInfo')
+          this.$store.dispatch('alertStore/setAlertInfo', {
+            type: 'warning',
+            message: '재로그인이 필요합니다.',
+          })
+          this.$store.dispatch('alertStore/removeAlert')
+          localStorage.removeItem('access-token')
+          localStorage.removeItem('refresh-token')
+          localStorage.removeItem('testRefreshToken')
+          localStorage.removeItem('testAccessToken')
+        }
+        if (storeToken.exp > 13 && storeToken.exp < rightNow) {
+          // fake token으로 로그인 되어있을 경우 유효기간은 초 단위입니다.
+          this.$store.dispatch('userStore/clearUserInfo')
+          this.$store.dispatch('alertStore/setAlertInfo', {
+            type: 'warning',
+            message: '재로그인이 필요합니다.',
+          })
+          this.$store.dispatch('alertStore/removeAlert')
+          localStorage.removeItem('access-token')
+          localStorage.removeItem('refresh-token')
+          localStorage.removeItem('testRefreshToken')
+          localStorage.removeItem('testAccessToken')
+        }
       }
     },
   },

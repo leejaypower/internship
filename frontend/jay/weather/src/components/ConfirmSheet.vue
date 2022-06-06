@@ -1,7 +1,7 @@
 <template>
   <div class="text-center">
     <v-bottom-sheet
-      v-model="getSheetInfo.show"
+      v-model="sheetInfo.show"
       inset
     >
       <v-sheet
@@ -18,7 +18,7 @@
         </v-btn>
 
         <div class="my-3">
-          {{ getSheetInfo.message }}
+          {{ sheetInfo.message }}
         </div>
       </v-sheet>
     </v-bottom-sheet>
@@ -32,7 +32,7 @@ const { mapGetters } = createNamespacedHelpers('alertStore')
 
 export default {
   computed: {
-    ...mapGetters(['getSheetInfo']),
+    ...mapGetters(['sheetInfo']),
   },
   methods: {
     confirm() {

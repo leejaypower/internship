@@ -66,23 +66,11 @@ export default {
         if (!validation) {
           return
         }
-        this.loginUser(this.user)
+        this.submit(this.user)
       })
     },
-    loginUser(userData) {
-      const memberData = JSON.parse(localStorage.getItem('memberData'))
-      const userInfo = memberData.find((item) => item.id === userData.id)
-
-      if (userInfo === undefined || userInfo.password !== userData.password) {
-        this.$store.dispatch('alertStore/setAlertInfo', {
-          type: 'error',
-          message: '아이디나 비밀번호를 잘못 입력했습니다. 다시 확인해주세요.',
-        })
-        this.$store.dispatch('alertStore/removeAlert')
-        return
-      }
-
-      this.$store.dispatch('userStore/setUserInfo', userInfo)
+    submit(loginUser) {
+      this.$store.dispatch('authStore/login', loginUser) // 1
     },
   },
 }

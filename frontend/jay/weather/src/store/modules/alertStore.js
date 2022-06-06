@@ -13,10 +13,10 @@ export default {
     },
   },
   getters: {
-    getAlertInfo(state) {
+    alertInfo(state) {
       return state.alert
     },
-    getSheetInfo(state) {
+    sheetInfo(state) {
       return state.sheet
     },
   },

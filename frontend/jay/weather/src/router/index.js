@@ -32,9 +32,24 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
+  const today = new Date()
+  const now = today.getMonth() + 1
+  const rightNow = today.getTime()
+  const storeToken = store.getters['authStore/token']
   if (to.meta.auth && !store.getters['userStore/isLogin']) {
-    next('/here-weather')
-  } else next()
+    next('/')
+  }
+  if (to.meta.auth && store.getters['userStore/isLogin']) {
+    if (storeToken.exp < 13 && storeToken.exp < now) {
+      // jwt token으로 로그인 되어있을 경우(관리자 로그인) 토큰 유효기간이 월 단위입니다.
+      next('/')
+    }
+    if (storeToken.exp > 13 && storeToken.exp < rightNow) {
+      // fake token으로 로그인 되어있을 경우 유효기간은 초 단위입니다.
+      next('/')
+    }
+  }
+  next()
 })
 
 export default router

@@ -23,6 +23,14 @@ import TodayClothes from '@/views/layout/TodayClothes.vue'
 import AlertMessage from '@/components/AlertMessage.vue'
 import ConfirmSheet from '@/components/ConfirmSheet.vue'
 
+const accessToken = localStorage.getItem('access-token')
+const refreshToken = localStorage.getItem('refresh-token')
+const testToken = localStorage.getItem('testRefreshToken')
+const memberData = JSON.parse(localStorage.getItem('memberData'))
+const testUser = [
+  { name: '관리자', id: 'admin@test.com', password: 'qwer1234' },
+]
+
 export default {
   components: {
     AppBar,
@@ -32,9 +40,17 @@ export default {
     AlertMessage,
     ConfirmSheet,
   },
+  mounted() {
+    if (!memberData) {
+      localStorage.setItem('memberData', JSON.stringify(testUser))
+    }
+    if (accessToken || refreshToken || testToken) {
+      this.$store.dispatch('authStore/refresh')
+    }
+  },
 }
-</script>
 
+</script>
 <style scoped>
 .container{
 max-width: 1264px;
