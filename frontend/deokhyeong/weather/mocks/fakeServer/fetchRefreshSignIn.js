@@ -7,22 +7,24 @@ const fetchRefreshSignIn = (headers) => {
   )
 
   if (targetIndex === -1) {
-    return Promise.reject({
+    const badRequestResponse = Promise.reject({
       status: 400,
       data: {
         message: 'BadRequest',
       },
     })
+    return badRequestResponse
   }
 
   const targetUser = users[targetIndex]
   if (utils.isExpiredTime(targetUser.refreshExpire)) {
-    return Promise.reject({
+    const refreshExpiredResponse = Promise.reject({
       status: 401,
       data: {
         message: '리프레시 만료',
       },
     })
+    return refreshExpiredResponse
   }
 
   const refreshUser = {
@@ -35,13 +37,14 @@ const fetchRefreshSignIn = (headers) => {
   }
   users[targetIndex] = refreshUser
   localStorage.setItem('users', JSON.stringify(users))
-  return Promise.resolve({
+  const successResponse = Promise.resolve({
     status: 200,
     data: {
       message: 'Success',
       ...refreshUser,
     },
   })
+  return successResponse
 }
 
 export default fetchRefreshSignIn

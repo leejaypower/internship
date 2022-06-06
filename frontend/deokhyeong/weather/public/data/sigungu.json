@@ -1,7 +1,5 @@
 {
-    "name": "sigungu",
-	"url": "https://gist.github.com/pjt3591oo/efaa02ff73538dd2f51f6caae939f836",
-    "data": {
+    "siGuLocation" :{
         "서울특별시/강남구": {
             "lat": "37.4951",
             "long": "127.06278"
@@ -913,6 +911,5 @@
         "제주특별자치도/서귀포시": {
             "lat": "33.29307",
             "long": "126.49748"
-        }
+        }}
     }
-}

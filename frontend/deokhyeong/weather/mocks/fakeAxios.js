@@ -59,6 +59,18 @@ class FakeAxios {
       if (endPoint === '/auth/logout') {
         response = await fakeServer.fetchLogout(this.config.headers, body)
       }
+      if (endPoint === '/location/add') {
+        response = await fakeServer.fetchAddLocation(this.config.headers, body)
+      }
+      if (endPoint === '/location/delete') {
+        response = await fakeServer.fetchDeleteLocation(this.config.headers, body)
+      }
+      if (endPoint === '/location/select') {
+        response = await fakeServer.fetchSelectLocation(this.config.headers, body)
+      }
+      if (endPoint === '/location/init') {
+        response = await fakeServer.fetchInitLocation(this.config.headers, body)
+      }
 
       console.log('post 요청', this.config)
       return response

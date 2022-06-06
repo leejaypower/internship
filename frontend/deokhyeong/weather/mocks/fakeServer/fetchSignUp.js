@@ -3,12 +3,13 @@ const fetchSignUp = (headers, body) => {
   const isEmailOverLap = users.find((_user) => _user.email === body.email)
 
   if (isEmailOverLap) {
-    return Promise.reject({
+    const badRequestResponse = Promise.reject({
       status: 400,
       data: {
         message: '이메일 중복',
       },
     })
+    return badRequestResponse
   }
 
   const newUser = {
@@ -18,17 +19,21 @@ const fetchSignUp = (headers, body) => {
     level: 'special',
     expire: 9999999999999,
     refreshExpire: 9999999999999,
+    bookmarkLocations: [],
+    selectedLocation: null,
     accessToken: '5_9999999999999',
     refreshToken: '5_9999999999999',
   }
   localStorage.setItem('users', JSON.stringify([...users, newUser]))
 
-  return Promise.resolve({
+  const successResponse = Promise.resolve({
     status: 200,
     data: {
       message: 'Success',
     },
   })
+
+  return successResponse
 }
 
 export default fetchSignUp

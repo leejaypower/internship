@@ -5,21 +5,25 @@ const fetchSignIn = (headers, body) => {
   )
 
   if (!user) {
-    return Promise.reject({
+    const badRequestResponse = Promise.reject({
       status: 400,
       data: {
         message: 'BadRequest',
       },
     })
+
+    return badRequestResponse
   }
 
-  return Promise.resolve({
+  const successResponse = Promise.resolve({
     status: 200,
     data: {
       message: 'Success',
       ...user,
     },
   })
+
+  return successResponse
 }
 
 export default fetchSignIn

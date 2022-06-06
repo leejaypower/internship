@@ -1,6 +1,4 @@
-import utils from '@/utils'
-
-const patchRepairUserInfo = (headers, body) => {
+const fetchInitLocation = (headers) => {
   const users = JSON.parse(localStorage.getItem('users'))
   const targetIndex = users.findIndex((_user) => _user.accessToken === headers?.Authentication)
 
@@ -25,7 +23,8 @@ const patchRepairUserInfo = (headers, body) => {
   }
 
   const targetUser = users[targetIndex]
-  if (utils.isExpiredTime(targetUser.expire)) {
+  const isExpiredDate = (targetUser.expire - new Date().getTime()) < 0
+  if (isExpiredDate) {
     const expiredResponse = Promise.reject({
       status: 401,
       data: {
@@ -35,36 +34,20 @@ const patchRepairUserInfo = (headers, body) => {
     return expiredResponse
   }
 
-  const prevEmail = users[targetIndex].email
-  const isSameEmailWithPrevEmail = prevEmail === body.email
-  if (!isSameEmailWithPrevEmail) {
-    const isEmailOverLap = users.find((_user) => _user.email === body.email)
-    if (isEmailOverLap) {
-      const emailOverLapResponse = Promise.reject({
-        status: 400,
-        data: {
-          message: '이메일 중복',
-        },
-      })
-
-      return emailOverLapResponse
-    }
+  users[targetIndex] = {
+    ...users[targetIndex],
+    bookmarkLocations: [],
+    selectedLocation: null,
   }
-
-  targetUser.email = body.email
-  targetUser.password = body.newPassword
-  users[targetIndex] = targetUser
   localStorage.setItem('users', JSON.stringify(users))
   const successResponse = Promise.resolve({
     status: 200,
     data: {
       message: 'Success',
-      ...targetUser,
-      repairTag: Math.random(), // repairApi로 수정한 계정만 가짐
+      ...users[targetIndex],
     },
   })
-
   return successResponse
 }
 
-export default patchRepairUserInfo
+export default fetchInitLocation

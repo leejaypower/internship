@@ -21,7 +21,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('error', ['status', 'message', 'createdAt', 'timeout']),
+    ...mapGetters('alert', ['status', 'message', 'createdAt', 'timeout']),
     color() {
       return this.statusColorParser(this.status)
     },

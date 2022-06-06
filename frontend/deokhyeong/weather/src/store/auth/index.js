@@ -11,6 +11,8 @@ const auth = {
     expire: '',
     refreshExpire: '',
     level: '',
+    bookmarkLocations: [],
+    selectedLocation: null,
   },
   getters: {
     ...authGetters,

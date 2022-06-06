@@ -5,6 +5,8 @@ const userMapping = (mapTarget) => ({
   expire: mapTarget.expire,
   refreshExpire: mapTarget.refreshExpire,
   level: mapTarget.level,
+  bookmarkLocations: mapTarget.bookmarkLocations,
+  selectedLocation: mapTarget.selectedLocation,
 })
 
 export default userMapping

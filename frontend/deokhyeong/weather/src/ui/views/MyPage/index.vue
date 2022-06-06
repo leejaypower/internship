@@ -1,5 +1,6 @@
 <template>
   <v-container>
+    <title-header title="마이 페이지" />
     <repair-card-form
       card-title="기본 정보"
       :inputs="inputs"
@@ -11,6 +12,20 @@
       @onRepairButton="onSwitchEditting"
       @onSubmitButton="onSubmitButton"
       @onCancelButton="onCancelButton"
+    />
+    <select-list-card-form
+      class="mt-4"
+      card-title="위치 설정"
+      repair-button-text="추가"
+      init-button-text="초기화"
+      :non-selected-bookmarks="nonSelectedBookmarks"
+      :selected-location="selectedLocation || {}"
+      is-select-list-type
+      :handle-non-select-card-delete-button="onDeleteLocation"
+      :handle-non-select-card-select-button="onSelectLocation"
+      :is-in-active-init-button="isInActiveInitButton"
+      @onInitButton="onInitLocationList"
+      @onRepairButton="onMoveToLocationAdd"
     />
     <div class="d-flex justify-center pt-5">
       <v-btn @click="onClickLogout">
@@ -28,12 +43,19 @@ import authApi from '@/service/api/auth'
 import auth from '@/service/domain/auth/validations'
 import utils from '@/utils'
 import { mapActions, mapGetters } from 'vuex'
+import TitleHeader from '@/ui/components/TitleHeader'
+import SelectListCardForm from '@/ui/views/MyPage/SelectedListCardForm'
 
 const { CORRECT_EMAIL_FORMAT, CORRECT_PASSWORD_FORMAT, NOT_SYNC_PASSWORD } = ruleSentences
 
 export default {
   name: 'MyPage',
-  components: { BottomNavigation, RepairCardForm },
+  components: {
+    BottomNavigation,
+    RepairCardForm,
+    TitleHeader,
+    SelectListCardForm,
+  },
   data() {
     return {
       inputs: {
@@ -77,7 +99,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('auth', ['email', 'password']),
+    ...mapGetters('auth', ['email', 'password', 'bookmarkLocations', 'selectedLocation']),
     isInactiveSubmitButton() {
       const {
         email, password, newPassword, newPasswordComparison,
@@ -86,6 +108,15 @@ export default {
       || !auth.passwordValidaion(password.value)
       || !auth.passwordValidaion(newPassword.value)
       || !utils.isShallowEqual(newPassword.value, newPasswordComparison.value)
+    },
+    nonSelectedBookmarks() {
+      const result = this.bookmarkLocations.filter(
+        (bookmark) => bookmark.location !== this.selectedLocation.location,
+      )
+      return result
+    },
+    isInActiveInitButton() {
+      return this.bookmarkLocations?.length === 0
     },
   },
   watch: {
@@ -101,7 +132,7 @@ export default {
     this.inputs.password.value = this.password
   },
   methods: {
-    ...mapActions('auth', ['repairUserInfo']),
+    ...mapActions('auth', ['repairUserInfo', 'deleteLocation', 'selectLocation', 'initLocation']),
     onChangeInput({ inputKey, value }) {
       this.inputs[inputKey].value = value
     },
@@ -141,6 +172,18 @@ export default {
         // 초기 세팅 값으로 돌아옴. 대안으로 push 사용
         this.$router.push('/sign-in')
       }
+    },
+    onMoveToLocationAdd() {
+      this.$router.push('/location-add')
+    },
+    onInitLocationList() {
+      this.initLocation()
+    },
+    onDeleteLocation(location) {
+      this.deleteLocation({ location })
+    },
+    onSelectLocation(location) {
+      this.selectLocation({ location })
     },
   },
 }

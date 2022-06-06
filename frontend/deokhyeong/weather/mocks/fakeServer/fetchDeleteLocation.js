@@ -1,8 +1,16 @@
-import utils from '@/utils'
-
-const patchRepairUserInfo = (headers, body) => {
+const fetchAddLocation = (headers, body) => {
   const users = JSON.parse(localStorage.getItem('users'))
   const targetIndex = users.findIndex((_user) => _user.accessToken === headers?.Authentication)
+
+  if (!body.location) {
+    const errorResponse = Promise.reject({
+      status: 400,
+      data: {
+        message: 'BadRequest',
+      },
+    })
+    return errorResponse
+  }
 
   if (!headers?.Authentication) {
     const errorResponse = Promise.reject({
@@ -25,7 +33,8 @@ const patchRepairUserInfo = (headers, body) => {
   }
 
   const targetUser = users[targetIndex]
-  if (utils.isExpiredTime(targetUser.expire)) {
+  const isExpiredDate = (targetUser.expire - new Date().getTime()) < 0
+  if (isExpiredDate) {
     const expiredResponse = Promise.reject({
       status: 401,
       data: {
@@ -35,36 +44,30 @@ const patchRepairUserInfo = (headers, body) => {
     return expiredResponse
   }
 
-  const prevEmail = users[targetIndex].email
-  const isSameEmailWithPrevEmail = prevEmail === body.email
-  if (!isSameEmailWithPrevEmail) {
-    const isEmailOverLap = users.find((_user) => _user.email === body.email)
-    if (isEmailOverLap) {
-      const emailOverLapResponse = Promise.reject({
-        status: 400,
-        data: {
-          message: '이메일 중복',
-        },
-      })
-
-      return emailOverLapResponse
-    }
+  const deleteTargetIndex = targetUser.bookmarkLocations.findIndex(
+    (bookmark) => bookmark.location === body.location,
+  )
+  if (deleteTargetIndex === -1) {
+    const alreadyRemoveResponse = Promise.reject({
+      status: 400,
+      data: {
+        message: '해당 위치는 이미 지워졌습니다.',
+      },
+    })
+    return alreadyRemoveResponse
   }
 
-  targetUser.email = body.email
-  targetUser.password = body.newPassword
+  targetUser.bookmarkLocations.splice(deleteTargetIndex, 1)
   users[targetIndex] = targetUser
   localStorage.setItem('users', JSON.stringify(users))
   const successResponse = Promise.resolve({
     status: 200,
     data: {
       message: 'Success',
-      ...targetUser,
-      repairTag: Math.random(), // repairApi로 수정한 계정만 가짐
+      bookmarkLocations: targetUser.bookmarkLocations,
     },
   })
-
   return successResponse
 }
 
-export default patchRepairUserInfo
+export default fetchAddLocation

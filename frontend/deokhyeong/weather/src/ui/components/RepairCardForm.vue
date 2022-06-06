@@ -8,7 +8,7 @@
         v-if="isEditting"
       >
         <v-btn
-          class="error"
+          class="#F44336"
           @click="$emit('onCancelButton')"
         >
           {{ cancelButtonText }}
@@ -84,6 +84,10 @@ export default {
     cancelButtonText: {
       type: String,
       default: '취소',
+    },
+    isSelectListType: {
+      type: Boolean,
+      default: false,
     },
     isEditting: {
       type: Boolean,

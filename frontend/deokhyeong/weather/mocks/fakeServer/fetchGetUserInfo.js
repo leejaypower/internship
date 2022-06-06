@@ -25,21 +25,23 @@ const fetchGetUserInfo = (headers) => {
   }
 
   if (utils.isExpiredTime(user.expire)) {
-    return Promise.reject({
+    const expiredResponse = Promise.reject({
       status: 401,
       data: {
         message: '토큰 만료',
       },
     })
+    return expiredResponse
   }
 
   if (utils.isExpiredTime(user.refreshExpire)) {
-    return Promise.reject({
+    const refreshExpiredResponse = Promise.reject({
       status: 401,
       data: {
         message: '리프레시 만료',
       },
     })
+    return refreshExpiredResponse
   }
 
   const successResponse = Promise.resolve({
