@@ -15,6 +15,10 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       comment: '관리자 계정 비밀번호 정보(암호화)',
     },
+    accessToken: {
+      type: DataTypes.STRING(300), // jwt(액세스토큰)
+      allowNull: true,
+    },
   }, {
     // 테이블 추가 옵션 설정
     paranoid: true, // 소프트 딜리트 옵션 적용(deleteAt 칼럼에 삭제날짜 표시)

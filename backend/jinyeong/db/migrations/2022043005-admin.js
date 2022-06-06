@@ -7,19 +7,6 @@ module.exports = {
         type: Sequelize.UUID,
         defaultValue: Sequelize.UUIDV4,
       },
-      employeeId: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: {
-            tableName: 'Employees',
-          },
-          key: 'id',
-          comment: '계정 소유직원ID',
-        },
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE',
-      },
       email: {
         type: Sequelize.STRING(30),
         allowNull: false,
@@ -29,6 +16,11 @@ module.exports = {
         type: Sequelize.STRING(60),
         allowNull: false,
         comment: '관리자 계정 비밀번호',
+      },
+      accessToken: {
+        type: Sequelize.STRING(300),
+        allowNull: true,
+        comment: '관리자 계정 액세스 토큰(중복 로그인 방지용)',
       },
       createdAt: {
         allowNull: false,

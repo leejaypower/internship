@@ -13,6 +13,7 @@ const hashPassword = async (password) => {
     errorHandling.throwError(400, '비밀번호가 누락되었습니다.');
   }
   const encryptedPassword = await bcrypt.hash(password, salt);
+
   return encryptedPassword;
 };
 
@@ -25,6 +26,7 @@ const comparePassword = async (password, hash) => {
     errorHandling.throwError(500, '저장된 유저 비밀번호가 훼손되었습니다.');
   }
   const result = await bcrypt.compare(password, hash);
+
   return result;
 };
 
@@ -33,7 +35,6 @@ const cipher = (message) => {
   if (!message) {
     errorHandling.throwError(400, '암호화 시킬 데이터가 누락되었습니다.');
   }
-
   const encrypt = crypto.createCipheriv(algorithm, securityKey, initVector);
 
   let encryptResult = encrypt.update(message, 'utf-8', 'hex');
@@ -48,7 +49,6 @@ const decipher = (encryptedData) => {
   if (!encryptedData) {
     errorHandling.throwError(400, '복호화 시킬 데이터가 누락되었습니다.');
   }
-
   const decrypt = crypto.createDecipheriv(algorithm, securityKey, initVector);
 
   let decryptedResult = decrypt.update(encryptedData, 'hex', 'utf-8');

@@ -34,6 +34,11 @@ module.exports = {
         defaultValue: false,
         comment: '블랙리스트 여부',
       },
+      accessToken: {
+        type: Sequelize.STRING(300),
+        allowNull: true,
+        comment: '일반 유저 액세스 토큰(중복 로그인 방지용)',
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

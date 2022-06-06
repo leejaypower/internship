@@ -32,6 +32,10 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: false,
       comment: '블랙리스트 여부',
     },
+    accessToken: {
+      type: DataTypes.STRING(300), // jwt(액세스토큰)
+      allowNull: true,
+    },
   }, {
     // 추가 옵션 설정
     paranoid: true, // 소프트 딜리트 옵션 적용(deleteAt 칼럼에 삭제날짜 표시)

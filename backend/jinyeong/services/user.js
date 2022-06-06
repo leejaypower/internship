@@ -16,7 +16,7 @@ const signUp = async (body) => {
 
   const encryptedPassword = await encrypt.hashPassword(password); // 비밀번호 해시값 생성
 
-  const encryptedContact = await encrypt.cipher(contact); // 연락처 암호화
+  const encryptedContact = encrypt.cipher(contact); // 연락처 암호화
 
   const inputData = { name, contact: encryptedContact, email, password: encryptedPassword };
 
@@ -76,7 +76,7 @@ const searchByUserId = async (userId) => {
     errorHandling.throwError(404, '해당 아이디의 유저정보가 존재하지 않습니다.');
   }
 
-  const decryptContact = await encrypt.decipher(userInfo.contact);
+  const decryptContact = encrypt.decipher(userInfo.contact);
   userInfo.contact = decryptContact;
 
   return userInfo;

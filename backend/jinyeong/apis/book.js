@@ -6,7 +6,9 @@ const getAll = async (ctx) => {
   try {
     const result = await bookService.viewAll();
 
-    if (result.length === 0) { ctx.status = 204; }
+    if (result.length === 0) {
+      ctx.status = 204;
+    }
 
     ctx.body = result;
   } catch (err) {
@@ -28,7 +30,6 @@ const getByQuery = async (ctx) => {
     if (queryResult.length === 0) {
       ctx.status = 204;
     }
-
     ctx.body = queryResult;
   } catch (err) {
     console.log(err.message);

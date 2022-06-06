@@ -128,8 +128,8 @@ const getMypageByUserId = async (ctx) => {
     if (!uuidRegex.test(userId)) {
       errorHandling.throwError(400, 'ID 유효성 검사에 실패했습니다.');
     }
-
     const result = await userService.searchByUserId(userId);
+
     ctx.body = result;
   } catch (err) {
     console.log(err.message);
@@ -147,8 +147,8 @@ const deleteMyAccount = async (ctx) => {
     if (!uuidRegex.test(userId)) {
       errorHandling.throwError(400, 'ID 유효성 검사에 실패했습니다.');
     }
-
     await userService.eliminateUserInfoByUserId(userId);
+
     ctx.status = 204;
   } catch (err) {
     console.log(err.message);

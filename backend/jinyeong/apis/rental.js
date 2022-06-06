@@ -17,7 +17,9 @@ const get = async (ctx) => {
     if (query.bookId) {
       const queryResult = await rentalService.viewByQueryBookId(query);
 
-      if (queryResult.length === 0) { ctx.status = 204; }
+      if (queryResult.length === 0) {
+        ctx.status = 204;
+      }
 
       ctx.body = queryResult;
       return;

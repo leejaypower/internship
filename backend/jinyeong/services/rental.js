@@ -45,7 +45,6 @@ const addNewRental = async (body) => {
   if (!userInfo) {
     errorHandling.throwError(404, '해당 아이디에 해당하는 유저정보는 존재하지 않습니다.');
   }
-
   if (userInfo.isBlacklist === true) {
     errorHandling.throwError(403, '해당 유저는 블랙리스트로 더이상의 대출이 불가합니다');
   }
@@ -57,7 +56,6 @@ const addNewRental = async (body) => {
   if (bookInfo.length === 0) {
     errorHandling.throwError(404, '해당 아이디의 도서정보는 존재하지 않습니다.');
   }
-
   if (bookInfo.state !== STATE_WAITING && bookInfo.state !== STATE_RESERVATION) {
     errorHandling.throwError(400, '해당 도서는 대출가능상태가 아닙니다.');
   }
