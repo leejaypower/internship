@@ -9,8 +9,6 @@
         class="text-center"
       >
         <h3>이름 수정</h3>
-        {{ name }}
-        {{ userName }}
       </v-col>
     </v-row>
     <v-row justify="center">
@@ -48,7 +46,7 @@
 import authMixins from '@/mixins/auth'
 import { nameRules } from '@/utils/inputRules'
 import { mapGetters } from 'vuex'
-import alert from '@/utils/sweetalert'
+import { alert } from '@/lib'
 
 export default {
   mixins: [authMixins],

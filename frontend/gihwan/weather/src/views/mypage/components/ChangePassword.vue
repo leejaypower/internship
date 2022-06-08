@@ -71,7 +71,7 @@
 import authMixins from '@/mixins/auth'
 import { pwRules, pwCheckRules, newPwRules } from '@/utils/inputRules'
 import { changeUserPasswordFetch } from '@/apis/user'
-import alert from '@/utils/sweetalert'
+import { alert } from '@/lib'
 
 export default {
   mixins: [authMixins],

@@ -8,3 +8,7 @@ a {
   color: black;
   text-decoration: none;
 }
+
+.router-link-active {
+  border-bottom: 3px solid;
+}

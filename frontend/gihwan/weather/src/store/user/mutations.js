@@ -22,6 +22,7 @@ export default {
   logout(state) {
     state.userInfo.id = ''
     state.userInfo.name = ''
+    state.userInfo.idx = ''
     state.loginResult.isSuccess = false
     state.loginResult.failMessage = ''
   },

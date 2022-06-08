@@ -16,8 +16,9 @@
       <v-col :cols="responsiveInputCols">
         <v-btn
           type="button"
-          class="error"
+          color="error"
           block
+          outlined
           :disabled="loading"
           @click="onDelete"
         >
@@ -30,9 +31,9 @@
 
 <script>
 import authMixins from '@/mixins/auth'
-import alert from '@/utils/sweetalert'
+import { alert } from '@/lib'
 import { deleteUserFetch } from '@/apis/user'
-import { ChangeName, ChangePassword } from './components'
+import { ChangeName, ChangePassword } from '@/views/mypage/components'
 
 export default {
   components: {
@@ -49,7 +50,7 @@ export default {
   }),
   methods: {
     async onDelete() {
-      const { isConfirmed } = await alert.confirm('회원 탈퇴', '정말 탈퇴하겠습니까?')
+      const { isConfirmed } = await alert.confirm('회원 탈퇴', '정말 탈퇴하겠습니까?', '삭제', '취소', 'red')
       if (isConfirmed) {
         try {
           this.loading = true

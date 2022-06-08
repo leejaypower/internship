@@ -6,14 +6,13 @@
   >
     <v-container>
       <v-row justify="center">
-        <router-link to="/">
-          <v-img
-            :src="logo"
-            max-width="100"
-            max-height="100"
-            alt="logo"
-          />
-        </router-link>
+        <v-img
+          :src="logo"
+          max-width="100"
+          max-height="100"
+          alt="logo"
+          @click="$router.push({name: 'weather'})"
+        />
       </v-row>
       <v-row justify="center">
         <v-col
@@ -132,7 +131,7 @@ import authMixins from '@/mixins/auth'
 import {
   idRules, pwRules, nameRules, pwCheckRules,
 } from '@/utils/inputRules'
-import alert from '@/utils/sweetalert'
+import { alert } from '@/lib'
 import logo from '@/assets/logo.png'
 import { idDuplicateFetch, signupFetch } from '@/apis/auth'
 

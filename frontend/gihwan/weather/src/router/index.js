@@ -1,11 +1,38 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import { AuthHub, LoginView, SignupView } from '@/views/auth'
-import { UserHub, UserInfo } from '@/views/user'
+import { CurrentLocation, WeatherHub } from '@/views/weather'
+import { MyPageHub, UserInfo } from '@/views/mypage'
 
 Vue.use(VueRouter)
 
 const routes = [
+  {
+    path: '/weather',
+    name: 'weather',
+    redirect: { name: 'current' },
+    component: WeatherHub,
+    children: [
+      {
+        path: 'current',
+        name: 'current',
+        component: CurrentLocation,
+      },
+    ],
+  },
+  {
+    path: '/mypage',
+    name: 'mypage',
+    redirect: { name: 'edit' },
+    component: MyPageHub,
+    children: [
+      {
+        path: 'edit',
+        name: 'edit',
+        component: UserInfo,
+      },
+    ],
+  },
   {
     path: '/auth',
     name: 'auth',
@@ -21,19 +48,6 @@ const routes = [
         path: 'signup',
         name: 'signup',
         component: SignupView,
-      },
-    ],
-  },
-  {
-    path: '/user',
-    name: 'user',
-    redirect: { name: 'edit' },
-    component: UserHub,
-    children: [
-      {
-        path: 'edit',
-        name: 'edit',
-        component: UserInfo,
       },
     ],
   },
@@ -73,6 +87,8 @@ router.beforeEach((to, from, next) => {
     } else {
       next()
     }
+  } else {
+    next()
   }
 })
 

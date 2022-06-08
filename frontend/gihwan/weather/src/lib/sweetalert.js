@@ -77,15 +77,41 @@ const alert = {
       ...options(title, text, position),
     })
   },
-  confirm(title, text) {
+  /**
+   * 확인 취소를 할 수 있는 알림
+   * @param {string} title 제목
+   * @param {string} text 내용
+   * @param {string} okText 확인 내용
+   * @param {string} cancelText 취소 내용
+   * @param {string}[okColor=#6558F5] okColor 확인 색상
+   * @returns
+   */
+  confirm(title, text, okText, cancelText, okColor = '#6558F5') {
     return swal.fire({
-      icon: 'question',
+      icon: 'info',
       title,
-      text,
+      html: text,
       showCancelButton: true,
-      confirmButtonText: '삭제',
-      confirmButtonColor: 'red',
-      cancelButtonText: '취소',
+      confirmButtonText: okText,
+      confirmButtonColor: okColor,
+      cancelButtonText: cancelText,
+    })
+  },
+  input(title, text, okText, cancelText, okColor = '#6558F5') {
+    return swal.fire({
+      title,
+      input: 'text',
+      inputLabel: text,
+      confirmButtonText: okText,
+      confirmButtonColor: okColor,
+      showCancelButton: true,
+      cancelButtonText: cancelText,
+      inputValidator: (value) => {
+        if (!value) {
+          return '내용을 입력해 주세요.'
+        }
+        return false
+      },
     })
   },
 }

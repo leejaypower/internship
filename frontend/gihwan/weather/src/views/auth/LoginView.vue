@@ -6,14 +6,13 @@
   >
     <v-container>
       <v-row justify="center">
-        <router-link to="/">
-          <v-img
-            :src="logo"
-            max-width="100"
-            max-height="100"
-            alt="logo"
-          />
-        </router-link>
+        <v-img
+          :src="logo"
+          max-width="100"
+          max-height="100"
+          alt="logo"
+          @click="$router.push({name: 'weather'})"
+        />
       </v-row>
       <v-row justify="center">
         <v-col
@@ -103,7 +102,7 @@ import { mapGetters, mapActions } from 'vuex'
 import authMixins from '@/mixins/auth'
 import { idRules, pwRules } from '@/utils/inputRules'
 import logo from '@/assets/logo.png'
-import alert from '@/utils/sweetalert'
+import { alert } from '@/lib'
 
 export default {
   mixins: [authMixins],
@@ -151,7 +150,7 @@ export default {
       this.loading = false
       if (this.isLoginSuccess) {
         alert.success(this.constants.LOGIN_SUCCESS_TITLE, `${this.userName}님 환영합니다.`, this.alertPositioin)
-        this.$router.push('/')
+        this.$router.push({ name: 'weather' })
       } else {
         alert.error(this.constants.LOGIN_FAIL_TITLE, this.loginFailMessage)
       }
