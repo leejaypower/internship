@@ -1,5 +1,5 @@
 const Router = require('@koa/router');
-const { hashMiddleware, authMiddleware } = require('../middleware');
+const { hashMiddleware, authMiddleware } = require('../../../middleware');
 
 const userRouter = new Router();
 const { userController } = require('../controller');

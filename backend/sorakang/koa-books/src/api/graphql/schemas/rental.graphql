@@ -1,0 +1,4 @@
+type Rental {
+  title: String
+  author: String
+  }

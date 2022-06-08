@@ -4,6 +4,7 @@ const rentalRepository = require('./rentalRepository');
 const reserveRepository = require('./reserveRepository');
 const bookRepository = require('./bookRepository');
 const bookSerialRepository = require('./bookSerialRepository');
+const transaction = require('./transactions');
 
 module.exports = {
   bookRepository,
@@ -12,4 +13,5 @@ module.exports = {
   authRepository,
   rentalRepository,
   reserveRepository,
+  transaction,
 };

@@ -1,4 +1,4 @@
-const { bookService } = require('../services');
+const { bookService } = require('../../../services');
 
 const getAllBook = async (ctx) => {
   try {

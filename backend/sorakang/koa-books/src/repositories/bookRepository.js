@@ -59,6 +59,20 @@ const getSingleBook = async (bookId) => {
   }
 };
 
+/**
+ * Get a list of book information with a given book ID list from DB
+ * @param {Array} bookIds
+ * @returns Array of book data
+ */
+const getBooksById = async (bookIds) => {
+  const bookList = await Book.findAll({
+    where: { [Op.or]: bookIds },
+    raw: true,
+  });
+
+  return bookList;
+};
+
 const createBook = async (book, t) => {
   try {
     const {
@@ -116,5 +130,5 @@ const deleteSingleBook = async (bookId) => {
 };
 
 module.exports = {
-  getAllBook, getSingleBook, createBook, updateBook, deleteBook, deleteSingleBook,
+  getAllBook, getSingleBook, createBook, updateBook, deleteBook, deleteSingleBook, getBooksById,
 };

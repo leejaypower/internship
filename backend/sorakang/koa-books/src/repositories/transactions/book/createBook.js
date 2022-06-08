@@ -1,6 +1,7 @@
-const { sequelize } = require('../../database/models');
+const { sequelize } = require('../../../database/models');
 
-const { bookRepository, bookSerialRepository } = require('../../repositories');
+const bookRepository = require('../../bookRepository');
+const bookSerialRepository = require('../../bookSerialRepository');
 
 const createBook = async (bookData) => {
   try {

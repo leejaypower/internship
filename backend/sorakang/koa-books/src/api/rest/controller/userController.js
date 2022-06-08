@@ -1,4 +1,4 @@
-const { userService } = require('../services');
+const { userService } = require('../../../services');
 
 const getUser = async (ctx) => {
   // input validation -> error handling 주차에 같이 진행

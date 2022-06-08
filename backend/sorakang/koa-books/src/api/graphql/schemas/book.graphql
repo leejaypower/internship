@@ -1,0 +1,19 @@
+type Book {
+  id: Int!
+  title: String
+  bookSerial:[BookSerial]
+
+}
+
+type BookSerial{
+  id:Int!
+}
+
+input BookListInput {
+  id: Int!
+}
+
+type Query {
+  getBooksById(bookIds:[BookListInput]): [Book]
+}
+
