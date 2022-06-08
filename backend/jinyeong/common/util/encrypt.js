@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 const crypto = require('node:crypto');
-const { errorHandling } = require('./index');
+const { errorHandling } = require('./errorHandling');
 
 const salt = Number(process.env.SALT); // salt 값
 const algorithm = 'aes-256-cbc'; // 암호화 및 복호화에 사용할 알고리즘

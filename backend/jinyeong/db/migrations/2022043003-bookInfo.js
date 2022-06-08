@@ -40,11 +40,6 @@ module.exports = {
         allowNull: false,
         comment: '도서 소개',
       },
-      state: {
-        type: Sequelize.STRING(5),
-        defaultValue: '대기',
-        comment: '도서 상태(대기,대출,예약,분실)',
-      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

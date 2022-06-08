@@ -18,7 +18,8 @@ const createDemoData = () => {
 
 module.exports = {
   async up(queryInterface, Sequelize) {
-    return queryInterface.bulkInsert('BookInfo', createDemoData());
+    await queryInterface.bulkInsert('BookInfo', createDemoData());
+    await queryInterface.sequelize.query('ALTER SEQUENCE "BookInfo_id_seq" RESTART WITH 6');
   },
   async down(queryInterface, Sequelize) {
     return queryInterface.bulkDelete('BookInfo', null, {});

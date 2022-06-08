@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
   });
 
   BookCategory.associate = (models) => {
-    BookCategory.hasMany(models.Book, {
+    BookCategory.hasMany(models.BookInfo, {
       foreignKey: 'categoryId',
       type: DataTypes.INTEGER,
       onDelete: 'NO ACTION', // paranoid 옵션을 통해 참조하는 데이터가 삭제되었음을 표시(deletedAt)

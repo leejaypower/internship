@@ -4,8 +4,7 @@ const createDemoData = () => {
   for (let i = 1; i <= 5; i += 1) {
     data.push({
       id: i,
-      KDC: i * 100,
-      name: `카테고리 샘플${i}`,
+      bookInfoId: i,
       createdAt: new Date(),
       updatedAt: new Date(),
     });
@@ -15,10 +14,10 @@ const createDemoData = () => {
 
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.bulkInsert('BookCategories', createDemoData());
-    await queryInterface.sequelize.query('ALTER SEQUENCE "BookCategories_id_seq" RESTART WITH 6');
+    await queryInterface.bulkInsert('Books', createDemoData());
+    await queryInterface.sequelize.query('ALTER SEQUENCE "Books_id_seq" RESTART WITH 6');
   },
   async down(queryInterface, Sequelize) {
-    return queryInterface.bulkDelete('BookCategories', null, {});
+    return queryInterface.bulkDelete('Books', null, {});
   },
 };

@@ -21,7 +21,7 @@ module.exports = {
         comment: '도서의 정보(도서명, 카테고리, 작자, 발행사, 소개)를 담고 있는 테이블 아이디',
       },
       state: {
-        type: Sequelize.STRING(5),
+        type: Sequelize.STRING(30),
         allowNull: false,
         defaultValue: 'BOOK_STATE_WAITING',
         comment: '도서의 상태(대기,대출,예약,분실)를 표시',

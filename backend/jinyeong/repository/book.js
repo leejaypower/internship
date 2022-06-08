@@ -47,7 +47,8 @@ const getById = async (id) => {
 
 // Books INSERT ONE
 const insertOne = async (inputData) => {
-  await Book.create(inputData);
+  const result = await Book.create(inputData);
+  return result;
 };
 
 // Books UPDATE ONE By ID
