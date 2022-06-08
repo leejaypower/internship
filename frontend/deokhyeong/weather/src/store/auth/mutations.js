@@ -18,8 +18,15 @@ const setBookmarkLocationsData = (state, user) => {
   state.bookmarkLocations = user.bookmarkLocations || []
 }
 
+const setCurrentLocation = (state, currentLocation) => {
+  state.currentLocation = {
+    ...currentLocation,
+  }
+}
+
 export default {
   setAuthData,
   setLocationData,
   setBookmarkLocationsData,
+  setCurrentLocation,
 }

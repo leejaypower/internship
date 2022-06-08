@@ -30,5 +30,7 @@
   </v-bottom-navigation>
 </template>
 <script>
-export default {}
+export default {
+  name: 'BottomNavigation',
+}
 </script>

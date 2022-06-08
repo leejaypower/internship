@@ -6,6 +6,8 @@ const refreshExpire = (state) => state.refreshExpire
 const level = (state) => state.level
 const bookmarkLocations = (state) => state.bookmarkLocations
 const selectedLocation = (state) => state.selectedLocation
+const currentLocation = (state) => state.currentLocation
+const defaultLocation = (state) => state.defaultLocation
 
 export default {
   userId,
@@ -16,4 +18,6 @@ export default {
   level,
   bookmarkLocations,
   selectedLocation,
+  currentLocation,
+  defaultLocation,
 }

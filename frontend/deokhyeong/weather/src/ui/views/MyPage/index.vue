@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <div class="pt-4 px-12 pb-12">
     <title-header title="마이 페이지" />
     <repair-card-form
       card-title="기본 정보"
@@ -33,7 +33,7 @@
       </v-btn>
     </div>
     <bottom-navigation />
-  </v-container>
+  </div>
 </template>
 <script>
 import BottomNavigation from '@/ui/components/layout/BottomNavigation'

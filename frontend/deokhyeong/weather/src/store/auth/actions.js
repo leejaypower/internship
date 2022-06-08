@@ -1,7 +1,9 @@
 /* eslint-disable no-unused-vars */
 import authApi from '@/service/api/auth'
 import locationApi from '@/service/api/location'
+import locationDomain from '@/service/domain/location'
 import userMapping from '@/service/mapping/userMapping'
+import locationMapping from '@/service/mapping/locationMapping'
 import authErrorMessageParser from '@/service/domain/auth/authErrorMessageParser'
 
 const signIn = async ({ commit, dispatch }, { email, password }) => {
@@ -174,6 +176,44 @@ const initLocation = async ({ commit, dispatch }) => {
   }
 }
 
+const currentLocationSetting = async ({ commit, dispatch }) => {
+  try {
+    const response = await locationDomain.getCurrentLocation()
+    if (response) {
+      const naverResponse = await dispatch('fetchCurrentLocationName', response)
+      if (naverResponse.status !== 200) {
+        commit('setCurrentLocation', locationMapping.locationMappingForBrowserAPI(response))
+      }
+    }
+    return response
+  } catch (error) {
+    dispatch('alert/alertOpen', {
+      status: error.errorCode,
+      message: error.data.message,
+    }, { root: true })
+    return error
+  }
+}
+
+const fetchCurrentLocationName = async ({ commit, dispatch }, { longitude, latitude }) => {
+  try {
+    const response = await locationApi.getLocationInfo({ coords: `${longitude},${latitude}` })
+    if (response.status === 200) {
+      commit(
+        'setCurrentLocation',
+        locationMapping.locationMapping({ ...response, longitude, latitude }),
+      )
+    }
+    return response
+  } catch (error) {
+    dispatch('alert/alertOpen', {
+      status: error.data.status.code,
+      message: '올바른 지명 정보를 받아오지 못했습니다.',
+    }, { root: true })
+    return error
+  }
+}
+
 export default {
   signIn,
   signUp,
@@ -183,5 +223,7 @@ export default {
   addNewLocation,
   deleteLocation,
   selectLocation,
+  currentLocationSetting,
   initLocation,
+  fetchCurrentLocationName,
 }

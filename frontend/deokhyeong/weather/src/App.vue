@@ -1,7 +1,8 @@
 <template>
   <v-app>
     <toast-message />
-    <v-main v-if="isAppLoading">
+    <app-loading v-if="isAppLoading" />
+    <v-main v-else>
       <router-view />
     </v-main>
   </v-app>
@@ -9,16 +10,17 @@
 
 <script>
 import { mapActions } from 'vuex'
+import AppLoading from '@/ui/components/AppLoading'
 import mockUserInit from '../mocks/mockUsersInit'
 import auth from './service/domain/auth'
 import ToastMessage from './ui/components/ToastMessage'
 
 export default {
   name: 'App',
-  components: { ToastMessage },
+  components: { AppLoading, ToastMessage },
   data() {
     return {
-      isAppLoading: false,
+      isAppLoading: true,
     }
   },
   async created() {
@@ -27,7 +29,7 @@ export default {
     if (accessToken) {
       await this.getUserInfo()
     }
-    this.isAppLoading = true
+    this.isAppLoading = false
   },
   methods: {
     ...mapActions('auth', ['getUserInfo']),
@@ -46,5 +48,9 @@ export default {
   background: white;
   display: flex;
   justify-content: center;
+}
+
+.full-height {
+  height: 100%;
 }
 </style>

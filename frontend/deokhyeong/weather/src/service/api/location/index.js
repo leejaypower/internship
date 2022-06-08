@@ -1,4 +1,5 @@
 import fakeHttp from '@/lib/fakeHttp'
+import naverHttp from '@/lib/naverHttp'
 import locationHttp from '@/lib/locationHttp'
 
 // api 통신이라 가정한 코드
@@ -15,6 +16,18 @@ const selectLocation = (locationData) => fakeHttp.post('/location/select', locat
 
 const initLocation = () => fakeHttp.post('/location/init')
 
+/**
+ *
+ * @param {{coords : string}} locationData  `${lat},${long}`의 string형태
+ */
+const getLocationInfo = (locationData) => naverHttp.get('/map-reversegeocode/v2/gc', {
+  params: {
+    ...locationData,
+    output: 'json',
+    orders: 'admcode',
+  },
+})
+
 export default {
   getKoreaAdministrativeDistrict,
   getSigunguLocation,
@@ -22,4 +35,5 @@ export default {
   deleteLocation,
   selectLocation,
   initLocation,
+  getLocationInfo,
 }

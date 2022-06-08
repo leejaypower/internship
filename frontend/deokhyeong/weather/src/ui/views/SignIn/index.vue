@@ -1,38 +1,34 @@
 <template>
-  <v-container>
+  <div class="d-flex flex-column justify-center align-center full-height pb-16">
     <logo-and-title
       src="/images/logo.png"
       position="right"
       :height="96"
       title="오늘의 날씨"
     />
-    <v-row
-      justify="center"
+    <submit-card-form
+      card-title="로그인"
+      :inputs="inputs"
+      submit-button-text="로그인"
+      :is-inactive-submit-button="isInactiveSubmitButton"
+      @onChangeInput="onChangeInput"
+      @onSubmitCardForm="onSubmitCardForm"
     >
-      <submit-card-form
-        card-title="로그인"
-        :inputs="inputs"
-        submit-button-text="로그인"
-        :is-inactive-submit-button="isInactiveSubmitButton"
-        @onChangeInput="onChangeInput"
-        @onSubmitCardForm="onSubmitCardForm"
-      >
-        <template #underSubmitButton>
-          <v-card-text
-            class="d-flex justify-center"
+      <template #underSubmitButton>
+        <v-card-text
+          class="d-flex justify-center"
+        >
+          계정이 없으신가요?
+          <router-link
+            class="pl-1 text-decoration-none"
+            to="sign-up"
           >
-            계정이 없으신가요?
-            <router-link
-              class="pl-1 text-decoration-none"
-              to="sign-up"
-            >
-              회원가입
-            </router-link>
-          </v-card-text>
-        </template>
-      </submit-card-form>
-    </v-row>
-  </v-container>
+            회원가입
+          </router-link>
+        </v-card-text>
+      </template>
+    </submit-card-form>
+  </div>
 </template>
 
 <script>

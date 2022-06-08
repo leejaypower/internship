@@ -1,6 +1,7 @@
 <template>
   <div
-    :class="className"
+    class="d-flex pb-4"
+    :class="headerClass"
   >
     <h1>{{ title }}</h1>
   </div>
@@ -18,9 +19,11 @@ export default {
     },
   },
   computed: {
-    className() {
-      const result = `d-flex justify-${this.justify || 'center'} pb-4`
-      return result
+    headerClass() {
+      const result = `justify-${this.justify || 'center'} `
+      return {
+        [result]: true,
+      }
     },
   },
 }

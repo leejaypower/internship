@@ -91,8 +91,8 @@ const testUsers = [
 ]
 
 const mockUsersInit = () => {
-  const isExistedUsers = localStorage.getItem('users')
-  if (!isExistedUsers) {
+  const isValidUsers = localStorage.getItem('users')
+  if (!isValidUsers) {
     localStorage.setItem('users', JSON.stringify(testUsers))
   }
 }

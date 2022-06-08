@@ -44,10 +44,10 @@ const fetchAddLocation = (headers, body) => {
     return expiredResponse
   }
 
-  const isExistedLocation = targetUser.bookmarkLocations.find(
+  const isValidLocation = targetUser.bookmarkLocations.find(
     (bookmark) => bookmark.location === body.location,
   )
-  if (isExistedLocation) {
+  if (isValidLocation) {
     const existedLocationResponse = Promise.reject({
       status: 400,
       data: {

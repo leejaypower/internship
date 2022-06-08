@@ -1,6 +1,6 @@
-import alertActions from './actions'
-import alertMutations from './mutations'
-import alertGetters from './getters'
+import actions from './actions'
+import mutations from './mutations'
+import getters from './getters'
 
 const alert = {
   namespaced: true,
@@ -10,15 +10,9 @@ const alert = {
     message: '',
     timeout: 4000,
   },
-  getters: {
-    ...alertGetters,
-  },
-  mutations: {
-    ...alertMutations,
-  },
-  actions: {
-    ...alertActions,
-  },
+  getters,
+  mutations,
+  actions,
 }
 
 export default alert
