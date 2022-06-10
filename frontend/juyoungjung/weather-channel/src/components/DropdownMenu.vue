@@ -55,17 +55,22 @@ export default {
   }),
   computed: {
     ...mapGetters('user/', [
-      'responseInfoType',
+      'accessToken',
       'nickname',
     ]),
   },
   watch: {
-    responseInfoType(value) {
-      if (value === 'success') {
+    accessToken(value) {
+      if (value) {
         this.dropdownMenuItems = DropdownMenuItems.after_login
-        this.dropdownBtnText = this.nickname
       } else {
         this.dropdownMenuItems = DropdownMenuItems.before_login
+      }
+    },
+    nickname(value) {
+      if (value && value !== this.dropdownBtnText) {
+        this.dropdownBtnText = value
+      } else {
         this.dropdownBtnText = '환영합니다'
       }
     },

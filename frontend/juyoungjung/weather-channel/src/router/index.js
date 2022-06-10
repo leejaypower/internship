@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import { REFRESHTOKEN } from '@/constants/localStorage-types'
 import store from '../store'
 
 Vue.use(VueRouter)
@@ -40,6 +41,10 @@ const routes = [
       },
     ],
   },
+  {
+    path: '/:pathMatch(.*)*',
+    component: () => import('@/views/NotFound.vue'),
+  },
 ]
 
 const router = new VueRouter({
@@ -49,13 +54,19 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  if (to.meta.authRequired && !localStorage.getItem('email')) {
+  if (to.meta.authRequired && !localStorage.getItem(REFRESHTOKEN)) {
     store.dispatch('user/setLoginFormModalVisible', {
       visible: true,
     })
+
     next('/')
     return
   }
+
+  if (from.name !== 'SignUp' && store.getters['user/responseInfo'].type === 'success') {
+    store.dispatch('user/resetResponseInfo')
+  }
+
   next()
 })
 

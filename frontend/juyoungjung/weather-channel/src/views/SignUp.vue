@@ -1,12 +1,6 @@
 <template>
   <div>
-    <v-alert
-      v-show="alertInfo.isError"
-      :type="alertInfo.type"
-    >
-      {{ alertInfo.message }}
-    </v-alert>
-
+    <response-info-alert />
     <h1 class="text-center my-10">
       회원가입
     </h1>
@@ -15,23 +9,27 @@
     </h3>
 
     <v-form
+      ref="form"
       v-model="valid"
     >
       <v-container>
         <v-row>
           <email-input
             :email="email"
+            :disabled="false"
             @onChangeEmail="onChangeEmail"
           />
         </v-row>
         <v-row class="mt-6">
           <nickname-input
             :nickname="nickname"
+            :disabled="false"
             @onChangeNickname="onChangeNickname"
           />
         </v-row>
         <v-row class="mt-6">
           <password-input
+            :label="passwordLabel"
             :password="password"
             @onChangePassword="onChangePassword"
           />
@@ -40,8 +38,6 @@
           <password-check-input
             :password="password"
             :password-check="passwordCheck"
-            :password-check-error="passwordCheckError"
-            :reset-password-check-error="resetPasswordCheckError"
             @onChangePasswordCheck="onChangePasswordCheck"
           />
         </v-row>
@@ -55,17 +51,17 @@
         </v-row>
         <v-row class="mt-16 d-flex justify-center">
           <v-btn
-            :disabled="!valid"
-            color="success"
+            color="primary"
             class="mr-4"
+            x-large
             @click="submitForm"
           >
             가입하기
           </v-btn>
-
           <v-btn
-            color="error"
-            class="mr-4"
+            color="orange"
+            x-large
+            dark
             @click="resetForm"
           >
             모두 지우기
@@ -80,9 +76,8 @@ import EmailInput from '@/components/EmailInput.vue'
 import NicknameInput from '@/components/NicknameInput.vue'
 import PasswordInput from '@/components/PasswordInput.vue'
 import PasswordCheckInput from '@/components/PasswordCheckInput.vue'
-import checkDuplicatedInfo from '@/services/checkDuplicatedInfo'
-import saveTargetAtLocalStorage from '@/services/saveTargetAtLocalStorage'
-import { USER_INFO_EMAIL, USER_INFO_NICKNAME, USER_INFO_PASSWORD } from '@/constants/signup-types'
+import ResponseInfoAlert from '@/components/ResponseInfoAlert.vue'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'SignUp',
@@ -91,25 +86,34 @@ export default {
     NicknameInput,
     PasswordInput,
     PasswordCheckInput,
+    ResponseInfoAlert,
   },
   data: () => ({
     valid: true,
     email: '',
     nickname: '',
     password: '',
+    passwordLabel: '비밀번호',
     passwordCheck: '',
     select: null,
     isAgreePrivateInfoUseRule: [
       (v) => !!v || '회원가입을 계속 진행하시려먼 개인정보이용에 동의하셔야 합니다.',
     ],
     isAgreePrivateInfoUse: false,
-    alertInfo: {
-      type: 'info',
-      isError: false,
-      message: '',
-    },
-    passwordCheckError: false,
+    isLoginBtnVisible: false,
   }),
+  computed: {
+    ...mapGetters('user/', [
+      'responseInfoType',
+    ]),
+  },
+  watch: {
+    responseInfoType(value) {
+      if (value === 'success') {
+        this.$router.push('/')
+      }
+    },
+  },
   methods: {
     onChangeEmail(newValue) {
       this.email = newValue
@@ -123,39 +127,17 @@ export default {
     onChangePasswordCheck(newValue) {
       this.passwordCheck = newValue
     },
-    setAlertMessage(info) {
-      this.alertInfo.type = info ? 'error' : 'success'
-      this.alertInfo.isError = info ? 'error' : 'success'
-      this.alertInfo.message = info ? `동일한 ${info} 이미 가입한 사용자가 있습니다. 다른 ${info} 사용해주세요.` : '회원가입에 성공하였습니다.'
-    },
     submitForm() {
-      const isValid = this.valid && this.password === this.passwordCheck
+      const isValid = this.$refs.form.validate()
 
       if (isValid) {
-        const needDuplicateCheckList = [USER_INFO_EMAIL, USER_INFO_NICKNAME]
-        const firstDuplicatedInfo = needDuplicateCheckList
-          .find((info) => checkDuplicatedInfo(this[info], info))
-
-        if (!firstDuplicatedInfo) {
-          const needSaveList = needDuplicateCheckList.concat(USER_INFO_PASSWORD)
-          needSaveList.map((info) => saveTargetAtLocalStorage(info, this[info]))
-          this.setAlertMessage(null)
-        } else {
-          const translatedAlertInfoTarget = {
-            email: '이메일로',
-            nickname: '닉네임으로',
-          }
-          this.setAlertMessage(translatedAlertInfoTarget[firstDuplicatedInfo])
-        }
+        this.$store.dispatch('user/signup', { email: this.email, nickname: this.nickname, password: this.password })
       } else {
         this.passwordCheckError = true
       }
     },
     resetForm() {
       this.$refs.form.reset()
-    },
-    resetPasswordCheckError() {
-      this.passwordCheckError = false
     },
   },
 }

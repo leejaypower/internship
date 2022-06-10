@@ -17,18 +17,6 @@
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </v-toolbar>
-      <v-alert
-        v-show="isWrongEmailOrPasswordError"
-        type="error"
-      >
-        잘못된 이메일 또는 비밀번호입니다. 다시 확인 후 시도해주세요.
-      </v-alert>
-      <v-alert
-        v-show="isNotRegisteredEmailError"
-        type="error"
-      >
-        아직 가입되지 않은 이메일입니다. 회원가입 후 다시 시도해주세요.
-      </v-alert>
       <v-card-title class="my-14 d-flex flex-column justify-center">
         <h3 class="mb-10">
           The Weather Channel
@@ -58,6 +46,7 @@
         </v-row>
       </v-card-title>
       <v-form
+        ref="form"
         v-model="valid"
       >
         <v-container :class="responsiveFormWidth">
@@ -65,11 +54,13 @@
             <v-row>
               <email-input
                 :email="email"
+                :disabled="false"
                 @onChangeEmail="onChangeEmail"
               />
             </v-row>
             <v-row>
               <password-input
+                :label="passwordLabel"
                 :password="password"
                 @onChangePassword="onChangePassword"
               />
@@ -106,7 +97,7 @@
 import { mapGetters } from 'vuex'
 import {
   PC_WIDTH, MOBILE_WIDTH, PC_FORM_WRAPPER_CLASS, MOBILE_FORM_WRAPPER_CLASS,
-} from '@/constants/login-form-modal-types'
+} from '@/constants/modal-types'
 import EmailInput from './EmailInput.vue'
 import PasswordInput from './PasswordInput.vue'
 
@@ -115,10 +106,9 @@ export default {
   components: { EmailInput, PasswordInput },
   data: () => ({
     email: '',
+    passwordLabel: '비밀번호',
     password: '',
     valid: true,
-    isWrongEmailOrPasswordError: false,
-    isNotRegisteredEmailError: false,
   }),
   computed: {
     ...mapGetters('user/', ['isLoginFormModalVisible']),
@@ -144,34 +134,16 @@ export default {
       })
     },
     submitForm() {
-      const isValid = this.valid
-      const localStorageEmail = localStorage.getItem('email')
-      const localStoragePassword = localStorage.getItem('password')
+      const isValid = this.$refs.form.validate()
 
       if (isValid) {
-        if (!localStorageEmail) {
-          this.isNotRegisteredEmailError = true
-          return
-        }
-        if (
-          localStorageEmail === this.email
-          && localStoragePassword === this.password
-        ) {
-          const nickname = localStorage.getItem('nickname')
-          this.$store.dispatch('user/login', {
-            data: {
-              email: this.email,
-              nickname,
-              password: this.password,
-            },
-            status: 200,
-          })
-          this.isNotRegisteredEmailError = false
-          this.isWrongEmailOrPasswordError = false
-          this.closeLoginFormModal()
-        } else {
-          this.isWrongEmailOrPasswordError = true
-        }
+        this.$store.dispatch('user/login', {
+          email: this.email,
+          password: this.password,
+        })
+
+        this.$refs.form.reset()
+        this.closeLoginFormModal()
       }
     },
   },

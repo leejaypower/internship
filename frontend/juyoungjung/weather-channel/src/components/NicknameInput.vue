@@ -6,6 +6,7 @@
     required
     clear-icon="mdi-close-circle"
     clearable
+    :disabled="disabled"
     @input="updateNickname($event)"
     @click:clear="clearNickname"
   />
@@ -17,6 +18,10 @@ export default {
     nickname: {
       type: String,
       default: '',
+    },
+    disabled: {
+      type: Boolean,
+      default: true,
     },
   },
   emits: ['onChangeNickname'],

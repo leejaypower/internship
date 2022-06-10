@@ -9,7 +9,6 @@
     :type="handlePasswordCheckInputType"
     clear-icon="mdi-close-circle"
     clearable
-    :error="passwordCheckError"
     @click:append="togglePasswordCheckVisible"
     @click:clear="clearPasswordCheck"
     @input="updatePasswordCheck($event)"
@@ -27,20 +26,10 @@ export default {
       type: String,
       default: '',
     },
-    passwordCheckError: {
-      type: Boolean,
-      default: false,
-    },
-    resetPasswordCheckError: {
-      type: Function,
-      default: () => {
-        this.$emit('resetPasswordCheckError')
-      },
-    },
   },
   emits: ['onChangePasswordCheck'],
   data: () => ({
-    isPasswordCheckVisible: true,
+    isPasswordCheckVisible: false,
     passwordCheckRules: [
       (v) => (!!v && !!v?.trim()) || '비밀번호 확인하기는 필수 입력값입니다.',
     ],
@@ -50,7 +39,7 @@ export default {
       return this.isPasswordCheckVisible ? 'mdi-eye' : 'mdi-eye-off'
     },
     handlePasswordCheckInputType() {
-      return this.isPasswordCheckVisible ? 'text' : 'current-password'
+      return this.isPasswordCheckVisible ? 'text' : 'password'
     },
   },
   mounted() {
@@ -65,7 +54,6 @@ export default {
     },
     updatePasswordCheck(newPasswordCheck) {
       this.$emit('onChangePasswordCheck', newPasswordCheck)
-      this.resetPasswordCheckError()
     },
   },
 }

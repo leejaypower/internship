@@ -1,7 +1,16 @@
 # weather-channel
 
-Vue.js와 Vuetify, Vue Router, Vuex, OpenWeather API를 이용해 만든 날씨정보를 알
-려주는 웹페이지입니다.
+- Vue.js와 Vuetify, Vue Router, Vuex, OpenWeather API를 이용해 만든 날씨정보를알
+  려주는 웹페이지입니다. fakeServer와 fakeAxios를 통해 JWT로 서버와 통신하는듯한
+  효과를 내었습니다.
+- 현재 코드는 `fakeServer`에서 JWT를 만들어 decode해서 프론트쪽으로
+  `accessToken과` `refreshToken과` 함께 `accessTokenExpireTime`과
+  `refreshTokenExpireTime`을 전달해준다는 시나리오를 바탕으로 작성되었습니다.
+- `accessToken` 만료기간은 3분, `refreshToken` 만료기간은 하루로 설정되어 있으며
+  `/fakeserver/services/JWT/makeJWT.js`에서 해당 만료기간 설정을 바꿀 수 있습니
+  다.
+- 클라이언트에서는 `vuex store`에 서버로 부터 발급된 `accessToken`이 저장되어 있
+  고, `refreshToken`은 브라우저 `localStorage`에 저장되어 있습니다.
 
 # Project Design
 
@@ -54,30 +63,11 @@ Vue.js와 Vuetify, Vue Router, Vuex, OpenWeather API를 이용해 만든 날씨�
 - 탭 안의 content로 상위 탭 중 하나 클릭 시 해당 요일의 날씨 상세 표(날씨 아이콘
   , 예상 강수량, 체감온도, 습도, 바람, 자외선 지수, 일출, 일몰 표시) 넣기
 
-## 3. 회원가입 form 만들기
-
-### SignUp Page(회원가입 페이지)
-
-- 이메일 입력 시 이메일 양식에 맞는지 정규표현식으로 유효성 검사하기
-- 비밀번호 확인하기 input으로 처음 입력 비밀번호와 확인하기 비밀번호 같은지 체크
-  하기(추가시간 발생 시 작업예정)
-- localStorage에 가입정보 넣어 사용하기
+## 3. 회원가입 페이지 form 만들기
 
 ## 4. 상세 페이지는 로그인 시 접근 가능, 오늘 날씨 또는 일일예보 카드 클릭 시 로그인 form 모달창 띄우기
 
-### Login modal
-
-- 비밀번호 입력 시 보일지 여부 선택 버튼 넣기(추가시간 발생 시 작업 예정)
-- 로그인 시 이메일, 비밀번호 값 여부 체크하기
-- 잘못된 이메일, 비밀번호 입력 시 error Alert 띄우기
-- 성공시 success Alert 띄우기
-- jwtdecode library이용해 accessToken, refreshToken localStorage에 넣고 사용하기
-
 ## 5. Update MyInfo Page (내 정보 수정하기 페이지)
-
-- localStorage에 있는 비밀번호 업데이트 하기
-- 현재 비밀번호와 새 비밀번호가 같은지 체크하기
-- 아바타 넣기(추가시간 발생 시 작업예정)
 
 ## 4. mobile & pc 반응형 구현하기
 
@@ -90,7 +80,6 @@ Vue.js와 Vuetify, Vue Router, Vuex, OpenWeather API를 이용해 만든 날씨�
     "axios": "^0.27.2",
     "core-js": "^3.8.3",
     "dayjs": "^1.11.1",
-    "jwt-decode": "^3.1.2",
     "vue": "^2.6.14",
     "vue-router": "^3.5.1",
     "vuetify": "^2.6.0",
@@ -103,6 +92,33 @@ Vue.js와 Vuetify, Vue Router, Vuex, OpenWeather API를 이용해 만든 날씨�
 .
 ├── README.md
 ├── babel.config.js
+├── dist
+│   ├── currentWeatherRes.js
+│   ├── naverRes.js
+│   └── oneCallRes.js
+├── fakeAxios
+│   ├── index.js
+│   └── interceptor.js
+├── fakeServer
+│   ├── constant
+│   │   └── index.js
+│   ├── db
+│   │   └── index.js
+│   ├── index.js
+│   ├── middleware
+│   │   ├── checkTokenExpireTime.js
+│   │   └── isJWTValid.js
+│   ├── router
+│   │   └── index.js
+│   └── services
+│       ├── JWT
+│       │   ├── index.js
+│       │   └── makeJWT.js
+│       ├── checkDuplicatedInfo.js
+│       ├── getUserInfoList.js
+│       ├── makeReturn.js
+│       ├── saveUserInfoAtLocalStorage.js
+│       └── translateInfoKey.js
 ├── jest.config.js
 ├── jsconfig.json
 ├── package-lock.json
@@ -113,19 +129,38 @@ Vue.js와 Vuetify, Vue Router, Vuex, OpenWeather API를 이용해 만든 날씨�
 ├── src
 │   ├── App.vue
 │   ├── api
-│   │   └── index.js
+│   │   ├── fakeAxios
+│   │   │   ├── interceptorCallback.js
+│   │   │   └── setupFakeAxios.js
+│   │   ├── index.js
+│   │   ├── naverGeocoding.js
+│   │   ├── openWeatherMap.js
+│   │   └── user.js
 │   ├── assets
+│   │   ├── logo.png
 │   │   └── styles
 │   │       └── global.scss
 │   ├── components
 │   │   ├── AppBar.vue
-│   │   ├── DropDownMenu.vue
+│   │   ├── AuthTypeChip.vue
+│   │   ├── DropdownMenu.vue
 │   │   ├── EmailInput.vue
 │   │   ├── LoginFormModal.vue
+│   │   ├── NavigationDrawer.vue
 │   │   ├── NicknameInput.vue
 │   │   ├── PasswordCheckInput.vue
 │   │   ├── PasswordInput.vue
-│   │   └── UpdatePasswordFormModal.vue
+│   │   ├── ResponseErrorInfoAlert.vue
+│   │   ├── ResponseInfoAlert.vue
+│   │   └── UpdatePasswordModal.vue
+│   ├── constants
+│   │   ├── localStorage-types.js
+│   │   ├── modal-types.js
+│   │   └── mutation-types.js
+│   ├── data
+│   │   ├── AppBarMenuItems.js
+│   │   ├── DropdownMenuItems.js
+│   │   └── weatherDescKo.js
 │   ├── main.js
 │   ├── plugins
 │   │   └── vuetify.js
@@ -134,12 +169,12 @@ Vue.js와 Vuetify, Vue Router, Vuex, OpenWeather API를 이용해 만든 날씨�
 │   ├── store
 │   │   ├── index.js
 │   │   └── modules
-│   │       ├── app.js
 │   │       ├── index.js
 │   │       ├── user.js
 │   │       └── weather.js
 │   └── views
 │       ├── DashBoard.vue
+│       ├── NotFound.vue
 │       ├── SignUp.vue
 │       ├── UpdateMyInfo.vue
 │       └── Weather
@@ -149,7 +184,7 @@ Vue.js와 Vuetify, Vue Router, Vuex, OpenWeather API를 이용해 만든 날씨�
 ├── tests
 │   └── unit
 │       └── dashboard.spec.js
-└── vue.config.js
+└── vue.config.j
 ```
 
 ## Project setup
@@ -159,24 +194,29 @@ npm install
 ```
 
 ### Compiles and hot-reloads for development
+
 ```
 npm run serve
 ```
 
 ### Compiles and minifies for production
+
 ```
 npm run build
 ```
 
 ### Run your unit tests
+
 ```
 npm run test:unit
 ```
 
 ### Lints and fixes files
+
 ```
 npm run lint
 ```
 
 ### Customize configuration
+
 See [Configuration Reference](https://cli.vuejs.org/config/).

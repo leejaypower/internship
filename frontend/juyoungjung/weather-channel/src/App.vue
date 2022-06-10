@@ -9,14 +9,25 @@
 
 <script>
 import AppBar from '@/components/AppBar.vue'
+import { REFRESHTOKEN, USERINFOLIST } from '@/constants/localStorage-types'
+import { mapGetters } from 'vuex'
+import { setUserInfoListAtLocalStorage } from '../fakeServer'
 
 export default {
   name: 'App',
   components: { AppBar },
-  // created() {
-  //   localStorage.setItem('email', 'test@test.com')
-  //   localStorage.setItem('password', 'test')
-  //   localStorage.setItem('nickname', 'test')
-  // },
+  computed: {
+    ...mapGetters('user/', [
+      'accessToken',
+    ]),
+  },
+  created() {
+    if (!localStorage.getItem(USERINFOLIST)) {
+      setUserInfoListAtLocalStorage()
+    }
+    if (!this.accessToken && localStorage.getItem(REFRESHTOKEN)) {
+      this.$store.dispatch('user/renewalAccessTokenInfo')
+    }
+  },
 }
 </script>

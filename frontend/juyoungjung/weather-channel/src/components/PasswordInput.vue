@@ -3,7 +3,7 @@
     :value="password"
     :rules="passwordRules"
     :counter="16"
-    label="비밀번호"
+    :label="label"
     required
     :hint="isSignUp"
     :append-icon="handlePasswordVisible"
@@ -23,10 +23,14 @@ export default {
       type: String,
       default: '',
     },
+    label: {
+      type: String,
+      default: '비밀번호',
+    },
   },
   emits: ['onChangePassword'],
   data: () => ({
-    isPasswordVisible: true,
+    isPasswordVisible: false,
     passwordRules: [
       (v) => (!!v && !!v?.trim()) || '비밀번호는 필수 입력값입니다.',
       (v) => (v && v.length >= 4 && v.length <= 16) || '비밀번호는 4글자 이상 16글자 이하로 입력해주세요.',
@@ -37,7 +41,7 @@ export default {
       return this.isPasswordVisible ? 'mdi-eye' : 'mdi-eye-off'
     },
     handlePasswordInputType() {
-      return this.isPasswordVisible ? 'text' : 'current-password'
+      return this.isPasswordVisible ? 'text' : 'password'
     },
     isSignUp() {
       return this.$route.path === '/signup' ? '비밀번호는 4글자 이상 16글자 이하로 입력해주세요.' : ''

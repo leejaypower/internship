@@ -1,5 +1,5 @@
 /* eslint-disable no-shadow */
-import { getCurrentWeatherData } from '@/api'
+import { weatherApi } from '@/api'
 import { SET_CURRENT_WEATHER_DATA } from '@/constants/mutation-types'
 
 const state = () => ({
@@ -8,7 +8,7 @@ const state = () => ({
 })
 
 const getters = {
-  doneCurrentWeatherMain(state) {
+  currentWeatherMain(state) {
     return state.currentWeatherData?.weather[0].main
   },
 }
@@ -16,8 +16,8 @@ const getters = {
 const actions = {
   async loadCurrentWeatherData({ commit }, payload) {
     commit(
-      'SET_CURRENT_WEATHER_DATA',
-      await getCurrentWeatherData(payload.cityName),
+      SET_CURRENT_WEATHER_DATA,
+      await weatherApi.getCurrentWeatherData(payload.cityName),
     )
   },
 }

@@ -1,0 +1,11 @@
+const USER_INFO_EMAIL = 'email'
+const USER_INFO_NICKNAME = 'nickname'
+const USER_INFO_ACCESSTOKEN = 'accessToken'
+const USER_INFO_REFRESHTOKEN = 'refreshToken'
+
+export {
+  USER_INFO_EMAIL,
+  USER_INFO_NICKNAME,
+  USER_INFO_ACCESSTOKEN,
+  USER_INFO_REFRESHTOKEN,
+}

@@ -6,17 +6,23 @@
     required
     clear-icon="mdi-close-circle"
     clearable
+    :disabled="disabled"
     @input="updateEmail($event)"
     @click:clear="clearEmail"
   />
 </template>
 <script>
+
 export default {
   name: 'EmailInput',
   props: {
     email: {
       type: String,
       default: '',
+    },
+    disabled: {
+      type: Boolean,
+      default: true,
     },
   },
   emits: ['onChangeEmail'],
