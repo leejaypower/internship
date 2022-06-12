@@ -5,7 +5,7 @@ export default {
   currentName(state) {
     return state.currentLocation.coord.name
   },
-  currentDatas(state) {
+  currentData(state) {
     return state.currentLocation.weatherData.current
   },
   currentDailyDatas(state) {
@@ -16,5 +16,11 @@ export default {
   },
   isWeatherFetchResult(state) {
     return state.currentLocation.isWeatherFetchResult
+  },
+  locationCoord(state) {
+    return state.location.coord
+  },
+  locationData(state) {
+    return state.location.weatherData
   },
 }

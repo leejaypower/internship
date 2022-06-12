@@ -3,7 +3,7 @@ import axios from 'axios'
 const WEATHER_URL = 'https://api.openweathermap.org/data/2.5/onecall'
 const NAVER_URL = '/map-reversegeocode/v2/gc'
 
-const weatherAxios = axios.create({
+const weather = axios.create({
   baseURL: WEATHER_URL,
   method: 'GET',
   params: {
@@ -14,7 +14,7 @@ const weatherAxios = axios.create({
   },
 })
 
-const naverAxios = axios.create({
+const naver = axios.create({
   baseURL: NAVER_URL,
   method: 'GET',
   headers: {
@@ -28,4 +28,4 @@ const naverAxios = axios.create({
   },
 })
 
-export { weatherAxios, naverAxios }
+export { weather, naver }

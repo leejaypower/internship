@@ -14,7 +14,7 @@
           <v-icon color="pink">
             mdi-map-marker-radius
           </v-icon>
-          <span>{{ currentName }}</span>
+          <span>{{ title }}</span>
         </v-col>
         <v-col
           :cols="isMobile && 2"
@@ -112,7 +112,6 @@
 <script>
 import weatherIdDescMap from '@/utils/weatherIdDescMap'
 import weatherMixins from '@/mixins/weather'
-import { mapGetters } from 'vuex'
 
 export default {
   name: 'CurrentWeatherCard',
@@ -126,14 +125,16 @@ export default {
       type: Object,
       required: true,
     },
+    title: {
+      type: String,
+      required: true,
+    },
     onReFetch: {
       type: Function,
       required: true,
     },
   },
   computed: {
-    ...mapGetters('user', ['userIdx']),
-    ...mapGetters('weather', ['currentName', 'currentCoords']),
     weatherIdDescMap() {
       return this.currentData.weather && weatherIdDescMap[this.currentData.weather[0].id]
     },

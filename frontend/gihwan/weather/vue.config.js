@@ -4,7 +4,7 @@ module.exports = defineConfig({
   transpileDependencies: [
     'vuetify',
   ],
-  devServer:{
+  devServer: {
     proxy: 'https://naveropenapi.apigw.ntruss.com',
-  }
+  },
 })

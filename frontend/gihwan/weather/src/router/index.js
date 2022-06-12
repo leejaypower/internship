@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import { AuthHub, LoginView, SignupView } from '@/views/auth'
-import { CurrentLocation, WeatherHub } from '@/views/weather'
+import { CurrentLocation, WeatherHub, LocationView } from '@/views/weather'
 import { MyPageHub, UserInfo } from '@/views/mypage'
 
 Vue.use(VueRouter)
@@ -17,6 +17,11 @@ const routes = [
         path: 'current',
         name: 'current',
         component: CurrentLocation,
+      },
+      {
+        path: 'location',
+        name: 'location',
+        component: LocationView,
       },
     ],
   },

@@ -3,17 +3,11 @@ import { alert } from '@/lib'
 import getCurrentLocation from '@/utils/geolocation'
 
 export default {
-  updateCurrentCoord({ commit }, payload) {
-    commit('updateCurrentCoord', payload)
-  },
   updateCurrentName({ commit }, payload) {
     const { name, number1 } = payload.land
     const { area1, area2 } = payload.region
     const currenName = `${area1.name} ${area2.name} ${name} ${number1}`
     commit('updateCurrentName', { name: currenName })
-  },
-  updateCurrentWeatherData({ commit }, payload) {
-    commit('updateCurrentWeatherData', payload)
   },
   async defaultLocationUpdate({ getters, commit }) {
     const fetchs = (coords) => [getWeahterDataFetch(coords), getLocationName(coords)]
@@ -59,6 +53,16 @@ export default {
       }
       alert.error(error.message, '통신을 실패했습니다.<br/>기본 위치의 날씨를 보여줍니다.')
       dispatch('defaultLocationUpdate')
+    }
+  },
+  async locationGetData({ commit }, payload) {
+    const { coords, name } = payload
+    try {
+      const { data } = await getWeahterDataFetch(coords)
+      commit('updateLocationCoord', { ...coords, name })
+      commit('updateLocationData', data)
+    } catch (error) {
+      alert.error('통신 실패', error.message)
     }
   },
 }

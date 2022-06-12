@@ -12,6 +12,14 @@ const state = () => ({
     },
     isWeatherFetchResult: false,
   },
+  location: {
+    coord: null,
+    weatherData: {
+      current: null,
+      daily: null,
+      hourly: null,
+    },
+  },
 })
 
 export default state

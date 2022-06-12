@@ -12,4 +12,12 @@ export default {
     state.currentLocation.weatherData.hourly = payload.hourly
     state.currentLocation.isWeatherFetchResult = true
   },
+  updateLocationCoord(state, payload) {
+    state.location.coord = payload
+  },
+  updateLocationData(state, payload) {
+    state.location.weatherData.current = payload.current
+    state.location.weatherData.daily = payload.daily
+    state.location.weatherData.hourly = payload.hourly
+  },
 }

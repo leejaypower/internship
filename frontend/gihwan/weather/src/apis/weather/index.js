@@ -1,14 +1,14 @@
-import { naverAxios, weatherAxios } from '@/lib/axios'
+import { axios } from '@/lib'
 
 const getWeahterDataFetch = (coord) => {
   const { lat, lon } = coord
-  const result = weatherAxios({ params: { lat, lon } })
+  const result = axios.weather({ params: { lat, lon } })
   return result
 }
 
 const getLocationName = (coord) => {
   const { lat, lon } = coord
-  const result = naverAxios({ params: { coords: `${lon},${lat}` } })
+  const result = axios.naver({ params: { coords: `${lon},${lat}` } })
   return result
 }
 

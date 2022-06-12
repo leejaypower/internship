@@ -2,8 +2,9 @@
   <v-container>
     <CurrentWeather
       :loading="loading"
-      :current-data="currentDatas"
+      :current-data="currentData"
       :on-re-fetch="getCurrentInfo"
+      :title="currentName"
     />
     <HourWeather
       :loading="loading"
@@ -30,7 +31,7 @@ export default {
     loading: false,
   }),
   computed: {
-    ...mapGetters('weather', ['isWeatherFetchResult', 'currentDatas', 'currentDailyDatas', 'currentHourlyDatas']),
+    ...mapGetters('weather', ['isWeatherFetchResult', 'currentName', 'currentData', 'currentDailyDatas', 'currentHourlyDatas']),
   },
   async created() {
     if (!this.isWeatherFetchResult) {
