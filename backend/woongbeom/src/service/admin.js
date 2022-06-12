@@ -1,5 +1,5 @@
 const repository = require('../repository');
-const auth = require('../middleware/auth');
+const lib = require('../../lib');
 
 const signIn = async (email, password) => {
   try {
@@ -10,7 +10,7 @@ const signIn = async (email, password) => {
     if (adminInfo.password !== password) {
       throw new Error('wrong password');
     }
-    const token = auth.jwt.issue({ email }, { expiresIn: '10 minute' });
+    const token = lib.auth.jwt.sign({ email, ROLE: lib.common.constant.ROLE.ADMIN }, { expiresIn: lib.common.constant.token.expiresIn });
     return token;
   } catch (err) {
     return err.message;

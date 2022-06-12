@@ -1,0 +1,11 @@
+type user {
+  name: String
+}
+
+type Query {
+  users: [user]
+}
+
+type Mutation {
+  users: [user]
+}

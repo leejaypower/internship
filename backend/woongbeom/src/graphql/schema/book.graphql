@@ -1,0 +1,11 @@
+type book {
+  title: String
+}
+
+type Query {
+  books: [book]
+}
+
+type Mutation {
+  books: [book]
+}

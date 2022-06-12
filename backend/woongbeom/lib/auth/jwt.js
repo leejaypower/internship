@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 
-const issue = async (payload, expiresIn) => jwt.sign(payload, process.env.SECRET_KEY, expiresIn);
+const sign = async (payload, expiresIn) => jwt.sign(payload, process.env.SECRET_KEY, expiresIn);
 
 const verify = async (token) => {
   try {
@@ -10,4 +10,4 @@ const verify = async (token) => {
   }
 };
 
-module.exports = { issue, verify };
+module.exports = { sign, verify };

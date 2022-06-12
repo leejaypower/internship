@@ -1,0 +1,7 @@
+type auth {
+    decodedToken: String
+}
+
+type Query {
+    isAuthenticated(token: String, role: String): auth
+}

@@ -1,4 +1,4 @@
-require('../../common/util/env');
+require('../../../lib/common/env');
 
 const { env } = process;
 

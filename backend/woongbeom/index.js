@@ -1,5 +1,5 @@
-require('./src/common/util/env');
+require('./lib/common/env');
 
 const app = require('./src/app');
 
-app.start();
+Promise.resolve(app.start());

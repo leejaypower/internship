@@ -11,7 +11,7 @@ const getListAll = async (ctx) => {
 const signIn = async (ctx) => {
   const { email, password } = ctx.request.body;
   const token = await service.user.signIn(email, password);
-  ctx.header = token;
+  ctx.body = token;
 };
 
 module.exports = { createUser, getListAll, signIn };
