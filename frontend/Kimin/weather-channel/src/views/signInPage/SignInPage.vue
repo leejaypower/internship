@@ -31,9 +31,7 @@
 import TimeBox from '@/views/signInPage/components/TimeBox.vue'
 import SignInBox from '@/views/signInPage/components/SignInBox.vue'
 import GreetingBox from '@/views/signInPage/components/GreetingBox.vue'
-import logInAxios from '@/services/fakeAxios'
 import { mapActions } from 'vuex'
-import requestNewTokens from '../../services/auth/requestNewTokens'
 
 export default {
   name: 'SignInPage',
@@ -50,24 +48,14 @@ export default {
   },
   methods: {
     ...mapActions([
-      'requestVerifyingToken', 'forwardingMyInfo', 'getMyInfo',
+      'getMyInfo',
     ]),
     async checkLogIn() {
       try {
-        await this.requestVerifyingToken()
-        const myInfo = await this.getMyInfo()
-        await this.forwardingMyInfo(myInfo)
+        await this.getMyInfo()
         this.signInBox = false
       } catch {
-        try {
-          await requestNewTokens()
-          await this.requestVerifyingToken()
-          const myInfo = await this.getMyInfo()
-          await this.forwardingMyInfo(myInfo)
-          this.signInBox = false
-        } catch {
-          this.signInBox = true
-        }
+        this.signInBox = true
       }
     },
   },

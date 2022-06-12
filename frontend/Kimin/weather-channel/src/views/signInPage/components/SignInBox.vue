@@ -78,9 +78,6 @@
 </template>
 
 <script>
-import giveMessage from '@/utils/showSnackBar'
-import saveAuthTokens from '@/services/auth/saveAuthTokens'
-import logInAxios from '@/services/fakeAxios'
 import { mapActions } from 'vuex'
 import ExtendBox from './ExtendBox.vue'
 
@@ -107,25 +104,25 @@ export default {
   }),
   methods: {
     ...mapActions([
-      'requestVerifyingToken', 'forwardingMyInfo', 'getMyInfo', 'getTokens',
+      'forwardingMyInfo', 'getMyInfo', 'getTokens', 'giveMessage',
     ]),
-    signIn() {
+    async signIn() {
       if (!this.$refs.form.validate()) return
       this.signing = true
-      this.getTokens({ ID: this.ID, password: this.password })
-        .then(async (tokens) => {
-          giveMessage(`로그인에 성공하셨습니다. ID:${this.ID}`, 'blue') // TODO : 스낵바가 화면과 같이 사라짐
-          saveAuthTokens(tokens)
-          localStorage.setItem('myInfo', JSON.stringify({ ID: this.ID }))
-          const myInfo = await this.getMyInfo()
-          this.forwardingMyInfo(myInfo)
-          this.$router.push('/Home')
-        })
-        .catch(() => {
-          this.text = '존재하지 않는 계정이거나 비밀번호가 일치하지 않습니다.'
-          giveMessage('존재하지 않는 계정이거나 비밀번호가 일치하지 않습니다.', 'red')
+      try {
+        await this.getTokens({ ID: this.ID, password: this.password })
+        this.giveMessage({ text: `로그인에 성공하셨습니다. ID:${this.ID}`, color: 'blue' })
+        localStorage.setItem('myInfo', JSON.stringify({ ID: this.ID }))
+        this.$router.push('/Home')
+      } catch (error) {
+        if ((JSON.parse(error.message)).header.HTTPStatusCode === '401') {
+          this.giveMessage({ text: '존재하지 않는 계정이거나 비밀번호가 일치하지 않습니다.', color: 'red' })
           this.signing = false
-        })
+        } else {
+          this.giveMessage({ text: '서버가 응답할 수 없습니다.', color: 'red' })
+          this.signing = false
+        }
+      }
     },
     copyNewAccount(accountInfo) {
       this.extendShow = false

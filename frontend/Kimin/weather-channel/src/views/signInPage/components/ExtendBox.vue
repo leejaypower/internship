@@ -32,7 +32,7 @@ import FindAccountBox from '@/views/signInPage/components/FindAccountBox.vue'
 import SignUpBox from '@/views/signInPage/components/SignUpBox.vue'
 
 export default {
-  name: 'ExtendBox',
+  name: 'ExtensionBox',
   components: {
     SignUpBox, FindAccountBox,
   },

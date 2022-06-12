@@ -1,15 +1,11 @@
-import validationRule from './validationRule'
-import fetchMyInfo from './fetchMyInfo'
-import logOut from './logOut'
-import requestNewTokens from './requestNewTokens'
-import saveAuthTokens from './saveAuthTokens'
+import { IDValidationRule, passwordValidationRule, nameValidationRule } from './validationRules'
+import authInterceptor from './authInterceptor'
 
 const auth = {
-  validationRule,
-  fetchMyInfo,
-  logOut,
-  requestNewTokens,
-  saveAuthTokens,
+  IDValidationRule,
+  passwordValidationRule,
+  nameValidationRule,
+  authInterceptor,
 }
 
 export default auth

@@ -8,6 +8,9 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   modules: {
-    snackBarStore, userInfoStore, auth,
+    namespaced: true,
+    snackBarStore,
+    userInfoStore,
+    auth,
   },
 })

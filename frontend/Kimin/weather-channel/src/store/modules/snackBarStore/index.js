@@ -15,7 +15,12 @@ const snackBarStore = {
     },
   },
   actions: {
-    giveOrderAlarm({ commit }, detail) {
+    giveMessage({ commit }, info) {
+      const detail = {
+        alarm: true,
+        alarmColor: info.color,
+        text: info.text,
+      }
       commit('changeAlarmState', detail)
     },
   },

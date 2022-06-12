@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import giveMessage from '@/utils/showSnackBar'
+import { mapActions } from 'vuex'
 
 export default {
   name: 'FindAccountBox',
@@ -65,12 +65,13 @@ export default {
     },
   },
   methods: {
+    ...mapActions(['giveMessage']),
     initialize() {
       this.ID = ''
       this.password = ''
       this.name = ''
     },
-    find() { // TO DO : 기능 검증 && 조건문 반복문 부분 리팩토링 필요
+    find() {
       if (!this.$refs.form.validate()) return
       const accountSets = this.$store.getters.callDBInfo_userAccount
       if (!accountSets) return
@@ -80,9 +81,9 @@ export default {
         return (DBhasName && isCorrectPhoneNumber)
       })
       if (userAccount) {
-        giveMessage(`your ID is ${userAccount.ID}`, 'green')
+        this.giveMessage({ text: `당신의 ID는 ${userAccount.ID}입니다.`, color: 'green' })
       } else {
-        giveMessage('you don\'t have account', 'red')
+        this.giveMessage({ text: '유효한 계정이 존재하지 않습니다.', color: 'red' })
       }
     },
   },

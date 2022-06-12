@@ -44,8 +44,7 @@
 </template>
 
 <script>
-import logInAxios from '@/services/fakeAxios'
-import requestNewTokens from '../../services/auth/requestNewTokens'
+import { mapActions } from 'vuex'
 
 export default {
   name: 'MyInfo',
@@ -95,6 +94,9 @@ export default {
     this.fetchInfo()
   },
   methods: {
+    ...mapActions([
+      'editUserInfo', 'giveMessage', 'logOut',
+    ]),
     fetchInfo() {
       const result = [
         {
@@ -131,7 +133,7 @@ export default {
     buttonSwitch(i) {
       this.rows[i].show = !this.rows[i].show
     },
-    saveContents(i) {
+    async saveContents(i) {
       this.buttonSwitch(i)
       const nameValue = this.rows[0].value
       const passwordValue = this.rows[1].value
@@ -146,17 +148,18 @@ export default {
         password: passwordValue,
         phoneNumber: phoneNumberValue,
       }
-      const myAccessToken = localStorage.getItem('accessToken')
-      logInAxios.post.editUserInfo(myAccessToken, editedMyInfo)
-        .catch(async () => {
-          try {
-            await requestNewTokens()
-            const myNewAccessToken = localStorage.getItem('accessToken')
-            logInAxios.post.editUserInfo(myNewAccessToken, editedMyInfo)
-          } catch {
-            this.$router.push('/')
-          }
-        })
+      try {
+        await this.editUserInfo(editedMyInfo)
+      } catch (error) {
+        this.logOut()
+        this.signing = false
+        const errorCode = (JSON.parse(error.message)).header.HTTPStatusCode
+        if (errorCode === '401') {
+          this.giveMessage({ text: '로그인정보가 만료되었습니다. 재 로그인 하시기 바랍니다.', color: 'red' })
+        } else {
+          this.giveMessage({ text: '서버가 응답할 수 없습니다.', color: 'red' })
+        }
+      }
     },
   },
 }

@@ -2,7 +2,7 @@
   <div>
     <v-card
       class="mx-auto overflow-hidden"
-      height="100vh"
+      height="90vh"
     >
       <v-app-bar
         color="deep-purple"
@@ -24,6 +24,7 @@
             >
               <v-avatar>
                 <img
+                  v-if="!isLoading"
                   :src="storedMyInfo.avatarImgSrc"
                   :alt="storedMyInfo.name"
                 >
@@ -34,7 +35,7 @@
           <v-list>
             <router-link to="/">
               <v-list-item
-                @click="logout"
+                @click="logOut"
               >
                 <v-list-item-icon>
                   <v-icon>{{ 'mdi-logout' }}</v-icon>
@@ -91,13 +92,13 @@
 </template>
 
 <script>
-import logOut from '@/services/auth/logOut'
 import { mapActions } from 'vuex'
 
 export default {
   name: 'AppHome',
   data() {
     return {
+      isLoading: true,
       drawer: false,
       group: null,
       navListItems: [
@@ -123,17 +124,28 @@ export default {
     },
   },
   async created() {
-    await this.requestVerifyingToken()
-    const myInfo = await this.getMyInfo()
-    await this.forwardingMyInfo(myInfo)
+    try {
+      await this.getMyInfo()
+      this.isLoading = false
+    } catch (error) {
+      const errorCode = (JSON.parse(error.message)).header.HTTPStatusCode
+      if (errorCode === '401') {
+        this.giveMessage({ text: '로그인정보가 만료되었습니다. 재 로그인 하시기 바랍니다.', color: 'red' })
+        this.logOut()
+        this.signing = false
+      } else {
+        this.giveMessage({ text: '서버가 응답할 수 없습니다.', color: 'red' })
+        this.signing = false
+      }
+    }
   },
   methods: {
     ...mapActions([
-      'requestVerifyingToken', 'forwardingMyInfo', 'getMyInfo',
+      'forwardingMyInfo',
+      'getMyInfo',
+      'logOut',
+      'giveMessage',
     ]),
-    logout() {
-      logOut()
-    },
   },
 }
 </script>

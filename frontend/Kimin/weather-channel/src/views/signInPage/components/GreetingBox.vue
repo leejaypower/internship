@@ -38,7 +38,7 @@
 </template>
 
 <script>
-import logOut from '@/services/auth/logOut'
+import { mapActions } from 'vuex'
 
 export default {
   name: 'GreetingBox',
@@ -53,8 +53,11 @@ export default {
     },
   },
   methods: {
+    ...mapActions([
+      'logOut',
+    ]),
     logout() {
-      logOut()
+      this.logOut()
       this.$router.go(this.$router.currentRoute)
     },
     goService() {

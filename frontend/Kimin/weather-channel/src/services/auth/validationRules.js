@@ -1,6 +1,4 @@
 /* eslint-disable */ 
-/* 긴 로직의 가독성을 올리기 위해 함수를 쪼갰고, hoisting을 활용해서 읽는 순서를 조정해주는게 의미가 있다고 생각하여 hoisting방지 Rule을 껐습니다.
-다른 코드에서도 function hoisting을 활용할 예정은 없는것같고, 이 페이지에서만 예외적으로 적용하겠습니다.*/
 import {
   ID_MAX_LENGTH,
   ID_MIN_LENGTH,
@@ -8,7 +6,7 @@ import {
   PASSWORD_MAX_LENGTH,
   NAME_MIN_LENGTH,
   NAME_MAX_LENGTH,
-} from '@/constant'
+} from '@/constants'
 
 
 const IDValidationRule = [
@@ -45,61 +43,61 @@ export { IDValidationRule, passwordValidationRule, nameValidationRule }
 
 
 function skipNeverRule(value, kind) {
-  return !!value || `${kind} is required`
+  return !!value || `${kind} 은/는 필수항목입니다.`
 }
 
 function minLengthRule(value, kind, min) {
-  return (value.length >= min) || `${kind} must equal or bigger than ${min}`
+  return (value.length >= min) || `${kind} 의 최소 요구 길이는 ${min}`
 }
 
 function maxLengthRule(value, kind, max) {
-  return (value.length <= max) || `${kind} must equal or smaller than ${max}`
+  return (value.length <= max) || `${kind} 의 최대 허용 길이는 ${max}`
 }
 
 function blankNeverStartOrFinishRule(value, kind) {
-  return !(/(^\s+|\s+$)/g.test(value)) || `${kind} never have blank at start or finish `
+  return !(/(^\s+|\s+$)/g.test(value)) || `${kind} 맨 앞 또는 맨 뒤에는 공백을 넣어서는 안됩니다.`
 }
 
 function blankNeverRule(value, kind) {
-  return !(/ /g.test(value)) || `${kind} never have blank`
+  return !(/ /g.test(value)) || `${kind} 에는 공백을 포함시킬 수 없습니다.`
 }
 
 function KoreanEssentialRule(value, kind) {
-  return (/[ㄱ-ㅎ|가-힣|ㅏ-ㅣ]/g.test(value)) || `${kind} must have Korean`
+  return (/[ㄱ-ㅎ|가-힣|ㅏ-ㅣ]/g.test(value)) || `${kind} 은/는 반드시 한글을 포함하여야 합니다.`
 }
 
 function KoreanNeverRule(value, kind) {
-  return !(/[ㄱ-ㅎ|가-힣|ㅏ-ㅣ]/g.test(value)) || `${kind} never have Korean`
+  return !(/[ㄱ-ㅎ|가-힣|ㅏ-ㅣ]/g.test(value)) || `${kind} 에는 한글이 포함되어서는 안됩니다.`
 }
 
 function singleKoreanNeverRule(value, kind) {
-  return !(/[ㄱ-ㅎ|ㅏ-ㅣ]/.test(value)) || `${kind} never have Korean single vowel or consonant`
+  return !(/[ㄱ-ㅎ|ㅏ-ㅣ]/.test(value)) || `${kind} 은/는 단독 자/모음으로는 구성될 수 없습니다.`
 }
 
 function englishOrKoreanEssentialRule(value, kind) {
-  return /[a-zA-Z가-힣]/g.test(value) || `${kind} must have English or Korean`
+  return /[a-zA-Z가-힣]/g.test(value) || `${kind} 은/는 반드시 영문또는 한글이 포함되어야 합니다.`
 }
 
 function englishEssentialRule(value, kind) {
-  return /[a-zA-Z]/g.test(value) || `${kind} must have English alphabet`
+  return /[a-zA-Z]/g.test(value) || `${kind} 은/는 반드시 영문을 포함하여야 합니다.`
 }
 
 function englishNeverRule(value, kind) {
-  return !/[a-zA-Z]/g.test(value) || `${kind} never have English alphabet`
+  return !/[a-zA-Z]/g.test(value) || `${kind} 에는 영문이 포함되어서는 안됩니다.`
 }
 
 function specialCharacterNeverRule(value, kind) {
-  return !/[{}[\]/?.,;:|)*~`!^\-_+<>@#$%&=('"]/g.test(value) || `${kind} never have special character`
+  return !/[{}[\]/?.,;:|)*~`!^\-_+<>@#$%&=('"]/g.test(value) || `${kind} 에는 특수문자가 포함될 수 없습니다.`
 }
 
 function specialCharacterEssentialRule(value, kind) {
-  return /[{}[\]/?.,;:|)*~`!^\-_+<>@#$%&=('"]/g.test(value) || `${kind} must have special character`
+  return /[{}[\]/?.,;:|)*~`!^\-_+<>@#$%&=('"]/g.test(value) || `${kind} 에는 반드시 특수문자가 포함되어야만 합니다.`
 }
 
 function numberNeverRule(value, kind) {
-  return !(/[\d]/g.test(value)) || `${kind} never have number`
+  return !(/[\d]/g.test(value)) || `${kind} 에는 숫자를 포함시킬 수 없습니다.`
 }
 
 function numberEssentialRule(value, kind) {
-  return /\d/.test(value) || `${kind} must have number`
+  return /\d/.test(value) || `${kind} 에는 반드시 하나이상의 숫자가 포함되어야 합니다.`
 }

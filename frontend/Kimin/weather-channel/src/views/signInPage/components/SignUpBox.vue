@@ -70,8 +70,8 @@
 </template>
 
 <script>
-import { IDValidationRule, passwordValidationRule, nameValidationRule } from '@/services/auth/validationRule'
-import giveMessage from '@/utils/showSnackBar'
+import { IDValidationRule, passwordValidationRule, nameValidationRule } from '@/services/auth/validationRules'
+import { mapActions } from 'vuex'
 import {
   ID_MAX_LENGTH,
   ID_MIN_LENGTH,
@@ -79,8 +79,7 @@ import {
   PASSWORD_MAX_LENGTH,
   NAME_MIN_LENGTH,
   NAME_MAX_LENGTH,
-} from '@/constant'
-import logInAxios from '../../../services/fakeAxios'
+} from '@/constants'
 
 export default {
   name: 'SignUpBox',
@@ -107,6 +106,9 @@ export default {
     },
   },
   methods: {
+    ...mapActions([
+      'registerNewAccount', 'investigateID', 'giveMessage',
+    ]),
     countIDLength() {
       const textLength = this.ID.length
       if (textLength > ID_MIN_LENGTH) {
@@ -133,32 +135,45 @@ export default {
     },
     async signUp() {
       if (!this.duplicationChecked) {
-        giveMessage('ID 중복여부를 조회하십시오')
-        return
-      } if (!this.$refs.form.validate()) {
-        giveMessage('필수정보를 입력하십시오')
+        this.giveMessage({ text: 'ID 중복여부를 조회하십시오', color: 'red' })
         return
       }
-      await logInAxios.post.registerNewAccount(this.ID, this.name, this.password)
-      giveMessage(`${this.name}님, 가입에 성공하셨습니다.ID:${this.ID}`, 'green')
-      this.$emit('succeedSignUp', { ID: this.ID, password: this.password, name: this.name })
-      this.duplicationChecked = false
+
+      if (!this.$refs.form.validate()) {
+        this.giveMessage({ text: '필수정보를 입력하십시오', color: 'red' })
+        return
+      }
+      try {
+        await this.registerNewAccount({ ID: this.ID, name: this.name, password: this.password })
+        this.giveMessage({ text: `${this.name}님, 가입에 성공하셨습니다.ID:${this.ID}`, color: 'green' })
+        this.$emit('succeedSignUp', { ID: this.ID, password: this.password, name: this.name })
+        this.initialize()
+      } catch (error) {
+        this.giveMessage({ text: '알 수 없는 오류입니다.', color: 'pink' })
+      }
     },
     async checkDuplication() {
-      if (this.$refs.IDform.validate()) {
-        const isDuplicated = await logInAxios.get.isDuplicatedID(this.ID)
+      const validationChecked = this.$refs.IDform.validate()
+      if (!validationChecked) {
+        return
+      }
+      try {
+        const isDuplicated = await this.investigateID(this.ID)
         if (isDuplicated) {
-          giveMessage('기존에 등록된 ID입니다.', 'red')
+          this.giveMessage({ text: '기존에 등록된 ID입니다.', color: 'red' })
         } else {
           this.duplicationChecked = true
-          giveMessage('사용가능한 ID입니다.', 'green')
+          this.giveMessage({ text: '사용가능한 ID입니다.', color: 'green' })
         }
+      } catch {
+        this.giveMessage({ text: '알 수 없는 오류가 발생했습니다.', color: 'pink' })
       }
     },
-    makeInputEmpty() {
+    initialize() {
       this.ID = ''
       this.password = ''
       this.name = ''
+      this.duplicationChecked = false
     },
   },
 }
