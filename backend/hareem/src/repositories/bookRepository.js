@@ -47,23 +47,37 @@ const getBookInfos = async (getBooksQuery) => {
     publisher,
     from,
     to,
-    filter,
+    filter = QUERY.FILTER.NONE,
     eachFrom,
     eachTo,
+    only,
   } = getBooksQuery;
+
   const { Op } = Sequelize;
 
   const limit = BUSINESS.PER_PAGE;
   const offset = (page - 1) * limit;
 
-  const where = {};
+  const where = { createdAt: { [Op.gte]: timer.beforeNDate(30) } };
   const order = [['createdAt', 'DESC']];
-  if (isbn) { where.isbn = { [Op.eq]: isbn }; }
-  if (title) { where.title = { [Op.like]: `%${title}%` }; }
-  if (author) { where.author = { [Op.like]: `%${author}%` }; }
-  if (publisher) { where.publisher = { [Op.like]: `%${publisher}%` }; }
-  let paranoid = true;
-  where.createdAt = { [Op.gte]: timer.beforeNDate(30) };
+  const paranoid = filter === QUERY.FILTER.NONE; // filter가 ALL or DELETE 라면 paranoid = false
+
+  if (isbn) {
+    where.isbn = { [Op.eq]: isbn };
+  }
+
+  if (title) {
+    where.title = { [Op.like]: `%${title}%` };
+  }
+
+  if (author) {
+    where.author = { [Op.like]: `%${author}%` };
+  }
+
+  if (publisher) {
+    where.publisher = { [Op.like]: `%${publisher}%` };
+  }
+
   if (from && to) {
     where.createdAt = { [Op.between]: [timer.stringToDate(from), timer.stringToDate(to)] };
   } else if (from) {
@@ -71,14 +85,13 @@ const getBookInfos = async (getBooksQuery) => {
   } else if (to) {
     where.createdAt = { [Op.lte]: timer.stringToDate(to) };
   }
-  if (filter === QUERY.FILTER.ALL) {
-    paranoid = false;
-  } else if (filter === QUERY.FILTER.DELETED) {
-    paranoid = false;
+
+  if (filter === QUERY.FILTER.DELETED) {
     where.deletedAt = { [Op.not]: null };
   }
 
   const bookWhere = {};
+
   if (eachFrom && eachTo) {
     bookWhere.createdAt = {
       [Op.between]: [timer.stringToDate(eachFrom), timer.stringToDate(eachTo)],
@@ -89,26 +102,33 @@ const getBookInfos = async (getBooksQuery) => {
     bookWhere.createdAt = { [Op.lte]: timer.stringToDate(eachTo) };
   }
 
-  const bookInfos = await BookInfo.findAll({
+  const options = {
     where,
     limit,
     offset,
+    paranoid,
     order,
-    include: {
+  };
+
+  if (!only) {
+    options.include = {
       model: Book,
       paranoid,
       where: bookWhere,
-    },
-  });
+    };
+  }
+
+  const bookInfos = await BookInfo.findAll(options);
   return bookInfos;
 };
 
-const getBookInfo = async (bookInfoId) => {
-  const bookInfo = await BookInfo.findByPk(bookInfoId, {
-    include: {
-      model: Book,
-    },
-  });
+const getBookInfo = async (bookInfoId, only = false) => {
+  const options = {};
+  if (!only) {
+    options.include = { model: Book };
+  }
+
+  const bookInfo = await BookInfo.findByPk(bookInfoId, options);
   return bookInfo;
 };
 
@@ -129,6 +149,7 @@ const updateBookInfo = async (bookInfoId, updateBookData) => {
     publishDate,
     description,
   } = updateBookData;
+
   const result = await BookInfo.update({
     isbn,
     title,
@@ -139,6 +160,7 @@ const updateBookInfo = async (bookInfoId, updateBookData) => {
   }, {
     where: { id: bookInfoId },
   });
+
   return result;
 };
 
@@ -153,6 +175,7 @@ const getBooks = async (bookInfoId) => {
     where: { bookInfoId },
     order: [['createdAt', 'DESC']],
   });
+
   return books;
 };
 
@@ -162,6 +185,7 @@ const getBook = async (bookId) => {
       model: BookInfo,
     },
   });
+
   return book;
 };
 
@@ -169,7 +193,68 @@ const deleteBook = async (id) => {
   const result = await Book.destroy({
     where: { id },
   });
+
   return result;
+};
+
+const createBookInfoWithBookGql = async (createBookInput) => {
+  const result = await sequelize.transaction(async (transaction) => {
+    const {
+      isbn,
+      title,
+      author,
+      publisher,
+      publishDate,
+      description,
+    } = createBookInput;
+
+    const bookInfo = await BookInfo.create({
+      isbn,
+      title,
+      author,
+      publisher,
+      publishDate,
+      description,
+    }, {
+      transaction,
+    });
+
+    const book = await Book.create({
+      bookInfoId: bookInfo.id,
+    }, {
+      transaction,
+    });
+
+    return book;
+  });
+
+  return result;
+};
+
+const getBooksByBookInfoIds = async (bookInfoIds) => {
+  const { Op } = Sequelize;
+
+  const books = await Book.findAll({
+    where: {
+      bookInfoId: { [Op.in]: bookInfoIds },
+    },
+    order: [['createdAt', 'DESC']],
+  });
+
+  return books;
+};
+
+const getBookInfosByIds = async (ids) => {
+  const { Op } = Sequelize;
+
+  const bookInfos = await BookInfo.findAll({
+    where: {
+      id: { [Op.in]: ids },
+    },
+    order: [['createdAt', 'DESC']],
+  });
+
+  return bookInfos;
 };
 
 module.exports = {
@@ -182,4 +267,7 @@ module.exports = {
   getBooks,
   getBook,
   deleteBook,
+  createBookInfoWithBookGql,
+  getBooksByBookInfoIds,
+  getBookInfosByIds,
 };

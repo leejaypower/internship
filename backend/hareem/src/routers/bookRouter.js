@@ -1,6 +1,6 @@
 const Router = require('@koa/router');
 const { bookController } = require('../controllers');
-const authMiddleware = require('../middlewares/authMiddleware');
+const { authMiddleware } = require('../middlewares');
 const { TABLE } = require('../utils/constants');
 
 const bookRouter = new Router();

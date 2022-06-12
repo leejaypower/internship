@@ -30,10 +30,6 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'bookId',
       sourceKey: 'id',
     });
-    Book.hasMany(models.Reservation, {
-      foreignKey: 'bookId',
-      sourceKey: 'id',
-    });
   };
   return Book;
 };

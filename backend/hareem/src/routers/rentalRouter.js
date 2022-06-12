@@ -1,5 +1,5 @@
 const Router = require('@koa/router');
-const authMiddleware = require('../middlewares/authMiddleware');
+const { authMiddleware } = require('../middlewares');
 const { rentalController } = require('../controllers');
 const { TABLE } = require('../utils/constants');
 
@@ -9,7 +9,7 @@ rentalRouter.get('/users', authMiddleware([TABLE.USER_ROLE.ADMIN]), rentalContro
 rentalRouter.get('/', authMiddleware([TABLE.USER_ROLE.USER]), rentalController.getUserRentals);
 rentalRouter.get('/:rentalId', authMiddleware([TABLE.USER_ROLE.ADMIN]), rentalController.getRentalsByRentalId);
 rentalRouter.post('/start', authMiddleware([TABLE.USER_ROLE.ADMIN]), rentalController.createRentalStart);
-rentalRouter.post('/extension', authMiddleware([TABLE.USER_ROLE.USER]), rentalController.createRentalExtend);
+rentalRouter.post('/extension', authMiddleware([TABLE.USER_ROLE.USER, TABLE.USER_ROLE.ADMIN]), rentalController.createRentalExtend);
 rentalRouter.post('/end', authMiddleware([TABLE.USER_ROLE.ADMIN]), rentalController.createRentalEnd);
 
 module.exports = rentalRouter;

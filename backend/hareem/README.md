@@ -2,6 +2,10 @@
 
 ## Get Started
 
+### Postman API 문서
+
+- [API 문서 바로가기](https://documenter.getpostman.com/view/17715275/UyxhnSnN)
+
 ### 프로젝트 실행을 위한 로컬 환경 구성 (개발 모드 실행)
 
 1. docker 실행

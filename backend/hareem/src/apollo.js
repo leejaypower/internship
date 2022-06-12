@@ -1,13 +1,8 @@
 const { ApolloServer } = require('apollo-server-koa');
 const { makeExecutableSchema } = require('@graphql-tools/schema');
-const {
-  resolvers: scalarResolvers,
-  typeDefs: scalarTypeDefs,
-} = require('graphql-scalars');
-const {
-  typeDefs,
-  resolvers,
-} = require('./graphql');
+const { resolvers: scalarResolvers, typeDefs: scalarTypeDefs } = require('graphql-scalars');
+const { typeDefs, resolvers } = require('./graphql');
+const { loaders } = require('./graphql');
 
 const apollo = new ApolloServer({
   schema: makeExecutableSchema({
@@ -21,7 +16,7 @@ const apollo = new ApolloServer({
     ],
   }),
   csrfPrevention: true,
-  context: ({ ctx }) => ctx,
+  context: ({ ctx }) => ({ loaders }),
 });
 
 module.exports = {

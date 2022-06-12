@@ -24,7 +24,7 @@ const TABLE = {
 
 // 쿼리 관련 상수
 const QUERY = {
-  FILTER: { ALL: 'ALL', DELETED: 'DELETED' },
+  FILTER: { NONE: 'NONE', ALL: 'ALL', DELETED: 'DELETED' },
 };
 
 // 메시지
