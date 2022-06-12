@@ -11,6 +11,11 @@ export default {
       message: '',
       confirm: false,
     },
+    errorInfo: {
+      show: false,
+      message: '',
+    },
+    isLoading: false,
   },
   getters: {
     alertInfo(state) {
@@ -18,6 +23,12 @@ export default {
     },
     sheetInfo(state) {
       return state.sheet
+    },
+    isLoading(state) {
+      return state.isLoading
+    },
+    errorInfo(state) {
+      return state.errorInfo
     },
   },
   mutations: {
@@ -43,6 +54,19 @@ export default {
       state.sheet.confirm = false
       state.sheet.show = false
     },
+    SET_IS_LOADING(state) {
+      state.isLoading = true
+    },
+    REMOVE_IS_LOADING(state) {
+      state.isLoading = false
+    },
+    SET_ERROR_INFO(state, message) {
+      state.errorInfo.show = true
+      state.errorInfo.message = message
+    },
+    REMOVE_ERROR_INFO(state) {
+      state.errorInfo.show = false
+    },
   },
   actions: {
     setAlertInfo({ commit }, alertInfo) {
@@ -61,6 +85,18 @@ export default {
     },
     setCancel({ commit }) {
       commit('SET_CANCEL')
+    },
+    setIsLoading({ commit }) {
+      commit('SET_IS_LOADING')
+    },
+    removeIsLoading({ commit }) {
+      commit('REMOVE_IS_LOADING')
+    },
+    setErrorInfo({ commit }, message) {
+      commit('SET_ERROR_INFO', message)
+    },
+    removeErrorInfo({ commit }) {
+      commit('REMOVE_ERROR_INFO')
     },
   },
 }

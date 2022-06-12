@@ -71,10 +71,9 @@ export default {
         * @property {object} testAccessToken - testRefreshToken이 유효한 경우 testAccessToken 재발급
         */
         const response = await refreshLogin()
-
         if (response.message === 'VALID_FAKE_REFRESH_TOKEN') {
           const { name, id } = response.data
-          localStorage.setItem('testAccessToken', response.data)
+          localStorage.setItem('testAccessToken', JSON.stringify(response.data))
           dispatch('userStore/setUserInfo', { name, id }, { root: true })
           commit('SET_TOKEN', localStorage.getItem('testRefreshToken'))
           return
