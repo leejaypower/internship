@@ -1,7 +1,8 @@
 const { ApolloServerPluginDrainHttpServer } = require('apollo-server-core');
 const { ApolloServer } = require('apollo-server-koa');
 const { createServer } = require('http');
-const schema = require('../api/graphql');
+const { schema } = require('../api/graphql');
+const context = require('../api/graphql/context');
 
 const port = process.env.PORT || 4000;
 

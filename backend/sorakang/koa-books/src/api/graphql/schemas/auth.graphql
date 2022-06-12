@@ -1,0 +1,8 @@
+directive @auth(
+  requires: [Role],
+) on FIELD_DEFINITION
+
+enum Role {
+  ADMIN
+  USER
+}

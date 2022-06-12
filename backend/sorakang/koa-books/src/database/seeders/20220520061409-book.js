@@ -1,8 +1,8 @@
-const getBookDataApi = require('../../utils/getBookDataApi');
+const { commonUtils } = require('../../utils');
 
 module.exports = {
   async up(queryInterface) {
-    const bookList = await getBookDataApi('자바스크립트', 30);
+    const bookList = await commonUtils.getBookDataApi('자바스크립트', 30);
     const bookSerial = await bookList.map((book, idx) => ({
       bookId: idx + 1,
       createdAt: new Date(),

@@ -92,6 +92,16 @@ const findByEmail = async (email) => {
   return { user };
 };
 
+const findAndCountAll = async (limit, whereOptions, order) => {
+  const { rows, count } = await User.findAndCountAll({
+    order,
+    limit,
+    where: whereOptions,
+  });
+
+  return { rows, count };
+};
+
 module.exports = {
-  getUser, getSingleUser, createUser, updateUser, deleteUser, findByEmail,
+  getUser, getSingleUser, createUser, updateUser, deleteUser, findByEmail, findAndCountAll,
 };

@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 const { userRepository } = require('../repositories');
-const { tokenFunc } = require('../utils/auth');
+const { authUtils } = require('../utils');
 
 const getUser = async (limit, cursor, name, email, phone) => {
   const { userList } = await userRepository.user.getUser(limit, cursor, name, email, phone);
@@ -65,8 +65,8 @@ const signIn = async (email, password) => {
   const refreshTokenExp = Number(process.env.REFRESH_EXP_DATE);
 
   const iat = new Date().getTime();
-  const accessToken = tokenFunc.getToken({ userId, groupName }, process.env.ACCESS_SECRET_KEY, accessTokenExp);
-  const refreshToken = tokenFunc.getToken({ userId, groupName, iat }, process.env.REFRESH_SECRET_KEY, refreshTokenExp);
+  const accessToken = authUtils.getToken({ userId, groupName }, process.env.ACCESS_SECRET_KEY, accessTokenExp);
+  const refreshToken = authUtils.getToken({ userId, groupName, iat }, process.env.REFRESH_SECRET_KEY, refreshTokenExp);
 
   await userRepository.loginInfo.createIsLogin(userId, iat);
 

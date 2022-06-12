@@ -1,3 +1,1 @@
-// fragments
-
-module.exports = [];
+module.exports = { };

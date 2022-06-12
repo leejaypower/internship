@@ -1,5 +1,70 @@
 type User {
-  id: Int!
+  id: ID!
   name: String
   email: String!
+  phone:String
+  deleteDate:String  # data로 수정하기
+  role: String 
+}
+
+  input UserInput{
+  name: String
+  email:String
+  password:String
+  phone:String
+  role: String 
   }
+
+
+type message {
+  message: String!
+  }
+
+  # get All user Pagination
+
+type PageInfo {
+  endCursor: String
+  hasNextPage: Boolean
+  }
+
+  type UsersResponse {
+  edges:[User!]!
+  pageInfo:PageInfo
+  }
+
+  input SearchPrams {
+  name:String
+  phone:String
+  email:String
+  }
+
+# login
+input LoginInput {
+  email: String!
+  password: String!
+  }
+
+type LoginSuccess {
+  accessToken: String!
+  refreshToken: String!
+  }
+
+union LoginResponse = message | LoginSuccess
+
+
+# Mutation and Query Def
+
+type Mutation{
+  signIn(input:LoginInput!):LoginResponse
+  signOut(input:Int):message @auth(requires: [USER,ADMIN])
+  createUser(input:UserInput!):message
+  updateUser(input:UserInput):message @auth(requires: [USER,ADMIN])
+  deleteUser:message @auth(requires: [USER,ADMIN])
+  
+}
+
+type Query {
+  currentUser: User @auth(requires: [USER,ADMIN])
+  getAllUser(first: Int, after: String):UsersResponse @auth(requires: [ADMIN])
+}
+

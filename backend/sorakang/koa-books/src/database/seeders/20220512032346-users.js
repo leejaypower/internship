@@ -1,14 +1,16 @@
+const { authUtils } = require('../../utils');
+
 module.exports = {
 
   async up(queryInterface, Sequelize) {
+    const password = await authUtils.hashFunc('1111', 10);
     const users = [];
     for (let i = 0; i < 20; i += 1) {
       if (i > 5) {
         const user = { // 일반 사용자
-          id: i + 1,
           name: `sora${i}`,
           email: `sora${i}@barogo.com`,
-          password: '1111',
+          password,
           phone: `0101111111${i}`,
           groupName: 'user',
           deleteDate: null,
@@ -18,10 +20,9 @@ module.exports = {
         users.push(user);
       } else { // 관리자
         const adminUsers = {
-          id: i + 1,
           name: `sora${i}`,
           email: `sora${i}@barogo.com`,
-          password: '1111',
+          password,
           phone: `0101111111${i}`,
           groupName: 'admin',
           deleteDate: null,
