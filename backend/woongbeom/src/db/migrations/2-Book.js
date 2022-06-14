@@ -13,9 +13,30 @@ module.exports = {
         comment: '책의 제목을 의미합니다.',
         allowNull: false,
       },
-      status: {
+      author: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        comment: '책의 저자를 의미합니다.',
+      },
+      publisher: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        comment: '책의 발행자(출판사)를 의미합니다.',
+      },
+      page: {
         type: Sequelize.INTEGER,
-        comment: '책의 대출 가능 상태를 의미합니다. 0은 대출 가능, 1은 대출 불가 입니다.',
+        allowNull: false,
+        comment: '책의 페이지 크기를 나타냅니다.',
+      },
+      statusCode: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: {
+            tableName: 'Statuses',
+          },
+          key: 'id',
+        },
+        comment: '책의 상태 코드를 나타냅니다.',
         defaultValue: 0,
         allowNull: false,
       },

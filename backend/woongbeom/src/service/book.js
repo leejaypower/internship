@@ -1,22 +1,13 @@
 const repository = require('../repository');
 
 const createBook = async (bookData) => {
-  try {
-    const { title } = bookData;
-    const newBookData = await repository.book.createBook({ title });
-    return newBookData;
-  } catch (err) {
-    return err.message;
-  }
+  const newBookData = await repository.book.createBook(bookData);
+  return newBookData;
 };
 
 const getListAll = async () => {
-  try {
-    const bookList = await repository.book.getListAll();
-    return bookList;
-  } catch (err) {
-    return err.message;
-  }
+  const bookList = await repository.book.getListAll();
+  return bookList;
 };
 
 module.exports = { createBook, getListAll };

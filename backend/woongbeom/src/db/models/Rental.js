@@ -37,6 +37,13 @@ module.exports = (sequelize, DataTypes) => {
       onDelete: 'cascade',
       comment: '하나의 대여번호는 하나의 유저 번호를 갖습니다.',
     });
+    Rental.hasOne(models.Return, {
+      foreignKey: 'rentalId',
+      sourceKey: 'id',
+      allowNull: false,
+      onDelete: 'cascade',
+      comment: '하나의 대여변호는 하나의 반납번호를 갖습니다.',
+    });
   };
   return Rental;
 };

@@ -15,11 +15,11 @@ const updateStatus = async (rentalInstance) => {
       where: {
         id: rentalInstance.bookId,
       },
-      attributes: ['status'],
+      attributes: ['statusCode'],
     });
-    const bookStatus = bookInstance.dataValues.status;
+    const bookStatus = bookInstance.dataValues.statusCode;
     if (bookStatus === 0) {
-      await db.Book.update({ status: 1 }, {
+      await db.Book.update({ statusCode: 1 }, {
         where: {
           id: rentalInstance.bookId,
         },

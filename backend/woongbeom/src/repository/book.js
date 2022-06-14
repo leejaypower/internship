@@ -1,20 +1,21 @@
 const db = require('../db/models');
 
-const createBook = async (bookInstance) => {
-  try {
-    const newBook = await db.Book.create(bookInstance);
-    return newBook;
-  } catch (err) {
-    throw new Error('Error Occured attempting to create the newBookInstance');
-  }
+const createBook = async (bookData) => {
+  const {
+    title, author, publisher, page,
+  } = bookData;
+  const newBook = await db.Book.create({
+    title,
+    author,
+    publisher,
+    page,
+  });
+  return newBook;
 };
 
 const getListAll = async () => {
-  try {
-    return db.Book.findAll();
-  } catch (err) {
-    throw new Error('Error Occured attempting to read Books table');
-  }
+  const bookList = await db.Book.findAll();
+  return bookList;
 };
 
 module.exports = { createBook, getListAll };

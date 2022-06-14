@@ -14,11 +14,20 @@ module.exports = (sequelize, DataTypes) => {
         comment: '책의 제목을 의미합니다.',
         allowNull: false,
       },
-      status: {
+      author: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        comment: '책의 저자를 의미합니다.',
+      },
+      publisher: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        comment: '책의 발행자(출판사)를 의미합니다.',
+      },
+      page: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        defaultValue: 0,
-        comment: '책의 대출 가능 상태를 의미합니다. 0은 대출 가능, 1은 대출 불가 입니다.',
+        comment: '책의 페이지 크기를 나타냅니다.',
       },
     },
     { timestamps: true },
@@ -30,6 +39,13 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true,
       onDelete: 'cascade',
       comment: '하나의 책은 여러 대여건을 갖는 것이 가능합니다.',
+    });
+    Book.belongsTo(models.Status, {
+      foreignKey: 'statusCode',
+      targetKey: 'id',
+      allowNull: false,
+      onDelete: 'cascade',
+      comment: '하나의 책은 하나의 상태코드를 갖습니다.',
     });
   };
   return Book;
