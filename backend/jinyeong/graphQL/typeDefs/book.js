@@ -9,7 +9,7 @@ const bookTypeDefs = gql`
   }
 
   type Mutation {
-    addBook(bookInfoId: Int!): AddBookMutationResponse
+    addBook(bookInfoId: Int! @constraint(min: 1)): AddBookMutationResponse
   }
 
   type AddBookMutationResponse implements MutationResponse {

@@ -1,20 +1,29 @@
 /* eslint-disable no-unused-vars */
+const { DateResolver } = require('graphql-scalars');
 const { bookService } = require('../services');
-const { dateScalar } = require('./customScalars');
+const { userAuth, adminAuth } = require('./auth');
 
 const bookResolvers = {
   Query: {
-    books: async (root, args, context) => {
+    books: async (parent, args, context) => {
       const books = await bookService.getAll();
       return books;
     },
-    book: async (root, { id }, context) => {
+    book: async (parent, args, context) => {
+      const { id } = args;
+
+      await userAuth(context);
+
       const book = await bookService.getById(id);
       return book;
     },
   },
   Mutation: {
-    addBook: async (root, { bookInfoId }, context) => {
+    addBook: async (parent, args, context) => {
+      const { bookInfoId } = args;
+
+      await adminAuth(context);
+
       const result = await bookService.createBook(bookInfoId);
 
       return {
@@ -26,24 +35,28 @@ const bookResolvers = {
     },
   },
   Book: {
-    bookInfo: async ({ bookInfoId }, args, context) => {
+    bookInfo: async (parent, args, context) => {
+      const { bookInfoId } = parent;
+
       const bookInfo = await context.loaders.bookInfoLoader.load(bookInfoId);
       return bookInfo;
     },
-    createdAt: dateScalar,
-    updatedAt: dateScalar,
+    createdAt: DateResolver,
+    updatedAt: DateResolver,
   },
   BookInfo: {
-    category: async ({ categoryId }, args, context) => {
+    category: async (parent, args, context) => {
+      const { categoryId } = parent;
+
       const category = await context.loaders.bookCategoryLoader.load(categoryId);
       return category;
     },
-    createdAt: dateScalar,
-    updatedAt: dateScalar,
+    createdAt: DateResolver,
+    updatedAt: DateResolver,
   },
   BookCategory: {
-    createdAt: dateScalar,
-    updatedAt: dateScalar,
+    createdAt: DateResolver,
+    updatedAt: DateResolver,
   },
 };
 
