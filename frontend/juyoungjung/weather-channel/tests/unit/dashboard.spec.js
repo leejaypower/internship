@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils'
-import DashBoard from '@/views/DashBoard.vue'
+import DashBoard from '@/views/DashBoard/index.vue'
 
 describe('DashBoard.vue', () => {
   it('renders props.msg when passed', () => {

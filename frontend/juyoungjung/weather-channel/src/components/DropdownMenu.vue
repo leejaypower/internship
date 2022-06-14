@@ -54,7 +54,7 @@ export default {
     dropdownBtnText: '환영합니다',
   }),
   computed: {
-    ...mapGetters('user/', [
+    ...mapGetters('user', [
       'accessToken',
       'nickname',
     ]),
@@ -68,12 +68,21 @@ export default {
       }
     },
     nickname(value) {
-      if (value && value !== this.dropdownBtnText) {
-        this.dropdownBtnText = value
+      if (value) {
+        if (value !== this.dropdownBtnText) {
+          this.dropdownBtnText = `${value}님`
+        }
       } else {
         this.dropdownBtnText = '환영합니다'
       }
     },
+  },
+  mounted() {
+    if (this.nickname) {
+      if (this.nickname !== this.dropdownBtnText) {
+        this.dropdownBtnText = `${this.nickname}님`
+      }
+    }
   },
   methods: {
     checkDropdownMenuItemLink(name) {

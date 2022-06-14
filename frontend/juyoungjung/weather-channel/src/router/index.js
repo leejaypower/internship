@@ -9,7 +9,7 @@ const routes = [
   {
     path: '/',
     name: 'DashBoard',
-    component: () => import('@/views/DashBoard.vue'),
+    component: () => import('@/views/DashBoard/index.vue'),
   },
   {
     path: '/signup',
@@ -19,24 +19,24 @@ const routes = [
   {
     path: '/update-my-info',
     name: 'UpdateMyInfo',
-    component: () => import('@/views/UpdateMyInfo.vue'),
+    component: () => import('@/views/UpdateMyInfo/index.vue'),
     meta: { authRequired: true },
   },
   {
     path: '/detail-forecast',
     name: 'DetailForecast',
-    component: () => import('@/views/Weather/DetailForecast.vue'),
+    component: () => import('@/views/DetailForecast/index.vue'),
     children: [
       {
-        path: 'today-hourly',
-        name: 'TodayHourly',
-        component: () => import('@/views/Weather/TodayHourly.vue'),
+        path: '/detail-forecast/hourly',
+        name: 'ForecastHourly',
+        component: () => import('@/views/DetailForecast/ForecastHourly/index.vue'),
         meta: { authRequired: true },
       },
       {
-        path: 'week-daily',
-        name: 'WeekDaily',
-        component: () => import('@/views/Weather/WeekDaily.vue'),
+        path: '/detail-forecast/daily',
+        name: 'ForecastDaily',
+        component: () => import('@/views/DetailForecast/ForecastDaily/index.vue'),
         meta: { authRequired: true },
       },
     ],

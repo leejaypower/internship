@@ -19,20 +19,19 @@
         group
       >
         <v-toolbar-title>
-          <router-link :to="`${item.to}`">
-            <v-btn
-              height="70"
-              elevation="0"
-              :value="item.text"
-            >
-              <div class="d-flex flex-column">
-                <auth-type-chip
-                  :text="item.text"
-                  :required-auth="item.requiredAuth"
-                />
-              </div>
-            </v-btn>
-          </router-link>
+          <v-btn
+            height="70"
+            elevation="0"
+            :value="item.text"
+            :to="item.to"
+          >
+            <div class="d-flex flex-column text-center">
+              <auth-type-chip
+                :text="item.text"
+                :required-auth="item.requiredAuth"
+              />
+            </div>
+          </v-btn>
         </v-toolbar-title>
       </v-btn-toggle>
       <v-spacer />

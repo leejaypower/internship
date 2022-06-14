@@ -3,7 +3,7 @@
     :value="responseInfo.visible"
     :type="responseInfo.type"
     dismissible
-    @input="closeResponseInfoAlert"
+    @input="closeAlert"
   >
     <span>{{ responseInfoMessage }}</span>
   </v-alert>
@@ -13,14 +13,14 @@ import { mapGetters } from 'vuex'
 
 export default {
   name: 'ResponseInfoAlert',
-  data: () => ({
-
-  }),
   computed: {
-    ...mapGetters('user/', ['responseInfo', 'responseInfoMessage']),
+    ...mapGetters('user', ['responseInfo', 'responseInfoMessage']),
+  },
+  updated() {
+    this.$vuetify.goTo(0)
   },
   methods: {
-    closeResponseInfoAlert() {
+    closeAlert() {
       this.$store.dispatch('user/resetResponseInfo')
     },
   },

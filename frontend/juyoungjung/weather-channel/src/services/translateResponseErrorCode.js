@@ -17,7 +17,7 @@ const translateResponseErrorCode = (code) => {
       message = '잘못된 비밀번호입니다.'
       break
     case 'Unauthorized request':
-      message = '인증되지 않은 접근입니다.'
+      message = '인증되지 않은 접근입니다. 다시 로그인해주세요.'
       break
     case 'Invalid request':
       message = '잘못된 요청입니다. 관리자에게 문의하세요.'

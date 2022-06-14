@@ -1,6 +1,7 @@
 <template>
   <div>
     <response-info-alert />
+
     <v-alert
       v-show="isWarningAlertVisible"
       type="warning"
@@ -8,6 +9,7 @@
     >
       기존 닉네임과 다르게 닉네임을 설정해주세요.
     </v-alert>
+
     <h1 class="text-center my-10">
       내 정보 수정하기
     </h1>
@@ -22,6 +24,7 @@
             />
           </v-col>
         </v-row>
+
         <v-row class="mt-6 justify-center">
           <v-col
             cols="12"
@@ -33,6 +36,7 @@
               @onChangeNickname="onChangeNickname"
             />
           </v-col>
+
           <v-col
             sm="4"
             class="d-flex justify-center align-center"
@@ -58,6 +62,7 @@
             </v-btn>
           </v-col>
         </v-row>
+
         <v-row class="mt-16 d-flex justify-center">
           <v-btn
             color="primary"
@@ -71,6 +76,7 @@
         </v-row>
       </v-container>
     </v-form>
+
     <update-password-modal
       :is-update-password-modal-visible="isUpdatePasswordModalVisible"
       @onChangeUpdatePasswordModalVisible="setUpdatePasswordModal"
@@ -78,11 +84,11 @@
   </div>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 import EmailInput from '@/components/EmailInput.vue'
 import NicknameInput from '@/components/NicknameInput.vue'
-import UpdatePasswordModal from '@/components/UpdatePasswordModal.vue'
 import ResponseInfoAlert from '@/components/ResponseInfoAlert.vue'
-import { mapGetters } from 'vuex'
+import UpdatePasswordModal from './components/UpdatePasswordModal.vue'
 
 export default {
   name: 'UpdateMyInfo',
@@ -101,7 +107,7 @@ export default {
     isWarningAlertVisible: false,
   }),
   computed: {
-    ...mapGetters('user/', ['myInfo', 'responseInfo']),
+    ...mapGetters('user', ['myInfo', 'responseInfo', 'responseInfoType']),
     updateNicknameBtnText() {
       return this.isNicknameInputDisabled ? '수정하기' : '저장하기'
     },
@@ -118,6 +124,11 @@ export default {
     myInfo(value) {
       if (!value) {
         this.$router.push('/')
+      }
+    },
+    responseInfoType(value) {
+      if (value === 'success' && !this.isNicknameInputDisabled) {
+        this.toggleNicknameInputWritable()
       }
     },
   },

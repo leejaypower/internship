@@ -1,10 +1,17 @@
 /* eslint-disable no-shadow */
 import { userApi } from '@/api'
 import {
-  SET_MY_INFO, REMOVE_MY_INFO, SET_LOGIN_FORM_MODAL_VISIBLE,
-  SET_RESPONSE_INFO, RESET_RESPONSE_INFO, UPDATE_NICKNAME,
+  SET_MY_INFO,
+  REMOVE_MY_INFO,
+  SET_LOGIN_FORM_MODAL_VISIBLE,
+  SET_RESPONSE_INFO,
+  RESET_RESPONSE_INFO,
+  UPDATE_NICKNAME,
 } from '@/constants/mutation-types'
-import { REFRESHTOKEN, REFRESHTOKENEXPIRETIME } from '@/constants/localStorage-types'
+import {
+  REFRESHTOKEN,
+  REFRESHTOKENEXPIRETIME,
+} from '@/constants/localStorage-types'
 import translateResponseErrorCode from '@/services/translateResponseErrorCode'
 
 const state = () => ({
@@ -49,7 +56,10 @@ const actions = {
       commit(SET_RESPONSE_INFO, response)
     } else {
       commit(SET_MY_INFO, response)
-      commit(SET_RESPONSE_INFO, { status: response.status, message: '로그인에 성공하였습니다.' })
+      commit(SET_RESPONSE_INFO, {
+        status: response.status,
+        message: '로그인에 성공하였습니다.',
+      })
     }
   },
   async signup({ commit }, payload) {
@@ -57,7 +67,10 @@ const actions = {
     if (response.data?.code) {
       commit(SET_RESPONSE_INFO, response)
     } else {
-      commit(SET_RESPONSE_INFO, { status: response.status, message: '회원가입이 정상적으로 완료되었습니다.' })
+      commit(SET_RESPONSE_INFO, {
+        status: response.status,
+        message: '회원가입이 정상적으로 완료되었습니다.',
+      })
     }
   },
   async updateNickname({ commit }, payload) {
@@ -67,7 +80,10 @@ const actions = {
       commit(SET_RESPONSE_INFO, response)
     } else {
       commit(UPDATE_NICKNAME, response)
-      commit(SET_RESPONSE_INFO, { status: response.status, message: '닉네임 수정에 성공하였습니다.' })
+      commit(SET_RESPONSE_INFO, {
+        status: response.status,
+        message: '닉네임 수정에 성공하였습니다.',
+      })
     }
   },
   async updatePassword({ commit }, payload) {
@@ -75,7 +91,10 @@ const actions = {
     if (response.data?.code) {
       commit(SET_RESPONSE_INFO, response)
     } else {
-      commit(SET_RESPONSE_INFO, { status: response.status, message: '비밀번호 수정에 성공하였습니다.' })
+      commit(SET_RESPONSE_INFO, {
+        status: response.status,
+        message: '비밀번호 수정에 성공하였습니다.',
+      })
     }
   },
   async renewalAccessTokenInfo({ commit }) {
@@ -105,7 +124,12 @@ const actions = {
 const mutations = {
   [SET_MY_INFO](state, payload) {
     const {
-      email, nickname, accessToken, accessTokenExpireTime, refreshToken, refreshTokenExpireTime,
+      email,
+      nickname,
+      accessToken,
+      accessTokenExpireTime,
+      refreshToken,
+      refreshTokenExpireTime,
     } = payload.data
 
     if (refreshToken) {
@@ -135,7 +159,13 @@ const mutations = {
       state.responseInfo.message = payload.message
     }
 
-    state.responseInfo.type = payload.status === 200 ? 'success' : 'error'
+    let infoType = 'error'
+    if (payload.status === 200) {
+      infoType = 'success'
+    } else if (payload.status === 401) {
+      infoType = 'info'
+    }
+    state.responseInfo.type = infoType
     state.responseInfo.visible = true
   },
   [RESET_RESPONSE_INFO](state) {

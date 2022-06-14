@@ -15,7 +15,7 @@
       >
         <v-list-item
           class="d-flex justify-center py-5"
-          @click="updateIsDrawerVisible()"
+          disabled
         >
           <h3>
             The Weather Channel
@@ -25,7 +25,7 @@
           v-for="item in appBarMenuItems"
           :key="item.icon"
           active-class="grey lighten-5"
-          :to="`${item.to}`"
+          :to="item.to"
           @click="updateIsDrawerVisible()"
         >
           <v-list-item-icon>

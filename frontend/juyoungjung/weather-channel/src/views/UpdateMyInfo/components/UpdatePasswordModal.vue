@@ -103,7 +103,7 @@ export default {
     isWarningAlertVisible: false,
   }),
   computed: {
-    ...mapGetters('user/', [
+    ...mapGetters('user', [
       'myInfo',
     ]),
     reponsiveDialogMaxWidth() {

@@ -8,13 +8,13 @@ const AppBarMenuItems = [
   {
     icon: 'mdi-calendar',
     text: '요일별 날씨 보기',
-    to: '/detail-forecast/week-daily',
+    to: '/detail-forecast/daily',
     requiredAuth: true,
   },
   {
     icon: 'mdi-hours-24',
     text: '시간별 날씨 보기',
-    to: '/detail-forecast/today-hourly',
+    to: '/detail-forecast/hourly',
     requiredAuth: true,
   },
 ]
