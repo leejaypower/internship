@@ -9,7 +9,8 @@
         <v-spacer is-show="!isMobile" />
         <v-col
           align="center"
-          :cols="isMobile && 8"
+          cols="8"
+          class="d-flex justify-center align-center"
         >
           <v-icon color="pink">
             mdi-map-marker-radius
@@ -17,7 +18,7 @@
           <span>{{ title }}</span>
         </v-col>
         <v-col
-          :cols="isMobile && 2"
+          cols="2"
           align="end"
         >
           <v-icon @click="onReFetch">
@@ -48,15 +49,12 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-col
-          align="center"
-          :cols="isMobile ? 3 : 4"
-          :class="{'pl-0 pr-0' : isMobile}"
-        >
+        <v-col align="center">
           <v-chip
             label
             outlined
             color="blue"
+            :class="chipPaddingObject"
           >
             <v-icon>mdi-water</v-icon>
             <span>
@@ -65,15 +63,12 @@
             </span>
           </v-chip>
         </v-col>
-        <v-col
-          align="center"
-          :cols="isMobile ? 6 : 4"
-          :class="{'pl-0 pr-0' : isMobile}"
-        >
+        <v-col align="center">
           <v-chip
             label
             outlined
             color="green"
+            :class="chipPaddingObject"
           >
             <v-icon>mdi-windsock</v-icon>
             <span v-if="!isMobile">바람</span>
@@ -83,15 +78,12 @@
             <span>{{ currentData.wind_speed }}m/s</span>
           </v-chip>
         </v-col>
-        <v-col
-          align="center"
-          :cols="isMobile ? 3 : 4"
-          :class="{'pl-0 pr-0' : isMobile}"
-        >
+        <v-col align="center">
           <v-chip
             label
             outlined
             color="red"
+            :class="chipPaddingObject"
           >
             <v-icon>mdi-sun-wireless</v-icon><br>
             <span>
@@ -138,6 +130,14 @@ export default {
     weatherIdDescMap() {
       return this.currentData.weather && weatherIdDescMap[this.currentData.weather[0].id]
     },
+    isBookmarkPage() {
+      return this.$route.path.includes('bookmark')
+    },
+    chipPaddingObject() {
+      return {
+        'pa-1': !this.isMobile && this.isBookmarkPage,
+      }
+    },
   },
   methods: {
     windDeg(deg) {
@@ -151,8 +151,5 @@ export default {
 .container {
   border-radius: 10px;
   box-shadow: 5px 5px 14px 0px rgba(0,0,0,0.69);
-}
-.empty {
-  width: 24px;
 }
 </style>

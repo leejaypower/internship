@@ -23,4 +23,7 @@ export default {
   locationData(state) {
     return state.location.weatherData
   },
+  weatherBookmarks(state) {
+    return state.bookmarks
+  },
 }

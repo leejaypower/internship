@@ -8,7 +8,7 @@ const weather = axios.create({
   method: 'GET',
   params: {
     appid: process.env.VUE_APP_WEATHER_API_KEY,
-    lan: 'kr',
+    lang: 'kr',
     units: 'metric',
     exclude: 'minutely',
   },

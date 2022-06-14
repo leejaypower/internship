@@ -20,4 +20,23 @@ export default {
     state.location.weatherData.daily = payload.daily
     state.location.weatherData.hourly = payload.hourly
   },
+  updateBookmarksData(state, payload) {
+    payload.forEach((data) => {
+      state.bookmarks.push(data)
+    })
+  },
+  updateBookmark(state, payload) {
+    const { idx, result } = payload
+    const idxIndex = state.bookmarks.findIndex((bookmark) => bookmark.idx === idx)
+    state.bookmarks[idxIndex].data = result.data.current
+  },
+  removeBookmark(state, payload) {
+    const newBookmarks = state.bookmarks.filter(({ idx }) => idx !== payload)
+    state.bookmarks = newBookmarks
+  },
+  updateBookmarkName(state, payload) {
+    const { idx, value } = payload
+    const idxIndex = state.bookmarks.findIndex((bookmark) => bookmark.idx === idx)
+    state.bookmarks[idxIndex].title = value
+  },
 }

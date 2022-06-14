@@ -20,6 +20,7 @@ const state = () => ({
       hourly: null,
     },
   },
+  bookmarks: [],
 })
 
 export default state

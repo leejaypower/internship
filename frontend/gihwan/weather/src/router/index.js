@@ -2,16 +2,56 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import { AuthHub, LoginView, SignupView } from '@/views/auth'
 import { CurrentLocation, WeatherHub, LocationView } from '@/views/weather'
-import { MyPageHub, UserInfo } from '@/views/mypage'
+import { BookmarkView, MyPageHub, UserInfo } from '@/views/mypage'
 
 Vue.use(VueRouter)
 
 const routes = [
   {
+    path: '/',
+    redirect: { name: 'weather' },
+  },
+  {
     path: '/weather',
     name: 'weather',
     redirect: { name: 'current' },
     component: WeatherHub,
+    children: [
+      {
+        path: 'current',
+        name: 'current',
+        component: CurrentLocation,
+      },
+      {
+        path: 'location',
+        name: 'location',
+        component: LocationView,
+      },
+    ],
+  },
+  {
+    path: '/mypage',
+    name: 'mypage',
+    redirect: { name: 'bookmark' },
+    component: MyPageHub,
+    children: [
+      {
+        path: 'bookmark',
+        name: 'bookmark',
+        component: BookmarkView,
+      },
+      {
+        path: 'edit',
+        name: 'edit',
+        component: UserInfo,
+      },
+    ],
+  },
+  {
+    path: '/auth',
+    name: 'auth',
+    redirect: { name: 'login' },
+    component: AuthHub,
     children: [
       {
         path: 'current',
@@ -77,21 +117,13 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   const isLogin = localStorage.getItem('loginInfo') || sessionStorage.getItem('loginInfo')
-
-  if (isLogin) {
-    if (to.path.includes('auth')) {
-      next('/')
-    } else {
-      next()
-    }
-  } else if (!isLogin) {
-    if (to.path === '/') {
-      next('/auth/login')
-    } else if (to.path.includes('user')) {
-      next('/auth')
-    } else {
-      next()
-    }
+  const hasEnteredAuthPageAfterLogin = isLogin && to.path.includes('auth')
+  const hasEnteredMyPageWithoutLogin = !isLogin && to.path.includes('mypage')
+  if (hasEnteredAuthPageAfterLogin) {
+    next('/')
+  }
+  if (hasEnteredMyPageWithoutLogin) {
+    next('/')
   } else {
     next()
   }

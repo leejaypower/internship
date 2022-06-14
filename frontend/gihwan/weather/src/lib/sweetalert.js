@@ -97,10 +97,12 @@ const alert = {
       cancelButtonText: cancelText,
     })
   },
-  input(title, text, okText, cancelText, okColor = '#6558F5') {
+  input(title, text, okText, cancelText, okColor = '#6558F5', inputValue = '') {
     return swal.fire({
       title,
       input: 'text',
+      inputValue,
+      inputPlaceholder: inputValue,
       inputLabel: text,
       confirmButtonText: okText,
       confirmButtonColor: okColor,
@@ -109,6 +111,9 @@ const alert = {
       inputValidator: (value) => {
         if (!value) {
           return '내용을 입력해 주세요.'
+        }
+        if (value === inputValue) {
+          return '변경된 내용이 없습니다.'
         }
         return false
       },
