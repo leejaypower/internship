@@ -14,6 +14,15 @@ const bookLoader = () => new DataLoader(async (bookInfoIds) => {
   return bookLoaderResult;
 });
 
+const bookByIdLoader = () => new DataLoader(async (bookIds) => {
+  const bookList = await Book.findAll({
+    where: {
+      id: { [Op.in]: bookIds },
+    },
+  });
+  return bookList;
+});
+
 const bookInfoLoader = () => new DataLoader(async (bookInfoIds) => {
   const bookInfoList = await BookInfo.findAll({
     where: {
@@ -33,5 +42,5 @@ const categoryLoader = () => new DataLoader(async (categoryIds) => {
 });
 
 module.exports = {
-  bookLoader, bookInfoLoader, categoryLoader,
+  bookLoader, bookByIdLoader, bookInfoLoader, categoryLoader,
 };
