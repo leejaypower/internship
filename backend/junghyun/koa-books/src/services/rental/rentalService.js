@@ -36,7 +36,7 @@ const createRentals = async (rentalData) => {
     async (singleRental) => {
       const { bookId } = singleRental;
       const rental = await rentalRepository.getOne({ bookId });
-      const book = await bookRepository.getById(bookId);
+      const book = await bookRepository.getOne({ bookId });
       if (rental) {
         return `< ${book.BookInfo.title} > 은 현재 대출중입니다.`;
       }

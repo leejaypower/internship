@@ -34,7 +34,7 @@ const createRentalTransaction = async (singleRental) => {
   const today = new Date();
   const returnDueDate = new Date(today);
   returnDueDate.setDate(today.getDate() + 11);
-  returnDueDate.setHours(0,0,0,0);
+  returnDueDate.setHours(0, 0, 0, 0);
 
   const reservation = await Reservation.findOne({
     where: {
@@ -105,8 +105,8 @@ const extend = async (rentalId) => {
   try {
     const rentalData = await BookRental.findByPk(rentalId);
     const { returnDueDate } = rentalData;
-    await returnDueDate.setDate(returnDueDate.getDate() + 11 )
-    await returnDueDate.setHours(0,0,0,0);
+    await returnDueDate.setDate(returnDueDate.getDate() + 11);
+    await returnDueDate.setHours(0, 0, 0, 0);
     return BookRental.update({
       extension: rentalData.extension + 1,
       returnDueDate,

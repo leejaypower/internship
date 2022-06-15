@@ -14,8 +14,8 @@ const authorize = async (ctx) => {
 // 사용자 & 관리자 권한 부여
 const userAdminAuthorized = async (ctx, next) => {
   const decodedToken = await authorize(ctx);
-  const user = await userRepository.getById(decodedToken.payload.user)
-    || await adminUserRepository.getById(decodedToken.payload.user);
+  const user = await userRepository.getOne(decodedToken.payload.user)
+    || await adminUserRepository.getOne(decodedToken.payload.user);
 
   if (!user) {
     ctx.throw(401, 'Unauthorized');
@@ -27,7 +27,7 @@ const userAdminAuthorized = async (ctx, next) => {
 // 관리자 권한 부여
 const adminAuthorized = async (ctx, next) => {
   const decodedToken = await authorize(ctx);
-  const user = await adminUserRepository.getById(decodedToken.payload.user);
+  const user = await adminUserRepository.getOne(decodedToken.payload.user);
   if (!user) {
     ctx.throw(401, 'Unauthorized');
   }
