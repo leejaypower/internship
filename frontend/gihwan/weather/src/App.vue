@@ -18,7 +18,7 @@
               마이페이지
             </router-link>
           </v-col>
-          <v-col align="end">
+          <v-col class="text-end">
             <v-btn
               v-if="isLogin"
               color="primary"
@@ -49,11 +49,15 @@
 import tokenCheck from '@/utils/interceptor'
 import logo from '@/assets/logo.png'
 import fakeAxios from './utils/fakeAxios'
+import { getAlertDataFetch } from './apis/weather'
+import { alert } from './lib'
 
 export default {
   name: 'App',
   data: () => ({
     logo,
+    alertsInterval: null,
+    alertsTime: 1000000,
   }),
   computed: {
     isMobile() {
@@ -69,6 +73,10 @@ export default {
       await this.$store.dispatch('user/autoLogin', JSON.parse(loginInfo))
     }
     fakeAxios.setInterceptor(tokenCheck)
+    this.showAlerts()
+  },
+  destroyed() {
+    clearInterval(this.alertsInterval)
   },
   methods: {
     goLoginPage() {
@@ -80,6 +88,14 @@ export default {
       if (path.includes('mypage')) {
         this.$router.push({ name: 'weather' })
       }
+    },
+    showAlerts() {
+      this.alertsInterval = setInterval(async () => {
+        const { data } = await getAlertDataFetch()
+        if (data.alerts) {
+          alert.info('경보', data.alerts[0].event)
+        }
+      }, this.alertsTime)
     },
   },
 }

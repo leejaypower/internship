@@ -10,7 +10,7 @@
           지역별 날씨
         </router-link>
       </div>
-      <template v-if="isLogin && isSelectSiGu && isWeatherFetchResult">
+      <template v-if="isBookmarkIconShow">
         <v-btn
           v-if="!isBookmark"
           icon
@@ -60,12 +60,13 @@ export default {
       return this.$route.name
     },
     isSelectSiGu() {
-      if (this.currentPathName === 'location') {
-        if (!this.locationCoord) {
-          return false
-        }
+      if (this.currentPathName === 'location' && !this.locationCoord) {
+        return false
       }
       return true
+    },
+    isBookmarkIconShow() {
+      return this.isLogin && this.isSelectSiGu && (this.isWeatherFetchResult || this.locationCoord)
     },
   },
   updated() {
@@ -82,14 +83,14 @@ export default {
         return
       }
       const isBookmark = bookmarks.some(({ userIdx, coords }) => {
-        if (this.currentPathName === 'current') {
-          return (userIdx === this.userIdx) && (coords.name === this.currentName)
+        switch (this.currentPathName) {
+          case 'current':
+            return (userIdx === this.userIdx) && (coords.name === this.currentName)
+          case 'location':
+            return (userIdx === this.userIdx) && (coords.name) === this.locationCoord?.name
+          default:
+            return false
         }
-        if (this.currentPathName === 'location') {
-          return (userIdx === this.userIdx)
-          && (coords.name) === this.locationCoord?.name
-        }
-        return false
       })
       this.isBookmark = isBookmark
     },
@@ -133,13 +134,14 @@ export default {
       if (!isConfirmed) return
       const bookmarks = JSON.parse(localStorage.getItem('bookmarks'))
       const bookmarkToRemove = bookmarks.find(({ userIdx, coords }) => {
-        if (this.currentPathName === 'current') {
-          return (userIdx === this.userIdx) && (coords.name === this.currentName)
+        switch (this.currentPathName) {
+          case 'current':
+            return (userIdx === this.userIdx) && (coords.name === this.currentName)
+          case 'location':
+            return (userIdx === this.userIdx) && (coords.name === this.locationCoord.name)
+          default:
+            return false
         }
-        if (this.currentPathName === 'location') {
-          return (userIdx === this.userIdx) && (coords.name === this.locationCoord.name)
-        }
-        return false
       })
       this.$store.dispatch('weather/removeBookmark', bookmarkToRemove.idx)
       this.bookmarkCheck()

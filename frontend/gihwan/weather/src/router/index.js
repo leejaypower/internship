@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import { AuthHub, LoginView, SignupView } from '@/views/auth'
 import { CurrentLocation, WeatherHub, LocationView } from '@/views/weather'
 import { BookmarkView, MyPageHub, UserInfo } from '@/views/mypage'
+import NotFound from '@/views/NotFound.vue'
 
 Vue.use(VueRouter)
 
@@ -54,37 +55,6 @@ const routes = [
     component: AuthHub,
     children: [
       {
-        path: 'current',
-        name: 'current',
-        component: CurrentLocation,
-      },
-      {
-        path: 'location',
-        name: 'location',
-        component: LocationView,
-      },
-    ],
-  },
-  {
-    path: '/mypage',
-    name: 'mypage',
-    redirect: { name: 'edit' },
-    component: MyPageHub,
-    children: [
-      {
-        path: 'edit',
-        name: 'edit',
-        component: UserInfo,
-      },
-    ],
-  },
-  {
-    path: '/auth',
-    name: 'auth',
-    redirect: { name: 'login' },
-    component: AuthHub,
-    children: [
-      {
         path: 'login',
         name: 'login',
         component: LoginView,
@@ -95,6 +65,11 @@ const routes = [
         component: SignupView,
       },
     ],
+  },
+  {
+    path: '*',
+    name: 'notfound',
+    component: NotFound,
   },
 ]
 

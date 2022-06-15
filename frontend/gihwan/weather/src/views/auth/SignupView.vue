@@ -28,7 +28,7 @@
       >
         <v-col
           :cols="responsiveInputCols"
-          align="end"
+          class="text-end"
         >
           <v-text-field
             v-model="id"
@@ -108,7 +108,7 @@
       >
         <v-col
           :cols="responsiveInputCols"
-          align="end"
+          class="text-end"
         >
           <router-link to="login">
             <span class="text-caption">

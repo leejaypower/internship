@@ -12,10 +12,17 @@ const getBookmarkDataFetch = (coord) => {
   return result
 }
 
+const getAlertDataFetch = () => {
+  const result = axios.weather({ params: { lat: 37.5666103, lon: 126.9783882, exclude: 'current,minutely,hourly,daily' } })
+  return result
+}
+
 const getLocationName = (coord) => {
   const { lat, lon } = coord
   const result = axios.naver({ params: { coords: `${lon},${lat}` } })
   return result
 }
 
-export { getWeahterDataFetch, getBookmarkDataFetch, getLocationName }
+export {
+  getWeahterDataFetch, getBookmarkDataFetch, getAlertDataFetch, getLocationName,
+}

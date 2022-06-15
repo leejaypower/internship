@@ -19,7 +19,7 @@
         </v-col>
         <v-col
           cols="2"
-          align="end"
+          class="text-end"
         >
           <v-icon @click="onReFetch">
             mdi-refresh

@@ -79,7 +79,7 @@
       >
         <v-col
           :cols="responsiveInputCols"
-          align="end"
+          class="text-end"
         >
           <router-link to="signup">
             <span class="text-caption">

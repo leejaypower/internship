@@ -53,7 +53,7 @@
     <v-row justify="center">
       <v-col
         :cols="responsiveInputCols"
-        align="end"
+        class="text-end"
       >
         <v-btn
           type="submit"

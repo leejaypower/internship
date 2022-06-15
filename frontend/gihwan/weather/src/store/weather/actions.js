@@ -10,21 +10,10 @@ export default {
     commit('updateCurrentName', { name: currenName })
   },
   async defaultLocationUpdate({ getters, commit }) {
-    const fetchs = (coords) => [getWeahterDataFetch(coords), getLocationName(coords)]
-    const { lat, lon } = getters.currentCoords
     try {
-      const settledResult = await Promise.allSettled(fetchs({ lat, lon }))
-      const isReject = settledResult.some((result) => result.status === 'rejected')
-      if (isReject) {
-        throw Error('통신 실패')
-      }
-      const { current, daily, hourly } = settledResult[0].value.data
+      const result = await getWeahterDataFetch(getters.currentCoords)
+      const { current, daily, hourly } = result.data
       commit('updateCurrentWeatherData', { current, daily, hourly })
-      const { land, region } = settledResult[1].value.data.results[0]
-      const { name, number1 } = land
-      const { area1, area2 } = region
-      const currenName = `${area1.name} ${area2.name} ${name} ${number1}`
-      commit('updateCurrentName', { name: currenName })
     } catch (error) {
       alert.error(error.message, '통신을 실패했습니다.')
     }
@@ -47,11 +36,17 @@ export default {
       const currenName = `${area1.name} ${area2.name} ${name} ${number1}`
       commit('updateCurrentName', { name: currenName })
     } catch (error) {
-      if (error.message === 'User denied Geolocation') {
-        alert.error('위치 엑세스 차단', '위치 엑세스가 차단되었습니다. <br/>허용해주세요<br/>기본 위치의 날씨를 보여줍니다.')
-        dispatch('defaultLocationUpdate')
+      switch (error.message) {
+        case 'User denied Geolocation':
+          alert.error('위치 엑세스 차단', '위치 엑세스가 차단되었습니다. <br/>허용해주세요<br/>기본 위치의 날씨를 보여줍니다.')
+          break
+        case 'Origin does not have permission to use Geolocation service':
+          alert.error('위치 서비스 거부', '위치 서비스가 거부되었습니다.<br/>기본 위치의 날씨를 보여줍니다.')
+          break
+        default:
+          alert.error(error.message, '통신을 실패했습니다.<br/>기본 위치의 날씨를 보여줍니다.')
+          break
       }
-      alert.error(error.message, '통신을 실패했습니다.<br/>기본 위치의 날씨를 보여줍니다.')
       dispatch('defaultLocationUpdate')
     }
   },
