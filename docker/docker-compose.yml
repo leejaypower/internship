@@ -8,9 +8,11 @@ services:
     ports:
       - '6432:5432'
     environment:
+      - POSTGRES_MULTIPLE_DATABASES="internship-hareem","internship-woongbeom","internship-jinyeong","internship-sora","internship-junghyun"
       - POSTGRES_USER=intern
       - POSTGRES_PASSWORD=intern
     volumes:
+      - ./docker-postgresql-multiple-databases:/docker-entrypoint-initdb.d
       - internship-pgdb:/var/lib/postgresql/data
 
   internship-zookeeper:
