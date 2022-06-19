@@ -1,18 +1,17 @@
 <template>
   <v-card
-    color="white"
-    class="ma-1 pa-1"
+    class="pa-2"
     hover
     width="180"
     height="250"
     @click="goToForecastDailyPageHash(forecastData.key)"
   >
-    <v-row
-      class="fill-height d-flex justify-center text-center"
+    <div
+      class="fill-height d-flex flex-column justify-center text-center"
     >
       <v-list-item>
         <v-list-item-content>
-          <v-list-item-title class="text-h6 my-2">
+          <v-list-item-title class="text-h6 my-1">
             {{ forecastData.date }}
           </v-list-item-title>
           <v-list-item-subtitle class="text-h6 mb-1">
@@ -27,7 +26,7 @@
       <v-list-item class="d-flex justify-center">
         <div>
           <v-img
-            :src="$_makeIconUrl(forecastData.icon)"
+            :src="makeIconUrlMixin(forecastData.icon)"
             alt="weather icon"
           />
         </div>
@@ -43,7 +42,7 @@
           강수량 {{ forecastData.rain || '0mm/h' }}
         </v-list-item-subtitle>
       </v-list-item>
-    </v-row>
+    </div>
   </v-card>
 </template>
 <script>
@@ -55,19 +54,12 @@ export default {
   props: {
     forecastData: {
       type: Object,
-      default: () => ({
-        key: '',
-        date: '',
-        temp: '',
-        feels_like: '',
-        icon: '',
-        rain: '',
-      }),
+      default: () => null,
     },
   },
   methods: {
     goToForecastDailyPageHash(key) {
-      if (this.$_isRefreshTokenSavedAtLocalStorage()) {
+      if (this.isRefreshTokenSavedAtLocalStorageMixin()) {
         this.$router.push({ path: '/detail-forecast/daily', hash: key })
       } else {
         this.$store.dispatch('user/setLoginFormModalVisible', {

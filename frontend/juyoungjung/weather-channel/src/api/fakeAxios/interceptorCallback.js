@@ -1,4 +1,4 @@
-import { REFRESHTOKEN } from '@/constants/localStorage-types'
+import { REFRESH_TOKEN } from '@/constants'
 import store from '../../store'
 
 const setAccessTokenBeforeRequestSentCb = (config) => {
@@ -23,7 +23,7 @@ const setAccessTokenBeforeRequestSentCb = (config) => {
 }
 
 const setRefreshTokenBeforeRequestSentCb = (config) => {
-  const refreshToken = localStorage.getItem(REFRESHTOKEN)
+  const refreshToken = localStorage.getItem(REFRESH_TOKEN)
 
   const newConfig = {
     headers: {

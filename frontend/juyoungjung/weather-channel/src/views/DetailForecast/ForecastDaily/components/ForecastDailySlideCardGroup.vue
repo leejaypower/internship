@@ -1,11 +1,11 @@
 <template>
-  <v-sheet>
+  <v-sheet class="d-flex justify-center py-4">
     <v-slide-group
       center-active
       show-arrows
     >
       <v-slide-item
-        v-for="data in forecastDaily7DaysData"
+        v-for="data in forecastDaily7DaysList"
         :key="data.key"
       >
         <v-card
@@ -17,8 +17,8 @@
           elevation="8"
           @click="goToForecastDailyPageHash(data.key)"
         >
-          <v-row
-            class="fill-height d-flex justify-center text-center pa-2"
+          <div
+            class="fill-height d-flex flex-column justify-center text-center pa-2"
           >
             <v-list-item>
               <v-list-item-content>
@@ -33,12 +33,12 @@
             <v-list-item class="d-flex justify-center">
               <div>
                 <v-img
-                  :src="$_makeIconUrl(data.icon)"
+                  :src="makeIconUrlMixin(data.icon)"
                   alt="weather icon"
                 />
               </div>
             </v-list-item>
-          </v-row>
+          </div>
         </v-card>
       </v-slide-item>
     </v-slide-group>
@@ -52,18 +52,22 @@ export default {
   name: 'ForecastDailySlideCardGroup',
   mixins: [openWeatherMapIconMixin],
   props: {
-    goToForecastDailyPageHash: {
-      type: Function,
-      default: (key) => {
-        if (key !== this.hashKey) {
-          this.$router.push({ path: '/detail-forecast/daily', hash: key })
-          this.hashKey = key
-        }
-      },
+    hashKey: {
+      type: String,
+      default: '',
     },
   },
+  emits: ['onChangeHashKey'],
   computed: {
-    ...mapGetters('weather', ['forecastDaily7DaysData']),
+    ...mapGetters('weather', ['forecastDaily7DaysList']),
+  },
+  methods: {
+    goToForecastDailyPageHash(key) {
+      if (key !== this.hashKey) {
+        this.$router.push({ path: '/detail-forecast/daily', hash: key })
+        this.$emit('onChangeHashKey', key)
+      }
+    },
   },
 }
 </script>

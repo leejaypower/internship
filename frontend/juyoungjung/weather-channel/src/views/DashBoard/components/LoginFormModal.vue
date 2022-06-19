@@ -51,21 +51,18 @@
       >
         <v-container :class="responsiveFormWidth">
           <v-card-text>
-            <v-row>
-              <email-input
-                :email="email"
-                :disabled="false"
-                @onChangeEmail="onChangeEmail"
-              />
-            </v-row>
-            <v-row>
-              <password-input
-                :label="passwordLabel"
-                :password="password"
-                @onChangePassword="onChangePassword"
-                @keyup.enter.native="submitForm"
-              />
-            </v-row>
+            <email-input
+              :email="email"
+              :disabled="false"
+              @onChangeEmail="onChangeEmail"
+            />
+
+            <password-input
+              :label="passwordLabel"
+              :password="password"
+              @onChangePassword="onChangePassword"
+              @keyup.enter.native="submitForm"
+            />
           </v-card-text>
           <v-card-actions class="my-14 d-flex justify-center align-center">
             <router-link to="/signup">
@@ -98,7 +95,7 @@
 import { mapGetters } from 'vuex'
 import {
   PC_WIDTH, MOBILE_WIDTH, PC_FORM_WRAPPER_CLASS, MOBILE_FORM_WRAPPER_CLASS,
-} from '@/constants/modal-types'
+} from '@/constants'
 import EmailInput from '@/components/EmailInput.vue'
 import PasswordInput from '@/components/PasswordInput.vue'
 

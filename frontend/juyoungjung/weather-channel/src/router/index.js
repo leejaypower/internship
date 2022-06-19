@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import { REFRESHTOKEN } from '@/constants/localStorage-types'
+import { REFRESH_TOKEN } from '@/constants'
 import store from '../store'
 
 Vue.use(VueRouter)
@@ -39,6 +39,12 @@ const routes = [
         component: () => import('@/views/DetailForecast/ForecastDaily/index.vue'),
         meta: { authRequired: true },
       },
+      {
+        path: '/detail-forecast/all',
+        name: 'ForecastAll',
+        component: () => import('@/views/DetailForecast/ForecastAll/index.vue'),
+        meta: { authRequired: true },
+      },
     ],
   },
   {
@@ -54,7 +60,7 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  if (to.meta.authRequired && !localStorage.getItem(REFRESHTOKEN)) {
+  if (to.meta.authRequired && !localStorage.getItem(REFRESH_TOKEN)) {
     store.dispatch('user/setLoginFormModalVisible', {
       visible: true,
     })

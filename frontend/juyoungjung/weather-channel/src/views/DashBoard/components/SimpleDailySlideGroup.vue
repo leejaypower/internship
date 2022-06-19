@@ -1,24 +1,20 @@
 <template>
-  <v-row>
-    <v-col>
-      <v-sheet
-        class="mx-auto d-flex justify-center align-center overflow-hidden"
-        max-width="800"
+  <v-sheet
+    class="mx-auto py-5 d-flex justify-center align-center overflow-hidden"
+    max-width="800"
+  >
+    <v-slide-group
+      center-active
+      show-arrows
+    >
+      <v-slide-item
+        v-for="data in forecastDaily4DaysList"
+        :key="data.key"
       >
-        <v-slide-group
-          center-active
-          show-arrows
-        >
-          <v-slide-item
-            v-for="data in forecastDaily4DaysData"
-            :key="data.key"
-          >
-            <simple-daily-slide-card :forecast-data="data" />
-          </v-slide-item>
-        </v-slide-group>
-      </v-sheet>
-    </v-col>
-  </v-row>
+        <simple-daily-slide-card :forecast-data="data" />
+      </v-slide-item>
+    </v-slide-group>
+  </v-sheet>
 </template>
 <script>
 import { mapGetters } from 'vuex'
@@ -28,7 +24,7 @@ export default {
   name: 'SimpleDailySlideGroup',
   components: { SimpleDailySlideCard },
   computed: {
-    ...mapGetters('weather', ['forecastDaily4DaysData']),
+    ...mapGetters('weather', ['forecastDaily4DaysList']),
   },
 }
 </script>

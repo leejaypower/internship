@@ -1,9 +1,9 @@
-import { REFRESHTOKEN } from '@/constants/localStorage-types'
+import { REFRESH_TOKEN } from '@/constants'
 
 const checkRefreshTokenMixin = {
   methods: {
-    $_isRefreshTokenSavedAtLocalStorage() {
-      return !!localStorage.getItem(REFRESHTOKEN)
+    isRefreshTokenSavedAtLocalStorageMixin() {
+      return !!localStorage.getItem(REFRESH_TOKEN)
     },
   },
 }

@@ -1,51 +1,35 @@
-import { ACCESSTOKEN, REFRESHTOKEN } from '@/constants/localStorage-types'
+import { ACCESS_TOKEN, REFRESH_TOKEN } from '@/constants'
 import fakeAxios from '../../fakeAxios'
 import setupFakeAxios from './fakeAxios/setupFakeAxios'
 
 const postSignup = async (data) => {
-  try {
-    const response = await fakeAxios.post('/signup', data)
-    return response
-  } catch (error) {
-    return error
-  }
+  const response = await fakeAxios.post('/signup', data)
+
+  return response
 }
 
 const postLogin = async (data) => {
-  try {
-    const response = await fakeAxios.post('/login', data)
-    return response
-  } catch (error) {
-    return error
-  }
+  const response = await fakeAxios.post('/login', data)
+
+  return response
 }
 
 const getCheckRefreshToken = async () => {
-  try {
-    const response = await setupFakeAxios(REFRESHTOKEN).get('/check-refreshToken')
+  const response = await setupFakeAxios(REFRESH_TOKEN).get('/check-refreshToken')
 
-    return response
-  } catch (error) {
-    return error
-  }
+  return response
 }
 
 const patchUpdateNickname = async (data) => {
-  try {
-    const response = await setupFakeAxios(ACCESSTOKEN).patch('/nickname', data)
-    return response
-  } catch (error) {
-    return error
-  }
+  const response = await setupFakeAxios(ACCESS_TOKEN).patch('/nickname', data)
+
+  return response
 }
 
 const patchUpdatePassword = async (data) => {
-  try {
-    const response = await setupFakeAxios(ACCESSTOKEN).patch('/password', data)
-    return response
-  } catch (error) {
-    return error
-  }
+  const response = await setupFakeAxios(ACCESS_TOKEN).patch('/password', data)
+
+  return response
 }
 
 const userApi = {

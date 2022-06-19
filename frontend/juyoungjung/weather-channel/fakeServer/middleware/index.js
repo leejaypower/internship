@@ -1,4 +1,4 @@
-import getUserInfoList from '../services/getUserInfoList'
+import { getUserInfoList } from '../services'
 import checkTokenExpireTime from './checkTokenExpireTime'
 import { USER_INFO_ACCESSTOKEN, USER_INFO_REFRESHTOKEN } from '../constant'
 

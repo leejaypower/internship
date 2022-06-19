@@ -1,54 +1,63 @@
 # weather-channel
 
-- Vue.js와 Vuetify, Vue Router, Vuex, OpenWeather API를 이용해 만든 날씨정보를알려주는 웹페이지입니다. fakeServer와 fakeAxios를 통해 JWT로 서버와 통신하는듯한효과를 내었습니다.
-- 현재 코드는 `fakeServer`에서 JWT를 만들어 decode해서 프론트쪽으로 `accessToken과` `refreshToken과` 함께 `accessTokenExpireTime`과 `refreshTokenExpireTime`을 전달해준다는 시나리오를 바탕으로 작성되었습니다.
-- `accessToken` 만료기간은 3분, `refreshToken` 만료기간은 하루로 설정되어 있으며 `/fakeserver/services/JWT/makeJWT.js`에서 해당 만료기간 설정을 바꿀 수 있습니다.
-- 클라이언트에서는 `vuex store`에 서버로 부터 발급된 `accessToken`이 저장되어 있고, `refreshToken`은 브라우저 `localStorage`에 저장되어 있습니다.
+- `Vue.js`와 `Vuetify`, `Vue Router`, `Vuex`, `OpenWeather API` 등등을 이용해 만든 날씨정보를 알려주는 웹페이지입니다. fakeServer와 fakeAxios를 통해 JWT로 서버와 통신하는 듯한 효과를 내었습니다.
+- 현재 코드는 `fakeServer`에서 JWT를 만들어 decode해서 클라이언트쪽으로 `accessToken과` `refreshToken과` 함께 `accessTokenExpireTime`과 `refreshTokenExpireTime`을 전달해준다는 시나리오를 바탕으로 작성되었습니다.
 
 # Project Design
 
-- Dashboard(메인 페이지)에서 원하는 지역을 검색해 간단한 날씨(오늘 날씨- 날씨 아이콘, 예상 강수량, 체감온도, 바람 정보, 일일예보(5일) - 날씨 아이콘과 기온)정보를 볼 수 있습니다.
+- Dashboard(메인 페이지)에서 현재 위치 또는 원하는 지역을 검색해 간단한 날씨 정보를 볼 수 있습니다.
 - 현재 지역 좌표를 Web API의 Navigator.geolocation를 사용해 구합니다.
 - 해당 좌표를 [Naver Reverse Geocoding](https://api.ncloud-docs.com/docs/ai-naver-mapsreversegeocoding-gc)을통해 행정동명으로 변환합니다.
-- 사용자 검색 기능을 지원하기 위해 [Daum 우편번호 서비스 API](https://postcode.map.daum.net/guide)로 주소를 검색한 후 [Naver Geocoding](https://api.ncloud-docs.com/docs/ai-naver-mapsgeocoding-geocode)를이용해 해당 주소를 좌표로 바꾸어 해당 장소 날씨정보를 가져와 보여줍니다.(추가시간 발생 시 작업 예정)
-- 상세정보를 원하는 사용자가 헤더의 '요일별 날씨 보기'(7일), '시간별 날씨 보기 '(2일) 또는 Dashboard의 ‘오늘 날씨’ 또는 ‘일일예보’ 카드를 클릭하거나 '자세히' 버튼을 클릭하면 로그인 전에는 모달창을 띄우고 회원가입 또는 로그인을 유도합니다. 로그인 후에는 해당 상세 페이지로 이동합니다.
+- 사용자 검색 기능을 지원하기 위해 [Daum 우편번호 서비스 API](https://postcode.map.daum.net/guide)로 주소를 검색한 후 [Naver Geocoding](https://api.ncloud-docs.com/docs/ai-naver-mapsgeocoding-geocode)를이용해 해당 주소를 좌표로 바꾸어 사용자가 검색한 장소 날씨정보를 가져와 보여줍니다.
+- 상세정보를 원하는 사용자가 아래 세 가지 상황에서 로그인 전에는 모달창을 띄우고회원가입 또는 로그인을 유도합니다. 로그인 후에는 해당 상세 페이지로 이동할 수있습니다.
+
+  1. Header Navigation에서 '요일별 날씨 보기'(7일), '시간별 날씨 보기 '(48시간 )', '전체 날씨 보기' 중 하나를 클릭
+  2. Dashboard의 ‘오늘 날씨’카드에 있는 '자세히' 버튼을 클릭
+  3. Dashboard의 ‘일일예보’ 카드를 클릭
+
 - OpenWeather에서 사용할 API의 종류는 [One Call API 1.0](https://openweathermap.org/api/one-call-api)입니다.
 
-* 기획서 [The Weather Channel 기획서](https://www.notion.so/barogohq/The-Weather-Channel-ecd58fd687b04be79df8eff909f9ade6)
+* 상세 기획서 링크는 아래와 같습니다. [The Weather Channel 기획서](https://www.notion.so/barogohq/The-Weather-Channel-ecd58fd687b04be79df8eff909f9ade6)
 
 # Features
 
-## 1. 각 날씨데이터 api로 가져오기 전에 로딩창 구현
+## 1. fakeServer와 fakeAxios 만들기[5주차]
 
-## 2. 요일별, 시간별 날씨보기 총 2가지 탭 구성
+- `accessToken` 만료기간은 3분, `refreshToken` 만료기간은 하루로 설정되어 있으며 `/fakeserver/services/JWT/makeJWT.js`에서 해당 만료기간 설정을 바꿀 수 있습니다.
+- 클라이언트에서는 `vuex store`에 서버로 부터 발급된 `accessToken`이 저장되어 있고, `refreshToken`은 브라우저 `localStorage`에 저장되어 있습니다.
 
-### DashBoard Page(main page)
+- 클라이언트에서 `fakeAxios`를 사용하는 관련 페이지 및 컴포넌트 목록은 다음과 같습니다.
 
-- 헤더 만들기
-- 도시로 위치 검색 기능 구현
+1. 회원가입 페이지
+2. 로그인 모달창
+3. 내 정보 수정하기 페이지
+
+## 2. DashBoard, 요일별, 시간별, 전체 날씨보기 총 4가지 페이지로 구성하기
+
+### DashBoard Page(첫화면)[6주차]
+
+- 주소로 위치 검색 기능 구현
 - 새로고침 버튼 구현, 클릭 시 데이터 실시간으로 가져오기, 버튼 클릭 안하면 1시간간격으로 가져오기
-- 오늘 날씨(날짜, 요일, 날씨 아이콘, 예상 강수량, 체감온도, 바람) 카드 보여주기
+- 오늘 날씨(오늘 날짜, 날씨 아이콘, 기온, 체감온도, 예상 강수량, 풍속) 카드 보여주기
 - 일일예보(5일) 카드 보여주기
+- Scroll To Top Button 기능 추가하기
 
-### Today Detail Info Page(상세 페이지)
+### 시간별 날씨 보기 페이지(상세 페이지)[7주차]
 
-- 오늘을 기준으로 2일치의 시간별 날씨 상세 표(날씨 아이콘, 예상 강수량, 체감온도 , 습도, 바람, 자외선 지수, 일출, 일몰 표시)를 content으로 포함한 expansion-panels 구현하기
-- Scroll To Top Button 구현
+- 오늘을 기준으로 48시간의 시간별 날씨 상세 표(날씨 아이콘, 기온, 체감온도, 예상강수량, 습도, 바람, 자외선 지수, 구름량 표시)를 content으로 포함한 expansion-panels 구현하기
 
-### Week Detail Info Page(상세 페이지)
+### 요일별 날씨 보기 페이지(상세 페이지)[7주차]
 
-- 상위 탭으로 7일 날씨 tabs로 표시, 가로슬라이드 구현하기
-- 탭 안의 content로 상위 탭 중 하나 클릭 시 해당 요일의 날씨 상세 표(날씨 아이콘 , 예상 강수량, 체감온도, 습도, 바람, 자외선 지수, 일출, 일몰 표시) 넣기
+- 상위 탭으로 7일 날씨 tabs로 가로슬라이드 구현하기
+- 상위 탭 중 하나 클릭 시 해당 요일의 날씨 상세 표(날씨 아이콘, 기온, 체감온도, 예상강수량, 습도, 바람, 자외선 지수, 구름량 표시) 보여주기
 
-## 3. 회원가입 페이지 form 만들기
+### 전체 날씨 보기 페이지(상세 페이지)[8주차]
 
-## 4. 상세 페이지는 로그인 시 접근 가능, 오늘 날씨 또는 일일예보 카드 클릭 시 로그인 form 모달창 띄우기
+- 주소로 위치 검색 버튼 넣기
+- 시간별 날씨 정보 기온, 강수량 차트로 보여주기, 바람 정보 카드로 보여주기
+- 요일별 날씨 정보 기온, 강수량 차트로 보여주기, 바람 정보 카드로 보여주기
 
-## 5. Update MyInfo Page (내 정보 수정하기 페이지)
-
-## 4. mobile & pc 반응형 구현하기
-
-## 5. 사용자 위치 사용 권한 동의 안내 모달창 구현(추가시간 사용 예정)
+## 3. mobile & pc 반응형 구현하기
 
 # Using Libraray
 
@@ -117,18 +126,18 @@
 │   │   ├── AuthTypeChip.vue
 │   │   ├── DropdownMenu.vue
 │   │   ├── EmailInput.vue
-│   │   ├── LoginFormModal.vue
 │   │   ├── NavigationDrawer.vue
 │   │   ├── NicknameInput.vue
 │   │   ├── PasswordCheckInput.vue
 │   │   ├── PasswordInput.vue
-│   │   ├── ResponseErrorInfoAlert.vue
+│   │   ├── ResponseApiInfoAlert.vue
 │   │   ├── ResponseInfoAlert.vue
 │   │   └── ScrollToTopBtn.vue
 │   ├── constants
 │   │   ├── localStorage-types.js
 │   │   ├── modal-types.js
-│   │   └── mutation-types.js
+│   │   ├── mutation-types.js
+│   │   └── weather-types.js
 │   ├── data
 │   │   ├── AppBarMenuItems.js
 │   │   ├── DropdownMenuItems.js
@@ -136,6 +145,7 @@
 │   ├── main.js
 │   ├── mixins
 │   │   ├── check-refreshtoken-mixin.js
+│   │   ├── daum-postcode-mixin.js
 │   │   ├── index.js
 │   │   └── openweathermap-icon-mixin.js
 │   ├── plugins
@@ -144,7 +154,7 @@
 │   │   └── index.js
 │   ├── services
 │   │   ├── isValidCoords.js
-│   │   ├── makeApiErrorInfo.js
+│   │   ├── makeApiResponseInfo.js
 │   │   ├── makeWeatherDataToFixedOne.js
 │   │   ├── saveTargetAtLocalStorage.js
 │   │   └── translateResponseErrorCode.js
@@ -152,19 +162,36 @@
 │   │   ├── index.js
 │   │   └── modules
 │   │       ├── index.js
-│   │       ├── user.js
-│   │       └── weather.js
+│   │       ├── user
+│   │       │   ├── actions.js
+│   │       │   ├── getters.js
+│   │       │   ├── index.js
+│   │       │   └── mutations.js
+│   │       └── weather
+│   │           ├── actions.js
+│   │           ├── getters.js
+│   │           ├── index.js
+│   │           └── mutations.js
 │   └── views
 │       ├── DashBoard
 │       │   ├── components
 │       │   │   ├── LoginFormModal.vue
 │       │   │   ├── SearchLocationInputCard.vue
 │       │   │   ├── SimpleCurrentWeatherCard.vue
+│       │   │   ├── SimpleCurrentWeatherCardMainContent.vue
+│       │   │   ├── SimpleCurrentWeatherCardSubContent.vue
 │       │   │   ├── SimpleDailySlideCard.vue
 │       │   │   ├── SimpleDailySlideGroup.vue
 │       │   │   └── SimpleDailyWeatherCard.vue
 │       │   └── index.vue
 │       ├── DetailForecast
+│       │   ├── ForecastAll
+│       │   │   ├── components
+│       │   │   │   ├── ForecastDailyCardGroup.vue
+│       │   │   │   ├── ForecastDailyTabItems.vue
+│       │   │   │   ├── ForecastHourlyTabItems.vue
+│       │   │   │   └── WindCardGroup.vue
+│       │   │   └── index.vue
 │       │   ├── ForecastDaily
 │       │   │   ├── components
 │       │   │   │   ├── ForecastDailySlideCardGroup.vue
@@ -172,7 +199,9 @@
 │       │   │   └── index.vue
 │       │   ├── ForecastHourly
 │       │   │   ├── components
-│       │   │   │   └── ForecastHourlyPanel.vue
+│       │   │   │   ├── ForecastHourlyPanel.vue
+│       │   │   │   ├── ForecastHourlyPanelContent.vue
+│       │   │   │   └── ForecastHourlyPanelHeader.vue
 │       │   │   └── index.vue
 │       │   ├── components
 │       │   │   ├── ForecastPageTitle.vue

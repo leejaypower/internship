@@ -34,27 +34,27 @@
       >
         <v-container :class="responsiveFormWidth">
           <v-card-text>
-            <v-row>
-              <password-input
-                :password="oldPassword"
-                :label="oldPasswordLabel"
-                @onChangePassword="onChangeOldPassword"
-              />
-            </v-row>
-            <v-row class="mt-6">
+            <password-input
+              :password="oldPassword"
+              :label="oldPasswordLabel"
+              @onChangePassword="onChangeOldPassword"
+            />
+
+            <div class="mt-6">
               <password-input
                 :password="newPassword"
                 :label="newPasswordLabel"
                 @onChangePassword="onChangeNewPassword"
               />
-            </v-row>
-            <v-row class="my-6">
+            </div>
+
+            <div class="my-6">
               <password-check-input
                 :password="newPassword"
                 :password-check="passwordCheck"
                 @onChangePasswordCheck="onChangePasswordCheck"
               />
-            </v-row>
+            </div>
           </v-card-text>
           <v-card-actions class="mb-16 d-flex flex-column justify-center">
             <v-btn
@@ -75,10 +75,9 @@
 <script>
 import {
   PC_WIDTH, MOBILE_WIDTH, PC_FORM_WRAPPER_CLASS, MOBILE_FORM_WRAPPER_CLASS,
-} from '@/constants/modal-types'
+} from '@/constants'
 import PasswordInput from '@/components/PasswordInput.vue'
 import PasswordCheckInput from '@/components/PasswordCheckInput.vue'
-import { mapGetters } from 'vuex'
 
 export default {
   name: 'UpdatePasswordModal',
@@ -103,9 +102,6 @@ export default {
     isWarningAlertVisible: false,
   }),
   computed: {
-    ...mapGetters('user', [
-      'myInfo',
-    ]),
     reponsiveDialogMaxWidth() {
       return this.$vuetify.breakpoint.smAndDown ? MOBILE_WIDTH : PC_WIDTH
     },

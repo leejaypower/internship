@@ -44,7 +44,7 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import DropdownMenuItems from '@/data/DropdownMenuItems'
+import { DropdownMenuItems } from '@/data'
 
 export default {
   name: 'DropdownMenu',
@@ -68,20 +68,16 @@ export default {
       }
     },
     nickname(value) {
-      if (value) {
-        if (value !== this.dropdownBtnText) {
-          this.dropdownBtnText = `${value}님`
-        }
+      if (value && value !== this.dropdownBtnText) {
+        this.dropdownBtnText = `${value}님`
       } else {
         this.dropdownBtnText = '환영합니다'
       }
     },
   },
   mounted() {
-    if (this.nickname) {
-      if (this.nickname !== this.dropdownBtnText) {
-        this.dropdownBtnText = `${this.nickname}님`
-      }
+    if (this.nickname && this.nickname !== this.dropdownBtnText) {
+      this.dropdownBtnText = `${this.nickname}님`
     }
   },
   methods: {

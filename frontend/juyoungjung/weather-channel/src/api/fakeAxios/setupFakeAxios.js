@@ -1,5 +1,5 @@
 import store from '@/store'
-import { ACCESSTOKEN, REFRESHTOKEN } from '@/constants/localStorage-types'
+import { ACCESS_TOKEN, REFRESH_TOKEN } from '@/constants'
 import fakeAxios from '../../../fakeAxios'
 import {
   setAccessTokenBeforeRequestSentCb,
@@ -9,7 +9,7 @@ import {
 
 const requestInstance = (tokenType) => {
   let setBeforeRequestSentCb = setAccessTokenBeforeRequestSentCb
-  if (tokenType === REFRESHTOKEN) {
+  if (tokenType === REFRESH_TOKEN) {
     setBeforeRequestSentCb = setRefreshTokenBeforeRequestSentCb
   }
 
@@ -34,7 +34,7 @@ function setupFakeAxios(tokenType) {
 
       // 4. refreshToken이 localStorage에 저장되어 있는 상황에서
       // api요청을 보냈을 때 accessToken가 만료되어 401에러가 발생한 상황이라면
-      const refreshToken = localStorage.getItem(REFRESHTOKEN)
+      const refreshToken = localStorage.getItem(REFRESH_TOKEN)
       if (refreshToken) {
         // 5. 새로운 accessToken 갱신하기
         await store.dispatch('user/renewalAccessTokenInfo')
@@ -42,7 +42,7 @@ function setupFakeAxios(tokenType) {
 
         if (store.getters['user/accessToken']) {
           // 7. 6번이 아니라면 새로운 accessToken으로 401에러가 발생한 요청을 그대로 다시 서버로 보내기
-          requestInstance(ACCESSTOKEN)
+          requestInstance(ACCESS_TOKEN)
           await fakeAxios[method](url, data)
         }
 

@@ -16,14 +16,10 @@
 
     <v-form>
       <v-container>
-        <v-row>
-          <v-col>
-            <email-input
-              :email="email"
-              :disabled="isEmailInputDisabled"
-            />
-          </v-col>
-        </v-row>
+        <email-input
+          :email="email"
+          :disabled="isEmailInputDisabled"
+        />
 
         <v-row class="mt-6 justify-center">
           <v-col
@@ -63,7 +59,7 @@
           </v-col>
         </v-row>
 
-        <v-row class="mt-16 d-flex justify-center">
+        <div class="mt-16 d-flex justify-center">
           <v-btn
             color="primary"
             class="mr-4"
@@ -73,7 +69,7 @@
           >
             비밀번호 수정하기
           </v-btn>
-        </v-row>
+        </div>
       </v-container>
     </v-form>
 

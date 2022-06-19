@@ -1,41 +1,34 @@
 <template>
-  <v-container>
-    <v-row>
-      <v-col>
-        <v-skeleton-loader
-          v-if="!forecastDaily7DaysData"
-          type="image"
-        />
+  <div>
+    <v-skeleton-loader
+      v-if="!forecastDaily7DaysList"
+      type="image"
+    />
 
-        <forecast-daily-slide-card-group
-          v-else
-          :go-to-forecast-daily-page-hash="goToForecastDailyPageHash"
-        />
-      </v-col>
-    </v-row>
+    <forecast-daily-slide-card-group
+      v-else
+      :hash-key="hashKey"
+      @onChangeHashKey="setHashKey"
+    />
+
     <forecast-page-title
       :title="'요일별 날씨 현황'"
       :sub-title="'오늘로부터 7일간의 날씨 예보를 확인하실 수 있습니다.'"
-      :forecast-data="forecastDaily7DaysData"
     />
 
     <v-skeleton-loader
-      v-if="!forecastDaily7DaysData"
+      v-if="!forecastDaily7DaysList"
       class="mt-6"
       type="image, image"
     />
 
-    <v-row v-else>
-      <v-col>
-        <v-card
-
-          class="mt-10"
-        >
-          <forecast-daily-weather-table :selected-day-data="selectedDayData" />
-        </v-card>
-      </v-col>
-    </v-row>
-  </v-container>
+    <v-card
+      v-else
+      class="mt-10"
+    >
+      <forecast-daily-weather-table :selected-day-data="selectedDayData" />
+    </v-card>
+  </div>
 </template>
 
 <script>
@@ -60,15 +53,15 @@ export default {
     hashKey: '',
   }),
   computed: {
-    ...mapGetters('weather', ['currentCoords', 'forecastDaily7DaysData']),
+    ...mapGetters('weather', ['currentCoords', 'forecastDaily7DaysList']),
   },
   watch: {
     hashKey(value) {
-      if (this.forecastDaily7DaysData && value) {
-        this.setSelectedDayData(this.forecastDaily7DaysData)
+      if (this.forecastDaily7DaysList && value) {
+        this.setSelectedDayData(this.forecastDaily7DaysList)
       }
     },
-    forecastDaily7DaysData(value) {
+    forecastDaily7DaysList(value) {
       this.setSelectedDayData(value)
     },
   },
@@ -79,18 +72,21 @@ export default {
     if (!routerHash) {
       this.goToForecastDailyPageHash(today)
     } else {
-      this.hashKey = routerHash
+      this.setHashKey(routerHash)
     }
   },
   methods: {
+    setHashKey(key) {
+      this.hashKey = key
+    },
     goToForecastDailyPageHash(key) {
       if (key !== this.hashKey) {
         this.$router.push({ path: '/detail-forecast/daily', hash: key })
-        this.hashKey = key
+        this.setHashKey(key)
       }
     },
-    setSelectedDayData(forecastDaily7DaysData) {
-      const selectedData = forecastDaily7DaysData.filter((data) => data.key === this.hashKey)
+    setSelectedDayData(forecastDaily7DaysList) {
+      const selectedData = forecastDaily7DaysList.filter((data) => data.key === this.hashKey)
 
       if (selectedData?.[0]) {
         const {

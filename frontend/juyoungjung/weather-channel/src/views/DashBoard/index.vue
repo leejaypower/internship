@@ -1,10 +1,9 @@
 <template>
   <div>
     <response-info-alert />
-    <response-error-info-alert />
-
+    <response-api-info-alert />
     <v-container class="dashboard-container">
-      <v-row class="pa-4">
+      <v-row class="px-4 py-10">
         <v-col
           cols="12"
           md="8"
@@ -13,22 +12,31 @@
             The Weather Channel with Vue
           </h1>
         </v-col>
+
         <v-col
           cols="12"
           md="4"
           class="d-flex justify-end align-center"
         >
-          <div class="reset-btn-wrapper">
-            <v-btn
-              color="red"
-              outlined
-              fab
-              x-small
-              @click="resetOneCallApiData"
-            >
-              <v-icon>mdi-restore</v-icon>
-            </v-btn>
-          </div>
+          <v-tooltip
+            top
+            class="reset-btn-wrapper"
+          >
+            <template #activator="{ on, attrs }">
+              <v-btn
+                color="red"
+                outlined
+                fab
+                x-small
+                :attrs="attrs"
+                @click="resetOneCallApiData"
+                v-on="on"
+              >
+                <v-icon>mdi-restore</v-icon>
+              </v-btn>
+            </template>
+            <span>최신 날씨 현황을 가져옵니다.</span>
+          </v-tooltip>
         </v-col>
       </v-row>
 
@@ -44,15 +52,10 @@
         <v-col
           cols="12"
           lg="8"
-          class="d-flex flex-column justify-center"
         >
-          <v-col cols="12">
-            <search-location-input-card />
-          </v-col>
+          <search-location-input-card />
 
-          <v-col cols="12">
-            <simple-daily-weather-card />
-          </v-col>
+          <simple-daily-weather-card />
         </v-col>
       </v-row>
 
@@ -66,8 +69,8 @@
 <script>
 import { mapGetters } from 'vuex'
 import ResponseInfoAlert from '@/components/ResponseInfoAlert.vue'
+import ResponseApiInfoAlert from '@/components/ResponseApiInfoAlert.vue'
 import ScrollToTopBtn from '@/components/ScrollToTopBtn.vue'
-import ResponseErrorInfoAlert from '@/components/ResponseErrorInfoAlert.vue'
 import SimpleDailyWeatherCard from './components/SimpleDailyWeatherCard.vue'
 import SimpleCurrentWeatherCard from './components/SimpleCurrentWeatherCard.vue'
 import LoginFormModal from './components/LoginFormModal.vue'
@@ -77,7 +80,7 @@ export default {
   name: 'DashBoard',
   components: {
     ResponseInfoAlert,
-    ResponseErrorInfoAlert,
+    ResponseApiInfoAlert,
     SimpleCurrentWeatherCard,
     LoginFormModal,
     SimpleDailyWeatherCard,

@@ -32,7 +32,7 @@ const getLocationNameByCoords = async ({ longitude, latitude }) => {
 
 /**
  *
- * @see {@link fetchOneCallApi} AI·NAVER Reverse Geocoding API 문서
+ * @see {@link fetchOneCallApi} AI·NAVER Geocoding API 문서
  * @see {@link https://api.ncloud-docs.com/docs/ai-naver-mapsgeocoding-geocode}
  */
 const getLocationCoordsByAddress = async (query) => {

@@ -11,8 +11,9 @@
 import { mapGetters } from 'vuex'
 import { checkRefreshTokenMixin } from '@/mixins'
 import AppBar from './components/AppBar.vue'
-import { USERINFOLIST } from './constants/localStorage-types'
+import { USER_INFO_LIST } from './constants'
 import { setUserInfoListAtLocalStorage } from '../fakeServer'
+import { makeApiResponseInfo } from './services'
 
 export default {
   name: 'App',
@@ -30,11 +31,11 @@ export default {
     ]),
   },
   created() {
-    if (!localStorage.getItem(USERINFOLIST)) {
+    if (!localStorage.getItem(USER_INFO_LIST)) {
       setUserInfoListAtLocalStorage()
     }
 
-    if (!this.accessToken && this.$_isRefreshTokenSavedAtLocalStorage()) {
+    if (!this.accessToken && this.isRefreshTokenSavedAtLocalStorageMixin()) {
       this.$store.dispatch('user/renewalAccessTokenInfo')
     }
 
@@ -62,11 +63,13 @@ export default {
       await this.$store.dispatch('weather/getOneCallApi', { longitude, latitude })
     },
     positionError(error) {
-      const info = {
-        desc: '현재 위치 이름을 가져오는데 실패했습니다.', message: error.message,
-      }
+      const info = makeApiResponseInfo(
+        'error',
+        '현재 위치를 가져오는데 실패했습니다. 페이지 새로고침 시에도 같은 문제가 발생할 경우 관리자에게 문의해주세요.',
+        error.message,
+      )
 
-      this.$store.dispatch('weather/setResponseErrorInfo', info)
+      this.$store.dispatch('weather/setApiResponseInfo', info)
     },
   },
 }

@@ -17,5 +17,11 @@ const AppBarMenuItems = [
     to: '/detail-forecast/hourly',
     requiredAuth: true,
   },
+  {
+    icon: 'mdi-chart-line',
+    text: '전체 날씨 보기',
+    to: '/detail-forecast/all',
+    requiredAuth: true,
+  },
 ]
 export default AppBarMenuItems

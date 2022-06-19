@@ -1,6 +1,6 @@
 const openWeatherMapIconMixin = {
   methods: {
-    $_makeIconUrl(icon) {
+    makeIconUrlMixin(icon) {
       return `http://openweathermap.org/img/wn/${icon}@2x.png`
     },
   },

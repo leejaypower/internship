@@ -1,7 +1,7 @@
 <template>
   <v-simple-table>
     <template #default>
-      <tbody>
+      <tbody class="px-6">
         <tr>
           <today-weather-table-td
             :content="selectedDayData.feelsLike"
@@ -67,7 +67,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters('weather', ['forecastDaily7DaysData']),
+    ...mapGetters('weather', ['forecastDaily7DaysList']),
   },
 }
 </script>

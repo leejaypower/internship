@@ -1,6 +1,6 @@
 <template>
   <div>
-    <response-error-info-alert />
+    <response-api-info-alert />
 
     <router-view />
 
@@ -9,15 +9,15 @@
 </template>
 <script>
 import ScrollToTopBtn from '@/components/ScrollToTopBtn.vue'
-import ResponseErrorInfoAlert from '@/components/ResponseErrorInfoAlert.vue'
+import ResponseApiInfoAlert from '@/components/ResponseApiInfoAlert.vue'
 import { checkRefreshTokenMixin } from '@/mixins'
 
 export default {
   name: 'DetailForecast',
-  components: { ResponseErrorInfoAlert, ScrollToTopBtn },
+  components: { ScrollToTopBtn, ResponseApiInfoAlert },
   mixins: [checkRefreshTokenMixin],
   mounted() {
-    if (!this.$_isRefreshTokenSavedAtLocalStorage()) {
+    if (!this.isRefreshTokenSavedAtLocalStorageMixin()) {
       this.$router.push('/')
     }
   },

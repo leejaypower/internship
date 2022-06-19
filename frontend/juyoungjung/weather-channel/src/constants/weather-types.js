@@ -1,0 +1,27 @@
+const TEMPERATURE_INDEX = 0
+const RAIN_INDEX = 1
+const WIND_INDEX = 2
+const RED = '#f72047'
+const YELLOW = '#ffd200'
+const GREEN = '#1feaea'
+const BLUE = '#42b3f4'
+const DAYJS_DATE_AND_DAY_FORMAT = 'MM/DD(dddd)'
+const PC_HEIGHT = '80vh'
+const MOBILE_HEIGHT = '50%'
+const PC_PADDING = 'pa-10'
+const MOBILE_PADDING = 'pa-4'
+
+export {
+  TEMPERATURE_INDEX,
+  RAIN_INDEX,
+  WIND_INDEX,
+  RED,
+  YELLOW,
+  GREEN,
+  BLUE,
+  DAYJS_DATE_AND_DAY_FORMAT,
+  PC_HEIGHT,
+  MOBILE_HEIGHT,
+  PC_PADDING,
+  MOBILE_PADDING,
+}

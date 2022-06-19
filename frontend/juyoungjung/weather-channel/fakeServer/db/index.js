@@ -1,4 +1,4 @@
-import makeJWT from '../services/JWT/makeJWT'
+import { makeJWT } from '../services'
 
 const {
   createAccessToken, createRefreshToken,

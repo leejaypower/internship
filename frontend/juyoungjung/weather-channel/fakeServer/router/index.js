@@ -1,10 +1,12 @@
 /* eslint-disable prefer-promise-reject-errors */
-import makeJWT from '../services/JWT/makeJWT'
-import isJWTValid from '../middleware/isJWTValid'
-import saveUserInfoAtLocalStorage from '../services/saveUserInfoAtLocalStorage'
-import makeReturn from '../services/makeReturn'
-import getUserInfoList from '../services/getUserInfoList'
-import checkDuplicatedInfo from '../services/checkDuplicatedInfo'
+import {
+  makeJWT,
+  makeReturn,
+  saveUserInfoAtLocalStorage,
+  getUserInfoList,
+  checkDuplicatedInfo,
+} from '../services'
+import isJWTValid from '../middleware'
 import { USER_INFO_EMAIL, USER_INFO_NICKNAME } from '../constant'
 
 const getCheckRefreshToken = (req) => {

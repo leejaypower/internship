@@ -1,26 +1,23 @@
 <template>
-  <v-container>
+  <div class="mx-16">
     <forecast-page-title
       :title="'시간별 날씨 현황'"
-      :sub-title="'현재 시간으로부터 48시간의 날씨 예보를 확인하실 수 있습니다.'"
-      :forecast-data="forecastHourlyData"
+      :sub-title="'현재 시간으로부터 48시간의 날씨 예보를 1시간 간격으로 확인하실 수 있습니다.'"
     />
 
-    <v-row>
-      <v-col>
-        <v-skeleton-loader
-          v-if="!forecastHourlyData"
-          class="mx-auto"
-          type="image, image, image, image"
-        />
+    <div class="pt-16">
+      <v-skeleton-loader
+        v-if="!forecastHourlyList"
+        class="mx-auto"
+        type="image, image, image, image"
+      />
 
-        <forecast-hourly-panel
-          v-else
-          :hourly-data="forecastHourlyData"
-        />
-      </v-col>
-    </v-row>
-  </v-container>
+      <forecast-hourly-panel
+        v-else
+        :hourly-data="forecastHourlyList"
+      />
+    </div>
+  </div>
 </template>
 
 <script>
@@ -32,7 +29,7 @@ export default {
   name: 'ForecastHourly',
   components: { ForecastHourlyPanel, ForecastPageTitle },
   computed: {
-    ...mapGetters('weather', ['forecastHourlyData']),
+    ...mapGetters('weather', ['forecastHourlyList']),
   },
 }
 </script>

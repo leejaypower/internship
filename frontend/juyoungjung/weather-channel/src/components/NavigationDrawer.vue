@@ -45,7 +45,7 @@
   </v-navigation-drawer>
 </template>
 <script>
-import appBarMenuItems from '@/data/AppBarMenuItems'
+import { AppBarMenuItems } from '@/data'
 import AuthTypeChip from './AuthTypeChip.vue'
 
 export default {
@@ -58,7 +58,7 @@ export default {
     },
     appBarMenuItems: {
       type: Array,
-      default: () => appBarMenuItems,
+      default: () => AppBarMenuItems,
     },
   },
   emits: ['onChangeIsDrawerVisible'],
