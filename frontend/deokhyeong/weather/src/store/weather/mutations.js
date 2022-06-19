@@ -10,7 +10,12 @@ const setCurrentAirPollution = (state, currentAirPollution) => {
   }
 }
 
+const setOneWeekWeathers = (state, oneWeekWeathers) => {
+  state.oneWeekWeathers = oneWeekWeathers
+}
+
 export default {
   setCurrentWeather,
   setCurrentAirPollution,
+  setOneWeekWeathers,
 }

@@ -5,10 +5,11 @@
     app
   >
     <v-btn
+      to="/one-week-forecast"
       height="100%"
       text
     >
-      <span>7일 예보</span>
+      <span>주간 예보</span>
       <v-icon>mdi-history</v-icon>
     </v-btn>
     <v-btn

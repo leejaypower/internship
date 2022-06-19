@@ -49,26 +49,24 @@ export default {
       return this.location ? '#009688' : '#E1F5FE'
     },
     infoMessageClass() {
-      let result = 'text-h6'
       if (this.$vuetify.breakpoint.width < 500) {
-        result = 'text-subtitle-1'
+        return { 'text-subtitle-1': true }
       }
 
       return {
-        [result]: true,
+        'text-h6': true,
       }
     },
     infoSubMessageClass() {
-      let result = 'text-subtitle-1'
       if (this.$vuetify.breakpoint.width < 320) {
-        result = 'caption'
+        return { caption: true }
       }
       if (this.$vuetify.breakpoint.width < 500) {
-        result = 'text-subtitle-2'
+        return { 'text-subtitle-2': true }
       }
 
       return {
-        [result]: true,
+        'text-subtitle-1': true,
       }
     },
   },

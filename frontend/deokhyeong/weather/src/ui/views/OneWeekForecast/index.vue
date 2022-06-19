@@ -5,46 +5,47 @@
     <circular-loading v-if="isLoading" />
     <div
       v-else
-      class="d-flex flex-column pa-12 full-height"
+      class="pt-12 px-4"
     >
       <title-header
-        :title="currentPageTitle"
+        title="주간 예보"
+        :sub-title="currentPageSubTitle"
+        class="pb-8"
       />
-      <current-weather
-        :current-weather="currentWeather"
-        :current-air-pollution="currentAirPollution"
-      />
+      <div>
+        <daily-weather-card
+          v-for="(dayWeather, index) in oneWeekWeathers"
+          :key="dayWeather.dateTime"
+          :day-weather="dayWeather"
+          :is-today="index === 0"
+          :is-move-to-detail-button-view="index < 2"
+          @moveToDetail="moveToDetail(dayWeather.date)"
+        />
+      </div>
     </div>
     <bottom-navigation />
   </div>
 </template>
-
 <script>
 import BottomNavigation from '@/ui/components/layout/BottomNavigation'
 import TitleHeader from '@/ui/components/TitleHeader'
 import { mapActions, mapGetters } from 'vuex'
 import CircularLoading from '@/ui/components/CircularLoading'
-import CurrentWeather from '@/ui/views/MainHome/CurrentWeather'
-import utils from '@/utils'
+import DailyWeatherCard from '@/ui/views/OneWeekForecast/DailyWeatherCard'
 
 export default {
-  name: 'MainHome',
+  name: 'OneWeekForecast',
   components: {
     BottomNavigation,
+    DailyWeatherCard,
     TitleHeader,
     CircularLoading,
-    CurrentWeather,
-  },
-  data() {
-    return {
-      weatherIntervalCallId: null,
-    }
   },
   computed: {
     ...mapGetters('auth', ['priorityLocation', 'selectedLocation']),
-    ...mapGetters('weather', ['currentWeather', 'currentAirPollution']),
+    ...mapGetters('weather', ['oneWeekWeathers']),
     ...mapGetters('loading', ['isLoading']),
-    currentPageTitle() {
+    currentPageSubTitle() {
       return this.priorityLocation?.location
     },
     locationParams() {
@@ -55,20 +56,16 @@ export default {
     },
   },
   created() {
-    this.fetchInitWeather()
-    this.weatherIntervalCallId = utils.intervalCall(this.fetchInitWeather, 1, 'min')
-  },
-  beforeDestroy() {
-    clearInterval(this.weatherIntervalCallId)
+    this.fetchInitOneWeekWeathers()
   },
   methods: {
     ...mapActions('auth', ['currentLocationSetting']),
-    ...mapActions('weather', ['currentWeatherSetting', 'currentAirPollutionSetting']),
+    ...mapActions('weather', ['oneWeekWeathersSetting']),
     ...mapActions('loading', ['turnOnLoading', 'turnOffLoading']),
-    async fetchInitWeather() {
+    async fetchInitOneWeekWeathers() {
       this.turnOnLoading()
       await this.fetchCurrentLocation()
-      await this.fetchCurrentWeather()
+      await this.fetchOneWeekWeathers()
       this.turnOffLoading()
     },
     async fetchCurrentLocation() {
@@ -76,12 +73,11 @@ export default {
         await this.currentLocationSetting()
       }
     },
-    async fetchCurrentWeather() {
-      const currentWeatherResponse = this.currentWeatherSetting(this.locationParams)
-      const currentAirPollutionResponse = this.currentAirPollutionSetting(this.locationParams)
-      await Promise.allSettled(
-        [currentWeatherResponse, currentAirPollutionResponse],
-      )
+    async fetchOneWeekWeathers() {
+      await this.oneWeekWeathersSetting(this.locationParams)
+    },
+    moveToDetail(date) {
+      this.$router.push(`/forecast-detail/table/${date}`)
     },
   },
 }

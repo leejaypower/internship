@@ -51,7 +51,31 @@ const currentAirPollutionSetting = async ({ commit, dispatch }, { lat, lon }) =>
   }
 }
 
+const oneWeekWeathersSetting = async ({ commit, dispatch }, {
+  lat, lon, lang = 'kr', units = 'metric',
+}) => {
+  try {
+    const response = await weatherApi.getOneWeekWeathers({
+      lat, lon, lang, units,
+    })
+    if (response.status === 200) {
+      commit(
+        'setOneWeekWeathers',
+        weatherMapping.oneWeekWeathersMapping(response.data),
+      )
+    }
+    return response
+  } catch (error) {
+    dispatch('alert/alertOpen', {
+      status: error.status,
+      message: '날씨 정보를 받아오는데 실패했습니다.',
+    }, { root: true })
+    return error
+  }
+}
+
 export default {
   currentWeatherSetting,
   currentAirPollutionSetting,
+  oneWeekWeathersSetting,
 }

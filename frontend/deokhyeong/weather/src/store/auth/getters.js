@@ -9,6 +9,9 @@ const selectedLocation = (state) => state.selectedLocation
 const currentLocation = (state) => state.currentLocation
 const defaultLocation = (state) => state.defaultLocation
 
+// eslint-disable-next-line max-len
+const priorityLocation = (state) => state.selectedLocation || state.currentLocation || state.defaultLocation
+
 export default {
   userId,
   email,
@@ -20,4 +23,5 @@ export default {
   selectedLocation,
   currentLocation,
   defaultLocation,
+  priorityLocation,
 }

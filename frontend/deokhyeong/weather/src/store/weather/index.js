@@ -7,6 +7,7 @@ const weather = {
   state: {
     currentWeather: {},
     currentAirPollution: {},
+    oneWeekWeathers: [],
   },
   getters,
   mutations,

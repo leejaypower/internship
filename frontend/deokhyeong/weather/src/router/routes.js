@@ -3,6 +3,10 @@ import SignUp from '@/ui/views/SignUp'
 import SignIn from '@/ui/views/SignIn'
 import MyPage from '@/ui/views/MyPage'
 import LocationAdd from '@/ui/views/LocationAdd'
+import ForecastDetail from '@/ui/views/ForecastDetail'
+import WeatherTable from '@/ui/views/ForecastDetail/WeatherTable'
+import WeatherGraph from '@/ui/views/ForecastDetail/WeatherGraph'
+import OneWeekForecast from '@/ui/views/OneWeekForecast'
 
 export default [
   {
@@ -24,6 +28,12 @@ export default [
     meta: { requiresAuth: true },
   },
   {
+    path: '/one-week-forecast',
+    name: 'OneWeekForecast',
+    component: OneWeekForecast,
+    meta: { requiresAuth: true },
+  },
+  {
     path: '/sign-up',
     name: 'SignUp',
     component: SignUp,
@@ -34,5 +44,23 @@ export default [
     name: 'SignIn',
     component: SignIn,
     meta: { noRequiresAuth: true },
+  },
+  {
+    path: '/forecast-detail',
+    name: 'ForecastDetail',
+    component: ForecastDetail,
+    meta: { requiresAuth: true },
+    children: [
+      {
+        path: 'table/:date',
+        component: WeatherTable,
+        meta: { requiresAuth: true },
+      },
+      {
+        path: 'graph/:date',
+        component: WeatherGraph,
+        meta: { requiresAuth: true },
+      },
+    ],
   },
 ]

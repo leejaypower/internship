@@ -5,16 +5,10 @@
     </span>
     <div>
       <img
-        v-if="weatherIcon"
         alt="날씨 아이콘"
         :src="weatherIcon"
         height="160"
       >
-      <span
-        v-else
-      >
-        아이콘 정보 없음
-      </span>
     </div>
     <div class="text-h4 font-weight-bold">
       {{ temperature }}&deg;C
@@ -53,22 +47,22 @@ export default {
   },
   computed: {
     weatherSimpleNote() {
-      return this.currentWeather?.weatherSimpleNote ? this.currentWeather?.weatherSimpleNote : '-'
+      return this.currentWeather?.weatherSimpleNote || '-'
     },
     weatherIcon() {
-      return this.currentWeather?.weatherIcon
+      return this.currentWeather?.weatherIcon || 'images/no-result.png'
     },
     temperature() {
-      return this.currentWeather?.temperature ? this.currentWeather?.temperature : '-'
+      return this.currentWeather?.temperature || '-'
     },
     minTemperature() {
-      return this.currentWeather?.minTemperature ? this.currentWeather?.minTemperature : '-'
+      return this.currentWeather?.minTemperature || '-'
     },
     maxTemperature() {
-      return this.currentWeather?.maxTemperature ? this.currentWeather?.maxTemperature : '-'
+      return this.currentWeather?.maxTemperature || '-'
     },
     airQuality() {
-      return this.currentAirPollution?.airQuality ? this.currentAirPollution?.airQuality : '-'
+      return this.currentAirPollution?.airQuality || '-'
     },
   },
   methods: {

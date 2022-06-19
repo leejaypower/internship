@@ -105,7 +105,7 @@ src
 /
 /sign-in
 /sign-up
-/seven-forecast
+/one-week-forecast
 /forecast-detail
  /table
  /graph
@@ -119,7 +119,7 @@ src
 
 /sign-up : 회원가입 페이지
 
-/seven-forecast: 7일 예보 목록 페이지
+/one-week-forecast: 주간 예보 목록 페이지
 
 /forecast-detail : 상세 예보 페이지
 
@@ -138,7 +138,7 @@ src
 | / | /sign-in | 🔴 | 🟢 | 🟢 |
 | /sign-in | / | 🟢 | 🔴 | 🔴 |
 | /sign-up | / | 🟢 | 🔴 | 🔴 |
-| /seven-forecast | /sign-in | 🔴 | 🟢 | 🟢 |
+| /one-week-forecast | /sign-in | 🔴 | 🟢 | 🟢 |
 | /forecast-detail/[table,graph] | /sign-in | 🔴 | 🟢 | 🟢 |
 | /mypage | /sign-in | 🔴 | 🟢 | 🟢 |
 | /mypage/location-add | 회원 :  /, 비회원 : /sign-in | 🔴 | 🔴 | 🟢 |
