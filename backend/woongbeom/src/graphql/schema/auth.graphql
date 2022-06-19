@@ -1,7 +1,11 @@
 type auth {
-    decodedToken: String
+    email: String
 }
 
 type Query {
+    isAuthenticated(token: String, role: String): auth
+}
+
+type Mutation {
     isAuthenticated(token: String, role: String): auth
 }

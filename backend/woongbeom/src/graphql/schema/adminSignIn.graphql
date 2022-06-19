@@ -3,5 +3,5 @@ type signIn {
 }
 
 type Mutation {
-    signIn(email: String, password: String): signIn
+    signIn(email: String!, password: String!): signIn
 }

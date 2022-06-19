@@ -1,8 +1,8 @@
 const Book = require('./book');
 const User = require('./user');
-const SignIn = require('./signIn');
+const adminSignIn = require('./adminSignIn');
 const Auth = require('./auth');
 
 module.exports = {
-  Book, User, SignIn, Auth,
+  Book, User, adminSignIn, Auth,
 };

@@ -14,7 +14,19 @@ const auth = {
       return next(parent, args, context, info);
     },
   },
-  Mutation: {},
+  Mutation: {
+    isAuthenticated: () => (next) => async (parent, args, context, info) => {
+      const token = context.request.header.authorization;
+      if (!token) {
+        return context.throw('error');
+      }
+      const decodedToken = await jwt.verify(token);
+      if (decodedToken.ROLE !== ROLE.ADMIN) {
+        return context.throw('error');
+      }
+      return next(parent, args, context, info);
+    },
+  },
 };
 
 module.exports = auth;

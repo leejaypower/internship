@@ -5,9 +5,21 @@ const createBook = async (bookData) => {
   return newBookData;
 };
 
-const getListAll = async () => {
-  const bookList = await repository.book.getListAll();
+const getBooks = async (bookQuery) => {
+  const bookList = await repository.book.getBooks(bookQuery);
   return bookList;
 };
 
-module.exports = { createBook, getListAll };
+const getBookById = async (id) => {
+  const book = await repository.book.getBookById(id);
+  return book;
+};
+
+const updateBook = async (id, data) => {
+  const numOfUpdatedRow = await repository.book.updateBook(id, data);
+  return numOfUpdatedRow;
+};
+
+module.exports = {
+  createBook, getBooks, getBookById, updateBook,
+};

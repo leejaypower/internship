@@ -35,7 +35,7 @@ module.exports = {
         defaultValue: 0, // 현재 로직 구현 전이라, 기본값을 0으로 두었습니다. 구현하면서 삭제 예정입니다.
         comment: '책 반납의 연체일수를 나타냅니다. 연체되지 않은 경우, 0입니다.',
       },
-      idExtended: {
+      isExtended: {
         type: Sequelize.BOOLEAN,
         allowNull: false,
         defaultValue: false, // 현재 로직 구현 전이라, 기본값을 false로 두었습니다. 구현하면서 삭제 예정입니다.

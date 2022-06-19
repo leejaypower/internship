@@ -21,12 +21,44 @@ const createBook = async (ctx) => {
   }
 };
 
-const getListAll = async (ctx) => {
+const getBooks = async (ctx) => {
   try {
-    ctx.body = await service.book.getListAll();
+    ctx.body = await service.book.getBooks(ctx.request.query);
   } catch (err) {
     ctx.throw(err);
   }
 };
 
-module.exports = { createBook, getListAll };
+const getBookById = async (ctx) => {
+  try {
+    const { id } = ctx.params;
+    ctx.body = await service.book.getBookById(id);
+  } catch (err) {
+    ctx.throw(err);
+  }
+};
+
+const updateBook = async (ctx) => {
+  try {
+    const { id } = ctx.params;
+    // page, statusCode 인자가 들어왔는데 type이 Number가 아니라면 error
+    if (ctx.request.body.page) {
+      if (typeof (ctx.request.body.page) !== 'number') {
+        errorHandler(1, 'invalid page datatype');
+      }
+    }
+    if (ctx.request.body.statusCode) {
+      if (typeof (ctx.request.body.statusCode) !== 'number') {
+        errorHandler(1, 'invalid statusCode datatype');
+      }
+    }
+    const numOfUpdatedRow = await service.book.updateBook(id, ctx.request.body);
+    ctx.body = numOfUpdatedRow;
+  } catch (err) {
+    ctx.throw(err);
+  }
+};
+
+module.exports = {
+  createBook, getBooks, getBookById, updateBook,
+};
