@@ -2,23 +2,8 @@
   <v-container class="pa-5">
     <error-alert />
     <v-row>
-      <v-col
-        cols="12"
-      >
-        <v-skeleton-loader
-          v-if="isLoading"
-          type="article, list-item-two-line, image"
-        />
-      </v-col>
-    </v-row>
-    <v-row
-      v-if="!isLoading && !errorInfo.show"
-      justify="center"
-    >
-      <v-col
-        cols="12"
-      >
-        <h1 class="header ml-2">
+      <v-col>
+        <h1 class="header d-inline-block ml-2">
           오늘 <b>{{ address }}</b> 날씨
         </h1>
         <v-btn
@@ -34,10 +19,25 @@
           </v-icon>
         </v-btn>
       </v-col>
+    </v-row>
+    <v-row
+      v-if="isLoading"
+      justify="center"
+    >
       <v-col
-        cols="12"
+        cols="6"
       >
-        <div class="weather-detail justify-center flex-wrap">
+        <v-skeleton-loader
+          type="image, list-item-two-line"
+        />
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <div
+          v-if="successAll"
+          class="weather-detail justify-center d-flex flex-wrap"
+        >
           <img
             :src="iconUrl"
             alt="날씨 아이콘"
@@ -51,14 +51,25 @@
             </li>
           </ul>
         </div>
-        <h2 class="weather-summary">
+        <h2
+          v-if="successAll"
+          class="weather-summary text-center"
+        >
           <b>{{ temp }} ℃ </b>| {{ desc }}
         </h2>
       </v-col>
+    </v-row>
+    <v-row>
       <v-col
         cols="12"
       >
+        <v-skeleton-loader
+          v-if="isLoading"
+          type="table-tbody"
+          max-height="50%"
+        />
         <v-card
+          v-if="successAll"
           outlined
           class="grey lighten-5"
         >
@@ -69,7 +80,7 @@
             <span
               v-for="data in hourData"
               :key="data.id"
-              class="hour-data-wrapper pa-3"
+              class="hour-data-wrapper d-inline-block pa-3"
             >
 
               <p>
@@ -92,7 +103,6 @@
 
 <script>
 import { createNamespacedHelpers } from 'vuex'
-
 import dayjs from 'dayjs'
 import weatherDesc from '@/util/weatherDesc'
 import ErrorAlert from '@/components/ErrorAlert.vue'
@@ -124,13 +134,18 @@ export default {
     sunset() {
       return dayjs.unix(this.currentWeather.sunset).format('HH:mm')
     },
+    successAll() {
+      return !this.isLoading && !this.errorInfo.show
+    },
   },
-  created() {
-    if (this.currentWeatherResponse.data) {
-      this.setWeather(this.currentWeatherResponse)
+  async created() {
+    const currentWeather = this.currentWeatherResponse.current
+    const hourlyWeather = this.currentWeatherResponse.hourly
+    if (currentWeather && hourlyWeather) {
+      this.setWeather(currentWeather, hourlyWeather)
       return
     }
-    this.getWeather()
+    await this.getWeather()
   },
   methods: {
     async getWeather() {
@@ -138,20 +153,19 @@ export default {
       const { lat, lon } = this
 
       await this.$store.dispatch('locationStore/fetchAddress')
-      const response = await this.$store.dispatch('weatherStore/fetchHereWeather', { lat, lon })
+      await this.$store.dispatch('weatherStore/fetchHereWeather', { lat, lon })
 
-      if (response !== false) {
-        this.setWeather(response)
+      if (this.currentWeatherResponse.current && this.currentWeatherResponse.hourly) {
+        this.setWeather(this.currentWeatherResponse.current, this.currentWeatherResponse.hourly)
       }
     },
-    setWeather(response) {
-      const currentWeather = response.data.current
-      this.currentWeather = currentWeather
 
+    setWeather(currentWeather, hourlyWeather) {
+      this.currentWeather = currentWeather
       const { icon } = currentWeather.weather[0]
       this.mainIcon = icon
 
-      const { id } = response.data.current.weather[0]
+      const { id } = currentWeather.weather[0]
       const descArr = weatherDesc.filter((item) => id in item)
       this.desc = (descArr[0])[id]
 
@@ -159,7 +173,7 @@ export default {
         this.hourData = []
       }
 
-      const hourArr = response.data.hourly.slice()
+      const hourArr = hourlyWeather.slice()
       const resultArr = hourArr.splice(1, 24)
 
       this.hourData = resultArr.map((item) => ({
@@ -175,7 +189,6 @@ export default {
 
 <style scoped>
 h1{
-  display: inline-block;
   font-weight: 200;
 }
 h2{
@@ -197,22 +210,11 @@ li{
   overflow: scroll;
 }
 
-.hour-data-wrapper
-{
-  display: inline-block;
+.hour-data-wrapper{
   border-right: 1px solid #EEEEEE
-}
-.weather-summary
-{
-  text-align: center;
-}
+  }
 
-.weather-detail{
-  display: flex;
-}
-
-.detail-list
-{
+.detail-list{
   list-style:none;
   font-weight: 200;
 }

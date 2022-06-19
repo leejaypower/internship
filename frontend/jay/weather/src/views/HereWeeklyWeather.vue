@@ -2,22 +2,7 @@
   <v-container class="pa-5">
     <error-alert />
     <v-row>
-      <v-col
-        cols="12"
-      >
-        <v-skeleton-loader
-          v-if="isLoading"
-          type="article, table-tbody"
-        />
-      </v-col>
-    </v-row>
-    <v-row
-      v-if="!isLoading && !errorInfo.show"
-      justify="center"
-    >
-      <v-col
-        cols="12"
-      >
+      <v-col>
         <h1
           class="header ml-2"
         >
@@ -36,10 +21,15 @@
           </v-icon>
         </v-btn>
       </v-col>
-      <v-col
-        cols="12"
-      >
+    </v-row>
+    <v-row>
+      <v-col>
+        <v-skeleton-loader
+          v-if="isLoading"
+          type="table-tbody"
+        />
         <v-card
+          v-if="!isLoading && !errorInfo.show"
           outlined
         >
           <v-card-text>
@@ -100,13 +90,13 @@ export default {
     ...alertGetters(['isLoading', 'errorInfo']),
     ...locationGetters(['lat', 'lon', 'address']),
   },
-  created() {
-    if (this.dailyWeatherResponse.data) {
-      const weekArr = this.dailyWeatherResponse.data.daily
+  async created() {
+    if (this.dailyWeatherResponse.length > 0) {
+      const weekArr = this.dailyWeatherResponse
       this.setWeather(weekArr)
       return
     }
-    this.getWeather()
+    await this.getWeather()
   },
   methods: {
     async getWeather() {
@@ -114,10 +104,10 @@ export default {
       const { lat, lon } = this
 
       await this.$store.dispatch('locationStore/fetchAddress')
-      const response = await this.$store.dispatch('weatherStore/fetchDailyWeather', { lat, lon })
-      if (response !== false) {
-        const weekArr = response.data.daily
-        this.setWeather(weekArr)
+      await this.$store.dispatch('weatherStore/fetchDailyWeather', { lat, lon })
+
+      if (this.dailyWeatherResponse) {
+        this.setWeather(this.dailyWeatherResponse)
       }
     },
 
@@ -125,15 +115,19 @@ export default {
       if (this.dailyWeather.length > 0) {
         this.dailyWeather = []
       }
-      this.dailyWeather = weekArr.map((item) => ({
-        id: item.dt,
-        day: dayjs.unix(item.dt).format('M월 DD'),
-        date: dayjs.unix(item.dt).format('ddd'),
-        maxTemp: Math.floor(item.temp.max),
-        minTemp: Math.floor(item.temp.min),
-        rain: Math.floor(item.pop * 100),
-        icon: item.weather[0].icon,
-      }))
+
+      this.dailyWeather = weekArr.map((item) => {
+        const time = dayjs.unix(item.dt)
+        return ({
+          id: item.dt,
+          day: time.format('M월 DD'),
+          date: time.format('ddd'),
+          maxTemp: Math.floor(item.temp.max),
+          minTemp: Math.floor(item.temp.min),
+          rain: Math.floor(item.pop * 100),
+          icon: item.weather[0].icon,
+        })
+      })
     },
 
     async refreshLocation() {

@@ -21,5 +21,7 @@ export default {
 </script>
 
 <style scoped>
-
+.v-sheet{
+  overflow: scroll
+}
 </style>

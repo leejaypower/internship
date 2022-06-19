@@ -30,4 +30,15 @@ async function fetchWeeklyWeather(lat, lon) {
   return response
 }
 
-export { fetchCurrentWeather, fetchWeeklyWeather }
+async function fetchRegionalWeather(lat, lon) {
+  const response = await instance.get('/onecall', {
+    params: {
+      lon,
+      lat,
+      exclude: 'minutely,hourly,alerts',
+    },
+  })
+  return response
+}
+
+export { fetchCurrentWeather, fetchWeeklyWeather, fetchRegionalWeather }
