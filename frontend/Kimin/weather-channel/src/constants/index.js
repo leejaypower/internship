@@ -8,6 +8,8 @@ const ACCESS_TOKEN_OLD = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOiIxNjUyO
 const ACCESS_TOKEN_NEW = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODU5NTY2MzE4NjgsIm5hbWUiOiJKb2huIERvZSIsImlhdCI6MTUxNjIzOTAyMn0.TiW61LWpY4H-h-Wa2Io8M63GbxxxNzKknsFL1Cixf_w'
 const REFRESH_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOiIxNjU1NTUyNjU0Mzk5IiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.41VTLXIhNXmAUuO9pEXAtNYOh9rmx1MC1_AIkgkBjE4'
 const REFRESH_TOKEN_OLD = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MDAwMDI2NTQzOTksIm5hbWUiOiJKb2huIERvZSIsImlhdCI6MTUxNjIzOTAyMn0.FAb3-TYGRCJpWSJYAVuduqOMjbMLr2isnlC7Kuwt2FM'
+const KEY_CODE_BACK_SPACE = 8
+const KEY_CODE_DELETE = 46
 
 const AUTH_ERROR = ((originalRequest) => JSON.stringify({
   header: {
@@ -31,7 +33,7 @@ const SERVER_ERROR = (originalRequest) => JSON.stringify({
   },
 })
 
-const BAD_REQUEST_ERROR = (originalRequest) => JSON.stringify({
+const BAD_REQUEST_ERROR = () => JSON.stringify({
   header: {
     HTTPStatusCode: '404',
     HTTPStatusDescription: 'Bad Request',
@@ -63,4 +65,6 @@ export {
   ACCESS_TOKEN_NEW,
   REFRESH_TOKEN,
   REFRESH_TOKEN_OLD,
+  KEY_CODE_BACK_SPACE,
+  KEY_CODE_DELETE,
 }

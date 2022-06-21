@@ -49,7 +49,7 @@ export default {
   }),
   computed: {
     myAccount() {
-      return this.$store.getters.getMyInfo
+      return this.$store.getters.getStoredMyInfo
     },
   },
   methods: {

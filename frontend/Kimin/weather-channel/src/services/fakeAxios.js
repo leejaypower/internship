@@ -28,6 +28,15 @@ const fakeAxios = {
         return JSON.parse(response)
       }
 
+      if (url === 'findAccount') {
+        this.header.request = {
+          method: 'get',
+          url: `${url}`,
+        }
+        const response = await fakeServer.findAccount(this.header, data)
+        return JSON.parse(response)
+      }
+
       if (url === 'checkDuplicationForID') {
         this.header.request = {
           method: 'get',
@@ -62,7 +71,6 @@ const fakeAxios = {
         const recovery = await this.postInterCeptor(error.message)
         return recovery
       } catch (interceptorError) {
-        console.log('리커버리 최종실패')
         throw new Error(interceptorError.message)
       }
     }
@@ -93,7 +101,6 @@ const fakeAxios = {
         const recovery = await this.postInterCeptor(error.message)
         return recovery
       } catch (interceptorError) {
-        console.log('리커버리 최종실패')
         throw new Error(interceptorError.message)
       }
     }

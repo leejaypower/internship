@@ -1,11 +1,18 @@
-import { IDValidationRule, passwordValidationRule, nameValidationRule } from './validationRules'
-import authInterceptor from './authInterceptor'
+import {
+  addressValidationRule, IDValidationRule, passwordValidationRule, nameValidationRule,
+} from './validationRules'
+import findUserAccount from './findUserAccount'
+import {
+  authPreInterceptor,
+  authPostInterceptor,
+} from './authInterceptor'
 
-const auth = {
+export {
   IDValidationRule,
   passwordValidationRule,
   nameValidationRule,
-  authInterceptor,
+  addressValidationRule,
+  authPreInterceptor,
+  authPostInterceptor,
+  findUserAccount,
 }
-
-export default auth

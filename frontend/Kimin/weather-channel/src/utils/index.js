@@ -1,7 +1,4 @@
-import showSnackBar from './showSnackBar'
+import * as callAPI from './callAPI'
+import toFixedAsFirst from './toFixedAsFirst'
 
-const utils = {
-  showSnackBar,
-}
-
-export default utils
+export { callAPI, toFixedAsFirst }

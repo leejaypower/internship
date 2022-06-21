@@ -3,6 +3,26 @@ import {
 } from '@/constants'
 import jwtDecode from 'jwt-decode'
 
+const findAccount = (header, accountInformation) => {
+  try {
+    const server = JSON.parse(localStorage.getItem('userAccount(SERVER)'))
+    const serverAccounts = Object.entries(server)
+
+    const correctAccount = serverAccounts.find((account) => {
+      const isCorrectPhoneNumber = account[1].phoneNumber === accountInformation.phoneNumber
+      const isCorrectName = account[1].name === accountInformation.name
+      return isCorrectPhoneNumber && isCorrectName
+    })
+    if (correctAccount) {
+      const foundedID = correctAccount[0]
+      return SUCCESS_RESPONSE(foundedID)
+    }
+    return SUCCESS_RESPONSE()
+  } catch (error) {
+    throw new Error(SERVER_ERROR)
+  }
+}
+
 const checkTokensExpiration = (usersToken) => {
   const expirationTime = Number(jwtDecode(usersToken).exp)
   const isExpired = expirationTime < new Date().getTime()
@@ -29,7 +49,6 @@ const verifyToken = async (usersToken) => {
     if (isExpired) {
       throw new Error(AUTH_ERROR())
     }
-    console.log('토큰검증완료')
   } catch (error) {
     if (JSON.parse(error.message).header.HTTPStatusCode === '401') {
       throw new Error(AUTH_ERROR())
@@ -64,15 +83,13 @@ const requestNewAccessToken = async (header, refreshToken) => {
     body: refreshToken,
   }
   try {
-    console.log('서버,리프레시토큰의 만료여부 확인시도')
     await verifyToken(refreshToken)
     const newTokens = {
       accessTokenEncoded: ACCESS_TOKEN_NEW,
       refreshTokenEncoded: REFRESH_TOKEN,
     }
     return newTokens
-  } catch {
-    console.log('서버, 리프레시토큰 만료확인 / 엑세스토큰 재발급 불가')
+  } catch (error) {
     throw new Error(AUTH_ERROR(originalRequest))
   }
 }
@@ -113,7 +130,6 @@ const getTokens = async (header, account) => {
  * @returns {object} 개인정보set
  */
 const getMyInfo = async (header, ID) => {
-  console.log('서버로부터 유저정보 조회시도')
   const originalRequest = {
     header,
     body: ID,
@@ -126,7 +142,6 @@ const getMyInfo = async (header, ID) => {
   } catch (error) {
     const errorCode = JSON.parse(error.message).header.HTTPStatusCode
     if (errorCode === '401') {
-      console.log('서버, 토큰만료 확인')
       throw new Error(AUTH_ERROR(originalRequest))
     }
     throw new Error(SERVER_ERROR(originalRequest))
@@ -138,7 +153,7 @@ const checkDuplicationForID = (header, ID) => {
     const userInfoDB = JSON.parse(localStorage.getItem('userAccount(SERVER)'))
     const isDuplicated = !!userInfoDB?.[ID]
     return SUCCESS_RESPONSE(isDuplicated)
-  } catch {
+  } catch (error) {
     throw new Error(SERVER_ERROR)
   }
 }
@@ -157,7 +172,7 @@ const registerNewAccount = async (header, signUpInformation) => {
     const upDatedAccountSets = { ...storedAccountSets, ...signUpData }
     localStorage.setItem('userAccount(SERVER)', JSON.stringify(upDatedAccountSets))
     return SUCCESS_RESPONSE('Successfully Finished')
-  } catch {
+  } catch (error) {
     throw new Error(SERVER_ERROR)
   }
 }
@@ -190,6 +205,7 @@ const fakeServer = {
   verifyToken,
   registerNewAccount,
   editUserInfo,
+  findAccount,
 }
 
 export default fakeServer

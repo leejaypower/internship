@@ -3,14 +3,15 @@ import Vuex from 'vuex'
 import snackBarStore from './modules/snackBarStore'
 import userInfoStore from './modules/userInfoStore'
 import auth from './modules/auth'
+import weatherStore from './modules/weatherStore'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   modules: {
-    namespaced: true,
     snackBarStore,
     userInfoStore,
+    weatherStore,
     auth,
   },
 })

@@ -1,5 +1,4 @@
 import fakeAxios from '@/services/fakeAxios'
-/* eslint-disable */
 
 const userInfoStore = {
   state: {
@@ -20,17 +19,16 @@ const userInfoStore = {
     forwardingMyInfo({ commit }, editedInfo) {
       commit('fetchMyInfo', editedInfo)
     },
-    async editUserInfo({ commit }, editedMyInfo) {
-      console.log('액션, 고치기시작')
+    async editUserInfo(_, editedMyInfo) {
       try {
-        await fakeAxios.post('editUserInfo',editedMyInfo)
+        await fakeAxios.post('editUserInfo', editedMyInfo)
       } catch (error) {
         throw new Error(error.message)
       }
     },
   },
   getters: {
-    getMyInfo(state) {
+    getStoredMyInfo(state) {
       return state.myInfo
     },
   },

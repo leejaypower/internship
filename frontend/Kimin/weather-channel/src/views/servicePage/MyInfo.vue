@@ -1,88 +1,121 @@
 <template>
   <div class="main">
-    <h1>
-      개인정보
-    </h1>
-    <table class="info-table">
-      <tbody>
-        <tr
-          v-for="(row,i) in rows"
-          :key="row.title"
+    <header class="d-flex justify-space-between">
+      <h1>
+        개인정보
+      </h1>
+      <v-btn
+        v-show="!showSaveButton"
+        @click="tryEdit"
+      >
+        edit
+      </v-btn>
+      <v-btn
+        v-show="showSaveButton"
+        color="success"
+        @click="saveContents"
+      >
+        save
+      </v-btn>
+    </header>
+    <v-container mt-13>
+      <v-row
+        v-for="(row,i) in rows"
+        :key="i"
+        class="rowHeight"
+      >
+        <v-col
+          cols="1"
+          class="pa-0 pt-2 pb-2"
+          align-self="center"
         >
-          <td>
-            <h3>{{ row.title }}</h3>
-          </td>
-          <td class="info-table__value-columns">
-            <p
-              v-show="row.show"
-            >
-              {{ row.value }}
-            </p>
-            <v-text-field
-              v-show="!row.show"
-              v-model="row.value"
-            />
-          </td>
-          <td>
-            <v-btn
-              v-show="row.show"
-              @click="editContents(i)"
-            >
-              Edit
-            </v-btn>
-            <v-btn
-              v-show="!row.show"
-              @click="saveContents(i)"
-            >
-              save
-            </v-btn>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+          {{ row.title }}
+        </v-col>
+        <v-col
+          cols="9"
+          class="pa-0 pt-2 pb-2"
+          align-self="center"
+        >
+          <v-text-field
+            v-show="showInput"
+            v-model="row.value"
+            class="pa-0 ma-0"
+            hide-details="true"
+          />
+          <span
+            v-show="!showInput"
+            class="mb-0 text-body-1 pt-2 pb-2"
+          >
+            {{ row.value }}
+          </span>
+        </v-col>
+        <v-col cols="2">
+          <v-btn
+            v-show="row.title === '주소'"
+            @click="addModalToFindAddress"
+          >
+            find
+          </v-btn>
+        </v-col>
+      </v-row>
+    </v-container>
+    <v-dialog
+      v-model="dialog"
+      width="600px"
+    >
+      <find-adress-card
+        @selectAddress="selectAddress"
+      />
+    </v-dialog>
   </div>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
+import FindAdressCard from '@/views/servicePage/components/FindingAddressCard.vue'
 
 export default {
   name: 'MyInfo',
+  components: {
+    FindAdressCard,
+  },
   data() {
     return {
+      address: {
+        fullAddress: null,
+        coordinate: null,
+      },
+      dialog: false,
+      showSaveButton: false,
+      showInput: false,
       rows: [
         {
           title: '이름',
           value: null,
-          show: true,
         },
         {
           title: 'password',
           value: null,
-          show: true,
-        },
-        {
-          title: '주소',
-          value: null,
-          show: true,
         },
         {
           title: '전화번호',
           value: null,
-          show: true,
         },
         {
           title: '프로필',
           value: null,
-          show: true,
+        },
+        {
+          title: '주소',
+          value: null,
         },
       ],
-
     }
   },
   computed: {
+    ...mapGetters(['getStoredMyInfo']),
     myInfo() {
-      return { ...this.$store.getters.getMyInfo }
+      return this.getStoredMyInfo
     },
   },
   watch: {
@@ -95,51 +128,58 @@ export default {
   },
   methods: {
     ...mapActions([
-      'editUserInfo', 'giveMessage', 'logOut',
+      'getMyInfo', 'findAddress', 'editUserInfo',
+      'alertMessage', 'logOut',
     ]),
     fetchInfo() {
       const result = [
         {
           title: '이름',
           value: this.myInfo.name,
-          show: true,
         },
         {
           title: 'password',
           value: this.myInfo.password,
-          show: true,
-        },
-        {
-          title: '주소',
-          value: this.myInfo.address,
-          show: true,
         },
         {
           title: '전화번호',
           value: this.myInfo.phoneNumber,
-          show: true,
         },
         {
           title: '프로필',
           value: this.myInfo.avatarImgSrc,
-          show: true,
+        },
+        {
+          title: '주소',
+          value: this.myInfo.address,
         },
       ]
       this.rows = result
     },
-    editContents(i) {
-      this.buttonSwitch(i)
+    tryEdit() {
+      this.buttonSwitch()
     },
-    buttonSwitch(i) {
-      this.rows[i].show = !this.rows[i].show
+    selectAddress(selected) {
+      this.showSaveButton = true
+      this.dialog = false
+      this.rows[4].value = selected.fullAddress
+      this.address = selected
     },
-    async saveContents(i) {
-      this.buttonSwitch(i)
+    addModalToFindAddress() {
+      this.dialog = true
+    },
+    buttonSwitch() {
+      this.showSaveButton = !this.showSaveButton
+      this.showInput = !this.showInput
+    },
+    async saveContents() {
+      this.showSaveButton = false
+      this.showInput = false
       const nameValue = this.rows[0].value
       const passwordValue = this.rows[1].value
-      const addressValue = this.rows[2].value
-      const phoneNumberValue = this.rows[3].value
-      const avatarSrcValue = this.rows[4].value
+      const addressValue = this.address.fullAddress
+      const phoneNumberValue = this.rows[2].value
+      const avatarSrcValue = this.rows[3].value
       const editedMyInfo = {
         ID: this.myInfo.ID,
         address: addressValue,
@@ -149,15 +189,19 @@ export default {
         phoneNumber: phoneNumberValue,
       }
       try {
+        if (addressValue) {
+          editedMyInfo.coords = this.address.coordinate
+        }
         await this.editUserInfo(editedMyInfo)
+        this.getMyInfo()
       } catch (error) {
         this.logOut()
         this.signing = false
         const errorCode = (JSON.parse(error.message)).header.HTTPStatusCode
         if (errorCode === '401') {
-          this.giveMessage({ text: '로그인정보가 만료되었습니다. 재 로그인 하시기 바랍니다.', color: 'red' })
+          this.alertMessage({ text: '로그인정보가 만료되었습니다. 재 로그인 하시기 바랍니다.', color: 'red' })
         } else {
-          this.giveMessage({ text: '서버가 응답할 수 없습니다.', color: 'red' })
+          this.alertMessage({ text: '서버가 응답할 수 없습니다.', color: 'red' })
         }
       }
     },
@@ -169,13 +213,8 @@ export default {
   .main{
     width: 100%
   }
-
-  .info-table__value-columns {
-    width: 70%;
-  }
-
-  .info-table {
-    width: 100%;
+  .rowHeight{
+    height: 50px
   }
 
 </style>

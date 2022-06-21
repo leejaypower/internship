@@ -1,11 +1,12 @@
 <template>
   <div>
     <v-card
-      class="mx-auto overflow-hidden"
-      height="90vh"
+      class="mx-auto"
+      height="100vh"
     >
       <v-app-bar
         color="deep-purple"
+        height="50px"
         dark
       >
         <v-app-bar-nav-icon @click="drawer = !drawer" />
@@ -22,7 +23,10 @@
               v-bind="attrs"
               v-on="on"
             >
-              <v-avatar>
+              <v-avatar
+                height="40px"
+                width="40px"
+              >
                 <img
                   v-if="!isLoading"
                   :src="storedMyInfo.avatarImgSrc"
@@ -70,8 +74,8 @@
             active-class="deep-purple--text text--accent-4"
           >
             <router-link
-              v-for="item in navListItems"
-              :key="item.text"
+              v-for="(item,i) in navListItems"
+              :key="i"
               :to="item.to"
             >
               <v-list-item>
@@ -84,9 +88,11 @@
           </v-list-item-group>
         </v-list>
       </v-navigation-drawer>
-      <v-container class="d-flex justify-center fill-height align-start">
+      <div
+        class="fill-height align-start pl-15 pr-15 pt-3"
+      >
         <router-view />
-      </v-container>
+      </div>
     </v-card>
   </div>
 </template>
@@ -120,7 +126,7 @@ export default {
   },
   computed: {
     storedMyInfo() {
-      return this.$store.getters.getMyInfo
+      return this.$store.getters.getStoredMyInfo
     },
   },
   async created() {
@@ -130,21 +136,20 @@ export default {
     } catch (error) {
       const errorCode = (JSON.parse(error.message)).header.HTTPStatusCode
       if (errorCode === '401') {
-        this.giveMessage({ text: '로그인정보가 만료되었습니다. 재 로그인 하시기 바랍니다.', color: 'red' })
+        this.alertMessage({ text: '로그인정보가 만료되었습니다. 재 로그인 하시기 바랍니다.', color: 'red' })
         this.logOut()
         this.signing = false
       } else {
-        this.giveMessage({ text: '서버가 응답할 수 없습니다.', color: 'red' })
+        this.alertMessage({ text: '서버가 응답할 수 없습니다.', color: 'red' })
         this.signing = false
       }
     }
   },
   methods: {
     ...mapActions([
-      'forwardingMyInfo',
       'getMyInfo',
       'logOut',
-      'giveMessage',
+      'alertMessage',
     ]),
   },
 }

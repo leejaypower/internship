@@ -14,14 +14,36 @@
           required
           @keyup.enter="find"
         />
-        <v-text-field
-          v-model="phoneNumber"
-          type="text"
-          :rules="phoneNumberRule"
-          label="Phone Number"
-          required
-          @keyup.enter="find"
-        />
+        <div
+          class="d-flex align-center phoneNumberInputContainer"
+        >
+          <v-text-field
+            v-model="phoneNumberFirst"
+            type="text"
+            required
+            :rules="phoneNumberFirstRule"
+            width="100px"
+          />
+          <span class="mr-3 ml-3">-</span>
+          <v-text-field
+            ref="second"
+            v-model="phoneNumberMiddle"
+            :rules="phoneNumberSecondAndThirdRule"
+            type="text"
+            label=""
+            required
+          />
+          <span class="mr-3 ml-3">-</span>
+          <v-text-field
+            ref="last"
+            v-model="phoneNumberLast"
+            :rules="phoneNumberSecondAndThirdRule"
+            type="text"
+            label=""
+            required
+            @keyup.enter="find"
+          />
+        </div>
       </v-form>
     </v-card-text>
     <v-card-actions>
@@ -40,6 +62,8 @@
 
 <script>
 import { mapActions } from 'vuex'
+import { findUserAccount } from '@/services/auth'
+import { nameValidationRule, phoneNumberSecondAndThirdRule, phoneNumberFirstRule } from '@/services/auth/validationRules'
 
 export default {
   name: 'FindAccountBox',
@@ -49,23 +73,31 @@ export default {
   data: () => ({
     valid: false,
     functionTitle: '회원가입하기',
-    phoneNumber: '',
+    phoneNumberFirst: '010',
+    phoneNumberMiddle: '',
+    phoneNumberLast: '',
     name: '',
-    nameRule: [
-      (v) => !!v || 'Name is required',
-    ],
-    phoneNumberRule: [
-      (v) => !!v || 'phoneNumber is required',
-      (v) => /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/.test(v) || '전화번호 형식에 맞지 않습니다.(하이픈 포함필요)',
-    ],
+    nameRule: nameValidationRule,
+    phoneNumberSecondAndThirdRule,
+    phoneNumberFirstRule,
   }),
   watch: {
     show() {
       this.initialize()
     },
+    phoneNumberFirst(value) {
+      if (value.length === 3) {
+        this.$refs.second.focus()
+      }
+    },
+    phoneNumberMiddle(value) {
+      if (value.length === 4) {
+        this.$refs.last.focus()
+      }
+    },
   },
   methods: {
-    ...mapActions(['giveMessage']),
+    ...mapActions(['alertMessage']),
     initialize() {
       this.ID = ''
       this.password = ''
@@ -73,19 +105,21 @@ export default {
     },
     find() {
       if (!this.$refs.form.validate()) return
-      const accountSets = this.$store.getters.callDBInfo_userAccount
-      if (!accountSets) return
-      const userAccount = accountSets.find((account) => {
-        const DBhasName = account.name === this.name
-        const isCorrectPhoneNumber = account.phoneNumber === this.phoneNumber
-        return (DBhasName && isCorrectPhoneNumber)
-      })
-      if (userAccount) {
-        this.giveMessage({ text: `당신의 ID는 ${userAccount.ID}입니다.`, color: 'green' })
-      } else {
-        this.giveMessage({ text: '유효한 계정이 존재하지 않습니다.', color: 'red' })
+      const accountInformation = {
+        name: this.name,
+        phoneNumber: `${this.phoneNumberFirst}-${this.phoneNumberMiddle}-${this.phoneNumberLast}`,
       }
+      findUserAccount(accountInformation)
     },
   },
 }
 </script>
+<style>
+.phoneNumberInputContainer {
+  width: 30vh;
+}
+
+.phoneNumberInputContainer input{
+  text-align:center
+}
+</style>

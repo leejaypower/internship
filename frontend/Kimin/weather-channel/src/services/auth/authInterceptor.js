@@ -17,14 +17,11 @@ const authPostInterceptor = async (error) => {
   const refreshToken = localStorage.getItem('refreshToken')
 
   if(!refreshToken || originalRequestURL === 'authRefresh'){
-    console.log('PostInterceptor, 2회차 refresh 반려')
     throw new Error(AUTH_ERROR())
   }
   if (errorCode === '401') {
-    console.log('PostInterceptor, 토큰 리프레시 시도 start')
     try{
       const newTokens = await fakeAxios.get('authRefresh', refreshToken)
-      console.log('리프레시 성공, 새토큰 발급완료')
       localStorage.setItem('accessToken', newTokens.accessTokenEncoded)
       localStorage.setItem('refreshToken', newTokens.refreshTokenEncoded)
       const recovery = await fakeAxios[originalRequestMethod](`${originalRequestURL}`, originalRequest.body)

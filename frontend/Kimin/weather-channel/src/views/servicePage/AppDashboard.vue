@@ -1,15 +1,52 @@
 <template>
-  <div>
-    대시보드
+  <div class="d-flex dashboardContainer flex-column fill-height pr-15 pl-15 ">
+    <my-location />
+    <div
+      class="d-flex flex-wrap justify-space-between fill-height align-content-start"
+    >
+      <weather-card
+        v-for="(property,i) in weatherProperties"
+        :key="i"
+        :kind="property"
+      />
+      <ForecastCard />
+    </div>
   </div>
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex'
+import MyLocation from '@/views/servicePage/components/MyLocation.vue'
+import WeatherCard from '@/views/servicePage/components/WeatherCard.vue'
+import ForecastCard from '@/views/servicePage/components/ForecastCard.vue'
+
 export default {
   name: 'AppDashboard',
+  components: {
+    MyLocation, WeatherCard, ForecastCard,
+  },
+  data() {
+    return {
+      weatherProperties: ['temp', 'rainOrSnow', 'clouds'],
+    }
+  },
+  computed: {
+    ...mapGetters([
+      'getStoredMyInfo', 'getTempLocation', 'getReferenceCoordinate',
+    ]),
+  },
+  watch: {
+    getReferenceCoordinate() {
+      this.getCurrentWeather()
+    },
+  },
+  created() {
+    if (this.getReferenceCoordinate.lat && this.getReferenceCoordinate.lon) {
+      this.getCurrentWeather()
+    }
+  },
+  methods: {
+    ...mapActions(['getCurrentWeather']),
+  },
 }
 </script>
-
-<style scoped>
-
-</style>

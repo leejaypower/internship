@@ -104,22 +104,22 @@ export default {
   }),
   methods: {
     ...mapActions([
-      'forwardingMyInfo', 'getMyInfo', 'getTokens', 'giveMessage',
+      'getMyInfo', 'getTokens', 'alertMessage',
     ]),
     async signIn() {
       if (!this.$refs.form.validate()) return
       this.signing = true
       try {
         await this.getTokens({ ID: this.ID, password: this.password })
-        this.giveMessage({ text: `로그인에 성공하셨습니다. ID:${this.ID}`, color: 'blue' })
+        this.alertMessage({ text: `로그인에 성공하셨습니다. ID:${this.ID}`, color: 'blue' })
         localStorage.setItem('myInfo', JSON.stringify({ ID: this.ID }))
         this.$router.push('/Home')
       } catch (error) {
         if ((JSON.parse(error.message)).header.HTTPStatusCode === '401') {
-          this.giveMessage({ text: '존재하지 않는 계정이거나 비밀번호가 일치하지 않습니다.', color: 'red' })
+          this.alertMessage({ text: '존재하지 않는 계정이거나 비밀번호가 일치하지 않습니다.', color: 'red' })
           this.signing = false
         } else {
-          this.giveMessage({ text: '서버가 응답할 수 없습니다.', color: 'red' })
+          this.alertMessage({ text: '서버가 응답할 수 없습니다.', color: 'red' })
           this.signing = false
         }
       }

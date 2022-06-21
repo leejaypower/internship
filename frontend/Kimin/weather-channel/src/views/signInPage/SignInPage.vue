@@ -54,7 +54,7 @@ export default {
       try {
         await this.getMyInfo()
         this.signInBox = false
-      } catch {
+      } catch (error) {
         this.signInBox = true
       }
     },

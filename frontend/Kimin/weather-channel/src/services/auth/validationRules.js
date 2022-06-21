@@ -9,6 +9,21 @@ import {
 } from '@/constants'
 
 
+const addressValidationRule = [
+  (value) => englishNeverRule(value, '주소'),
+  (value) => skipNeverRule(value, '주소'),
+]
+
+const phoneNumberFirstRule = [
+  (value) => skipNeverRule(value, '주소'),
+  (value) => value === '010' || '010입력필요',
+]
+
+const phoneNumberSecondAndThirdRule = [
+  (value) => /\d\d\d\d/.test(value) || '4자리숫자필요',
+  (value) => value.length === 4 || '4자리숫자필요',
+]
+
 const IDValidationRule = [
   (value) => skipNeverRule(value, 'ID'),
   (value) => minLengthRule(value, 'ID', ID_MIN_LENGTH),
@@ -39,8 +54,18 @@ const passwordValidationRule = [
   (value) => specialCharacterEssentialRule(value, 'ID'),
 ]
 
-export { IDValidationRule, passwordValidationRule, nameValidationRule }
+export { 
+  addressValidationRule, 
+  phoneNumberFirstRule,
+  phoneNumberSecondAndThirdRule,
+  IDValidationRule, 
+  passwordValidationRule, 
+  nameValidationRule, 
+}
 
+function phoneNumberFormatRule(value, kind) {
+  return /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/.test(value) || `${kind} 형식에 맞지 않습니다.(하이픈 포함필요)`
+}
 
 function skipNeverRule(value, kind) {
   return !!value || `${kind} 은/는 필수항목입니다.`
