@@ -5,6 +5,11 @@ const getAll = async () => {
   return bookList;
 };
 
+const getAllByIds = async (ids) => {
+  const bookList = await bookQuery.getAllByIds(ids);
+  return bookList;
+};
+
 const getById = async (id) => {
   const book = await bookQuery.getById(id);
   return book;
@@ -17,6 +22,7 @@ const createBook = async (bookInfoId) => {
 
 module.exports = {
   getAll,
+  getAllByIds,
   getById,
   createBook,
 };

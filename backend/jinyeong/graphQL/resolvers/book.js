@@ -41,8 +41,6 @@ const bookResolvers = {
       const bookInfo = await context.loaders.bookInfoLoader.load(bookInfoId);
       return bookInfo;
     },
-    createdAt: DateResolver,
-    updatedAt: DateResolver,
   },
   BookInfo: {
     category: async (parent, args, context) => {
@@ -51,12 +49,6 @@ const bookResolvers = {
       const category = await context.loaders.bookCategoryLoader.load(categoryId);
       return category;
     },
-    createdAt: DateResolver,
-    updatedAt: DateResolver,
-  },
-  BookCategory: {
-    createdAt: DateResolver,
-    updatedAt: DateResolver,
   },
 };
 

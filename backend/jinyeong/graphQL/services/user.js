@@ -13,6 +13,11 @@ const getMypage = async (userId) => {
   return userInfo;
 };
 
+const getAllByIds = async (ids) => {
+  const userInfoList = await userQuery.getAllByIds(ids);
+  return userInfoList;
+};
+
 const logIn = async (email, password) => {
   const userInfo = await userQuery.getOneByInputData({ email });
   if (!userInfo) {
@@ -56,6 +61,7 @@ const signUp = async (body) => {
 module.exports = {
   getOneByInputData,
   getMypage,
+  getAllByIds,
   signUp,
   logIn,
 };

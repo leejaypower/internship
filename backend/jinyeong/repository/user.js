@@ -12,6 +12,18 @@ const getAll = async () => {
   return userInfoList;
 };
 
+// User 테이블 ids 배열에 담긴 ID에 해당하는 모든 유저정보 조회
+const getAllByIds = async (ids) => {
+  const userInfoList = await User.findAll({
+    where: { id: ids },
+    attributes: { exclude: ['password', 'contact'] },
+  });
+
+  return userInfoList.map((userInfo) => {
+    return userInfo.dataValues;
+  });
+};
+
 const getOneById = async (id) => {
   const userInfo = await User.findOne({
     where: { id },
@@ -37,6 +49,7 @@ const deleteOneByUserId = async (userId) => {
 module.exports = {
   createUser,
   getAll,
+  getAllByIds,
   getOneById,
   getOneByInputData,
   deleteOneByUserId,

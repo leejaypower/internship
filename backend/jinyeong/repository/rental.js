@@ -1,12 +1,19 @@
 const { Rental } = require('../db');
 
 // Rentals SELECT ALL
-const getAll = async () => {
+const getListAll = async () => {
   const rentalList = await Rental.findAll({
     order: [['createdAt', 'DESC']], // 생성일 기준 최신순 정렬
-    returning: true,
   });
-  return rentalList;
+
+  return rentalList.map((rental) => {
+    return rental.dataValues;
+  });
+};
+
+const getOneById = async (id) => {
+  const rentalInfo = await Rental.findOne({ where: { id } });
+  return rentalInfo?.dataValues;
 };
 
 // Rentals QUERY SELECT By bookId
@@ -42,7 +49,8 @@ const updateOneByRentalId = async (id, inputData) => {
 };
 
 module.exports = {
-  getAll,
+  getListAll,
+  getOneById,
   getByBookId,
   getByUserId,
   insertOne,

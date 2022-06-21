@@ -3,10 +3,17 @@ const { Book } = require('../db');
 
 // Books SELECT ALL
 const getAll = async () => {
-  const bookList = await Book.findAll({
-    returning: true,
+  const bookInfoList = await Book.findAll({ returning: true });
+  return bookInfoList;
+};
+
+// Book SELECT ALL IN ids
+const getAllByIds = async (ids) => {
+  const bookList = await Book.findAll({ where: { id: ids } });
+
+  return bookList.map((book) => {
+    return book.dataValues;
   });
-  return bookList;
 };
 
 // Books SELECT ONE By ID
@@ -37,6 +44,7 @@ const deleteOneById = async (id) => {
 
 module.exports = {
   getAll,
+  getAllByIds,
   getById,
   insertOne,
   updateOneById,

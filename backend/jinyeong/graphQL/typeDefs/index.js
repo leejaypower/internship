@@ -1,13 +1,17 @@
 const { mergeTypeDefs } = require('@graphql-tools/merge');
 
 const commmonTypeDefs = require('./common');
-const bookTypeDefs = require('./book');
 const userTypeDefs = require('./user');
+const adminTypeDefs = require('./admin');
+const bookTypeDefs = require('./book');
+const rentalTypeDefs = require('./rental');
 
 const typeDefsList = [
   ...commmonTypeDefs,
-  bookTypeDefs,
   userTypeDefs,
+  adminTypeDefs,
+  bookTypeDefs,
+  rentalTypeDefs,
 ];
 
 const typeDefs = mergeTypeDefs(typeDefsList);

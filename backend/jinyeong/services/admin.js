@@ -21,7 +21,7 @@ const signUp = async (body) => {
   }
 
   // 이메일 중복여부 검사
-  const adminInfo = await adminQuery.getOneByInputQuery({ email });
+  const adminInfo = await adminQuery.getOneByInputData({ email });
 
   if (adminInfo !== null) {
     errorHandling.throwError(400, '이미 존재하는 이메일입니다.');
@@ -31,7 +31,7 @@ const signUp = async (body) => {
 
   const inputData = { email, password: encryptedPassword };
 
-  await adminQuery.createOne(inputData);
+  await adminQuery.createAdmin(inputData);
 };
 
 // 관리자 로그인 요청에 해당하는 비지니스 로직
@@ -45,7 +45,7 @@ const logIn = async (body) => {
   */
   const { email, password } = body;
 
-  const adminInfo = await adminQuery.getOneByInputQuery({ email });
+  const adminInfo = await adminQuery.getOneByInputData({ email });
 
   if (adminInfo === null) {
     errorHandling.throwError(401, '일치하는 관리자 계정정보가 없습니다.');
@@ -70,14 +70,14 @@ const logIn = async (body) => {
     3. 미들웨어에서 액세스토큰이 유효한지 여부를 확인하는 과정을 통해, 1번 유저의 권한활동을 막음.
   */
 
-  await adminQuery.updateOneByAdminId({ accessToken }, adminInfo.id);
+  await adminQuery.updateAdmin(adminInfo.id, { accessToken });
 
   return { accessToken };
 };
 
 // 관리자계정 정보조회 by adminId
 const getOneByAdminId = async (adminId) => {
-  const adminInfo = await adminQuery.getOneByInputQuery({ id: adminId });
+  const adminInfo = await adminQuery.getOneByInputData({ id: adminId });
   return adminInfo;
 };
 
