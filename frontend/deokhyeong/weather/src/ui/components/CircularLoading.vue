@@ -2,6 +2,7 @@
   <v-container
     class="pa-0 d-flex justify-center"
     :class="loadingClass"
+    :style="{backgroundColor: `${backgroundColor}`}"
     fill-height
   >
     <v-progress-circular
@@ -17,6 +18,12 @@
 import { mapGetters } from 'vuex'
 
 export default {
+  props: {
+    backgroundColor: {
+      type: String,
+      default: '',
+    },
+  },
   computed: {
     ...mapGetters('loading', ['isLoading']),
     loadingClass() {

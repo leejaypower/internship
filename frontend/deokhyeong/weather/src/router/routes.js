@@ -6,6 +6,7 @@ import LocationAdd from '@/ui/views/LocationAdd'
 import ForecastDetail from '@/ui/views/ForecastDetail'
 import WeatherTable from '@/ui/views/ForecastDetail/WeatherTable'
 import WeatherGraph from '@/ui/views/ForecastDetail/WeatherGraph'
+import dayjs from 'dayjs'
 import OneWeekForecast from '@/ui/views/OneWeekForecast'
 
 export default [
@@ -50,6 +51,19 @@ export default [
     name: 'ForecastDetail',
     component: ForecastDetail,
     meta: { requiresAuth: true },
+    beforeEnter(to, from, next) {
+      const currentDate = dayjs().format('YYYY-MM-DD')
+      const paramsDate = dayjs(to.params.date)
+      const isInValidDate = !dayjs(to.params.date).isValid()
+      const isOverOneDays = paramsDate.diff(currentDate, 'day') > 1
+      const isPastDay = paramsDate.diff(currentDate, 'day') < 0
+
+      if (to.path === '/forecast-detail' || isInValidDate || isOverOneDays || isPastDay) {
+        next('/seven-forecast')
+      } else {
+        next()
+      }
+    },
     children: [
       {
         path: 'table/:date',

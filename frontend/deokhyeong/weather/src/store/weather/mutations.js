@@ -14,8 +14,13 @@ const setOneWeekWeathers = (state, oneWeekWeathers) => {
   state.oneWeekWeathers = oneWeekWeathers
 }
 
+const setHourlyWeathers = (state, hourlyWeathers) => {
+  state.hourlyWeathers = hourlyWeathers
+}
+
 export default {
   setCurrentWeather,
   setCurrentAirPollution,
   setOneWeekWeathers,
+  setHourlyWeathers,
 }

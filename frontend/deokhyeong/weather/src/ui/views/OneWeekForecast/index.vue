@@ -32,6 +32,7 @@ import TitleHeader from '@/ui/components/TitleHeader'
 import { mapActions, mapGetters } from 'vuex'
 import CircularLoading from '@/ui/components/CircularLoading'
 import DailyWeatherCard from '@/ui/views/OneWeekForecast/DailyWeatherCard'
+import locationDomain from '@/service/domain/location'
 
 export default {
   name: 'OneWeekForecast',
@@ -47,12 +48,6 @@ export default {
     ...mapGetters('loading', ['isLoading']),
     currentPageSubTitle() {
       return this.priorityLocation?.location
-    },
-    locationParams() {
-      return {
-        lat: this.priorityLocation.lat,
-        lon: this.priorityLocation.long,
-      }
     },
   },
   created() {
@@ -74,7 +69,7 @@ export default {
       }
     },
     async fetchOneWeekWeathers() {
-      await this.oneWeekWeathersSetting(this.locationParams)
+      await this.oneWeekWeathersSetting(locationDomain.getLocationParams(this.priorityLocation))
     },
     moveToDetail(date) {
       this.$router.push(`/forecast-detail/table/${date}`)

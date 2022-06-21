@@ -13,6 +13,7 @@
       <current-weather
         :current-weather="currentWeather"
         :current-air-pollution="currentAirPollution"
+        @moveToWeatherDetail="moveToWeatherDetail"
       />
     </div>
     <bottom-navigation />
@@ -26,6 +27,7 @@ import { mapActions, mapGetters } from 'vuex'
 import CircularLoading from '@/ui/components/CircularLoading'
 import CurrentWeather from '@/ui/views/MainHome/CurrentWeather'
 import utils from '@/utils'
+import locationDomain from '@/service/domain/location'
 
 export default {
   name: 'MainHome',
@@ -46,12 +48,6 @@ export default {
     ...mapGetters('loading', ['isLoading']),
     currentPageTitle() {
       return this.priorityLocation?.location
-    },
-    locationParams() {
-      return {
-        lat: this.priorityLocation.lat,
-        lon: this.priorityLocation.long,
-      }
     },
   },
   created() {
@@ -77,11 +73,15 @@ export default {
       }
     },
     async fetchCurrentWeather() {
-      const currentWeatherResponse = this.currentWeatherSetting(this.locationParams)
-      const currentAirPollutionResponse = this.currentAirPollutionSetting(this.locationParams)
+      const locationParams = locationDomain.getLocationParams(this.priorityLocation)
+      const currentWeatherResponse = this.currentWeatherSetting(locationParams)
+      const currentAirPollutionResponse = this.currentAirPollutionSetting(locationParams)
       await Promise.allSettled(
         [currentWeatherResponse, currentAirPollutionResponse],
       )
+    },
+    moveToWeatherDetail() {
+      this.$router.push(`/forecast-detail/table/${this.currentWeather.date}`)
     },
   },
 }

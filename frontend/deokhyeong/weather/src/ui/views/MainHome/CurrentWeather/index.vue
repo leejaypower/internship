@@ -24,15 +24,13 @@
       <span>{{ airQuality }}</span>
     </div>
     <div>
-      <v-btn @click="moveToWeatherDetail">
+      <v-btn @click="$emit('moveToWeatherDetail')">
         날씨 자세히 보기
       </v-btn>
     </div>
   </div>
 </template>
 <script>
-import { mapActions } from 'vuex'
-
 export default {
   name: 'CurrentWeather',
   props: {
@@ -63,15 +61,6 @@ export default {
     },
     airQuality() {
       return this.currentAirPollution?.airQuality || '-'
-    },
-  },
-  methods: {
-    ...mapActions('alert', ['alertOpen']),
-    moveToWeatherDetail() {
-      // 추후에 주간 날씨 정보 완성되면 그 페이지로 이동하는거로 구현하겠습니다.
-      this.alertOpen(
-        { message: '아직 준비가 진행중입니다. 🚅' },
-      )
     },
   },
 }

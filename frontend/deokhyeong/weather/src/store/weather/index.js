@@ -8,6 +8,7 @@ const weather = {
     currentWeather: {},
     currentAirPollution: {},
     oneWeekWeathers: [],
+    hourlyWeathers: [],
   },
   getters,
   mutations,

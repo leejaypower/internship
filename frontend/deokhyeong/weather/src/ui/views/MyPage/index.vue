@@ -110,10 +110,9 @@ export default {
       || !utils.isShallowEqual(newPassword.value, newPasswordComparison.value)
     },
     nonSelectedBookmarks() {
-      const result = this.bookmarkLocations.filter(
+      return this.bookmarkLocations.filter(
         (bookmark) => bookmark.location !== this.selectedLocation.location,
       )
-      return result
     },
     isInActiveInitButton() {
       return this.bookmarkLocations?.length === 0
