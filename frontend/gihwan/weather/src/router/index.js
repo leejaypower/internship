@@ -1,9 +1,12 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import { AuthHub, LoginView, SignupView } from '@/views/auth'
-import { CurrentLocation, WeatherHub, LocationView } from '@/views/weather'
+import {
+  CurrentLocation, WeatherHub, LocationView, CompareWeather,
+} from '@/views/weather'
 import { BookmarkView, MyPageHub, UserInfo } from '@/views/mypage'
 import NotFound from '@/views/NotFound.vue'
+import store from '@/store'
 
 Vue.use(VueRouter)
 
@@ -27,6 +30,11 @@ const routes = [
         path: 'location',
         name: 'location',
         component: LocationView,
+      },
+      {
+        path: 'compare',
+        name: 'compare',
+        component: CompareWeather,
       },
     ],
   },
@@ -94,10 +102,12 @@ router.beforeEach((to, from, next) => {
   const isLogin = localStorage.getItem('loginInfo') || sessionStorage.getItem('loginInfo')
   const hasEnteredAuthPageAfterLogin = isLogin && to.path.includes('auth')
   const hasEnteredMyPageWithoutLogin = !isLogin && to.path.includes('mypage')
+  const hasEnteredComparePageWithoutData = (to.name === 'compare') && (!store.getters['weather/currentData'] || !store.getters['weather/locationCoord'])
   if (hasEnteredAuthPageAfterLogin) {
     next('/')
-  }
-  if (hasEnteredMyPageWithoutLogin) {
+  } else if (hasEnteredMyPageWithoutLogin) {
+    next('/')
+  } else if (hasEnteredComparePageWithoutData) {
     next('/')
   } else {
     next()

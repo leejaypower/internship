@@ -1,2 +1,4 @@
 export const DESKTOP_INPUT_WIDTH_RATIO = 3
 export const MOBILE_INPUT_WIDTH_RATIO = 7
+export const CHART_FIRST_COLOR = '#FF5F6D'
+export const CHART_SECOND_COLOR = '#FFC371'

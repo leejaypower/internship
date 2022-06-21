@@ -9,6 +9,8 @@
         <router-link to="location">
           지역별 날씨
         </router-link>
+        <div class="empty" />
+        <CompareTabButton />
       </div>
       <template v-if="isBookmarkIconShow">
         <v-btn
@@ -45,8 +47,12 @@
 import { v4 as uuid } from 'uuid'
 import { mapGetters } from 'vuex'
 import { alert } from '@/lib'
+import CompareTabButton from './components'
 
 export default {
+  components: {
+    CompareTabButton,
+  },
   data: () => ({
     isBookmark: false,
   }),
@@ -66,7 +72,7 @@ export default {
       return true
     },
     isBookmarkIconShow() {
-      return this.isLogin && this.isSelectSiGu && (this.isWeatherFetchResult || this.locationCoord)
+      return this.isLogin && this.isSelectSiGu && !(this.currentPathName === 'compare') && (this.isWeatherFetchResult || this.locationCoord)
     },
   },
   updated() {
@@ -100,7 +106,7 @@ export default {
           return {
             idx: uuid(),
             userIdx: this.userIdx,
-            title: result.value,
+            title: result.current,
             coords: this.currentCoords,
           }
         case 'location':
