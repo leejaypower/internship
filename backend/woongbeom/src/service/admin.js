@@ -2,19 +2,19 @@ const repository = require('../repository');
 const lib = require('../../lib');
 
 const signIn = async (email, password) => {
-  try {
-    const adminInfo = await repository.admin.getByEmail(email);
-    if (!adminInfo) {
-      throw new Error('email does not exist');
-    }
-    if (adminInfo.password !== password) {
-      throw new Error('wrong password');
-    }
-    const token = lib.auth.jwt.sign({ email, ROLE: lib.common.constant.ROLE.ADMIN }, { expiresIn: lib.common.constant.token.expiresIn });
-    return token;
-  } catch (err) {
-    return err.message;
+  const adminInfo = await repository.admin.getByEmail(email);
+
+  if (!adminInfo) {
+    lib.util.error.errorHandler(1, 'Admin email does not exist.');
   }
+
+  const matchPassword = await hash.comparePassword(password, adminInfo.password)
+  if (!matchPassword) {
+    lib.util.error.errorHandler(1, 'Wrong password');
+  }
+
+  const token = lib.auth.jwt.sign({ email, ROLE: lib.common.constant.ROLE.ADMIN }, { expiresIn: lib.common.constant.token.expiresIn });
+  return token;
 };
 
 module.exports = { signIn };

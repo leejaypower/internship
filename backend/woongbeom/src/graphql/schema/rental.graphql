@@ -1,0 +1,8 @@
+type Rental {
+  bookId: Int
+  userId: Int
+}
+
+type Mutation {
+  createRental(bookId: Int!, userId: Int!): Rental
+}

@@ -1,0 +1,7 @@
+type signIn {
+    token: String!
+}
+
+type Mutation {
+    adminSignIn(email: String!, password: String!): signIn
+}

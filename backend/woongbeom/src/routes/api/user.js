@@ -5,10 +5,12 @@ const middleware = require('../../middleware');
 
 const userRouter = new Router();
 
-userRouter.post('/', controller.user.createUser);
-userRouter.get('/', middleware.auth.authorization.authorizeAdmin, controller.user.getUsers);
-userRouter.get('/signin', controller.user.signIn);
-userRouter.get('/:id', controller.user.getUserById);
-userRouter.patch('/:id', controller.user.updateUserName);
+userRouter.post('/', controller.apis.user.createUser);
+userRouter.get('/', middleware.auth.authorization.authorizeAdmin, controller.apis.user.getUsers);
+userRouter.get('/email', middleware.auth.authorization.authorizeAdmin, controller.apis.user.getUserByEmail);
+userRouter.get('/signin', controller.apis.user.signIn);
+
+userRouter.get('/:id', middleware.auth.authorization.authorizeAdmin, controller.apis.user.getUserById);
+userRouter.patch('/:id', middleware.auth.authorization.authorizeUser, controller.apis.user.updateUserName);
 
 module.exports = userRouter;

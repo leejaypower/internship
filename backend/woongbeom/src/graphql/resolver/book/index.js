@@ -32,7 +32,7 @@ const book = {
 };
 
 const resolveComposition = {
-  'Mutation.*': [middleware.Query.isAuthenticated()],
+  'Mutation.*': [middleware.Query.isAuthenticatedAdmin()],
 };
 const composedResolvers = composeResolvers(book, resolveComposition);
 

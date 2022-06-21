@@ -2,7 +2,7 @@ const lib = require('../../../lib');
 
 const authorize = async (ctx) => {
   if (!ctx.req.headers.authorization) {
-    return ctx.throw(401, 'Auth header does not exist');
+    errorHandler(1, 'Auth header does not exist.');
   }
   const token = ctx.req.headers.authorization;
   const decodedToken = await lib.auth.jwt.verify(token);
@@ -11,13 +11,20 @@ const authorize = async (ctx) => {
 
 const authorizeUser = async (ctx, next) => {
   const decodedToken = await authorize(ctx);
-  if (decodedToken.ROLE !== lib.common.constant.ROLE.USER) { ctx.throw(401, 'Unauthorized'); }
+  if (decodedToken.ROLE !== lib.common.constant.ROLE.USER) {
+    lib.util.error.errorHandler(1, 'This token is not authorized user\'s.');
+  }
   return next();
 };
 
 const authorizeAdmin = async (ctx, next) => {
   const decodedToken = await authorize(ctx);
-  if (decodedToken.ROLE !== lib.common.constant.ROLE.ADMIN) { ctx.throw(401, 'Unauthorized'); }
+  if (decodedToken.role !== ROLE.ADMIN) {
+    errorHandler(1, 'This token is not authorized admin\'s.');
+  }
+  if (decodedToken.ROLE !== lib.common.constant.ROLE.ADMIN) {
+    lib.util.error.errorHandler(1, 'This token is not authorized user\'s.');
+  }
   return next();
 };
 

@@ -5,6 +5,6 @@ const middleware = require('../../middleware');
 
 const rentalsRouter = new Router();
 
-rentalsRouter.post('/', middleware.auth.authorization.authorizeUser, controller.rental.createRental);
+rentalsRouter.post('/', middleware.auth.authorization.authorizeUser, controller.apis.rental.createRental);
 
 module.exports = rentalsRouter;

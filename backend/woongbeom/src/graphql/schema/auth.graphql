@@ -1,11 +1,13 @@
 type auth {
-    email: String
+    next: String
 }
 
 type Query {
-    isAuthenticated(token: String, role: String): auth
+    isAuthenticatedUser(role: String): auth
+    isAuthenticatedAdmin(role: String): auth
 }
 
 type Mutation {
-    isAuthenticated(token: String, role: String): auth
+    isAuthenticatedUser(role: String): auth
+    isAuthenticatedAdmin(role: String): auth
 }

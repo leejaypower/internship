@@ -5,6 +5,7 @@ const createBook = async (bookData) => {
   const {
     title, author, publisher, page,
   } = bookData;
+
   const newBook = await db.Book.create({
     title,
     author,
@@ -39,6 +40,7 @@ const updateBook = async (id, data) => {
   const {
     title, author, publisher, page, statusCode,
   } = data;
+
   const numOfUpdatedRow = await db.Book.update({
     title,
     author,

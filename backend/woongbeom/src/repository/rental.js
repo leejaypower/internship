@@ -1,36 +1,17 @@
 const db = require('../db/models');
 
 const createRental = async (rentalInstance) => {
-  try {
-    const newRental = await db.Rental.create(rentalInstance);
-    return newRental;
-  } catch (err) {
-    throw new Error('Error Occured attempting to create the rentalInstance');
-  }
+  const {
+    bookId, userId,
+  } = rentalInstance;
+
+  const newRental = await db.Rental.create({
+    bookId,
+    userId,
+  });
+  return newRental;
 };
 
-const updateStatus = async (rentalInstance) => {
-  try {
-    const bookInstance = await db.Book.findOne({
-      where: {
-        id: rentalInstance.bookId,
-      },
-      attributes: ['statusCode'],
-    });
-    const bookStatus = bookInstance.dataValues.statusCode;
-    if (bookStatus === 0) {
-      await db.Book.update({ statusCode: 1 }, {
-        where: {
-          id: rentalInstance.bookId,
-        },
-      });
-    } else {
-      throw Error('book status update fail');
-    }
-    return bookInstance;
-  } catch (err) {
-    throw new Error('Rental error. it is already occupied or does not exist');
-  }
+module.exports = {
+  createRental,
 };
-
-module.exports = { createRental, updateStatus };

@@ -1,9 +1,4 @@
-const books = require('./book');
-const rental = require('./rental');
-const user = require('./user');
-const admin = require('./admin');
-const graphql = require('./graphql');
+const apis = require('./apis');
+const gql = require('./graphql');
 
-module.exports = {
-  books, rental, user, admin, graphql,
-};
+module.exports = { apis, gql };

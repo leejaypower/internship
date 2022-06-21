@@ -1,5 +1,5 @@
-const service = require('../service');
-const { errorHandler } = require('../../lib/util/error');
+const service = require('../../service');
+const { errorHandler } = require('../../../lib/util/error');
 
 const createUser = async (ctx) => {
   try {
@@ -41,6 +41,16 @@ const updateUserName = async (ctx) => {
   }
 };
 
+const getUserByEmail = async (ctx) => {
+  try {
+    const { email } = ctx.request.body;
+    const result = await service.user.getUserByEmail(email);
+    ctx.body = result;
+  } catch (err) {
+    ctx.throw(err);
+  }
+};
+
 const signIn = async (ctx) => {
   const { email, password } = ctx.request.body;
   const token = await service.user.signIn(email, password);
@@ -51,6 +61,7 @@ module.exports = {
   createUser,
   getUsers,
   getUserById,
+  getUserByEmail,
   updateUserName,
   signIn,
 };

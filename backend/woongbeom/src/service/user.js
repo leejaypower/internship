@@ -10,7 +10,7 @@ const createUser = async (userData) => {
     if (emailCheck) {
       errorHandler(1, 'This email already exist');
     }
-    
+
     const newUserData = await repository.user.createUser({
       name,
       email,
@@ -39,14 +39,19 @@ const updateUserName = async (id, name) => {
   return numOfUpdatedRow;
 };
 
+const getUserByEmail = async (email) => {
+  const user = await repository.user.getUserByEmail(email);
+  return user;
+};
+
 const signIn = async (email, password) => {
-  const matchedUser = await repository.user.getByEmail(email);
+  const matchedUser = await repository.user.getUserByEmail(email);
   if (matchedUser.email !== email) {
-    throw new Error('email does not exist');
+    lib.util.error.errorHandler(1, 'User email does not exist.');
   }
   const matchPassword = await lib.auth.hash.comparePassword(password, matchedUser.password);
   if (!matchPassword) {
-    throw new Error('wrong password');
+    lib.util.error.errorHandler(1, 'Wrong password');
   }
   const token = lib.auth.jwt.sign({ email }, { expiresIn: lib.common.constant.token.expiresIn });
   return token;
@@ -56,6 +61,7 @@ module.exports = {
   createUser,
   getUsers,
   getUserById,
+  getUserByEmail,
   updateUserName,
   signIn,
 };
