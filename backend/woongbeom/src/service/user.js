@@ -1,30 +1,42 @@
 const repository = require('../repository');
+const { sequelize } = require('../db/models');
+const { errorHandler } = require('../../lib/util/error');
 const lib = require('../../lib');
 
 const createUser = async (userData) => {
-  try {
+  const result = await sequelize.transaction(async (transaction) => {
     const { name, email, password } = userData;
-    if (!name) { throw new Error('name does not exist'); }
-    if (!email) { throw new Error('email does not exist'); }
-    if (!password) { throw new Error('password does not exist'); }
-    const emailCheck = await repository.user.getByEmail(userData.email);
-    if (emailCheck) { throw new Error('email already exist'); }
-    const hashedPassword = await lib.auth.hash.hashPassword(password);
-    const newUserData = await repository.user.createUser({ name, email, password: hashedPassword });
+    const emailCheck = await repository.user.getUserByEmail(email, { transaction });
+    if (emailCheck) {
+      errorHandler(1, 'This email already exist');
+    }
+    
+    const newUserData = await repository.user.createUser({
+      name,
+      email,
+      password,
+    }, {
+      transaction,
+    });
     newUserData.password = undefined;
     return newUserData;
-  } catch (err) {
-    return err.message;
-  }
+  });
+  return result;
 };
 
-const getListAll = async () => {
-  try {
-    const userList = await repository.user.getListAll();
-    return userList;
-  } catch (err) {
-    return err.message;
-  }
+const getUsers = async (userQuery) => {
+  const userList = await repository.user.getUsers(userQuery);
+  return userList;
+};
+
+const getUserById = async (id) => {
+  const user = await repository.user.getUserById(id);
+  return user;
+};
+
+const updateUserName = async (id, name) => {
+  const numOfUpdatedRow = await repository.user.updateUserName(id, name);
+  return numOfUpdatedRow;
 };
 
 const signIn = async (email, password) => {
@@ -40,4 +52,10 @@ const signIn = async (email, password) => {
   return token;
 };
 
-module.exports = { createUser, getListAll, signIn };
+module.exports = {
+  createUser,
+  getUsers,
+  getUserById,
+  updateUserName,
+  signIn,
+};

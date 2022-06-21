@@ -18,6 +18,7 @@ const getBooks = async (bookQuery) => {
   const {
     title, author, publisher,
   } = bookQuery;
+
   const where = {};
   if (title) { where.title = { [Op.like]: `%${title}%` }; }
   if (author) { where.author = { [Op.like]: `%${author}%` }; }

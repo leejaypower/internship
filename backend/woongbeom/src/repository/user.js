@@ -1,37 +1,64 @@
+const { Op } = require('sequelize');
 const db = require('../db/models');
+const { hash } = require('../../lib/auth');
 
 const createUser = async (userInstance) => {
-  try {
-    const newUser = await db.User.create(userInstance);
-    if (!userInstance) {
-      throw new Error('cannot create userInstance');
-    }
-    return newUser;
-  } catch (err) {
-    return err.message;
-  }
+  const {
+    name, email, password,
+  } = userInstance;
+  const hashedPassword = await hash.hashPassword(password);
+  const newUser = await db.User.create({
+    name,
+    email,
+    password: hashedPassword,
+  });
+  return newUser;
 };
 
-const getListAll = async () => {
-  try {
-    return db.User.findAll();
-  } catch (err) {
-    throw new Error('Error Occured attempting to read Books table');
-  }
+const getUsers = async (userQuery) => {
+  const {
+    name,
+  } = userQuery;
+
+  const where = {};
+  if (name) { where.name = { [Op.like]: `%${name}%` }; }
+  const userList = await db.User.findAll({
+    where,
+    order: [['id', 'ASC']],
+  });
+  return userList;
 };
 
-const getByEmail = async (userEmail) => {
-  try {
-    const userInstance = await db.User.findOne({
-      where: {
-        email: userEmail,
-      },
-      attributes: ['email', 'password'],
-    });
-    return userInstance;
-  } catch {
-    throw new Error('Error Occured attempting to read userEmail');
-  }
+const getUserById = async (id) => {
+  const user = await db.User.findByPk(id);
+  return user;
 };
 
-module.exports = { createUser, getListAll, getByEmail };
+const getUserByEmail = async (email) => {
+  const user = await db.User.findOne({
+    where: {
+      email,
+    },
+  });
+  return user;
+};
+
+const updateUserName = async (id, data) => {
+  const {
+    name,
+  } = data;
+  const numOfUpdatedRow = await db.User.update({
+    name,
+  }, {
+    where: { id },
+  });
+  return numOfUpdatedRow;
+};
+
+module.exports = {
+  createUser,
+  getUsers,
+  getUserById,
+  getUserByEmail,
+  updateUserName,
+};
