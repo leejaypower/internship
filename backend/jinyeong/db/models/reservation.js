@@ -1,3 +1,7 @@
+const { constants } = require('../../common');
+
+const { RESERVATION_STATE } = constants;
+
 module.exports = (sequelize, DataTypes) => {
   const Reservation = sequelize.define('Reservation', {
     // PK 디폴트 적용(칼럼명: id, 타입: INTEGER)
@@ -19,9 +23,9 @@ module.exports = (sequelize, DataTypes) => {
       comment: '예약 신청일',
     },
     state: {
-      type: DataTypes.STRING(5),
+      type: DataTypes.STRING(10),
       allowNull: false,
-      defaultValue: 'RESERVATION_STATE_WAITING',
+      defaultValue: RESERVATION_STATE.WAITING,
       comment: '예약이력에 대한 상태정보입니다. [대기, 실행, 취소]로 구분됩니다.',
     },
   }, {

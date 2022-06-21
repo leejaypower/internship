@@ -1,7 +1,7 @@
 module.exports = (sequelize, DataTypes) => {
   const BookCategory = sequelize.define('BookCategory', {
     // PK 디폴트 적용(칼럼명: id, 타입: INTEGER)
-    KDC: {
+    koreanDecimalClassificationCode: {
       type: DataTypes.INTEGER,
       allowNull: false,
       comment: '도서 한국십진분류표(KDC) 분류코드',

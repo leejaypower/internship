@@ -17,26 +17,6 @@ const getAll = async (ctx) => {
   }
 };
 
-// GET 메소드
-const getByQuery = async (ctx) => {
-  try {
-    const { query } = ctx.request;
-    const { name, category } = query;
-
-    const inputData = { name, category }; // 요청가능한 쿼리만 추출
-
-    const queryResult = await bookService.viewByQuery(inputData);
-
-    if (queryResult.length === 0) {
-      ctx.status = 204;
-    }
-    ctx.body = queryResult;
-  } catch (err) {
-    console.log(err.message);
-    ctx.throw(err.name, err.message);
-  }
-};
-
 // GET:/book_id 메소드
 const getById = async (ctx) => {
   try {
@@ -55,9 +35,19 @@ const getById = async (ctx) => {
 // POST 메소드
 const post = async (ctx) => {
   try {
-    const { body } = ctx.request;
+    const {
+      body,
+    } = ctx.request;
 
-    await bookService.addNewBook(body);
+    const {
+      bookInfoId,
+    } = body;
+
+    if (!bookInfoId) {
+      errorHandling.throwError(400, '필수 입력요소가 누락되었습니다.');
+    }
+
+    await bookService.addNewBook({ bookInfoId });
 
     ctx.status = 201;
   } catch (err) {
@@ -69,15 +59,21 @@ const post = async (ctx) => {
 // PATCH 메소드
 const patchById = async (ctx) => {
   try {
-    const { params, body } = ctx.request;
-    const bookId = params.book_id;
+    const {
+      params,
+      body,
+    } = ctx.request;
 
-    // inputData가 없을 시
-    if (Object.keys(body).length === 0) {
-      errorHandling.throwError(400, '변경내용이 입력되지 않았습니다.');
+    const bookId = params.book_id;
+    const {
+      bookInfoId,
+    } = body;
+
+    if (!bookInfoId) {
+      errorHandling.throwError(400, '필수 입력요소가 누락되었습니다.');
     }
 
-    await bookService.updateBook(bookId, body);
+    await bookService.updateBook(bookId, { bookInfoId });
 
     ctx.status = 200;
   } catch (err) {
@@ -103,7 +99,6 @@ const deleteById = async (ctx) => {
 
 module.exports = {
   getAll,
-  getByQuery,
   getById,
   post,
   patchById,

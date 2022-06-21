@@ -4,9 +4,9 @@ const { bookApi } = require('../apis');
 const bookRouter = new Router();
 
 // GET 메소드
-bookRouter.get('/', bookApi.getAll);
-bookRouter.get(['/search/:name?', '/search/:category?'], bookApi.getByQuery);
-bookRouter.get('/:book_id', bookApi.getById);
+bookRouter
+  .get('/', bookApi.getAll)
+  .get('/:book_id', bookApi.getById);
 
 // POST 메소드
 bookRouter.post('/', bookApi.post);

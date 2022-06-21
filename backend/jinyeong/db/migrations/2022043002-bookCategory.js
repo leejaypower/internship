@@ -7,7 +7,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      KDC: {
+      koreanDecimalClassificationCode: {
         type: Sequelize.INTEGER,
         allowNull: false,
         comment: '도서 한국십진분류표(KDC) 분류코드',

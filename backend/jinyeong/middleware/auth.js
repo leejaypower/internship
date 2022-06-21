@@ -1,6 +1,8 @@
 const jwt = require('jsonwebtoken');
 const { adminService } = require('../services');
-const { errorHandling } = require('../common/util');
+const { util } = require('../common');
+
+const { errorHandling } = util;
 
 // 관리자 권한 액세스 토큰 확인
 const adminAuth = async (ctx, next) => {

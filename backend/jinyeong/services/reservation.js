@@ -1,6 +1,8 @@
 const { sequelize } = require('../db'); // DB sequelize 커넥션 인스턴스 불러오기(트랜잭션 처리에 사용)
 const { userQuery, bookQuery, reservationQuery } = require('../repository');
-const { errorHandling } = require('../common/util');
+const { util } = require('../common');
+
+const { errorHandling } = util;
 
 // 전체 예약이력 조회
 const getAll = async () => {

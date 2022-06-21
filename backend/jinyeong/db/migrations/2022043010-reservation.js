@@ -1,3 +1,7 @@
+const { constants } = require('../../common');
+
+const { RESERVATION_STATE } = constants;
+
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('Reservations', {
@@ -39,9 +43,9 @@ module.exports = {
         comment: '예약 신청일',
       },
       state: {
-        type: Sequelize.STRING(5),
+        type: Sequelize.STRING(10),
         allowNull: false,
-        defaultValue: 'RESERVATION_STATE_WAITING',
+        defaultValue: RESERVATION_STATE.WAITING,
         comment: '예약이력에 대한 상태정보입니다. [대기, 실행, 취소]로 구분됩니다.',
       },
       createdAt: {

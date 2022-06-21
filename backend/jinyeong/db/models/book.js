@@ -1,3 +1,7 @@
+const { constants } = require('../../common');
+
+const { BOOK_STATE } = constants;
+
 module.exports = (sequelize, DataTypes) => {
   const Book = sequelize.define('Book', {
     // PK 디폴트 적용(칼럼명: id, 타입: INTEGER)
@@ -7,9 +11,9 @@ module.exports = (sequelize, DataTypes) => {
       comment: '도서의 정보(도서명, 카테고리, 작자, 발행사, 소개)를 담고 있는 테이블 아이디',
     },
     state: {
-      type: DataTypes.STRING(30),
+      type: DataTypes.STRING(10),
       allowNull: false,
-      defaultValue: 'BOOK_STATE_WAITING',
+      defaultValue: BOOK_STATE.WAITING,
       comment: '도서의 상태(대기,대출,예약,분실)를 표시',
     },
   }, {

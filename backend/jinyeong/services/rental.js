@@ -4,14 +4,14 @@
 /* eslint-disable arrow-body-style */
 const { sequelize } = require('../db'); // DB sequelize 커넥션 인스턴스 불러오기(트랜잭션 처리에 사용)
 const { rentalQuery, userQuery, bookQuery, reservationQuery } = require('../repository');
-const { errorHandling } = require('../common/util');
+const { util, constants } = require('../common');
 
-// Constant
-// 상태 상수값
-const STATE_WAITING = '대기';
-const STATE_RESERVATION = '예약';
-const STATE_RENTAL = '대출';
-const STATE_ACTIVATE = '실행';
+const { errorHandling } = util;
+
+const {
+  BOOK_STATE,
+  RESERVATION_STATE,
+} = constants;
 
 // Rentals 테이블에서 전체 데이터 가져오기
 const viewAll = async () => {
@@ -51,12 +51,13 @@ const addNewRental = async (body) => {
 
   // 도서 대출가능여부 검사(대기상태인지, 예약상태라면 -> 예약자인 경우에만)
   // 대기상태인 경우와, 예약상태인 경우를 구분하여 로직 진행
-  const bookInfo = await bookQuery.getById(bookId);
+  const book = await bookQuery.getById(bookId);
 
-  if (bookInfo.length === 0) {
+  if (book.length === 0) {
     errorHandling.throwError(404, '해당 아이디의 도서정보는 존재하지 않습니다.');
   }
-  if (bookInfo.state !== STATE_WAITING && bookInfo.state !== STATE_RESERVATION) {
+
+  if (book.state !== BOOK_STATE.WAITING && book.state !== BOOK_STATE.RESERVATED) {
     errorHandling.throwError(400, '해당 도서는 대출가능상태가 아닙니다.');
   }
 
@@ -64,11 +65,11 @@ const addNewRental = async (body) => {
   // 1. 대출이력 생성
   // 2. 도서 상태를 "대출" 상태로 업데이트
 
-  if (bookInfo.state === STATE_WAITING) {
+  if (book.state === BOOK_STATE.WAITING) {
     // CLS를 통해 {transaction: t}를 각 쿼리에 자동으로 넘겨줍니다!
     await sequelize.transaction(async () => {
       await rentalQuery.insertOne(inputData);
-      await bookQuery.updateOneById(bookId, { state: STATE_RENTAL });
+      await bookQuery.updateOneById(bookId, { state: BOOK_STATE.RENTALED });
     });
   }
 
@@ -77,12 +78,12 @@ const addNewRental = async (body) => {
   // 2. 도서 상태 변경
   // -> 예약자가 더 있다면, 예약상태 유지 / 예약자가 없다면, 대출상태로 변경
   // 3. 예약이력 업데이트(state = '실행')
-  if (bookInfo.state === STATE_RESERVATION) {
+  if (book.state === BOOK_STATE.RESERVATED) {
     // TODO: 예약 비지니스 로직 구현 후 분리할 수 있을 지 고민해보기
     const reservationInfo = await reservationQuery.getByBookId(body);
 
     const waitingReservationInfo = reservationInfo.filter((record) => {
-      return record.state === STATE_WAITING; // 예약이 아직 대기중인 경우.
+      return record.state === RESERVATION_STATE.WAITING; // 예약이 아직 대기중인 경우.
     });
 
     const waitingNumber = waitingReservationInfo.length;
@@ -101,13 +102,13 @@ const addNewRental = async (body) => {
       await rentalQuery.insertOne(inputData);
 
       if (!isOtherWaitingExist) {
-        await bookQuery.updateOneById(bookId, { state: STATE_RENTAL });
+        await bookQuery.updateOneById(bookId, { state: BOOK_STATE.RENTALED });
         // 더이상 예약자가 없는 경우에만 '대출'상태로 변경
       }
 
       await reservationQuery.updateOneById(
         firstWaitingReservationInfo.id,
-        { state: STATE_ACTIVATE },
+        { state: RESERVATION_STATE.ACTIVATED },
       );
     });
   }
@@ -144,7 +145,7 @@ const checkInByBookId = async (bookId) => {
 
   // 예약대기중인 리스트
   const waitingReservationInfoList = reservationInfoList.filter((record) => {
-    return record.state === STATE_WAITING;
+    return record.state === RESERVATION_STATE.WAITING;
   });
 
   // 도서반납일(returnDate) 수정 로직 === 도서 반납 요청
@@ -160,7 +161,7 @@ const checkInByBookId = async (bookId) => {
 
     // 예약 대기자가 없는 경우에만 도서 상태를 '대기'로 변경
     if (!isWaitingExist) {
-      await bookQuery.updateOneById(bookId, { state: STATE_WAITING });
+      await bookQuery.updateOneById(bookId, { state: BOOK_STATE.WAITING });
     }
   });
 };
@@ -186,7 +187,7 @@ const extendRentalPeriodByBookId = async (bookId, body) => {
 
   // 예약대기중인 리스트
   const waitingReservationInfoList = reservationInfoList.filter((record) => {
-    return record.state === STATE_WAITING;
+    return record.state === RESERVATION_STATE.WAITING;
   });
 
   // 도서대출을 연장하려는 경우.

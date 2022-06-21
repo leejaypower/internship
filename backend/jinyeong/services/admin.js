@@ -1,7 +1,9 @@
 /* eslint-disable no-useless-catch */
 const jwt = require('jsonwebtoken');
 const { adminQuery } = require('../repository');
-const { encrypt, errorHandling } = require('../common/util'); // 암호화 및 복호화에 사용
+const { util } = require('../common');
+
+const { encrypt, errorHandling } = util;
 
 // 관리자 회원가입 요청에 해당하는 비지니스 로직
 const signUp = async (body) => {
