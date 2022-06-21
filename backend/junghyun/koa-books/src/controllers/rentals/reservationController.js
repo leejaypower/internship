@@ -16,7 +16,9 @@ const createReservation = async (ctx) => {
       userId: ctx.state.userId,
     });
     ctx.status = 201;
-  } catch (err) { ctx.throw(500, err); }
+  } catch (err) {
+    ctx.throw(err);
+  }
 };
 
 // 예약 목록 조회 - 관리자페이지
@@ -38,7 +40,9 @@ const getAdminReservations = async (ctx) => {
       limit,
     });
     ctx.status = 200;
-  } catch (err) { ctx.throw(500, err); }
+  } catch (err) {
+    ctx.throw(err);
+  }
 };
 
 // 예약 목록 조회 - 유저 마이페이지
@@ -46,7 +50,9 @@ const getUserReservations = async (ctx) => {
   try {
     ctx.body = await reservationService.getReservations({ userId: ctx.state.userId });
     ctx.status = 200;
-  } catch (err) { ctx.throw(500, err); }
+  } catch (err) {
+    ctx.throw(err);
+  }
 };
 
 // 단일 예약 조회 - 관리자 / 유저 마이페이지
@@ -54,7 +60,9 @@ const getOneReservation = async (ctx) => {
   try {
     ctx.body = await reservationService.getOneReservation(ctx.params.reservationId);
     ctx.status = 200;
-  } catch (err) { ctx.throw(500, err); }
+  } catch (err) {
+    ctx.throw(err);
+  }
 };
 
 // 예약 취소 - 유저
@@ -66,7 +74,9 @@ const cancelReservation = async (ctx) => {
     }
     ctx.body = await reservationService.cancelReservation(reservationId);
     ctx.status = 200;
-  } catch (err) { ctx.throw(500, err); }
+  } catch (err) {
+    ctx.throw(err);
+  }
 };
 
 // 과거 예약 (종료된 예약) 목록 조회 - 관리자페이지
@@ -88,7 +98,9 @@ const getAdminOldReservations = async (ctx) => {
       limit,
     });
     ctx.status = 200;
-  } catch (err) { ctx.throw(500, err); }
+  } catch (err) {
+    ctx.throw(err);
+  }
 };
 
 // 과거 예약 (종료된 예약) 목록 조회 - 유저 마이페이지
@@ -97,7 +109,9 @@ const getUserOldReservations = async (ctx) => {
   try {
     ctx.body = await reservationService.getOldReservations({ userId });
     ctx.status = 200;
-  } catch (err) { ctx.throw(500, err); }
+  } catch (err) {
+    ctx.throw(err);
+  }
 };
 
 // 단일 과거 예약 조회 - 유저 마이페이지
@@ -105,7 +119,9 @@ const getOneOldReservation = async (ctx) => {
   try {
     ctx.body = await reservationService.getOneOldReservation(ctx.params.reservationId);
     ctx.status = 200;
-  } catch (err) { ctx.throw(500, err); }
+  } catch (err) {
+    ctx.throw(err);
+  }
 };
 
 module.exports = {

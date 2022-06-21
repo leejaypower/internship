@@ -3,7 +3,9 @@ const { graphqlUserController } = require('../../controller');
 const userResolver = {
   Mutation: {
     signUp: graphqlUserController.signUp,
-    signIn: graphqlUserController.signIn,
+    adminSignIn: graphqlUserController.adminSignIn,
+    userSignIn: graphqlUserController.userSignIn,
+    refreshAccessToken: graphqlUserController.refreshAccessToken,
   },
 };
 

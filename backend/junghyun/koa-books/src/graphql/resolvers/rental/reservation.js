@@ -1,6 +1,8 @@
+const { composeResolvers } = require('@graphql-tools/resolvers-composition');
 const { graphqlReservationController } = require('../../controller');
+const { graphqlUserAdminAuthorized, graphqlAdminAuthorized } = require('../../../common/auth');
 
-const bookReservationResolver = {
+const resolvers = {
   Query: {
     getOneReservation: graphqlReservationController.getOneReservation,
     getAdminReservations: graphqlReservationController.getAdminReservations,
@@ -34,5 +36,19 @@ const bookReservationResolver = {
     },
   },
 };
+
+const resolversComposition = {
+  'Query.getAdminReservations': [graphqlAdminAuthorized()],
+  'Query.getAdminOldReservations': [graphqlAdminAuthorized()],
+
+  'Query.getOneReservation': [graphqlUserAdminAuthorized()],
+  'Query.getUserReservations': [graphqlUserAdminAuthorized()],
+  'Query.getOneOldReservation': [graphqlUserAdminAuthorized()],
+  'Query.getUserOldReservations': [graphqlUserAdminAuthorized()],
+  'Mutation.createReservation': [graphqlUserAdminAuthorized()],
+  'Mutation.cancelReservation': [graphqlUserAdminAuthorized()],
+};
+
+const bookReservationResolver = composeResolvers(resolvers, resolversComposition);
 
 module.exports = { bookReservationResolver };

@@ -45,7 +45,7 @@ const createRental = async (data) => {
   returnDueDate.setDate(today.getDate() + 11);
   returnDueDate.setHours(0, 0, 0, 0);
 
-  const createdSingleRental = rentalRepository.createRentalTransaction({ ...rentalData, returnDueDate });
+  const createdSingleRental = rentalRepository.createRentalTransaction({ ...data, returnDueDate });
   return createdSingleRental;
 };
 

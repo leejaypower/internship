@@ -2,6 +2,7 @@ const Koa = require('koa');
 const bodyParser = require('koa-parser');
 const http = require('http');
 const { ApolloServer } = require('apollo-server-koa');
+const depthLimit = require('graphql-depth-limit');
 const router = require('./routes');
 const db = require('./db/models');
 
@@ -27,6 +28,7 @@ const startServer = async () => {
     typeDefs,
     resolvers,
     csrfPrevention: true,
+    validationRules: [depthLimit(5)],
     context: ({ ctx, next }) => ({
       ctx,
       next,

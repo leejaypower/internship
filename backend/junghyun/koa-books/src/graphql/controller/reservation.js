@@ -4,9 +4,6 @@ const { reservationService } = require('../../services');
 const createReservation = async (root, args, { ctx }) => {
   try {
     const { reservationCode, bookInfoId } = args.input;
-    // 테스트용 임시 userId (Auth가 구현되면 Auth 미들웨어에서 userId가 assign되므로 아래 코드는 제거하겠습니다.)
-    ctx.state.userId = 'd784667e-97db-4cf2-8599-ceb309010e29';
-
     const newReservation = await reservationService.createReservation({
       reservationCode,
       bookInfoId,
@@ -34,9 +31,6 @@ const getAdminReservations = async (root, args, { ctx }) => {
 // 예약 목록 조회 - 유저 마이페이지
 const getUserReservations = async (root, args, { ctx }) => {
   try {
-    // 테스트용 임시 userId (Auth가 구현되면 Auth 미들웨어에서 userId가 assign되므로 아래 코드는 제거하겠습니다.)
-    ctx.state.userId = 'd784667e-97db-4cf2-8599-ceb309010e29';
-
     const reservationList = await reservationService.getReservations({ userId: ctx.state.userId });
     ctx.status = 200;
     return reservationList;
@@ -78,9 +72,6 @@ const getAdminOldReservations = async (root, args, { ctx }) => {
 // 과거 예약 (종료된 예약) 목록 조회 - 유저 마이페이지
 const getUserOldReservations = async (root, args, { ctx }) => {
   try {
-    // 테스트용 임시 userId (Auth가 구현되면 Auth 미들웨어에서 userId가 assign되므로 아래 코드는 제거하겠습니다.)
-    ctx.state.userId = 'd784667e-97db-4cf2-8599-ceb309010e29';
-
     const reservationList = await reservationService.getOldReservations({ userId: ctx.state.userId });
     ctx.status = 200;
     return reservationList;

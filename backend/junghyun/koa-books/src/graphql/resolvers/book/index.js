@@ -1,6 +1,8 @@
+const { composeResolvers } = require('@graphql-tools/resolvers-composition');
 const { graphqlBookController } = require('../../controller');
+const { graphqlAdminAuthorized } = require('../../../common/auth');
 
-const bookResolver = {
+const resolvers = {
   Query: {
     getOneBook: graphqlBookController.getOneBook,
     getBookInfoList: graphqlBookController.getBookInfoList,
@@ -27,5 +29,12 @@ const bookResolver = {
     },
   },
 };
+
+const resolversComposition = {
+  'Mutation.createBook': [graphqlAdminAuthorized()],
+  'Mutation.deleteBook': [graphqlAdminAuthorized()],
+};
+
+const bookResolver = composeResolvers(resolvers, resolversComposition);
 
 module.exports = { bookResolver };

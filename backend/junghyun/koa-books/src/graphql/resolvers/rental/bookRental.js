@@ -1,6 +1,8 @@
+const { composeResolvers } = require('@graphql-tools/resolvers-composition');
 const { graphqlRentalController } = require('../../controller');
+const { graphqlUserAdminAuthorized, graphqlAdminAuthorized } = require('../../../common/auth');
 
-const bookRentalResolver = {
+const resolvers = {
   Query: {
     getAdminRentals: graphqlRentalController.getAdminRentals,
     getUserRentals: graphqlRentalController.getUserRentals,
@@ -21,5 +23,16 @@ const bookRentalResolver = {
     },
   },
 };
+
+const resolversComposition = {
+  'Query.getAdminRentals': [graphqlAdminAuthorized()],
+  'Mutation.createRental': [graphqlAdminAuthorized()],
+
+  'Query.getUserRentals': [graphqlUserAdminAuthorized()],
+  'Query.getOneRental': [graphqlUserAdminAuthorized()],
+  'Mutation.extendRental': [graphqlUserAdminAuthorized()],
+};
+
+const bookRentalResolver = composeResolvers(resolvers, resolversComposition);
 
 module.exports = { bookRentalResolver };

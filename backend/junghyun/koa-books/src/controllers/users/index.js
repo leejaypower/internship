@@ -1,4 +1,4 @@
-const { userService } = require('../../services');
+const { userService, authService } = require('../../services');
 
 // 회원가입
 const signUp = async (ctx) => {
@@ -15,11 +15,13 @@ const signUp = async (ctx) => {
       ctx.body = 'Signup successful!';
     }
     ctx.status = 201;
-  } catch (err) { ctx.throw(500, err); }
+  } catch (err) {
+    ctx.throw(err);
+  }
 };
 
-// 로그인
-const signIn = async (ctx) => {
+// 관리자 로그인
+const adminSignIn = async (ctx) => {
   try {
     const { email, password } = ctx.request.body;
     if (!email) {
@@ -28,10 +30,45 @@ const signIn = async (ctx) => {
     if (!password) {
       ctx.throw(400, 'please provide the password');
     }
-    const token = await userService.signInService(ctx.request.body);
+    const token = await userService.adminSignInService(ctx.request.body);
     ctx.body = token;
     ctx.status = 200;
-  } catch (err) { ctx.throw(500, err); }
+  } catch (err) {
+    ctx.throw(err);
+  }
 };
 
-module.exports = { signUp, signIn };
+// 유저 로그인
+const userSignIn = async (ctx) => {
+  try {
+    const { email, password } = ctx.request.body;
+    if (!email) {
+      ctx.throw(400, 'please provide the email');
+    }
+    if (!password) {
+      ctx.throw(400, 'please provide the password');
+    }
+    const token = await userService.userSignInService(ctx.request.body);
+    ctx.body = token;
+    ctx.status = 200;
+  } catch (err) {
+    ctx.throw(err);
+  }
+};
+
+const refreshAccessToken = async (ctx) => {
+  try {
+    if (!ctx.request.body?.accessToken || !ctx.request.body?.refreshToken) {
+      ctx.throw(401, 'please provide the Authorization information');
+    }
+    const token = await authService.refreshAccessToken(ctx.request.body);
+    ctx.body = token;
+    ctx.status = 200;
+  } catch (err) {
+    ctx.throw(err);
+  }
+};
+
+module.exports = {
+  signUp, adminSignIn, userSignIn, refreshAccessToken,
+};

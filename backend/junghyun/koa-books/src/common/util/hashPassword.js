@@ -6,7 +6,7 @@ const { SALT_ROUND } = process.env;
 const hashPassword = async (password) => {
   // eslint-disable-next-line no-useless-catch
   try {
-    const hashedPassword = await bcrypt.hash(password, SALT_ROUND);
+    const hashedPassword = await bcrypt.hash(password, Number(SALT_ROUND));
     return hashedPassword;
   } catch (err) {
     throw new Error(err.message);
