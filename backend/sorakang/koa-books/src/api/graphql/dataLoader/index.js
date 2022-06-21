@@ -1,6 +1,3 @@
 const { bookSerialLoader } = require('./bookSerial');
 
-module.exports = {
-  bookSerialLoader,
-
-};
+module.exports = { bookSerialLoader };

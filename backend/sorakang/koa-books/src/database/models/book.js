@@ -66,6 +66,7 @@ module.exports = (sequelize, DataTypes) => {
     Book.hasMany(models.BookSerial, {
       foreignKey: 'bookId',
       sourceKey: 'id',
+      onDelete: 'cascade',
       allowNull: false,
       comment: '해당 컬럼은 해당 시리얼 넘버의 책 ID를 나타냅니다. ',
     });

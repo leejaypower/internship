@@ -7,32 +7,12 @@ const getAllBook = async (limit, cursor, bookId, search) => {
     const bookList = await Book.findAll({
       limit,
       where: {
-        title: {
-          [Op.like]: `%${search}%`,
-        },
-        [Op.or]: [
+        title: { [Op.like]: `%${search}%` },
+        [Op.or]: [{ publicationDate: { [Op.lt]: cursor } },
           {
-            publicationDate: {
-              [Op.lt]: cursor,
-            },
-          },
-          {
-            [Op.and]: [
-              {
-                publicationDate: {
-                  [Op.eq]: cursor,
-                },
-              },
-              {
-                id: {
-                  [Op.gt]: bookId,
-                },
-              },
-            ],
-          },
-
-        ],
-
+            [Op.and]: [{ publicationDate: { [Op.eq]: cursor } },
+              { id: { [Op.gt]: bookId } }],
+          }],
       },
       order: [['publicationDate', 'DESC'], ['id', 'ASC']],
     });
@@ -66,10 +46,9 @@ const getSingleBook = async (bookId) => {
  */
 const getBooksById = async (bookIds) => {
   const bookList = await Book.findAll({
-    where: { [Op.or]: bookIds },
-    raw: true,
+    where: { id: { [Op.in]: bookIds } },
+    returning: ['*'],
   });
-
   return bookList;
 };
 
@@ -86,7 +65,7 @@ const createBook = async (book, t) => {
         title, authors, isbn, content, publisher, publicationDate, thumbnail, category, bookLocation,
       },
       t,
-      raw: true,
+      returning: ['*'],
     });
     return { bookInfo, isCreated };
   } catch (err) {
@@ -129,6 +108,23 @@ const deleteSingleBook = async (bookId) => {
   }
 };
 
+const findAndCountAllBook = async (limit, whereOptions, order) => {
+  const { rows, count } = await Book.findAndCountAll({
+    order,
+    limit,
+    where: whereOptions,
+  });
+
+  return { rows, count };
+};
+
 module.exports = {
-  getAllBook, getSingleBook, createBook, updateBook, deleteBook, deleteSingleBook, getBooksById,
+  getAllBook,
+  getSingleBook,
+  createBook,
+  updateBook,
+  deleteBook,
+  deleteSingleBook,
+  getBooksById,
+  findAndCountAllBook,
 };

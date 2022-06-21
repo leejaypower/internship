@@ -1,19 +1,70 @@
 type Book {
-  id: Int!
-  title: String
-  bookSerial:[BookSerial]
-
-}
-
-type BookSerial{
-  id:Int!
+  id:ID
+  title:String
+  authors:String
+  isbn:String
+  content:String
+  publisher:String
+  publicationDate:Date
+  thumbnail:String
+  category:String
+  bookLocation:String
+  bookSerials:[BookSerial]
 }
 
 input BookListInput {
   id: Int!
 }
 
+input BookUpdateInput{
+  bookId:Int!
+  title:String
+  authors:String
+  isbn:String
+  content:String
+  publisher:String
+  publicationDate:Date
+  thumbnail:String
+  category:String
+  bookLocation:String
+  }
+
+
+input BookCreateInput {
+  title: String!
+  authors:String!
+  isbn:String!
+  content:String!
+  publisher:String!
+  publicationDate:String!
+  thumbnail:String
+  category:String!
+  bookLocation:String
+  }
+  
+  # pagination
+
+type PageInfo {
+  endCursor: String
+  hasNextPage: Boolean
+  }
+
+  type BooksResponse {
+  edges:[Book!]!
+  pageInfo:PageInfo
+  }
+
+
 type Query {
-  getBooksById(bookIds:[BookListInput]): [Book]
+  getBooksById(bookIds:[Int!]): [Book!]!
+  getBookBySerialId(serialId:BookListInput!):Book!
+  getAllBooks(limit: Int, afterCursor: String):BooksResponse!
 }
+
+type Mutation{
+  createBook(bookInfo:[BookCreateInput!]!):[Book!]! @auth(requires:[ADMIN])
+  updateBook(updateInfo:BookUpdateInput!):message!  @auth(requires:[ADMIN])
+  deleteBook(bookIdList:[Int!]!):message!  @auth(requires:[ADMIN])
+}
+
 

@@ -27,14 +27,12 @@ const getSingleBook = async (bookId) => {
   return { data: { bookInfo: book, bookSerialList, bookCount } };
 };
 
-// Graphql 과 rest api의 service를 한 개의 파일로 관리할지 분리할지 고민. 공통적으로 사용할 수 있는 부분은 수정해서 같이 사용하는 방향이 좋을까..?
 /**
- * Graphql service  -  Get a list of book information with a given book ID list
+ * Graphql service  -  다수의 book id 로 book정보 검색
  * @param {Array} bookIdList
  * @returns Array of book data
  */
 const getBooksById = async (bookIdList) => {
-  // rest도 gql도 repository는 같이 사용할 수 있도로 구성하는게 좋을 것 같음..지금은 따로 쓰고 refactoring 주에 병합하기
   const bookList = await bookRepository.getBooksById(bookIdList);
   return bookList;
 };

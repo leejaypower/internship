@@ -1,5 +1,4 @@
 const userGraphService = require('./userGraphService');
+const bookGraphService = require('./bookGraphService');
 
-module.exports = {
-  userGraphService,
-};
+module.exports = { userGraphService, bookGraphService };
