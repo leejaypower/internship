@@ -1,0 +1,8 @@
+type returnBook {
+  id: Int!
+  rentalId: Int!
+}
+
+type Mutation {
+  createReturn(rentalId: Int!) : returnBook!
+}

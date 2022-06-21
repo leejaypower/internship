@@ -12,6 +12,11 @@ const createRental = async (rentalInstance) => {
   return newRental;
 };
 
+const getRentalById = async (rentalId) => {
+  const rental = await db.Rental.findByPk(rentalId);
+  return rental;
+};
+
 module.exports = {
-  createRental,
+  createRental, getRentalById,
 };

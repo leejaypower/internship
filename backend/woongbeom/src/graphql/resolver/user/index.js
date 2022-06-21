@@ -25,11 +25,6 @@ const user = {
       const result = await controller.user.updateUserName(updateUserId, userName);
       return result;
     },
-    getUserById: async (_, userId) => {
-      const userNumber = userId.id;
-      const result = await controller.user.getUserById(userNumber);
-      return [result];
-    },
     signIn: async (_, args) => {
       const { email, password } = args;
       const token = await controller.user.signIn(email, password);

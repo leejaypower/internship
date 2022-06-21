@@ -4,8 +4,7 @@ module.exports = {
       {
         name: 'Kim Tae Hyeong',
         email: 'thkim@barogo.com',
-        password: '$2b$10$tVvRH7Prj.fCmYg9D63YmuA0HSRvs8ebKw46YCQCM.yuMynCxCCka',
-        description: '6804',
+        password: '$2b$10$tVvRH7Prj.fCmYg9D63YmuA0HSRvs8ebKw46YCQCM.yuMynCxCCka', // 6804
         createdAt: new Date(),
         updatedAt: new Date(),
       },

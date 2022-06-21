@@ -11,7 +11,7 @@ const authorize = async (ctx) => {
 
 const authorizeUser = async (ctx, next) => {
   const decodedToken = await authorize(ctx);
-  if (decodedToken.ROLE !== lib.common.constant.ROLE.USER) {
+  if (decodedToken.role !== lib.common.constant.ROLE.USER) {
     lib.util.error.errorHandler(1, 'This token is not authorized user\'s.');
   }
   return next();
@@ -19,10 +19,7 @@ const authorizeUser = async (ctx, next) => {
 
 const authorizeAdmin = async (ctx, next) => {
   const decodedToken = await authorize(ctx);
-  if (decodedToken.role !== ROLE.ADMIN) {
-    errorHandler(1, 'This token is not authorized admin\'s.');
-  }
-  if (decodedToken.ROLE !== lib.common.constant.ROLE.ADMIN) {
+  if (decodedToken.role !== lib.common.constant.ROLE.ADMIN) {
     lib.util.error.errorHandler(1, 'This token is not authorized user\'s.');
   }
   return next();

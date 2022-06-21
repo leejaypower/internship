@@ -53,7 +53,7 @@ const signIn = async (email, password) => {
   if (!matchPassword) {
     lib.util.error.errorHandler(1, 'Wrong password');
   }
-  const token = lib.auth.jwt.sign({ email }, { expiresIn: lib.common.constant.token.expiresIn });
+  const token = lib.auth.jwt.sign({ email, role: lib.common.constant.ROLE.USER }, { expiresIn: lib.common.constant.token.expiresIn });
   return token;
 };
 

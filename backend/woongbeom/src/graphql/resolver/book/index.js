@@ -4,7 +4,7 @@ const middleware = require('../auth');
 
 const book = {
   Query: {
-    getBooks: async (_, bookQuery) => {
+    getBooks: async (parent, bookQuery) => {
       const result = await controller.book.getBooks(bookQuery);
       return result;
     },

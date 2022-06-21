@@ -4,7 +4,7 @@ const SALT_ROUND = process.env.SALT_ROUND;
 
 const hashPassword = async (password) => {
   try {
-    return await bcrypt.hash(password, SALT_ROUND);
+    return await bcrypt.hash(password, Number(SALT_ROUND));
   } catch (err) {
     throw err.message;
   }

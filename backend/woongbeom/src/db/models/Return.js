@@ -9,6 +9,11 @@ module.exports = (sequelize, DataTypes) => {
         comment: '책 반납 데이터의 고유번호입니다.',
         primaryKey: true,
       },
+      rentalId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        comment: '대출된 책의 대출번호를 나타내는 fk 입니다.',
+      },
       isExtended: {
         type: DataTypes.BOOLEAN,
         allowNull: false,

@@ -1,9 +1,10 @@
-const Book = require('./book');
-const User = require('./user');
+const book = require('./book');
+const user = require('./user');
 const admin = require('./admin');
-const Auth = require('./auth');
-const Rental = require('./rental');
+const auth = require('./auth');
+const rental = require('./rental');
+const returnBook = require('./returnBook');
 
 module.exports = {
-  Book, User, admin, Auth, Rental,
+  book, user, admin, auth, rental, returnBook,
 };
