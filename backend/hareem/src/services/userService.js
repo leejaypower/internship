@@ -20,11 +20,13 @@ const createUser = async (createData) => {
     ...createData,
     password: hashedPassword,
   });
+
   return newUser;
 };
 
 const getUsers = async (query) => {
   const users = await userRepository.getUsers(query);
+
   return users;
 };
 
@@ -33,33 +35,42 @@ const getUser = async (getBy, selectPassword = false) => {
   if (!user) {
     throw new CustomError(404, '회원 정보를 찾을 수 없습니다');
   }
+
   return user;
 };
 
-const getUserById = async (id) => {
-  const user = await userRepository.getUserById(id);
+const getUserById = async (id, only = false) => {
+  const user = await userRepository.getUserById(id, only);
   if (!user) {
     throw new CustomError(404, '회원 정보를 찾을 수 없습니다');
   }
+
   return user;
 };
 
 const updateUser = async (id, updateData) => {
-  const updateBy = { id };
-  await userRepository.updateUser(updateBy, updateData);
-  const user = await userRepository.getUserById(id);
+  const {
+    only = false,
+  } = updateData;
+
+  await userRepository.updateUser({ id }, updateData);
+
+  const user = await userRepository.getUserById(id, only);
   if (!user) {
     throw new CustomError(404, '회원 정보를 찾을 수 없습니다');
   }
+
   return user;
 };
 
 const updateUserByAdmin = async (id, updateData) => {
   await userRepository.updateUserByAdmin(id, updateData);
+
   const user = await userRepository.getUserById(id);
   if (!user) {
     throw new CustomError(404, '회원 정보를 찾을 수 없습니다');
   }
+
   return user;
 };
 
@@ -68,6 +79,7 @@ const deleteUser = async (id) => {
   if (!result) {
     throw new CustomError(400, '회원 탈퇴 실패');
   }
+
   return '회원 탈퇴 완료';
 };
 

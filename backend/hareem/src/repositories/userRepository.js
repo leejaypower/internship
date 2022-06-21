@@ -12,6 +12,7 @@ const createUser = async (createData) => {
       phone,
       name,
       role = TABLE.USER_ROLE.USER,
+      only = false,
     } = createData;
 
     const user = await User.create({
@@ -30,10 +31,14 @@ const createUser = async (createData) => {
       transaction,
     });
 
-    user.password = undefined;
-    user.dataValues.role = auth.role;
+    delete user.password;
+    if (!only) {
+      user.dataValues.Auth = auth;
+    }
+
     return user;
   });
+
   return result;
 };
 
@@ -46,6 +51,7 @@ const getUsers = async (getUsersQuery) => {
     from,
     to,
     filter,
+    only = false,
   } = getUsersQuery;
 
   const { Op } = Sequelize;
@@ -53,17 +59,19 @@ const getUsers = async (getUsersQuery) => {
   const limit = BUSINESS.PER_PAGE;
   const offset = (page - 1) * limit;
 
-  const where = {};
-  const authWhere = {};
+  const where = { createdAt: { [Op.gte]: timer.beforeNDate(30) } };
   const order = [['createdAt', 'DESC']];
-  let paranoid = true;
-  if (email) { where.email = { [Op.like]: `%${email}%` }; }
+  const paranoid = filter === QUERY.FILTER.NONE; // filter가 ALL or DELETE 라면 paranoid = false
+
+  if (email) {
+    where.email = { [Op.like]: `%${email}%` };
+  }
+
   if (warningCount !== undefined) {
     where.warningCount = { [Op.gte]: warningCount };
     order.push(['warningCount', 'DESC']);
   }
-  if (role) { authWhere.role = { [Op.eq]: role }; }
-  where.createdAt = { [Op.gte]: timer.beforeNDate(30) };
+
   if (from && to) {
     where.createdAt = { [Op.between]: [timer.stringToDate(from), timer.stringToDate(to)] };
   } else if (from) {
@@ -71,37 +79,52 @@ const getUsers = async (getUsersQuery) => {
   } else if (to) {
     where.createdAt = { [Op.lte]: timer.stringToDate(to) };
   }
-  if (filter === QUERY.FILTER.ALL) {
-    paranoid = false;
-  } else if (filter === QUERY.FILTER.DELETED) {
-    paranoid = false;
+
+  if (filter === QUERY.FILTER.DELETED) {
     where.deletedAt = { [Op.not]: null };
   }
 
-  const users = await User.findAll({
+  const authWhere = {};
+  if (role) {
+    authWhere.role = { [Op.eq]: role };
+  }
+
+  const options = {
     where,
     limit,
     offset,
     attributes: { exclude: ['password'] },
     paranoid,
-    include: {
+    order,
+  };
+
+  if (!only) {
+    options.include = {
       model: Auth,
       attributes: ['role', 'updatedAt'],
       where: authWhere,
-    },
-    order,
-  });
+    };
+  }
+
+  const users = await User.findAll(options);
+
   return users;
 };
 
-const getUserById = async (id) => {
-  const user = await User.findByPk(id, {
+const getUserById = async (id, only = false) => {
+  const options = {
     attributes: { exclude: ['password'] },
-    include: {
+  };
+
+  if (!only) {
+    options.include = {
       model: Auth,
       attributes: ['role', 'updatedAt'],
-    },
-  });
+    };
+  }
+
+  const user = await User.findByPk(id, options);
+
   return user;
 };
 
@@ -114,6 +137,7 @@ const getUser = async (getBy, selectPassword = false) => {
       attributes: ['role', 'updatedAt'],
     },
   });
+
   return user;
 };
 
@@ -131,6 +155,7 @@ const updateUser = async (updateBy, updateData) => {
   }, {
     where: updateBy,
   });
+
   return result;
 };
 
@@ -156,6 +181,7 @@ const updateUserByAdmin = async (id, updateData) => {
       where: { id },
       transaction,
     });
+
     await Auth.update({
       role,
       refreshToken,
@@ -163,8 +189,10 @@ const updateUserByAdmin = async (id, updateData) => {
       where: { userId: id },
       transaction,
     });
+
     return updateResult;
   });
+
   return result;
 };
 
@@ -172,6 +200,7 @@ const deleteUser = async (deleteBy) => {
   const result = await User.destroy({
     where: deleteBy,
   });
+
   return result;
 };
 

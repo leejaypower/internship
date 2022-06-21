@@ -1,9 +1,96 @@
+
 type User {
+  id: UUID
+  email: EmailAddress
+  password: String
+  phone: String
   name: String
-  age: Int
-  books: [Book]
+  warningCount: Int
+  rentalCount: Int
+  createdAt: DateTime
+  deletedAt: DateTime
+  auth: Auth
+}
+
+enum ROLE {
+  USER
+  ADMIN
+}
+
+type Auth {
+  role: ROLE
+  updatedAt: DateTime
 }
 
 type Query {
+  getUsers(input: GetUsersInput!): GetUsersOutput!
+  getUser(input: GetUserInput!): GetUserOutput!
+}
+
+type Mutation {
+  createUser(input: CreateUserInput!): CreateUserOutput!
+  updateUser(input: UpdateUserInput!): UpdateUserOutput!
+  deleteUser(input: DeleteUserInput!): DeleteUserOutput!
+}
+
+input GetUsersInput {
+  page: Int
+  from: String
+  to: String
+  filter: Filter
+  email: Int
+  warningCount: String
+}
+
+type GetUsersOutput implements CoreOutput {
+  success: Boolean!
+  error: Error
   users: [User]
+}
+
+input GetUserInput {
+  id: UUID
+}
+
+type GetUserOutput implements CoreOutput {
+  success: Boolean!
+  error: Error
+  user: User
+}
+
+input CreateUserInput {
+  email: EmailAddress!
+  password: String!
+  phone: String!
+  name: String!
+  role: ROLE
+}
+
+type CreateUserOutput implements CoreOutput {
+  success: Boolean!
+  error: Error
+  user: User
+}
+
+input UpdateUserInput {
+  id: UUID
+  password: String
+  phone: String
+  name: String
+}
+
+type UpdateUserOutput implements CoreOutput {
+  success: Boolean!
+  error: Error
+  user: User
+}
+
+input DeleteUserInput {
+  id: UUID!
+}
+
+type DeleteUserOutput implements CoreOutput {
+  success: Boolean!
+  error: Error
+  result: String
 }
