@@ -5,6 +5,7 @@ const userTypeDefs = require('./user');
 const adminTypeDefs = require('./admin');
 const bookTypeDefs = require('./book');
 const rentalTypeDefs = require('./rental');
+const reservationTypeDefs = require('./reservation');
 
 const typeDefsList = [
   ...commmonTypeDefs,
@@ -12,6 +13,7 @@ const typeDefsList = [
   adminTypeDefs,
   bookTypeDefs,
   rentalTypeDefs,
+  reservationTypeDefs,
 ];
 
 const typeDefs = mergeTypeDefs(typeDefsList);

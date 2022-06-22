@@ -43,6 +43,17 @@ const userResolver = {
       };
     },
   },
+  User: {
+    rentals: async (parent, args, context) => {
+      const userId = parent.id;
+      const { loaders } = context;
+
+      await userAuth(context);
+
+      const rentalList = await loaders.rentalLoader.batchGetListByUserIds.load(userId);
+      return rentalList;
+    },
+  },
 };
 
 module.exports = userResolver;

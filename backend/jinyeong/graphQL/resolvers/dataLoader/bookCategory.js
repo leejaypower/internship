@@ -15,6 +15,8 @@ const batchGetBookCategory = async (bookCategoryIds) => {
   return mappedList;
 };
 
-const bookCategoryLoader = new DataLoader(batchGetBookCategory);
+const batchGetByIds = new DataLoader(batchGetBookCategory);
 
-module.exports = bookCategoryLoader;
+module.exports = {
+  batchGetByIds,
+};

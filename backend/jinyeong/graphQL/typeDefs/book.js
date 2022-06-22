@@ -23,6 +23,7 @@ const bookTypeDefs = gql`
     id: ID!
     state: String
     bookInfo: BookInfo
+    rentals: [Rental]
     createdAt: Date
     updatedAt: Date
   }

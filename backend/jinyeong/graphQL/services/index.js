@@ -4,12 +4,14 @@ const bookService = require('./book');
 const bookInfoService = require('./bookInfo');
 const bookCategoryService = require('./bookCategory');
 const rentalService = require('./rental');
+const reservationService = require('./reservation');
 
 module.exports = {
+  userService,
   adminService,
-  rentalService,
   bookService,
   bookInfoService,
   bookCategoryService,
-  userService,
+  rentalService,
+  reservationService,
 };

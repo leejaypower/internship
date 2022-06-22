@@ -1,25 +1,25 @@
 /* eslint-disable no-unused-vars */
-const { rentalService } = require('../services');
+const { reservationService } = require('../services');
 const { userAuth, adminAuth } = require('./auth');
 
-const rentalResolvers = {
+const reservationResolvers = {
   Query: {
-    rental: async (parent, args, context) => {
+    reservation: async (parent, args, context) => {
       const { id } = args;
 
       await userAuth(context);
 
-      const rentalInfo = await rentalService.getOneById(id);
-      return rentalInfo;
+      const reservationInfo = await reservationService.getOneById(id);
+      return reservationInfo;
     },
-    rentals: async (parent, args, context) => {
+    reservations: async (parent, args, context) => {
       await adminAuth(context);
 
-      const rentalInfoList = await rentalService.getAll();
-      return rentalInfoList;
+      const reservationInfoList = await reservationService.getAll();
+      return reservationInfoList;
     },
   },
-  Rental: {
+  Reservation: {
     user: async (parent, args, context) => {
       const { userId } = parent;
       const { loaders } = context;
@@ -41,4 +41,4 @@ const rentalResolvers = {
   },
 };
 
-module.exports = rentalResolvers;
+module.exports = reservationResolvers;

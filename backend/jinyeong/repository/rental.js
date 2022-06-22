@@ -10,6 +10,17 @@ const getListAll = async () => {
   });
 };
 
+// Rental 입력된 조건에 따라 데이터 조회
+const getListByInputData = async (inputData) => {
+  const rentalList = await Rental.findAll({
+    where: inputData,
+  });
+
+  return rentalList.map((rental) => {
+    return rental.dataValues;
+  });
+};
+
 const getOneById = async (id) => {
   const rentalInfo = await Rental.findOne({ where: { id } });
   return rentalInfo?.dataValues;

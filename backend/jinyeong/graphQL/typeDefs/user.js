@@ -41,6 +41,7 @@ const userTypeDefs = gql`
     name: String!
     email: String!
     isBlacklist: Boolean
+    rentals: [Rental]
     createdAt: Date
     updatedAt: Date
   }

@@ -1,5 +1,4 @@
 /* eslint-disable no-unused-vars */
-const { DateResolver } = require('graphql-scalars');
 const { bookService } = require('../services');
 const { userAuth, adminAuth } = require('./auth');
 
@@ -37,16 +36,27 @@ const bookResolvers = {
   Book: {
     bookInfo: async (parent, args, context) => {
       const { bookInfoId } = parent;
+      const { loaders } = context;
 
-      const bookInfo = await context.loaders.bookInfoLoader.load(bookInfoId);
+      const bookInfo = await loaders.bookInfoLoader.batchGetByIds.load(bookInfoId);
       return bookInfo;
+    },
+    rentals: async (parent, args, context) => {
+      const bookId = parent.id;
+      const { loaders } = context;
+
+      await adminAuth(context);
+
+      const rentalList = await loaders.rentalLoader.batchGetListByBookIds.load(bookId);
+      return rentalList;
     },
   },
   BookInfo: {
     category: async (parent, args, context) => {
       const { categoryId } = parent;
+      const { loaders } = context;
 
-      const category = await context.loaders.bookCategoryLoader.load(categoryId);
+      const category = await loaders.bookCategoryLoader.batchGetByIds.load(categoryId);
       return category;
     },
   },

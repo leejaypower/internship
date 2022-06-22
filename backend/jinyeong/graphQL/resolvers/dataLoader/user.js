@@ -15,6 +15,8 @@ const batchGetUser = async (userIds) => {
   return mappedList;
 };
 
-const userLoader = new DataLoader(batchGetUser);
+const batchGetByIds = new DataLoader(batchGetUser);
 
-module.exports = userLoader;
+module.exports = {
+  batchGetByIds,
+};
