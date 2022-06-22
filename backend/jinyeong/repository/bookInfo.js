@@ -1,6 +1,6 @@
 const { BookInfo } = require('../db');
 
-const getAll = async () => {
+const getListAll = async () => {
   const bookInfoList = await BookInfo.findAll();
 
   /*
@@ -21,16 +21,14 @@ const getAll = async () => {
 
 // BookInfo SELECT ALL IN ARRAY
 const getAllByIds = async (ids) => {
-  const bookInfoList = await BookInfo.findAll({
-    where: { id: ids },
-  });
+  const bookInfoList = await BookInfo.findAll({ where: { id: ids } });
 
   return bookInfoList.map((bookInfo) => {
     return bookInfo.dataValues;
   });
 };
 
-const getById = async (id) => {
+const getOneById = async (id) => {
   const bookInfo = await BookInfo.findOne({ where: { id } });
   return bookInfo?.dataValues;
 };
@@ -49,9 +47,9 @@ const deleteBookInfo = async (id) => {
 };
 
 module.exports = {
-  getAll,
+  getListAll,
+  getOneById,
   getAllByIds,
-  getById,
   createBookInfo,
   updateBookInfo,
   deleteBookInfo,

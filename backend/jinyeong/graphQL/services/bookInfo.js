@@ -1,7 +1,7 @@
 const { bookInfoQuery } = require('../../repository');
 
 const getAll = async () => {
-  const bookInfoList = await bookInfoQuery.getAll();
+  const bookInfoList = await bookInfoQuery.getListAll();
   return bookInfoList;
 };
 
@@ -11,7 +11,7 @@ const getAllByIds = async (ids) => {
 };
 
 const getById = async (id) => {
-  const bookInfo = await bookInfoQuery.getById(id);
+  const bookInfo = await bookInfoQuery.getOneById(id);
   return bookInfo;
 };
 

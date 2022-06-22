@@ -1,16 +1,16 @@
-/* eslint-disable no-useless-catch */
 const { bookInfoQuery, bookCategoryQuery } = require('../repository');
 const { util } = require('../common');
 
 const { errorHandling } = util;
 
 const getAll = async () => {
-  const bookInfoList = await bookInfoQuery.getAll();
+  const bookInfoList = await bookInfoQuery.getListAll();
+
   return bookInfoList;
 };
 
 const getById = async (id) => {
-  const bookInfo = await bookInfoQuery.getById(id);
+  const bookInfo = await bookInfoQuery.getOneById(id);
 
   if (!bookInfo) {
     errorHandling.throwError(404, '요청에 해당하는 정보가 존재하지 않습니다.');
@@ -25,7 +25,7 @@ const createBookInfo = async (body) => {
   } = body;
 
   // NOTE: 사전에 정의된 카테고리가 아닌 경우, 도서정보를 생성할 수 없기에 카테고리 DB를 확인
-  const bookCategory = await bookCategoryQuery.getById(categoryId);
+  const bookCategory = await bookCategoryQuery.getOneById(categoryId);
 
   if (!bookCategory) {
     errorHandling.throwError(400, '입력가능한 카테고리가 아닙니다.');
@@ -35,12 +35,10 @@ const createBookInfo = async (body) => {
 };
 
 const updateBookInfo = async (id, body) => {
-  const {
-    categoryId,
-  } = body;
+  const { categoryId } = body;
 
   if (categoryId) {
-    const bookCategory = await bookCategoryQuery.getById(categoryId);
+    const bookCategory = await bookCategoryQuery.getOneById(categoryId);
 
     if (!bookCategory) {
       errorHandling.throwError(400, '입력가능한 카테고리가 아닙니다.');
@@ -51,7 +49,7 @@ const updateBookInfo = async (id, body) => {
 };
 
 const deleteBookInfo = async (id) => {
-  const deleteTestResult = await bookInfoQuery.getById(id);
+  const deleteTestResult = await bookInfoQuery.getOneById(id);
 
   if (!deleteTestResult) {
     errorHandling.throwError(404, '요청에 해당하는 정보가 존재하지 않습니다.');

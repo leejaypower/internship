@@ -1,7 +1,6 @@
 const { BookCategory } = require('../db');
 
-// BookCategory SELECT ALL
-const getAll = async () => {
+const getListAll = async () => {
   const bookCategoryList = await BookCategory.findAll();
 
   return bookCategoryList.map((bookCategory) => {
@@ -9,7 +8,6 @@ const getAll = async () => {
   });
 };
 
-// BookCategory SELECT ALL IN ids
 const getAllByIds = async (ids) => {
   const bookCategoryList = await BookCategory.findAll({ where: { id: ids } });
 
@@ -18,8 +16,7 @@ const getAllByIds = async (ids) => {
   });
 };
 
-// BookCategory SELECT By Id
-const getById = async (id) => {
+const getOneById = async (id) => {
   const bookCategory = await BookCategory.findOne({ where: { id } });
   return bookCategory?.dataValues;
 };
@@ -34,9 +31,9 @@ const deleteBookCategory = async (id) => {
 };
 
 module.exports = {
-  getAll,
+  getListAll,
+  getOneById,
   getAllByIds,
-  getById,
   createBookCategory,
   deleteBookCategory,
 };

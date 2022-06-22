@@ -18,9 +18,7 @@ const getAll = async (ctx) => {
 
 const getById = async (ctx) => {
   try {
-    const {
-      params,
-    } = ctx.request;
+    const { params } = ctx.request;
 
     const categoryId = Number(params.category_id);
 
@@ -62,9 +60,7 @@ const createBookCategory = async (ctx) => {
 
 const deleteBookCategory = async (ctx) => {
   try {
-    const {
-      params,
-    } = ctx.request;
+    const { params } = ctx.request;
 
     const categoryId = params.category_id;
 

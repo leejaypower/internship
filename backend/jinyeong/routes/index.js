@@ -11,7 +11,7 @@ const rentalRouter = require('./rental');
 const reservationRouter = require('./reservation');
 
 router.use('/users', userRouter.routes());
-router.use('./admins', adminRouter.routes());
+router.use('/admins', adminRouter.routes());
 router.use('/books', bookRouter.routes());
 router.use('/bookInfo', bookInfoRouter.routes());
 router.use('/bookCategories', bookCategoryRouter.routes());

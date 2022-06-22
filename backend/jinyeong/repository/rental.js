@@ -1,6 +1,5 @@
 const { Rental } = require('../db');
 
-// Rentals SELECT ALL
 const getListAll = async () => {
   const rentalList = await Rental.findAll({
     order: [['createdAt', 'DESC']], // 생성일 기준 최신순 정렬
@@ -16,43 +15,29 @@ const getOneById = async (id) => {
   return rentalInfo?.dataValues;
 };
 
-// Rentals QUERY SELECT By bookId
-const getByBookId = async (query) => {
+const getListByInputData = async (inputData) => {
   const rentalList = await Rental.findAll({
-    where: { bookId: query.bookId },
-    order: [['createdAt', 'DESC']], // 생성일 기준 최신순 정렬
-    returning: true,
+    where: inputData,
+    order: [['createdAt', 'DESC']],
   });
 
-  return rentalList;
-};
-
-// Rentals QUERY SELECT By userId
-const getByUserId = async (query) => {
-  const rentalList = await Rental.findAll({
-    where: { userId: query.userId },
-    order: [['createdAt', 'DESC']], // 생성일 기준 최신순 정렬
-    returning: true,
+  return rentalList.map((rental) => {
+    return rental.dataValues;
   });
-
-  return rentalList;
 };
 
-// Rentals INSERT ONE
-const insertOne = async (inputData) => {
+const createRental = async (inputData) => {
   await Rental.create(inputData);
 };
 
-// Rentals UPDATE ONE by rentalId
-const updateOneByRentalId = async (id, inputData) => {
+const updateRental = async (id, inputData) => {
   await Rental.update(inputData, { where: { id } });
 };
 
 module.exports = {
   getListAll,
+  getListByInputData,
   getOneById,
-  getByBookId,
-  getByUserId,
-  insertOne,
-  updateOneByRentalId,
+  createRental,
+  updateRental,
 };

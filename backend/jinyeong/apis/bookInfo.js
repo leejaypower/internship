@@ -18,9 +18,7 @@ const getAll = async (ctx) => {
 
 const getById = async (ctx) => {
   try {
-    const {
-      params,
-    } = ctx.request;
+    const { params } = ctx.request;
 
     const bookInfoId = params.bookInfo_id;
 
@@ -35,9 +33,7 @@ const getById = async (ctx) => {
 
 const createBookInfo = async (ctx) => {
   try {
-    const {
-      body,
-    } = ctx.request;
+    const { body } = ctx.request;
 
     const {
       name,
@@ -68,11 +64,9 @@ const createBookInfo = async (ctx) => {
 
 const updateBookInfo = async (ctx) => {
   try {
-    const {
-      params,
-      body,
-    } = ctx.request;
+    const { params, body } = ctx.request;
 
+    const bookInfoId = params.bookInfo_id;
     const {
       name,
       categoryId,
@@ -80,8 +74,6 @@ const updateBookInfo = async (ctx) => {
       publisher,
       discription,
     } = body;
-
-    const bookInfoId = params.bookInfo_id;
 
     await bookInfoService.updateBookInfo(bookInfoId, {
       name,
@@ -100,9 +92,7 @@ const updateBookInfo = async (ctx) => {
 
 const deleteBookInfo = async (ctx) => {
   try {
-    const {
-      params,
-    } = ctx.request;
+    const { params } = ctx.request;
 
     const bookInfoId = params.bookInfo_id;
 

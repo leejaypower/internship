@@ -2,10 +2,10 @@ const bcrypt = require('bcrypt');
 const crypto = require('node:crypto');
 const { errorHandling } = require('./errorHandling');
 
-const salt = Number(process.env.SALT); // salt 값
-const algorithm = 'aes-256-cbc'; // 암호화 및 복호화에 사용할 알고리즘
-const initVector = crypto.randomBytes(16); // 16 바이트의 랜덤 데이터 생성
-const securityKey = crypto.randomBytes(32); // 시크릿 키
+const salt = Number(process.env.SALT);
+const algorithm = 'aes-256-cbc';
+const initVector = crypto.randomBytes(16);
+const securityKey = crypto.randomBytes(32);
 
 // 입력받은 비밀번호로 해시값을 만듭니다.(회원가입 시 활용)
 const hashPassword = async (password) => {
@@ -38,7 +38,6 @@ const cipher = (message) => {
   const encrypt = crypto.createCipheriv(algorithm, securityKey, initVector);
 
   let encryptResult = encrypt.update(message, 'utf-8', 'hex');
-
   encryptResult += encrypt.final('hex');
 
   return encryptResult;
@@ -52,7 +51,6 @@ const decipher = (encryptedData) => {
   const decrypt = crypto.createDecipheriv(algorithm, securityKey, initVector);
 
   let decryptedResult = decrypt.update(encryptedData, 'hex', 'utf-8');
-
   decryptedResult += decrypt.final('utf-8');
 
   return decryptedResult;

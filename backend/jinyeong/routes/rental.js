@@ -3,13 +3,15 @@ const { rentalApi } = require('../apis');
 
 const rentalRouter = new Router();
 
-// GET 요청
-rentalRouter.get('/', rentalApi.get);
+// GET 메소드
+rentalRouter.get('/', rentalApi.getAll);
+rentalRouter.get('/user/:user_id?', rentalApi.searchByUserId);
+rentalRouter.get('/book/:book_id?', rentalApi.searchByBookId);
 
-// POST 요청
-rentalRouter.post('/', rentalApi.post);
+// POST 메소드
+rentalRouter.post('/', rentalApi.createRental);
 
-// PATCH 요청
-rentalRouter.patch('/:book_id', rentalApi.patchByBookId);
+// UPDATE 메소드
+rentalRouter.patch('/book/:book_id', rentalApi.updateRental);
 
 module.exports = rentalRouter;

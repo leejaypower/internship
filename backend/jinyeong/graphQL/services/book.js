@@ -11,12 +11,12 @@ const getAllByIds = async (ids) => {
 };
 
 const getById = async (id) => {
-  const book = await bookQuery.getById(id);
+  const book = await bookQuery.getOneById(id);
   return book;
 };
 
 const createBook = async (bookInfoId) => {
-  const result = await bookQuery.insertOne({ bookInfoId });
+  const result = await bookQuery.createBook({ bookInfoId });
   return result;
 };
 

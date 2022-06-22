@@ -1,10 +1,11 @@
-/* eslint-disable no-useless-catch */
 const { Book } = require('../db');
 
-// Books SELECT ALL
-const getAll = async () => {
-  const bookInfoList = await Book.findAll({ returning: true });
-  return bookInfoList;
+const getListAll = async () => {
+  const bookList = await Book.findAll();
+
+  return bookList.map((book) => {
+    return book.dataValues;
+  });
 };
 
 // Book SELECT ALL IN ids
@@ -16,37 +17,29 @@ const getAllByIds = async (ids) => {
   });
 };
 
-// Books SELECT ONE By ID
-const getById = async (id) => {
-  const book = await Book.findOne({
-    where: { id },
-    returning: true,
-  });
-  return book;
+const getOneById = async (id) => {
+  const book = await Book.findOne({ where: { id } });
+  return book?.dataValues;
 };
 
-// Books INSERT ONE
-const insertOne = async (inputData) => {
-  const result = await Book.create(inputData);
-  return result;
+const createBook = async (inputData) => {
+  await Book.create(inputData);
 };
 
-// Books UPDATE ONE By ID
-const updateOneById = async (id, inputData) => {
+const updateBook = async (id, inputData) => {
   await Book.update(inputData, { where: { id } });
 };
 
-// Books DELETE ONE By ID
-const deleteOneById = async (id) => {
+const deleteBook = async (id) => {
   // TODO: 누가, 언제 지웠는지 로그 쌓을 수 있도록 구현하기
   await Book.destroy({ where: { id } });
 };
 
 module.exports = {
-  getAll,
+  getListAll,
+  getOneById,
+  createBook,
+  updateBook,
+  deleteBook,
   getAllByIds,
-  getById,
-  insertOne,
-  updateOneById,
-  deleteOneById,
 };

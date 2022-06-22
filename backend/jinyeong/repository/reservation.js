@@ -1,47 +1,48 @@
 const { Reservation } = require('../db');
 
 // Reservation 테이블의 전체 예약정보 조회
-const getAll = async () => {
+const getListAll = async () => {
   const reservationList = await Reservation.findAll({
     order: [['createdAt', 'DESC']], // 생성일 기준 최신순 정렬
-    returning: true,
   });
-  return reservationList;
+
+  return reservationList.map((reservation) => {
+    return reservation.dataValues;
+  });
 };
 
 // Reservation 테이블 상세 예약정보 조회
-const getOneById = async (reservationId) => {
-  const reservationInfo = await Reservation.findOne({
-    where: { id: reservationId },
-    returning: true,
-  });
-  return reservationInfo;
+const getOneById = async (id) => {
+  const reservationInfo = await Reservation.findOne({ where: { id } });
+  return reservationInfo?.dataValues;
 };
 
 // Reservations 테이블 입력조건에 해당하는 데이터 조회
-const searchByInputQuery = async (query) => {
+const getListByInputData = async (inputData) => {
   const reservationList = await Reservation.findAll({
-    where: query,
+    where: inputData,
     order: [['createdAt', 'DESC']], // 생성일 기준 최신순 정렬
-    returning: true,
   });
-  return reservationList;
+
+  return reservationList.map((reservationInfo) => {
+    return reservationInfo.dataValues;
+  });
 };
 
 // Reservation 테이블의 신규 예약이력 생성
-const createOne = async (inputData) => {
+const createReservation = async (inputData) => {
   await Reservation.create(inputData);
 };
 
-// Reservation 테이블의 기존 예약정보 취소 요청
-const updateOneById = async (reservationId, inputData) => {
-  await Reservation.update(inputData, { where: { id: reservationId } });
+// Reservation 테이블의 기존 예약정보 수정
+const updateReservation = async (id, inputData) => {
+  await Reservation.update(inputData, { where: { id } });
 };
 
 module.exports = {
-  getAll,
+  getListAll,
   getOneById,
-  searchByInputQuery,
-  createOne,
-  updateOneById,
+  getListByInputData,
+  createReservation,
+  updateReservation,
 };

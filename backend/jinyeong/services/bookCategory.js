@@ -1,16 +1,15 @@
-/* eslint-disable no-useless-catch */
 const { bookCategoryQuery } = require('../repository');
 const { util } = require('../common');
 
 const { errorHandling } = util;
 
 const getAll = async () => {
-  const bookCategoryList = await bookCategoryQuery.getAll();
+  const bookCategoryList = await bookCategoryQuery.getListAll();
   return bookCategoryList;
 };
 
 const getById = async (id) => {
-  const bookCategory = await bookCategoryQuery.getById(id);
+  const bookCategory = await bookCategoryQuery.getOneById(id);
 
   if (!bookCategory) {
     errorHandling.throwError(404, '요청에 해당하는 정보가 존재하지 않습니다.');
@@ -32,7 +31,7 @@ const createBookCategory = async (body) => {
 };
 
 const deleteBookCategory = async (id) => {
-  const deleteTestResult = await bookCategoryQuery.getById(id);
+  const deleteTestResult = await bookCategoryQuery.getOneById(id);
 
   if (!deleteTestResult) {
     errorHandling.throwError(404, '요청에 해당하는 정보가 존재하지 않습니다.');
