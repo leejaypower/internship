@@ -57,7 +57,6 @@ export default {
           type: 'warning',
           message: '로그인 후 이용가능합니다.',
         })
-        this.$store.dispatch('alertStore/removeAlert')
         return
       }
       if (path !== '/here-weather' && this.$store.getters['userStore/isLogin']) {
@@ -73,7 +72,6 @@ export default {
             type: 'warning',
             message: '재로그인이 필요합니다.',
           })
-          this.$store.dispatch('alertStore/removeAlert')
           localStorage.removeItem('access-token')
           localStorage.removeItem('refresh-token')
           localStorage.removeItem('testRefreshToken')
@@ -86,7 +84,6 @@ export default {
             type: 'warning',
             message: '재로그인이 필요합니다.',
           })
-          this.$store.dispatch('alertStore/removeAlert')
           localStorage.removeItem('access-token')
           localStorage.removeItem('refresh-token')
           localStorage.removeItem('testRefreshToken')

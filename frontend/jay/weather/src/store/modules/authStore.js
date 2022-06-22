@@ -59,7 +59,6 @@ export default {
         }
       } catch (error) {
         dispatch('alertStore/setAlertInfo', { type: 'error', message: error.message }, { root: true })
-        dispatch('alertStore/removeAlert', null, { root: true })
       }
     },
     async refresh({ commit, dispatch }) {
@@ -98,7 +97,6 @@ export default {
         }
       } catch (error) {
         dispatch('alertStore/setAlertInfo', { type: 'error', message: error.message }, { root: true })
-        dispatch('alertStore/removeAlert', null, { root: true })
       }
     },
   },

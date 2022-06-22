@@ -12,7 +12,7 @@ export default {
 
   },
   getters: {
-    temp(state) {
+    temperature(state) {
       return state.currentTemp
     },
     currentWeatherResponse(state) {
@@ -49,42 +49,68 @@ export default {
     async fetchHereWeather({ commit, dispatch }, position) {
       dispatch('alertStore/setIsLoading', null, { root: true })
       try {
-        const response = await fetchCurrentWeather(position.lat, position.lon)
-        const { temp } = response.data.current
-        commit('SET_CURRENT_WEATHER', response.data)
-        commit('SET_CURRENT_TEMP', temp)
+        const { data: responseData } = await fetchCurrentWeather(position.lat, position.lon)
+        const temp = responseData.current?.temp
+        const temparature = temp !== undefined ? temp : '-'
+        commit('SET_CURRENT_WEATHER', responseData)
+        commit('SET_CURRENT_TEMP', temparature)
         dispatch('alertStore/removeIsLoading', null, { root: true })
       } catch (error) {
-        const errorMessage = getErrorMessage(error)
+        const errorMessage = getErrorMessage(error.response.status)
         dispatch('alertStore/removeIsLoading', null, { root: true })
         dispatch('alertStore/setErrorInfo', errorMessage, { root: true })
       }
     },
+
     async fetchDailyWeather({ commit, dispatch }, position) {
       dispatch('alertStore/setIsLoading', null, { root: true })
       try {
-        const response = await fetchWeeklyWeather(position.lat, position.lon)
-        commit('SET_WEEKLY_WEATHER', response.data.daily)
+        const { data: responseData } = await fetchWeeklyWeather(position.lat, position.lon)
+        commit('SET_WEEKLY_WEATHER', responseData)
         dispatch('alertStore/removeIsLoading', null, { root: true })
       } catch (error) {
-        const errorMessage = getErrorMessage(error)
+        const errorMessage = getErrorMessage(error.response.status)
         dispatch('alertStore/removeIsLoading', null, { root: true })
         dispatch('alertStore/setErrorInfo', errorMessage, { root: true })
       }
     },
+
+    async fetchCurrentAndDailyWeather({ commit, dispatch }, position) {
+      dispatch('alertStore/setIsLoading', null, { root: true })
+      const results = await Promise.allSettled([
+        fetchCurrentWeather(position.lat, position.lon),
+        fetchWeeklyWeather(position.lat, position.lon),
+      ])
+
+      results.forEach((item) => {
+        if (item.status === 'rejected') {
+          const errorMessage = getErrorMessage(item.value.status)
+          dispatch('alertStore/setErrorInfo', errorMessage, { root: true })
+          return
+        }
+        if (item.value.data.current) {
+          commit('SET_CURRENT_WEATHER', item.value.data)
+        }
+        if (item.value.data.daily) {
+          commit('SET_WEEKLY_WEATHER', item.value.data)
+        }
+        dispatch('alertStore/removeIsLoading', null, { root: true })
+      })
+    },
+
     async fetchDistrictWeather({ commit, dispatch }, position) {
       try {
         dispatch('alertStore/setIsLoading', null, { root: true })
 
-        const response = await fetchRegionalWeather(position.lat, position.lon)
-        const regionalcurrentWeather = response.data.current
-        const regionalweeklyWeather = response.data.daily
+        const { data: responseData } = await fetchRegionalWeather(position.lat, position.lon)
+        const regionalcurrentWeather = responseData.current
+        const regionalweeklyWeather = responseData.daily
         commit('SET_REGIONAL_CURRENT_WEATHER', regionalcurrentWeather)
         commit('SET_REGIONAL_WEEKLY_WEATHER', regionalweeklyWeather)
         dispatch('alertStore/removeIsLoading', null, { root: true })
       } catch (error) {
         dispatch('alertStore/removeIsLoading', null, { root: true })
-        const errorMessage = getErrorMessage(error)
+        const errorMessage = getErrorMessage(error.response.status)
         dispatch('alertStore/setErrorInfo', errorMessage, { root: true })
       }
     },

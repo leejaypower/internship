@@ -41,7 +41,6 @@ export default {
 
         dispatch('alertStore/removeIsLoading', null, { root: true })
         dispatch('alertStore/setAlertInfo', { type: 'error', message: errorMessage }, { root: true })
-        dispatch('alertStore/removeAlert', null, { root: true })
       }
     },
     async fetchAddress({ getters, commit, dispatch }) {
@@ -58,12 +57,10 @@ export default {
         if (error.response) {
           const errorMessage = getErrorMessage(error)
           dispatch('alertStore/setAlertInfo', { type: 'error', message: errorMessage }, { root: true })
-          dispatch('alertStore/removeAlert', null, { root: true })
         }
 
         dispatch('alertStore/removeIsLoading', null, { root: true })
         dispatch('alertStore/setAlertInfo', { type: 'error', message: error.message }, { root: true })
-        dispatch('alertStore/removeAlert', null, { root: true })
       }
     },
   },

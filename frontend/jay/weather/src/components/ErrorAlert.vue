@@ -9,8 +9,12 @@
         <b>Oops!</b>
       </h1>
       <v-divider />
-      <p class="mt-10">
-        {{ errorInfo.message }}
+      <p
+        v-for="errorItem in errorMessage"
+        :key="errorItem"
+        class="mt-10"
+      >
+        {{ errorItem }}
       </p>
     </v-col>
   </v-row>
@@ -23,6 +27,9 @@ const { mapGetters } = createNamespacedHelpers('alertStore')
 export default {
   computed: {
     ...mapGetters(['errorInfo']),
+    errorMessage() {
+      return this.errorInfo.message
+    },
   },
 }
 </script>

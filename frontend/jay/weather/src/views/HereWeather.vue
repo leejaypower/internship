@@ -55,7 +55,7 @@
           v-if="successAll"
           class="weather-summary text-center"
         >
-          <b>{{ temp }} ℃ </b>| {{ desc }}
+          <b>{{ temperature }} ℃ </b>| {{ desc }}
         </h2>
       </v-col>
     </v-row>
@@ -111,7 +111,6 @@ import { v4 as uuidv4 } from 'uuid'
 const { mapGetters: weatherGetters } = createNamespacedHelpers('weatherStore')
 const { mapGetters: locationGetters } = createNamespacedHelpers('locationStore')
 const { mapGetters: alertGetters } = createNamespacedHelpers('alertStore')
-
 export default {
   components: { ErrorAlert },
   data: () => ({
@@ -121,7 +120,7 @@ export default {
     desc: '',
   }),
   computed: {
-    ...weatherGetters(['temp', 'currentWeatherResponse']),
+    ...weatherGetters(['temperature', 'currentWeatherResponse']),
     ...alertGetters(['isLoading', 'errorInfo']),
     ...locationGetters(['lat', 'lon', 'address']),
 
@@ -194,17 +193,14 @@ h1{
 h2{
   font-weight: 200;
 }
-
 p{
   font-size: 1rem;
   font-weight: 200;
   text-align: center;
 }
-
 li{
   padding: 5px;
 }
-
 .v-card__text{
   white-space: nowrap;
   overflow: scroll;
@@ -212,7 +208,7 @@ li{
 
 .hour-data-wrapper{
   border-right: 1px solid #EEEEEE
-  }
+}
 
 .detail-list{
   list-style:none;

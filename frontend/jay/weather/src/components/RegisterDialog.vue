@@ -180,7 +180,6 @@ export default {
           type: 'warning',
           message: '아이디 중복 검사가 필요합니다!',
         })
-        this.$store.dispatch('alertStore/removeAlert')
         return
       }
       const response = await this.$store.dispatch('userStore/registerUser', newUser)

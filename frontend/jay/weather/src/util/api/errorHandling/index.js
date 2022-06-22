@@ -11,11 +11,11 @@ const getErrorMessageForGeolocation = (error) => {
   return '위치 획득에 실패했습니다.'
 }
 
-const getErrorMessage = (error) => {
-  if (error.response.status === 400) {
+const getErrorMessage = (status) => {
+  if (status === 400) {
     return '잘못된 요청입니다.'
   }
-  if (error.response.status === 500) {
+  if (status === 500) {
     return '서버 오류가 발생했습니다.'
   }
   return '오류가 발생하여 데이터 획득에 실패했습니다.'

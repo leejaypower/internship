@@ -154,7 +154,6 @@ export default {
             type: 'warning',
             message: '비밀번호가 변경되지 않았습니다!',
           })
-          this.$store.dispatch('alertStore/removeAlert')
           return
         }
         const response = await this.$store.dispatch('userStore/modifyPassword', { id, changedPassword })

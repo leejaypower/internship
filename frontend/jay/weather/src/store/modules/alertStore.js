@@ -2,9 +2,8 @@ export default {
   namespaced: true,
   state: {
     alert: {
-      show: false,
-      type: '',
-      message: '',
+      add: false,
+      info: [],
     },
     sheet: {
       show: false,
@@ -13,12 +12,12 @@ export default {
     },
     errorInfo: {
       show: false,
-      message: '',
+      message: [],
     },
     isLoading: false,
   },
   getters: {
-    alertInfo(state) {
+    alert(state) {
       return state.alert
     },
     sheetInfo(state) {
@@ -33,14 +32,12 @@ export default {
   },
   mutations: {
     SET_ALERT(state, info) {
-      state.alert.show = true
-      state.alert.type = info.type
-      state.alert.message = info.message
+      state.alert.add = true
+      state.alert.info.push(info)
     },
     REMOVE_ALERT(state) {
-      state.alert.show = false
-      state.alert.type = ''
-      state.alert.message = ''
+      state.alert.add = false
+      state.alert.info.splice(0, 1)
     },
     SET_SHEET(state, message) {
       state.sheet.show = true
@@ -62,10 +59,11 @@ export default {
     },
     SET_ERROR_INFO(state, message) {
       state.errorInfo.show = true
-      state.errorInfo.message = message
+      state.errorInfo.message.push(message)
     },
     REMOVE_ERROR_INFO(state) {
       state.errorInfo.show = false
+      state.errorInfo.message = []
     },
   },
   actions: {
@@ -73,9 +71,7 @@ export default {
       commit('SET_ALERT', alertInfo)
     },
     removeAlert({ commit }) {
-      setTimeout(() => {
-        commit('REMOVE_ALERT')
-      }, 2000)
+      commit('REMOVE_ALERT')
     },
     setSheetInfo({ commit }, message) {
       commit('SET_SHEET', message)

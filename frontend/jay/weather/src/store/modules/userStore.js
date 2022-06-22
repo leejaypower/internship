@@ -48,7 +48,6 @@ export default {
           type: 'success',
           message: '사용 가능한 아이디입니다.',
         }, { root: true })
-        dispatch('alertStore/removeAlert', null, { root: true })
         return response
       } catch (error) {
         if (error.message === 'duplicated') {
@@ -56,7 +55,6 @@ export default {
             type: 'error',
             message: '이미 사용되는 아이디입니다.',
           }, { root: true })
-          dispatch('alertStore/removeAlert', null, { root: true })
         }
         return 'failed'
       }
@@ -68,11 +66,9 @@ export default {
           type: 'success',
           message: '회원가입이 정상적으로 완료되었습니다!',
         }, { root: true })
-        dispatch('alertStore/removeAlert', null, { root: true })
         return response
       } catch (error) {
         dispatch('alertStore/setAlertInfo', { type: 'error', message: error.message }, { root: true })
-        dispatch('alertStore/removeAlert', null, { root: true })
         return 'failed'
       }
     },
@@ -85,7 +81,6 @@ export default {
           type: 'warning',
           message: '현재 비밀번호가 맞지않습니다. 다시 확인해주세요.',
         }, { root: true })
-        dispatch('alertStore/removeAlert', null, { root: true })
       }
       return 'failed'
     },
@@ -96,11 +91,9 @@ export default {
           type: 'success',
           message: '비밀번호 변경이 정상적으로 완료되었습니다!',
         }, { root: true })
-        dispatch('alertStore/removeAlert', null, { root: true })
         return response
       } catch (error) {
         dispatch('alertStore/setAlertInfo', { type: 'error', message: error.message }, { root: true })
-        dispatch('alertStore/removeAlert', null, { root: true })
         return 'failed'
       }
     },
