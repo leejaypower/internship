@@ -4,5 +4,5 @@ type returnBook {
 }
 
 type Mutation {
-  createReturn(rentalId: Int!) : returnBook!
+  createReturn(rentalId: Int!): returnBook!
 }

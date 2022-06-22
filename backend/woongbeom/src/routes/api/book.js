@@ -5,9 +5,14 @@ const middleware = require('../../middleware');
 
 const booksRouter = new Router();
 
-booksRouter.post('/', middleware.auth.authorization.authorizeAdmin, controller.apis.books.createBook);
-booksRouter.get('/', controller.apis.books.getBooks);
-booksRouter.get('/:id', controller.apis.books.getBookById);
-booksRouter.patch('/:id', middleware.auth.authorization.authorizeAdmin, controller.apis.books.updateBook);
+const { authorizeAdmin } = middleware.auth.authorization;
+const { books } = controller.apis;
+
+booksRouter.post('/', authorizeAdmin, books.createBook);
+booksRouter.get('/', books.getBooks);
+
+booksRouter.get('/:id', books.getBookById);
+booksRouter.get('/:id/histories', authorizeAdmin, books.getBooksWithRentalHistory);
+booksRouter.patch('/:id', authorizeAdmin, books.updateBook);
 
 module.exports = booksRouter;

@@ -15,11 +15,26 @@ const getBookById = async (id) => {
   return book;
 };
 
+const getBooksWithRentalHistory = async (id) => {
+  const result = await repository.book.getBooksWithRentalHistory(id);
+  return result;
+};
+
+const getBooksAllByIds = async (idsList) => {
+  const bookList = await repository.book.getBooksAllByIds(idsList);
+  return bookList;
+};
+
 const updateBook = async (id, data) => {
   const numOfUpdatedRow = await repository.book.updateBook(id, data);
   return numOfUpdatedRow;
 };
 
 module.exports = {
-  createBook, getBooks, getBookById, updateBook,
+  createBook,
+  getBooks,
+  getBookById,
+  getBooksWithRentalHistory,
+  getBooksAllByIds,
+  updateBook,
 };

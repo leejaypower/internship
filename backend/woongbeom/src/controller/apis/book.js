@@ -38,6 +38,11 @@ const getBookById = async (ctx) => {
   }
 };
 
+const getBooksWithRentalHistory = async (ctx) => {
+  const { id } = ctx.params;
+  ctx.body = await service.book.getBooksWithRentalHistory(id);
+};
+
 const updateBook = async (ctx) => {
   try {
     const { id } = ctx.params;
@@ -60,5 +65,9 @@ const updateBook = async (ctx) => {
 };
 
 module.exports = {
-  createBook, getBooks, getBookById, updateBook,
+  createBook,
+  getBooks,
+  getBookById,
+  getBooksWithRentalHistory,
+  updateBook,
 };

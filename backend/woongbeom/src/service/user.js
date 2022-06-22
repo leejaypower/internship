@@ -34,15 +34,16 @@ const getUserById = async (id) => {
   return user;
 };
 
+const getUserByEmail = async (email) => {
+  const user = await repository.user.getUserByEmail(email);
+  return user;
+};
+
 const updateUserName = async (id, name) => {
   const numOfUpdatedRow = await repository.user.updateUserName(id, name);
   return numOfUpdatedRow;
 };
 
-const getUserByEmail = async (email) => {
-  const user = await repository.user.getUserByEmail(email);
-  return user;
-};
 
 const signIn = async (email, password) => {
   const matchedUser = await repository.user.getUserByEmail(email);

@@ -17,13 +17,23 @@ const createBook = async (bookData) => {
 
 const getBooks = async (bookQuery) => {
   const {
-    title, author, publisher,
+    id, title, author, publisher,
   } = bookQuery;
 
   const where = {};
-  if (title) { where.title = { [Op.like]: `%${title}%` }; }
-  if (author) { where.author = { [Op.like]: `%${author}%` }; }
-  if (publisher) { where.publisher = { [Op.like]: `%${publisher}%` }; }
+  if (id) {
+    where.id = { [Op.eq]: id };
+  }
+  if (title) {
+    where.title = { [Op.like]: `%${title}%` };
+  }
+  if (author) {
+    where.author = { [Op.like]: `%${author}%` };
+  }
+  if (publisher) {
+    where.publisher = { [Op.like]: `%${publisher}%` };
+  }
+
   const bookList = await db.Book.findAll({
     where,
     order: [['id', 'ASC']],
@@ -34,6 +44,22 @@ const getBooks = async (bookQuery) => {
 const getBookById = async (id) => {
   const book = await db.Book.findByPk(id);
   return book;
+};
+
+const getBooksWithRentalHistory = async (id) => {
+  const result = await db.Book.findOne({
+    include: db.Rental,
+    where: { id },
+  });
+  return result;
+};
+
+const getBooksAllByIds = async (ids) => {
+  const bookList = await db.Book.findAll({
+    where: { id: ids },
+  });
+
+  return bookList;
 };
 
 const updateBook = async (id, data) => {
@@ -57,5 +83,7 @@ module.exports = {
   createBook,
   getBooks,
   getBookById,
+  getBooksWithRentalHistory,
+  getBooksAllByIds,
   updateBook,
 };

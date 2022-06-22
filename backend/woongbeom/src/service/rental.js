@@ -30,6 +30,18 @@ const createRental = async (rentalData, userEmail) => {
   return result;
 };
 
+const getRentals = async (rentalQuery) => {
+  const rentalList = await repository.rental.getRentals(rentalQuery);
+  return rentalList;
+};
+
+const getRentalsAllByIds = async (ids) => {
+  const rentalList = await repository.rental.getRentalsAllByIds(ids);
+  return rentalList;
+};
+
 module.exports = {
   createRental,
+  getRentals,
+  getRentalsAllByIds,
 };

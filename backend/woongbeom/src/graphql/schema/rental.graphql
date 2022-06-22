@@ -1,6 +1,11 @@
 type Rental {
+  id: Int
   bookId: Int
   userId: Int
+}
+
+type Query {
+  getRentals(id: Int, bookId: Int!, userId: Int): [Rental]
 }
 
 type Mutation {
