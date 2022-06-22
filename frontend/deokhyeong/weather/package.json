@@ -6,7 +6,9 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "docker:build": "docker build -t deokhyeong-weather-app-image .",
+    "docker:run": "docker run -it -p 8089:8089 --rm --name deokhyeong-weather-app deokhyeong-weather-app-image"
   },
   "dependencies": {
     "axios": "^0.27.2",

@@ -47,6 +47,14 @@ services:
     volumes:
       - internship-kafka-data:/var/lib/kafka/data
 
+  internship-deokhyeong:
+      container_name: deokhyeong-weather-app
+      build:
+        context: ../frontend/deokhyeong/weather
+        dockerfile: Dockerfile
+      ports:
+        - "8089:8089"
+
 volumes:
   internship-pgdb:
   internship-zk-data:
