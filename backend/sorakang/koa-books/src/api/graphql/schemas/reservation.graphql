@@ -1,4 +1,43 @@
 type Reservation {
-  title: String
-  author: String
-  }
+  id:Int!
+  isAvailable:Boolean
+  userId:Int
+  bookId:Int
+  book:Book
+}
+
+# input
+input Search {
+  userId:Int
+  bookId:Int
+}
+
+input updateReservationInput {
+  reservationId:Int
+  isAvailable:Boolean
+  bookId:Int
+}
+
+# response
+type ReservationResponse {
+  edges:[Reservation!]!
+  pageInfo:PageInfo
+}
+
+type Query {
+  getAllReservation(limit:Int, afterCursor:String, search:Search):ReservationResponse @auth(requires:[ADMIN])
+  getReservationByUserId:[Reservation!]! @auth(requires:[USER,ADMIN])
+}
+
+# pagination
+type PageInfo {
+  endCursor:String
+  hasNextPage:Boolean
+}
+
+type Mutation {
+  createReservation(bookId:Int!):Reservation! @auth(requires:[USER,ADMIN])
+  updateReservation(reservationInfo:updateReservationInput!,userId:Int):Message! @auth(requires:[ADMIN])
+  deleteReservation(reservationId:Int!):Message! @auth(requires:[USER,ADMIN])
+}
+

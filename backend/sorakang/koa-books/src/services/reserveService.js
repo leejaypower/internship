@@ -8,13 +8,9 @@ const {
  * input : userId or bookId
  */
 const getAllReservation = async (input) => {
-  try {
-    const { reserveList } = await reserveRepository.getAllReservation(input);
+  const { reserveList } = await reserveRepository.getAllReservation(input);
 
-    return { reserveList };
-  } catch (err) {
-    throw Error(err);
-  }
+  return { reserveList };
 };
 
 /**
@@ -24,56 +20,51 @@ const getAllReservation = async (input) => {
  * bookId : 예약 정보를 생성 할 책의 ID
  */
 const createReservation = async (userId, bookId) => {
-  try {
-    const input = { userId, bookId };
-
-    // 해당 책이 도서관에 없는 책이라면 예약 불가
-    const book = await bookRepository.getSingleBook(bookId);
-    if (!book) {
-      throw new Error('없는 책입니다');
-    }
-
-    // 대여 권수 10권 초과 시 예약 불가능
-    const userRentList = await rentalRepository.getRentalInfo({ userId });
-    if (userRentList && userRentList.rentalList.length > 10) {
-      throw new Error('대출 가능 회수 초과');
-    }
-    // 연체중인 책이 있는 경우 예약 불가
-    const isOverdue = userRentList.rentalList.filter((rent) => rent.state === false);
-
-    if (isOverdue.length) {
-      throw new Error('연체된 책을 반납해 주세요');
-    }
-
-    // 이미 예약된 책 3권 초과 시 예약 불가능
-    const { reserveList } = await reserveRepository.getAllReservation({ userId });
-    if (reserveList && reserveList.length > process.env.RESERVE_QTY) {
-      throw new Error('예약 횟수 초과');
-    }
-
-    const { rentalList } = await rentalRepository.getRentalInfo({ bookId });
-    if (rentalList && !rentalList.length) {
-      throw new Error('대여가 가능한 책입니다');
-    }
-    const { reservationInfo, isCreated } = await reserveRepository.createReservation(input);
-
-    return { reservationInfo, isCreated };
-  } catch (err) {
-    throw Error(err);
+  const input = { userId, bookId };
+  // 해당 책이 도서관에 없는 책이라면 예약 불가
+  const book = await bookRepository.getSingleBook(bookId);
+  if (!book) {
+    throw new Error('없는 책입니다');
   }
+
+  // 대여 권수 10권 초과 시 예약 불가능
+  const userRentList = await rentalRepository.getRentalInfo({ userId });
+  if (userRentList && userRentList.rentalList.length > 10) {
+    throw new Error('대출 가능 회수 초과');
+  }
+  // 연체중인 책이 있는 경우 예약 불가
+  const isOverdue = userRentList.rentalList.filter((rent) => rent.overdue !== null && rent.overdue !== 0);
+
+  if (isOverdue.length) {
+    throw new Error('연체된 책을 반납해 주세요');
+  }
+
+  // 이미 예약된 책 3권 초과 시 예약 불가능
+  const { reserveList } = await reserveRepository.getAllReservation({ userId });
+  if (reserveList && reserveList.length > process.env.RESERVE_QTY) {
+    throw new Error('예약 횟수 초과');
+  }
+
+  const { rentalList } = await rentalRepository.getRentalInfo({ bookId });
+  if (rentalList && !rentalList.length) {
+    throw new Error('대여가 가능한 책입니다');
+  }
+  const { reservationInfo, isReserved } = await reserveRepository.createReservation(input);
+
+  if (!isReserved && reservationInfo) {
+    throw new Error('예약 불가 : 이미 예약된 도서입니다');
+  }
+
+  return { reservationInfo };
 };
 
 /**
  * 예약 정보 변경.  - 사용자, 관리자
  * [Input]
- * 아직 예약 정보를 업데이트 해야하는 경우가 없으므로 아직 구현하지 않았습니다.
  */
-const updateReservation = async () => {
-  try {
-
-  } catch (err) {
-    throw Error(err);
-  }
+const updateReservation = async (userId, bookId) => {
+  const updatedCount = await reserveRepository.updateReservation(userId, bookId);
+  return { updatedCount };
 };
 
 /**
@@ -82,13 +73,9 @@ const updateReservation = async () => {
  * reservationId : 예약 Id
  */
 const deleteReservation = async (reservationId) => {
-  try {
-    const { isDeleted } = await reserveRepository.deleteReservation(reservationId);
+  const { isDeleted } = await reserveRepository.deleteReservation(reservationId);
 
-    return { isDeleted };
-  } catch (err) {
-    throw Error(err);
-  }
+  return { isDeleted };
 };
 
 module.exports = {

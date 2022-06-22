@@ -17,7 +17,7 @@ async function startApolloServer(app) {
   const httpServer = createServer();
   const apolloServer = new ApolloServer({
     schema,
-    context: ({ ctx }) => ctx,
+    context,
     cors: true,
     csrfPrevention: true,
     plugins: [

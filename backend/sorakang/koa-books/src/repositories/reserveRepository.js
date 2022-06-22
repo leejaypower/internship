@@ -20,6 +20,16 @@ const getAllReservation = async (input) => {
 };
 
 /**
+ * 예약정보를 가져오는 함수 (위의 getAllReservation 은 rest api 수정시 수정)
+ * @param {Query Options} options
+ * @returns
+ */
+const getReservation = async (options) => {
+  const reservation = await Reservation.findAll(options);
+  return reservation;
+};
+
+/**
  * 특정 유저의 도서 예약 - 유저, 관리자
  * [Input]
  * input : userId, bookId
@@ -40,14 +50,10 @@ const createReservation = async (input) => {
 /**
  * 예약 정보 변경.  - 사용자, 관리자
  * [Input]
- * 아직 예약 정보를 업데이트 해야하는 경우가 없으므로 아직 구현하지 않았습니다.
  */
-const updateReservation = async () => {
-  try {
-
-  } catch (err) {
-    console.error(err);
-  }
+const updateReservation = async (attributes, whereOptions) => {
+  const reservationUpdated = await Reservation.update(attributes, whereOptions);
+  return reservationUpdated;
 };
 
 /**
@@ -64,6 +70,16 @@ const deleteReservation = async (reservationId) => {
   }
 };
 
+const findAndCountAllReservation = async (options) => {
+  const { rows, count } = await Reservation.findAndCountAll(options);
+  return { rows, count };
+};
+
 module.exports = {
-  getAllReservation, createReservation, updateReservation, deleteReservation,
+  getAllReservation,
+  createReservation,
+  updateReservation,
+  deleteReservation,
+  getReservation,
+  findAndCountAllReservation,
 };

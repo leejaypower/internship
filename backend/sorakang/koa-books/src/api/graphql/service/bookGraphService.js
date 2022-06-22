@@ -1,6 +1,5 @@
 const { ApolloError } = require('apollo-server-koa');
 const { transaction, bookRepository, bookSerialRepository } = require('../../../repositories');
-const { commonUtils } = require('../../../utils');
 const { Sequelize } = require('../../../database/models');
 
 const { Op } = Sequelize;
@@ -48,11 +47,10 @@ const getBookBySerialId = async (serialId) => {
   const options = {
     where: serialId,
     attributes: ['bookId'],
-    raw: true,
+    returning: ['*'],
   };
   const { bookId } = await bookSerialRepository.getBooksBySerialId(options)
     .then((result) => result[0]);
-
   if (!bookId) {
     throw new ApolloError('Data not found');
   }

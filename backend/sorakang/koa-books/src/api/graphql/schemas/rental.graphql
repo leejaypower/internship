@@ -1,4 +1,60 @@
 type Rental {
-  title: String
-  author: String
-  }
+  rentalDate:Date
+  returnDate:Date
+  state:Boolean
+  overdue:Int
+  isExtend:Int
+  userId:Int
+  bookSerial:BookSerial
+  book:Book
+}
+
+# pagination
+type PageInfo {
+  endCursor:String
+  hasNextPage:Boolean
+}
+
+# input
+input RentalByUserIdInput {
+  userId:Int
+}
+
+input PostRentalInput {
+  rentalId:Int
+  bookSerialId:Int
+}
+
+input CreateInput {
+  rentalDate:Date!
+  bookSerialId:Int!
+  userId:Int!
+}
+
+# response
+type CreatedResponse {
+  message:Message!
+  data:Rental
+}
+
+type GetRentalsResponse {
+  edges:[Rental!]!
+  pageInfo:PageInfo
+}
+
+type returnBookResponse {
+  data:Rental!
+  message:Message!
+}
+
+# Query Mutation
+type Query {
+  getAllRental(limit:Int,afterCursor:String):GetRentalsResponse! @auth(requires:[ADMIN])
+  getRentalByUserId(input:RentalByUserIdInput!):[Rental!] @auth(requires:[USER,ADMIN])
+} 
+
+type Mutation {
+  createRental(rentalInfo:CreateInput!):CreatedResponse! @auth(requires:[USER,ADMIN])
+  extendRentDate(rentalInfo:PostRentalInput!):message! @auth(requires:[USER,ADMIN])
+  returnRentalBook(input:PostRentalInput!):returnBookResponse! @auth(requires:[USER,ADMIN])
+}

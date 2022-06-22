@@ -22,7 +22,6 @@ const getAllUser = async (parent, { first, after }, context) => {
   }
 };
 
-// email 아닌 id 로그인으로 바꿀 예정입니다
 const signIn = async (parent, { input }, context) => {
   try {
     if (!input.email || !input.password) {

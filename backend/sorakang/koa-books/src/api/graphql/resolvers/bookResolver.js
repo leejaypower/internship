@@ -4,7 +4,7 @@ const { bookGraphController } = require('../controller');
 const bookResolver = {
 
   Book: {
-    bookSerials: async (parent, _, _context) => {
+    bookSerials: async (parent, _args, _context) => {
       const bookSerialList = await bookSerialLoader.load(parent.id);
       return bookSerialList;
     },

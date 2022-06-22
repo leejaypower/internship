@@ -51,7 +51,7 @@ const updateBook = async (parent, { updateInfo }, _) => {
 const deleteBook = async (parent, { bookIdList }, _) => {
   const deletedCount = await bookGraphService.deleteBook(bookIdList);
 
-  if (bookIdList.length !== deletedCount) {
+  if (!deletedCount) {
     throw new ApolloError('Delete Rejected: Data does not exist');
   }
   return { message: 'Successfully deleted' };

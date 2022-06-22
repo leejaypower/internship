@@ -1,5 +1,5 @@
 directive @auth(
-  requires: [Role],
+  requires:[Role],
 ) on FIELD_DEFINITION
 
 enum Role {

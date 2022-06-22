@@ -49,7 +49,7 @@ const userResolver = {
       return data;
     },
 
-    deleteUser: async (parent, _, context) => {
+    deleteUser: async (parent, _args, context) => {
       const data = await userGraphController.deleteUser(parent, context);
       return data;
     },

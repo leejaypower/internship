@@ -27,20 +27,16 @@ const getAllRental = async () => {
  * query : userId 또는 bookId
  */
 const getRentalInfo = async (input) => {
-  try {
-    const rentalList = await Rental.findAll({
-      where: input,
-      raw: true,
-    });
+  const rentalList = await Rental.findAll({
+    where: input,
+    returning: ['*'],
+  });
 
-    if (!rentalList) {
-      throw new Error('Data not Found');
-    }
-
-    return { rentalList };
-  } catch (err) {
-    throw new Error(err);
+  if (!rentalList.length) {
+    throw new Error('Data not Found');
   }
+
+  return { rentalList };
 };
 
 /**
@@ -49,17 +45,13 @@ const getRentalInfo = async (input) => {
  * rentalId : PK
  */
 const getSingleRental = async (rentalId) => {
-  try {
-    const rental = await Rental.findByPk(rentalId, { raw: true });
+  const rental = await Rental.findByPk(rentalId, { raw: true });
 
-    if (!rental) {
-      throw new Error('Data not Found');
-    }
-
-    return { rental };
-  } catch (err) {
-    throw new Error(err);
+  if (!rental) {
+    throw new Error('Data not Found');
   }
+
+  return { rental };
 };
 
 /**
@@ -85,7 +77,6 @@ const createRental = async (userId, bookId, returnDate) => {
       where: { bookId },
       defaults: { ...input },
     });
-
     return { rental, isCreated };
   } catch (err) {
     console.log(err);
@@ -114,7 +105,7 @@ const extendRentDate = async (rentalId, extDate) => {
 };
 
 /**
- * 책 대여 생성 - 유저, 관리자
+ * 책 대여 삭제 - 유저, 관리자
  * [Input]
  * rentalId : 반납 할 대여 ID
  * rentHistoryInfo : 대여 히스토리 테이블에 저장 할 정보
@@ -128,6 +119,40 @@ const returnRental = async (bookId, rentHistoryInfo) => {
   return { isDeleted, rentHistory };
 };
 
+const updateRental = async (attributes, whereOptions) => {
+  try {
+    const result = await sequelize.transaction(async (t) => {
+      const rentalUpdatedCount = await Rental.update(attributes, whereOptions, { transaction: t });
+
+      const { rental } = await getSingleRental(whereOptions.where.id);
+      const {
+        userId, returnDate, rentalDate, overdue,
+      } = rental;
+
+      const rentHistory = await RentalHistory.create({
+        userId, returnDate, rentalDate, overdue,
+      }, { transaction: t });
+
+      return { rentalUpdatedCount, rentHistory };
+    });
+    return result;
+  } catch (err) {
+    throw new Error(err);
+  }
+};
+
+const findAndCountAllRental = async (options) => {
+  const { rows, count } = await Rental.findAndCountAll(options);
+  return { rows, count };
+};
+
 module.exports = {
-  getAllRental, getRentalInfo, getSingleRental, createRental, extendRentDate, returnRental,
+  getAllRental,
+  getRentalInfo,
+  getSingleRental,
+  createRental,
+  extendRentDate,
+  returnRental,
+  findAndCountAllRental,
+  updateRental,
 };
