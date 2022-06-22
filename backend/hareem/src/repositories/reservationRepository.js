@@ -1,5 +1,5 @@
 const {
-  Sequelize, User, BookInfo, Reservation,
+  Sequelize: { Op }, User, BookInfo, Reservation,
 } = require('../database/models');
 const { timer } = require('../utils');
 const { QUERY, BUSINESS } = require('../utils/constants');
@@ -9,21 +9,23 @@ const createReservation = async (createReservationData) => {
   return newReservation;
 };
 
-const getUsersReservations = async (getAllReservationsQuery) => {
+const getUsersReservations = async (getUsersReservationsQuery) => {
   const {
     page = BUSINESS.PAGE_DEFAULT,
     from,
     to,
-    filter,
+    filter = QUERY.FILTER.NONE,
     bookInfoId,
     userId,
-  } = getAllReservationsQuery;
-
-  const { Op } = Sequelize;
+    only = false,
+  } = getUsersReservationsQuery;
 
   const limit = BUSINESS.PER_PAGE;
   const offset = (page - 1) * limit;
+
+  const where = { createdAt: { [Op.gte]: timer.beforeNDate(30) } };
   const order = [['createdAt', 'DESC']];
+  const paranoid = filter === QUERY.FILTER.NONE;
   const include = [
     { model: BookInfo },
     {
@@ -32,9 +34,6 @@ const getUsersReservations = async (getAllReservationsQuery) => {
     },
   ];
 
-  const where = {};
-  let paranoid = true;
-  where.createdAt = { [Op.gte]: timer.beforeNDate(30) };
   if (from && to) {
     where.createdAt = { [Op.between]: [timer.stringToDate(from), timer.stringToDate(to)] };
   } else if (from) {
@@ -42,12 +41,11 @@ const getUsersReservations = async (getAllReservationsQuery) => {
   } else if (to) {
     where.createdAt = { [Op.lte]: timer.stringToDate(to) };
   }
-  if (filter === QUERY.FILTER.ALL) {
-    paranoid = false;
-  } else if (filter === QUERY.FILTER.DELETED) {
-    paranoid = false;
+
+  if (filter === QUERY.FILTER.DELETED) {
     where.deletedAt = { [Op.not]: null };
   }
+
   if (bookInfoId) {
     where.bookInfoId = { [Op.eq]: bookInfoId };
   }
@@ -55,14 +53,20 @@ const getUsersReservations = async (getAllReservationsQuery) => {
     where.userId = { [Op.eq]: userId };
   }
 
-  const reservations = await Reservation.findAll({
+  const options = {
     where,
     limit,
     offset,
     order,
-    include,
     paranoid,
-  });
+  };
+
+  if (!only) {
+    options.include = include;
+  }
+
+  const reservations = await Reservation.findAll(options);
+
   return reservations;
 };
 
@@ -71,20 +75,18 @@ const getUserReservations = async (userId, getReservationsQuery) => {
     page = BUSINESS.PAGE_DEFAULT,
     from,
     to,
-    filter,
+    filter = QUERY.FILTER.NONE,
     bookInfoId,
   } = getReservationsQuery;
-
-  const { Op } = Sequelize;
 
   const limit = BUSINESS.PER_PAGE;
   const offset = (page - 1) * limit;
 
-  const where = { userId };
+  const where = { userId, createdAt: { [Op.gte]: timer.beforeNDate(30) } };
   const order = [['createdAt', 'DESC']];
   const include = [{ model: BookInfo }];
-  let paranoid = true;
-  where.createdAt = { [Op.gte]: timer.beforeNDate(30) };
+  const paranoid = filter === QUERY.FILTER.NONE;
+
   if (from && to) {
     where.createdAt = { [Op.between]: [timer.stringToDate(from), timer.stringToDate(to)] };
   } else if (from) {
@@ -92,12 +94,11 @@ const getUserReservations = async (userId, getReservationsQuery) => {
   } else if (to) {
     where.createdAt = { [Op.lte]: timer.stringToDate(to) };
   }
-  if (filter === QUERY.FILTER.ALL) {
-    paranoid = false;
-  } else if (filter === QUERY.FILTER.DELETED) {
-    paranoid = false;
+
+  if (filter === QUERY.FILTER.DELETED) {
     where.deletedAt = { [Op.not]: null };
   }
+
   if (bookInfoId) {
     where.bookInfoId = { [Op.eq]: bookInfoId };
   }
@@ -110,6 +111,7 @@ const getUserReservations = async (userId, getReservationsQuery) => {
     include,
     paranoid,
   });
+
   return reservations;
 };
 

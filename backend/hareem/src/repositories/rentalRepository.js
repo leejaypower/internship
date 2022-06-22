@@ -1,5 +1,5 @@
 const {
-  Sequelize, sequelize, User, BookInfo, Book, Rental, Reservation,
+  Sequelize: { Op }, sequelize, User, BookInfo, Book, Rental, Reservation,
 } = require('../database/models');
 const { timer } = require('../utils');
 const { BUSINESS } = require('../utils/constants');
@@ -90,8 +90,6 @@ const createRentalEnd = async (createRentalEndData) => {
 };
 
 const getRentalHistory = async (rentalId) => {
-  const { Op } = Sequelize;
-
   const rentalHistory = await Rental.findAll({
     where: { [Op.or]: [{ parentId: rentalId }, { id: rentalId }] },
     order: [['createdAt', 'DESC']],
@@ -110,24 +108,31 @@ const getUsersRentals = async (getAllRentalsQuery) => {
     to,
   } = getAllRentalsQuery;
 
-  const { Op } = Sequelize;
   const limit = BUSINESS.PER_PAGE;
   const offset = (page - 1) * limit;
 
-  const where = {};
+  const where = { createdAt: { [Op.gte]: timer.beforeNDate(30) } };
   const include = [];
   const order = [['createdAt', 'DESC']];
+
   if (bookId) {
-    where.state = { [Op.eq]: bookId };
+    where.bookId = { [Op.eq]: bookId };
     include.push({ model: Book, include: [BookInfo] });
   }
-  if (userId) { where.userId = { [Op.eq]: userId }; }
-  if (state) { where.state = { [Op.eq]: state }; }
+
+  if (userId) {
+    where.userId = { [Op.eq]: userId };
+  }
+
+  if (state) {
+    where.state = { [Op.eq]: state };
+  }
+
   if (dueDate) {
     where.dueDate = { [Op.lte]: dueDate };
     order.push(['dueDate', 'DESC']);
   }
-  where.createdAt = { [Op.gte]: timer.beforeNDate(30) };
+
   if (from && to) {
     where.createdAt = { [Op.between]: [timer.stringToDate(from), timer.stringToDate(to)] };
   } else if (from) {
@@ -154,7 +159,7 @@ const getUserRentals = async (userId, getRentalsQuery) => {
     dueDate,
     created,
   } = getRentalsQuery;
-  const { Op } = Sequelize;
+
   const limit = BUSINESS.PER_PAGE;
   const offset = (page - 1) * limit;
 

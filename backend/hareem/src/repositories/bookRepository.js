@@ -1,5 +1,5 @@
 const {
-  Sequelize, sequelize, BookInfo, Book,
+  Sequelize: { Op }, sequelize, BookInfo, Book,
 } = require('../database/models');
 const { timer } = require('../utils');
 const { QUERY, BUSINESS } = require('../utils/constants');
@@ -52,8 +52,6 @@ const getBookInfos = async (getBooksQuery) => {
     eachTo,
     only,
   } = getBooksQuery;
-
-  const { Op } = Sequelize;
 
   const limit = BUSINESS.PER_PAGE;
   const offset = (page - 1) * limit;
@@ -232,8 +230,6 @@ const createBookInfoWithBookGql = async (createBookInput) => {
 };
 
 const getBooksByBookInfoIds = async (bookInfoIds) => {
-  const { Op } = Sequelize;
-
   const books = await Book.findAll({
     where: {
       bookInfoId: { [Op.in]: bookInfoIds },
@@ -245,8 +241,6 @@ const getBooksByBookInfoIds = async (bookInfoIds) => {
 };
 
 const getBookInfosByIds = async (ids) => {
-  const { Op } = Sequelize;
-
   const bookInfos = await BookInfo.findAll({
     where: {
       id: { [Op.in]: ids },
@@ -254,6 +248,16 @@ const getBookInfosByIds = async (ids) => {
     order: [['createdAt', 'DESC']],
   });
 
+  return bookInfos;
+};
+
+const getBooksByOptions = async (options) => {
+  const books = await Book.findAll(options);
+  return books;
+};
+
+const getBookInfosByOptions = async (options) => {
+  const bookInfos = await BookInfo.findAll(options);
   return bookInfos;
 };
 
@@ -270,4 +274,6 @@ module.exports = {
   createBookInfoWithBookGql,
   getBooksByBookInfoIds,
   getBookInfosByIds,
+  getBooksByOptions,
+  getBookInfosByOptions,
 };

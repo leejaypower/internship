@@ -5,5 +5,5 @@ exports.hashService = require('./hashService');
 exports.userService = require('./userService');
 exports.authService = require('./authService');
 exports.bookService = require('./bookService');
-exports.rentalService = require('./rentalService');
 exports.reservationService = require('./reservationService');
+exports.rentalService = require('./rentalService');

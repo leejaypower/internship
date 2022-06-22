@@ -1,5 +1,5 @@
 const {
-  User, Auth, sequelize, Sequelize,
+  User, Auth, sequelize, Sequelize: { Op },
 } = require('../database/models');
 const { timer } = require('../utils');
 const { QUERY, TABLE, BUSINESS } = require('../utils/constants');
@@ -53,8 +53,6 @@ const getUsers = async (getUsersQuery) => {
     filter,
     only = false,
   } = getUsersQuery;
-
-  const { Op } = Sequelize;
 
   const limit = BUSINESS.PER_PAGE;
   const offset = (page - 1) * limit;
@@ -204,6 +202,11 @@ const deleteUser = async (deleteBy) => {
   return result;
 };
 
+const getUsersByOptions = async (options) => {
+  const users = await User.findAll(options);
+  return users;
+};
+
 module.exports = {
   createUser,
   getUsers,
@@ -212,4 +215,5 @@ module.exports = {
   updateUser,
   updateUserByAdmin,
   deleteUser,
+  getUsersByOptions,
 };

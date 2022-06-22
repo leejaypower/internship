@@ -3,10 +3,14 @@
 const { mergeResolvers } = require('@graphql-tools/merge');
 const bookResolver = require('./bookResolver');
 const userResolver = require('./userResolver');
+const rentalResolver = require('./rentalResolver');
+const reservationResolver = require('./reservationResolver');
 
 const resolvers = [
   bookResolver,
   userResolver,
+  rentalResolver,
+  reservationResolver,
 ];
 
 module.exports = mergeResolvers(resolvers);

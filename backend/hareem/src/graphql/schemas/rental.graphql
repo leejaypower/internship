@@ -1,0 +1,56 @@
+enum RENTAL_STATE {
+  START
+  EXTEND
+  END
+}
+
+type Rental {
+  id: Int
+  state: RENTAL_STATE
+  dueDate: DateTime
+  createdAt: DateTime
+  parentId: Int
+  user: User
+  book: Book
+}
+
+type Query {
+  getRentalHistory(input: GetRentalHistoryInput): GetRentalHistoryOutput!
+}
+
+type Mutation {
+  createRentalStart(input: CreateRentalStartInput!): CreateRentalOutput!
+  createRentalExtend(input: CreateRentalExtendInput!): CreateRentalOutput!
+  createRentalEnd(input: CreateRentalEndInput!): CreateRentalOutput!
+}
+
+input GetRentalHistoryInput {
+  rentalId: Int
+}
+
+type GetRentalHistoryOutput implements CoreOutput {
+  success: Boolean!
+  error: Error
+  rental: [Rental]
+}
+
+input CreateRentalStartInput {
+  userId: UUID
+  bookInfoId: Int
+}
+
+input CreateRentalExtendInput {
+  userId: UUID
+  rentalId: Int
+}
+
+input CreateRentalEndInput {
+  userId: UUID
+  rentalId: Int
+}
+
+type CreateRentalOutput implements CoreOutput {
+  success: Boolean!
+  error: Error
+  rental: Rental
+}
