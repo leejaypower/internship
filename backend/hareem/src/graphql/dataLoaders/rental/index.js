@@ -1,9 +1,8 @@
 const DataLoader = require('dataloader');
 const { Op } = require('sequelize');
-const { bookRepository, userRepository } = require('../../repositories');
+const { bookRepository, userRepository } = require('../../../repositories');
 
 const getUser = new DataLoader(async (userIds) => {
-
   const users = await userRepository.getUsersByOptions({
     where: {
       id: { [Op.in]: userIds },
@@ -14,7 +13,6 @@ const getUser = new DataLoader(async (userIds) => {
 });
 
 const getBook = new DataLoader(async (bookIds) => {
-
   const books = await bookRepository.getBooksByOptions({
     where: {
       id: { [Op.in]: bookIds },

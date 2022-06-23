@@ -1,6 +1,6 @@
 const DataLoader = require('dataloader');
 const { Op } = require('sequelize');
-const { authRepository } = require('../../repositories');
+const { authRepository } = require('../../../repositories');
 
 const getAuth = new DataLoader(async (userIds) => {
   const auths = await authRepository.getAuthsByOptions({

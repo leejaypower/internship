@@ -1,5 +1,5 @@
 const DataLoader = require('dataloader');
-const { bookRepository } = require('../../repositories');
+const { bookRepository } = require('../../../repositories');
 
 const getBooks = new DataLoader(async (bookInfoIds) => {
   const books = await bookRepository.getBooksByBookInfoIds(bookInfoIds);

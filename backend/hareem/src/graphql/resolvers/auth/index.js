@@ -1,7 +1,7 @@
 const { composeResolvers } = require('@graphql-tools/resolvers-composition');
-const { COOKIE, TABLE } = require('../../constants');
-const { authMiddleware } = require('../../middlewares');
-const { authService } = require('../../services');
+const { COOKIE, TABLE } = require('../../../constants');
+const { authMiddleware } = require('../../../middlewares');
+const { authService } = require('../../../services');
 
 const authResolver = {
   Mutation: {
