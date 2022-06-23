@@ -12,19 +12,10 @@ type User {
   auth: Auth
 }
 
-enum ROLE {
-  USER
-  ADMIN
-}
-
-type Auth {
-  role: ROLE
-  updatedAt: DateTime
-}
-
 type Query {
-  getUsers(input: GetUsersInput!): GetUsersOutput!
+  getUsers(input: GetUsersInput): GetUsersOutput!
   getUser(input: GetUserInput!): GetUserOutput!
+  getUserSelf: GetUserOutput!
 }
 
 type Mutation {
@@ -34,12 +25,12 @@ type Mutation {
 }
 
 input GetUsersInput {
-  page: Int
-  from: String
-  to: String
-  filter: Filter
-  email: Int
-  warningCount: String
+  page: Int!
+  from: String!
+  to: String!
+  filter: Filter!
+  email: Int!
+  warningCount: String!
 }
 
 type GetUsersOutput implements CoreOutput {

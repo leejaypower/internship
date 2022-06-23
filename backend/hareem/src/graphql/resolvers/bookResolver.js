@@ -1,6 +1,9 @@
+const { composeResolvers } = require('@graphql-tools/resolvers-composition');
+const { authMiddleware } = require('../../middlewares');
 const { bookService } = require('../../services');
+const { TABLE } = require('../../utils/constants');
 
-module.exports = {
+const bookResolver = {
   Book: {
     bookInfo: async ({ bookInfoId }, _, { loaders }) => {
       const bookInfo = loaders.book.getBookInfo.load(bookInfoId);
@@ -35,9 +38,19 @@ module.exports = {
     },
 
     deleteBook: async (_, { input }) => {
-      const { id: bookId } = input;
+      const { bookId } = input;
       const result = await bookService.deleteBook(bookId);
       return { success: true, result };
     },
   },
 };
+
+const resolversComposition = {
+  'Mutation.createBook': [authMiddleware([TABLE.USER_ROLE.ADMIN], true)],
+  'Mutation.updateBookInfo': [authMiddleware([TABLE.USER_ROLE.ADMIN], true)],
+  'Mutation.deleteBook': [authMiddleware([TABLE.USER_ROLE.ADMIN], true)],
+};
+
+const composedBookResolver = composeResolvers(bookResolver, resolversComposition);
+
+module.exports = composedBookResolver;

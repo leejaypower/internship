@@ -17,6 +17,7 @@
   "dependencies": {
     "@graphql-tools/load-files": "^6.5.3",
     "@graphql-tools/merge": "^8.2.13",
+    "@graphql-tools/resolvers-composition": "^6.4.12",
     "@graphql-tools/schema": "^8.3.13",
     "@koa/cors": "^3.3.0",
     "@koa/router": "^10.1.1",

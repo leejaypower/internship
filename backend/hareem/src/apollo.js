@@ -16,7 +16,7 @@ const apollo = new ApolloServer({
     ],
   }),
   csrfPrevention: true,
-  context: ({ ctx }) => ({ loaders }),
+  context: ({ ctx }) => ({ ctx, loaders }),
 });
 
 module.exports = {

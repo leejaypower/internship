@@ -40,7 +40,6 @@ input CreateRentalStartInput {
 }
 
 input CreateRentalExtendInput {
-  userId: UUID
   rentalId: Int
 }
 

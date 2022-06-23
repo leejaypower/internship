@@ -1,6 +1,9 @@
+const { composeResolvers } = require('@graphql-tools/resolvers-composition');
+const { authMiddleware } = require('../../middlewares');
 const { rentalService } = require('../../services');
+const { TABLE } = require('../../utils/constants');
 
-module.exports = {
+const rentalResolver = {
   Rental: {
     user: async ({ userId }, _, { loaders }) => {
       const user = loaders.rental.getUser.load(userId);
@@ -26,13 +29,14 @@ module.exports = {
   Mutation: {
     createRentalStart: async (_, { input }) => {
       const rental = await rentalService.createRentalStart(input.userId, input);
-      console.log(rental);
 
       return { success: true, rental };
     },
 
-    createRentalExtend: async (_, { input }) => {
-      const rental = await rentalService.createRentalExtend(input.userId, input);
+    createRentalExtend: async (_, { input }, { ctx }) => {
+      const { user } = ctx;
+
+      const rental = await rentalService.createRentalExtend(user.id, input);
 
       return { success: true, rental };
     },
@@ -44,3 +48,14 @@ module.exports = {
     },
   },
 };
+
+const resolversComposition = {
+  'Query.getRentalHistory': [authMiddleware([TABLE.USER_ROLE.USER, TABLE.USER_ROLE.ADMIN], true)],
+  'Mutation.createRentalStart': [authMiddleware([TABLE.USER_ROLE.ADMIN], true)],
+  'Mutation.createRentalExtend': [authMiddleware([TABLE.USER_ROLE.USER], true)],
+  'Mutation.createRentalEnd': [authMiddleware([TABLE.USER_ROLE.ADMIN], true)],
+};
+
+const composedRentalResolver = composeResolvers(rentalResolver, resolversComposition);
+
+module.exports = composedRentalResolver;

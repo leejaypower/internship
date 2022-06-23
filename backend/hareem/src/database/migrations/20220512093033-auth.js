@@ -7,7 +7,7 @@ module.exports = {
         comment: '해당 컬럼은 사용자의 Role을 나타냅니다 Role에는 "user", "manager" 가 있습니다.',
       },
       refreshToken: {
-        type: Sequelize.STRING(200),
+        type: Sequelize.STRING(250),
         defaultValue: null,
         comment: '해당 컬럼은 user의 Refresh token을 나타냅니다.',
       },

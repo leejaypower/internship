@@ -13,7 +13,7 @@ const createReservation = async (userId, bookInfoId) => {
   }
 
   // 연체한 사람이라면, error
-  const user = await userService.getUser(userId);
+  const user = await userService.getUser({ id: userId });
   if (user.warningCount >= BUSINESS.MAX_WARNING_COUNT) {
     throw new CustomError(400, '연체 이력이 많아 예약을 진행 할 수 없습니다');
   }
@@ -23,8 +23,8 @@ const createReservation = async (userId, bookInfoId) => {
     from: timer.dateToString(new Date()),
     bookInfoId,
   };
+  const reservation = await reservationRepository.getUserReservations(userId, getReservationsQuery);
 
-  const reservation = await reservationRepository.getReservations(userId, getReservationsQuery);
   if (reservation.length > 0) {
     throw new CustomError(400, '이미 도서에 대한 예약을 했습니다');
   }

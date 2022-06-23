@@ -28,15 +28,15 @@ type Mutation {
 }
 
 input GetBookInfosWithBooksInput {
-  page: Int
-  from: String
-  to: String
-  filter: Filter
-  bookInfoId: Int
-  isbn: String
-  title: String
-  author: String
-  publisher: String
+  page: Int!
+  from: String!
+  to: String!
+  filter: Filter!
+  bookInfoId: Int!
+  isbn: String!
+  title: String!
+  author: String!
+  publisher: String!
 }
 
 type GetBookInfosWithBooksOutput implements CoreOutput {
