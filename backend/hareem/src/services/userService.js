@@ -1,5 +1,5 @@
 const { hashService } = require('.');
-const { CustomError } = require('../errors');
+const { CustomError } = require('../utils');
 const { userRepository } = require('../repositories');
 const { HASH_SALT } = require('../utils/constants');
 

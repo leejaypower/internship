@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 const { authRepository } = require('../repositories');
 const { userService, jwtService, hashService } = require('.');
-const { CustomError } = require('../errors');
+const { CustomError } = require('../utils');
 const { MESSAGE, COOKIE_NAME } = require('../utils/constants');
 
 const _getToken = (tokenData) => {

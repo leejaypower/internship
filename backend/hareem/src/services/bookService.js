@@ -1,4 +1,4 @@
-const { CustomError } = require('../errors');
+const { CustomError } = require('../utils');
 const { bookRepository } = require('../repositories');
 const { BUSINESS } = require('../utils/constants');
 

@@ -1,5 +1,5 @@
 const { bookService, userService } = require('.');
-const { CustomError } = require('../errors');
+const { CustomError } = require('../utils');
 const { reservationRepository } = require('../repositories');
 const { timer } = require('../utils');
 const { BUSINESS } = require('../utils/constants');

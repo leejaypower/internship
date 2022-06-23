@@ -1,5 +1,5 @@
 /* eslint-disable no-underscore-dangle */
-const { CustomError } = require('../errors');
+const { CustomError } = require('../utils');
 const { jwtService } = require('../services');
 const { MESSAGE } = require('../utils/constants');
 
