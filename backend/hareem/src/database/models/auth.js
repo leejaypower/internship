@@ -1,4 +1,4 @@
-const { TABLE } = require('../../utils/constants');
+const { TABLE } = require('../../constants');
 
 module.exports = (sequelize, DataTypes) => {
   const Auth = sequelize.define('Auth', {

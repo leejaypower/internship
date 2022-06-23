@@ -1,6 +1,6 @@
 const http = require('http');
 
-require('./utils/env');
+require('./env');
 const db = require('./database/models');
 const app = require('./app');
 const { apollo } = require('./apollo');

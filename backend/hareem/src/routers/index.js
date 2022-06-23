@@ -1,10 +1,10 @@
 const Router = require('@koa/router');
 
-const authRouter = require('./authRouter');
-const bookRouter = require('./bookRouter');
-const rentalRouter = require('./rentalRouter');
-const userRouter = require('./userRouter');
-const reservationRouter = require('./reservationRouter');
+const authRouter = require('./auth');
+const userRouter = require('./user');
+const bookRouter = require('./book');
+const rentalRouter = require('./rental');
+const reservationRouter = require('./reservation');
 
 const router = new Router();
 

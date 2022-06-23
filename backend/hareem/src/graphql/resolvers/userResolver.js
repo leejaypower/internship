@@ -1,7 +1,7 @@
 const { composeResolvers } = require('@graphql-tools/resolvers-composition');
+const { TABLE } = require('../../constants');
 const { authMiddleware } = require('../../middlewares');
 const { userService } = require('../../services');
-const { TABLE } = require('../../utils/constants');
 
 const userResolver = {
   User: {

@@ -1,5 +1,5 @@
-exports.userRepository = require('./userRepository');
-exports.authRepository = require('./authRepository');
-exports.bookRepository = require('./bookRepository');
-exports.rentalRepository = require('./rentalRepository');
-exports.reservationRepository = require('./reservationRepository');
+exports.userRepository = require('./user');
+exports.authRepository = require('./auth');
+exports.bookRepository = require('./book');
+exports.rentalRepository = require('./rental');
+exports.reservationRepository = require('./reservation');

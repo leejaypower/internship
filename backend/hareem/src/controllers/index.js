@@ -1,5 +1,5 @@
-exports.userController = require('./userController');
-exports.authController = require('./authController');
-exports.bookController = require('./bookController');
-exports.rentalController = require('./rentalController');
-exports.reservationController = require('./reservationController');
+exports.userController = require('./user');
+exports.authController = require('./auth');
+exports.bookController = require('./book');
+exports.rentalController = require('./rental');
+exports.reservationController = require('./reservation');

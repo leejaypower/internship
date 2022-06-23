@@ -1,7 +1,7 @@
 const { composeResolvers } = require('@graphql-tools/resolvers-composition');
+const { COOKIE, TABLE } = require('../../constants');
 const { authMiddleware } = require('../../middlewares');
 const { authService } = require('../../services');
-const { TABLE, COOKIE_NAME } = require('../../utils/constants');
 
 const authResolver = {
   Mutation: {
@@ -24,7 +24,7 @@ const authResolver = {
     },
 
     refreshAccessToken: async (_, { input }, { ctx }) => {
-      const refreshToken = ctx.cookies.get(COOKIE_NAME.REFRESH_TOKEN);
+      const refreshToken = ctx.cookies.get(COOKIE.REFRESH_TOKEN);
 
       const { accessToken } = await authService.refreshAccessToken(refreshToken);
 

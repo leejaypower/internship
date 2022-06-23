@@ -1,5 +1,5 @@
 const { timer } = require('../../utils');
-const { TABLE, BUSINESS } = require('../../utils/constants');
+const { TABLE, BUSINESS } = require('../../constants');
 
 module.exports = (sequelize, DataTypes) => {
   const Rental = sequelize.define('Rental', {

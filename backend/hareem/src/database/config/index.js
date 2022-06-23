@@ -1,4 +1,4 @@
-require('../../utils/env');
+require('../../env');
 
 module.exports = {
   development: {

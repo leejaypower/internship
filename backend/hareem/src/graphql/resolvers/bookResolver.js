@@ -1,7 +1,7 @@
 const { composeResolvers } = require('@graphql-tools/resolvers-composition');
+const { TABLE } = require('../../constants');
 const { authMiddleware } = require('../../middlewares');
 const { bookService } = require('../../services');
-const { TABLE } = require('../../utils/constants');
 
 const bookResolver = {
   Book: {

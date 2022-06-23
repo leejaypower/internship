@@ -1,9 +1,9 @@
 // util 관련 Serive
-exports.jwtService = require('./jwtService');
-exports.hashService = require('./hashService');
+exports.jwtService = require('./jwt');
+exports.hashService = require('./hash');
 
-exports.userService = require('./userService');
-exports.authService = require('./authService');
-exports.bookService = require('./bookService');
-exports.reservationService = require('./reservationService');
-exports.rentalService = require('./rentalService');
+exports.userService = require('./user');
+exports.authService = require('./auth');
+exports.bookService = require('./book');
+exports.reservationService = require('./reservation');
+exports.rentalService = require('./rental');
