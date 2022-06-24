@@ -57,6 +57,17 @@ services:
     depends_on:
       - internship-postgres
 
+
+  internship-junghyun:
+    container_name: internship-junghyun
+    image: internship-junghyun
+    ports:
+      - '4000:4000'
+    depends_on:
+      - internship-postgres
+    build:
+      context: ../backend/junghyun/koa-books
+
   internship-hareem:
     container_name: internship-hareem
     image: internship-hareem
