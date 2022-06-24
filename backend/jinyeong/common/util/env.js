@@ -2,7 +2,7 @@ const path = require('path');
 const dotenv = require('dotenv');
 
 const envFiles = {
-  development: '.env.dev',
+  development: 'dev.env',
   test: 'test.env',
   production: '.env',
 };

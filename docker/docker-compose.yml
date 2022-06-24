@@ -46,6 +46,16 @@ services:
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'false'
     volumes:
       - internship-kafka-data:/var/lib/kafka/data
+  
+  internship-jinyeong:
+    container_name: internship-jinyeong
+    build:
+      context: ../backend/jinyeong
+    restart: always
+    ports:
+      - 4003:4003
+    depends_on:
+      - internship-postgres
 
   internship-hareem:
     container_name: internship-hareem

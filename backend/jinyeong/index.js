@@ -7,9 +7,8 @@ const bodyParser = require('koa-bodyparser');
 const logger = require('koa-logger');
 const { createApolloServer } = require('./graphQL');
 
+const port = process.env.PORT || 4000;
 const app = new Koa();
-
-const port = 4000;
 
 const router = require('./routes');
 
