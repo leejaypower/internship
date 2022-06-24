@@ -19,6 +19,4 @@ const apollo = new ApolloServer({
   context: ({ ctx }) => ({ ctx, loaders }),
 });
 
-module.exports = {
-  apollo,
-};
+module.exports = apollo;

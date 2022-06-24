@@ -89,6 +89,9 @@ services:
       DB_PORT: 5432
       DB_TIMEZONE: UTC
       DB_DIALECT: postgres
+      KAFKA_CLIENT_ID: internship-hareem
+      KAFKA_BROKER: kafka:8094
+      KAFKA_CONSUMER_GROUP_ID: internship-hareem
       JWT_ACCESS_TOKEN_SECRET_KEY: intern_access
       JWT_ACCESS_TOKEN_EXPIRES_IN: 2h
       JWT_REFRESH_TOKEN_SECRET_KEY: intern_refresh

@@ -32,6 +32,7 @@
     "graphql-api-koa": "^8.0.0",
     "graphql-scalars": "^1.17.0",
     "jsonwebtoken": "^8.5.1",
+    "kafkajs": "^2.0.2",
     "koa": "^2.13.4",
     "koa-bodyparser": "^4.3.0",
     "pg": "^8.7.3",

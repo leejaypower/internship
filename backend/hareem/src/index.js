@@ -1,20 +1,41 @@
+/* eslint-disable no-underscore-dangle */
 const httpServer = require('http').createServer();
 
 require('dotenv').config();
 const db = require('./database/models');
+const kafka = require('./kafka');
 const app = require('./app');
-const { apollo } = require('./apollo');
+const apollo = require('./apollo');
+
+const _dbInitialize = async () => {
+  if (process.env.NODE_ENV === 'production') {
+    await db.sequelize.authenticate();
+  } else {
+    await db.sequelize.sync();
+  }
+  console.log('db is connected');
+};
+
+const _kafkaInitialize = async () => {
+  if (process.env.NODE_ENV === 'production') {
+    await kafka.producerRun();
+    await kafka.consumerRun();
+  } else {
+    await kafka.syncTopics();
+
+    await kafka.producerRun();
+    await kafka.consumerRun();
+  }
+  console.log('kafka is connected');
+};
 
 const serverRun = async () => {
   try {
     const PORT = process.env.PORT || 4001;
 
-    if (app.env !== 'production') {
-      await db.sequelize.sync();
-    } else {
-      await db.sequelize.authenticate();
-    }
-    console.log('db is connected');
+    await _dbInitialize();
+
+    await _kafkaInitialize();
 
     await apollo.start();
     apollo.applyMiddleware({ app });

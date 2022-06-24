@@ -3,6 +3,7 @@ const TABLE = require('./table');
 const QUERY = require('./query');
 const MESSAGE = require('./message');
 const COOKIE = require('./cookie');
+const TOPIC = require('./topic');
 
 module.exports = {
   BUSINESS,
@@ -10,4 +11,5 @@ module.exports = {
   QUERY,
   MESSAGE,
   COOKIE,
+  TOPIC,
 };
