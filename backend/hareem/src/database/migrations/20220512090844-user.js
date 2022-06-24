@@ -7,13 +7,13 @@ module.exports = {
         primaryKey: true,
       },
       email: {
-        type: Sequelize.STRING(320),
+        type: Sequelize.STRING(50),
         allowNull: false,
         unique: true,
         comment: '해당 컬럼은 사용자의 email을 나타냅니다.',
       },
       password: {
-        type: Sequelize.STRING(100),
+        type: Sequelize.STRING(60),
         allowNull: false,
         comment: '해당 컬럼은 사용자의 비밀번호를 나타냅니다. 해당값은 복호화 불가능한 해시값 입니다.',
       },
@@ -24,7 +24,7 @@ module.exports = {
         comment: '해당 컬럼은 사용자의 핸드폰 번호를 나타냅니다. ex) "01021215353"',
       },
       name: {
-        type: Sequelize.STRING(10),
+        type: Sequelize.STRING(20),
         allowNull: false,
         comment: '해당 컬럼은 사용자의 이름을 나타냅니다.',
       },

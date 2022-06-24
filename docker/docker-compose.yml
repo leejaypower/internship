@@ -47,13 +47,40 @@ services:
     volumes:
       - internship-kafka-data:/var/lib/kafka/data
 
+  internship-hareem:
+    container_name: internship-hareem
+    image: internship-hareem
+    build:
+      context: ../backend/hareem
+    ports:
+      - '4001:4001'
+    restart: always
+    depends_on:
+      - internship-postgres
+      - internship-zookeeper
+      - internship-kafka
+    environment:
+      PORT: 4001
+      DB_USERNAME: intern
+      DB_PASSWORD: intern
+      DB_NAME: internship-hareem
+      DB_HOST: internship-postgres
+      DB_PORT: 5432
+      DB_TIMEZONE: UTC
+      DB_DIALECT: postgres
+      JWT_ACCESS_TOKEN_SECRET_KEY: intern_access
+      JWT_ACCESS_TOKEN_EXPIRES_IN: 2h
+      JWT_REFRESH_TOKEN_SECRET_KEY: intern_refresh
+      JWT_REFRESH_TOKEN_EXPIRES_IN: 14d
+      HASH_SALT: 10
+
   internship-deokhyeong:
-      container_name: deokhyeong-weather-app
-      build:
-        context: ../frontend/deokhyeong/weather
-        dockerfile: Dockerfile
-      ports:
-        - "8089:8089"
+    container_name: deokhyeong-weather-app
+    build:
+      context: ../frontend/deokhyeong/weather
+      dockerfile: Dockerfile
+    ports:
+      - "8089:8089"
 
 volumes:
   internship-pgdb:

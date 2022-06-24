@@ -36,6 +36,8 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true,
       comment: '해당 컬럼은 책에 대한 소개를 나타냅니다.',
     },
+  }, {
+    timestamps: true,
   });
   BookInfo.associate = (models) => {
     BookInfo.hasMany(models.Book, {

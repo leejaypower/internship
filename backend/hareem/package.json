@@ -4,10 +4,13 @@
   "description": "library project",
   "main": "index.js",
   "scripts": {
-    "preMigrate": "npx sequelize db:migrate:undo:all",
-    "migrate": "npm run preMigrate && npx sequelize db:migrate",
+    "db:migrate:undo": "npx sequelize db:migrate:undo:all",
+    "db:migrate": "npx sequelize db:migrate",
+    "db:drop": "npx sequelize-cli db:drop",
+    "db:create": "npx sequelize-cli db:create",
+    "db:init": "npm run db:drop && npm run db:create && npm run db:migrate",
     "start": "node ./src/index.js",
-    "start:dev": "cross-env NODE_ENV=development nodemon ./src/index.js",
+    "start:dev": "nodemon ./src/index.js",
     "lint": "./node_modules/.bin/eslint src",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -37,7 +40,6 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "cross-env": "^7.0.3",
     "eslint": "^8.13.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.26.0",

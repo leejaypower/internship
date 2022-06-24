@@ -1,7 +1,7 @@
 const { userService, bookService, reservationService } = require('../index');
 const { reservationRepository, rentalRepository } = require('../../repositories');
 const { timer } = require('../../utils');
-const { BUSINESS } = require('../../constants');
+const { BUSINESS, TABLE } = require('../../constants');
 const { CustomError } = require('../../errors');
 
 const createRentalStart = async (userId, createRentalData) => {

@@ -9,5 +9,4 @@ module.exports = {
   BOOK_REGIGISTATION_LIMIT: 5,
   PAGE_DEFAULT: 1,
   PER_PAGE: 10,
-  HASH_SALT: 10,
 };

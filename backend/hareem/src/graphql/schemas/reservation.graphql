@@ -1,7 +1,7 @@
 type Reservation {
   id: Int
   createdAt: DateTime
-  deletedAt: DateTime
+  doneDate: DateTime
   user: User
   bookInfo: BookInfo
 }

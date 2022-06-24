@@ -126,10 +126,11 @@ const getNextReservationByBookInfo = async (bookInfoId) => {
   return reservation;
 };
 
-const deleteReservation = async (deleteBy, force = false) => {
-  const result = await Reservation.destroy({
+const deleteReservation = async (deleteBy) => {
+  const result = await Reservation.update({
+    doneDate: new Date(),
+  }, {
     where: deleteBy,
-    force,
   });
   return result;
 };

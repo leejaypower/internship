@@ -1,3 +1,5 @@
+const { TABLE } = require('../../constants');
+
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('Rentals', {
@@ -9,7 +11,7 @@ module.exports = {
       state: {
         type: Sequelize.STRING(10),
         allowNull: false,
-        defaultValue: 'START',
+        defaultValue: TABLE.RENTAL_STATE.START,
         comment: '해당 컬럼은 도서의 대여 또는 연장 또는 반납 상태를 나타냅니다. (START, EXTEND, END)',
       },
       dueDate: {
@@ -21,21 +23,21 @@ module.exports = {
         type: Sequelize.DATE,
         allowNull: false,
       },
-      bookId: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'Books',
-          key: 'id',
-        },
-        onDelete: 'set null',
-        onUpdate: 'cascade',
-      },
       userId: {
         type: Sequelize.UUID,
         allowNull: false,
         references: {
           model: 'Users',
+          key: 'id',
+        },
+        onDelete: 'set null',
+        onUpdate: 'cascade',
+      },
+      bookId: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'Books',
           key: 'id',
         },
         onDelete: 'set null',

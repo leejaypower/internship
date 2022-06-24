@@ -6,13 +6,15 @@ module.exports = {
         autoIncrement: true,
         primaryKey: true,
       },
+      doneDate: {
+        type: Sequelize.DATE,
+        allowNull: true,
+        defaultValue: null,
+        comment: '해당 컬럼은 해당 예약에 대한 완료일을 나타냅니다.',
+      },
       createdAt: {
         type: Sequelize.DATE,
         allowNull: false,
-      },
-      deletedAt: {
-        type: Sequelize.DATE,
-        allowNull: true,
       },
       userId: {
         type: Sequelize.UUID,

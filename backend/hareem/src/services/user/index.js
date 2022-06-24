@@ -1,7 +1,6 @@
 const { hashService } = require('../index');
 const { userRepository } = require('../../repositories');
 const { CustomError } = require('../../errors');
-const { HASH_SALT } = require('../../constants');
 
 const createUser = async (createData) => {
   const {
@@ -15,7 +14,7 @@ const createUser = async (createData) => {
     throw new CustomError(400, '이미 등록된 이메일입니다');
   }
 
-  const hashedPassword = await hashService.hash(password, HASH_SALT);
+  const hashedPassword = await hashService.hash(password);
   const newUser = await userRepository.createUser({
     ...createData,
     password: hashedPassword,

@@ -1,7 +1,6 @@
 const bcrypt = require('bcrypt');
-const { BUSINESS } = require('../../constants');
 
-const hash = async (plaintextPassword, saltRounds = BUSINESS.HASH_SALT) => {
+const hash = async (plaintextPassword, saltRounds = Number(process.env.HASH_SALT)) => {
   const hashedPassword = await bcrypt.hash(plaintextPassword, saltRounds);
   return hashedPassword;
 };

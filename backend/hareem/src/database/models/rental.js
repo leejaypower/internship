@@ -49,6 +49,8 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'parentId',
       sourceKey: 'id',
       allowNull: true,
+      onDelete: 'set null',
+      onUpdate: 'cascade',
     });
   };
   return Rental;

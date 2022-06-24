@@ -1,19 +1,20 @@
-const http = require('http');
+const httpServer = require('http').createServer();
 
-require('./env');
+require('dotenv').config();
 const db = require('./database/models');
 const app = require('./app');
 const { apollo } = require('./apollo');
 
 const serverRun = async () => {
   try {
-    const PORT = process.env.PORT || 3000;
+    const PORT = process.env.PORT || 4001;
 
-    // 차후, sync -> authenticate 로 변경 필요
-    await db.sequelize.sync();
+    if (app.env !== 'production') {
+      await db.sequelize.sync();
+    } else {
+      await db.sequelize.authenticate();
+    }
     console.log('db is connected');
-
-    const httpServer = http.createServer();
 
     await apollo.start();
     apollo.applyMiddleware({ app });

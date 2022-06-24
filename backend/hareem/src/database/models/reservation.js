@@ -5,11 +5,16 @@ module.exports = (sequelize, DataTypes) => {
       autoIncrement: true,
       primaryKey: true,
     },
+    doneDate: {
+      type: DataTypes.DATE,
+      allowNull: true,
+      defaultValue: null,
+      comment: '해당 컬럼은 해당 예약에 대한 완료일을 나타냅니다.',
+    },
   }, {
     timestamps: true,
     createdAt: true,
     updatedAt: false,
-    paranoid: true,
   });
   Reservation.associate = (models) => {
     Reservation.belongsTo(models.User, {

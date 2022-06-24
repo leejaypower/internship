@@ -6,7 +6,7 @@
 
 - [API 문서 바로가기](https://documenter.getpostman.com/view/17715275/UyxhnSnN)
 
-### 프로젝트 실행을 위한 로컬 환경 구성 (개발 모드 실행)
+### 프로젝트 실행 (개발 모드 실행)
 
 1. docker 실행
 
@@ -45,3 +45,21 @@
 4. 서버 실행
 
 - $ npm run start:dev
+
+### docker-compose 를 활용한 프로젝트 실행
+
+1. postgres 실행
+
+- ~/internship/docker 경로로 이동
+- $ docker-compose up -d --build internship-postgres
+
+2. sequelize-cli를 사용해 schema생성 및 table migrate
+
+- ~/internship/backend/hareem 경로로 이동
+- $ npx sequelize-cli db:create
+- $ npx sequelize-cli db:migrate
+
+3. 나머지 컨테이너 실행
+
+- ~/internship/docker 경로로 이동
+- $ docker-compose up -d --build

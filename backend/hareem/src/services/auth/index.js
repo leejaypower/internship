@@ -15,7 +15,7 @@ const _getToken = (tokenData) => {
   const token = jwtService.sign({
     payload: { id, role },
     secretKey,
-    options: { expiresIn: Number(expiresIn) },
+    options: { expiresIn },
   });
 
   return {
