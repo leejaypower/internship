@@ -1,14 +1,15 @@
 const { userService, authService } = require('../../services');
+const { CustomError } = require('../../common/error');
 
 // 회원가입
 const signUp = async (ctx) => {
   try {
     // 정규표현식 로직 추가 필요
     if (!ctx.request.body.email) {
-      ctx.throw(400, 'please provide the email');
+      throw new CustomError(400, 'please provide the email');
     }
     if (!ctx.request.body.password) {
-      ctx.throw(400, 'please provide the password');
+      throw new CustomError(400, 'please provide the password');
     }
     const createdUser = await userService.findOrCreateUser(ctx.request.body);
     if (createdUser) {
@@ -25,10 +26,10 @@ const adminSignIn = async (ctx) => {
   try {
     const { email, password } = ctx.request.body;
     if (!email) {
-      ctx.throw(400, 'please provide the email');
+      throw new CustomError(400, 'please provide the email');
     }
     if (!password) {
-      ctx.throw(400, 'please provide the password');
+      throw new CustomError(400, 'please provide the password');
     }
     const token = await userService.adminSignInService(ctx.request.body);
     ctx.body = token;
@@ -43,10 +44,10 @@ const userSignIn = async (ctx) => {
   try {
     const { email, password } = ctx.request.body;
     if (!email) {
-      ctx.throw(400, 'please provide the email');
+      throw new CustomError(400, 'please provide the email');
     }
     if (!password) {
-      ctx.throw(400, 'please provide the password');
+      throw new CustomError(400, 'please provide the password');
     }
     const token = await userService.userSignInService(ctx.request.body);
     ctx.body = token;
@@ -59,7 +60,7 @@ const userSignIn = async (ctx) => {
 const refreshAccessToken = async (ctx) => {
   try {
     if (!ctx.request.body?.accessToken || !ctx.request.body?.refreshToken) {
-      ctx.throw(401, 'please provide the Authorization information');
+      throw new CustomError(401, 'please provide the Authorization information');
     }
     const token = await authService.refreshAccessToken(ctx.request.body);
     ctx.body = token;

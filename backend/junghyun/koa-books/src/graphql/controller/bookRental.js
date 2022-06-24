@@ -1,5 +1,6 @@
 const { rentalService } = require('../../services');
 const { graphqlRentalService } = require('../services');
+const { CustomError } = require('../../common/error');
 
 const createRental = async (root, args, { ctx }) => {
   try {
@@ -7,7 +8,7 @@ const createRental = async (root, args, { ctx }) => {
     ctx.status = 201;
     return newRental;
   } catch (err) {
-    return ctx.throw(500, err);
+    ctx.throw(err);
   }
 };
 
@@ -23,7 +24,7 @@ const getAdminRentals = async (root, args, { ctx }) => {
     ctx.status = 200;
     return rentalList;
   } catch (err) {
-    return ctx.throw(500, err);
+    ctx.throw(err);
   }
 };
 
@@ -37,7 +38,7 @@ const getUserRentals = async (root, args, { ctx }) => {
     ctx.status = 200;
     return rentalList;
   } catch (err) {
-    return ctx.throw(500, err);
+    ctx.throw(err);
   }
 };
 
@@ -48,7 +49,7 @@ const getOneRental = async (root, args, { ctx }) => {
     ctx.status = 200;
     return rental;
   } catch (err) {
-    return ctx.throw(500, err);
+    ctx.throw(err);
   }
 };
 
@@ -59,7 +60,7 @@ const extendRental = async (root, args, { ctx }) => {
     const updated = await rentalService.extendRental(rentalId, userId);
     ctx.status = 200;
     if (!updated) {
-      ctx.throw('update failed');
+      throw new CustomError('update failed');
     }
     return 'Successfully extended';
   } catch (err) {
@@ -74,7 +75,7 @@ const createBookReturn = async (root, args, { ctx }) => {
     ctx.status = 201;
     return bookReturn;
   } catch (err) {
-    return ctx.throw(500, err);
+    ctx.throw(err);
   }
 };
 
@@ -103,7 +104,7 @@ const getUserReturns = async (root, args, { ctx }) => {
     ctx.status = 200;
     return bookReturns;
   } catch (err) {
-    return ctx.throw(500, err);
+    ctx.throw(err);
   }
 };
 
@@ -114,7 +115,7 @@ const getOneReturn = async (root, args, { ctx }) => {
     ctx.status = 200;
     return bookReturn;
   } catch (err) {
-    return ctx.throw(500, err);
+    ctx.throw(err);
   }
 };
 

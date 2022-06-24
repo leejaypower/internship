@@ -1,5 +1,6 @@
 const { bookService } = require('../../services');
 const { graphqlBookService } = require('../services');
+const { CustomError } = require('../../common/error');
 
 const createBook = async (root, args, { ctx }) => {
   try {
@@ -7,7 +8,7 @@ const createBook = async (root, args, { ctx }) => {
     ctx.status = 201;
     return newBook;
   } catch (err) {
-    return ctx.throw(err);
+    ctx.throw(err);
   }
 };
 
@@ -17,7 +18,7 @@ const getOneBook = async (root, args, { ctx }) => {
     ctx.status = 200;
     return book;
   } catch (err) {
-    return ctx.throw(err);
+    ctx.throw(err);
   }
 };
 
@@ -35,7 +36,7 @@ const getBookInfoList = async (root, args, { ctx }) => {
     ctx.status = 200;
     return bookInfoList;
   } catch (err) {
-    return ctx.throw(err);
+    ctx.throw(err);
   }
 };
 
@@ -43,13 +44,13 @@ const deleteBook = async (root, args, { ctx }) => {
   try {
     const deletedBook = await bookService.deleteBook(args.id);
     if (!deletedBook) {
-      ctx.status = 204;
-      return { message: ` Failed to delete the book <${args.id}>.` };
+      ctx.status = 500;
+      throw new CustomError(` Failed to delete the book <${args.id}>.`);
     }
-    ctx.status = 200;
-    return { message: `The book < ${args.id} > is successfully deleted.` };
+    ctx.status = 204;
+    return `The book < ${args.id} > is successfully deleted.`;
   } catch (err) {
-    return ctx.throw(err);
+    ctx.throw(err);
   }
 };
 

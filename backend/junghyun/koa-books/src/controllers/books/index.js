@@ -1,10 +1,11 @@
 const { bookService } = require('../../services');
+const { CustomError } = require('../../common/error');
 
 // 도서 등록 - 관리자
 const createBook = async (ctx) => {
   try {
     if (!ctx.request.body) {
-      ctx.throw(400, 'please provide the information');
+      throw new CustomError(400, 'please provide the information');
     }
     ctx.body = await bookService.createBook(ctx.request.body);
     ctx.status = 201;
@@ -20,7 +21,7 @@ const getBooks = async (ctx) => {
   } = ctx.request.query;
   try {
     if (!page || !limit) {
-      ctx.throw(400, 'you should provide page and limit');
+      throw new CustomError(400, 'you should provide page and limit');
     }
     ctx.body = await bookService.getBooks({
       page, limit, author, category, title,
@@ -48,10 +49,10 @@ const deleteBook = async (ctx) => {
     const deletedBook = await bookService.deleteBook(bookId);
     if (deletedBook) {
       ctx.body = { message: `The book < ${bookId} > is successfully deleted.` };
-      ctx.status = 200;
-    } else {
-      ctx.body = { message: ` Failed to deleted the book <${bookId}>.` };
       ctx.status = 204;
+    } else {
+      ctx.status = 500;
+      throw new CustomError(` Failed to deleted the book <${bookId}>.`);
     }
   } catch (err) {
     ctx.throw(err);

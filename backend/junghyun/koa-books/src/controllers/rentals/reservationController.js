@@ -1,4 +1,5 @@
 const { reservationService } = require('../../services');
+const { CustomError } = require('../../common/error');
 
 // 예약 데이터 생성 - 유저
 const createReservation = async (ctx) => {
@@ -28,10 +29,10 @@ const getAdminReservations = async (ctx) => {
   } = ctx.request.query;
   try {
     if (!page || !limit) {
-      ctx.throw(400, 'you should provide page and limit');
+      throw new CustomError(400, 'you should provide page and limit');
     }
     if (!userId && !bookInfoId) {
-      ctx.throw(400, 'please provide the information');
+      throw new CustomError(400, 'please provide the information');
     }
     ctx.body = await reservationService.getReservations({
       bookInfoId,
@@ -70,7 +71,7 @@ const cancelReservation = async (ctx) => {
   try {
     const { reservationId } = ctx.params;
     if (!reservationId) {
-      ctx.throw(400, 'please provide the reservation information');
+      throw new CustomError(400, 'please provide the reservation information');
     }
     ctx.body = await reservationService.cancelReservation(reservationId);
     ctx.status = 200;
@@ -86,10 +87,10 @@ const getAdminOldReservations = async (ctx) => {
   } = ctx.request.query;
   try {
     if (!page || !limit) {
-      ctx.throw(400, 'you should provide page and limit');
+      throw new CustomError(400, 'you should provide page and limit');
     }
     if (!userId && !bookInfoId) {
-      ctx.throw(400, 'please provide the information');
+      throw new CustomError(400, 'please provide the information');
     }
     ctx.body = await reservationService.getOldReservations({
       bookInfoId,

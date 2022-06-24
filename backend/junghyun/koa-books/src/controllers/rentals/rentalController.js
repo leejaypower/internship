@@ -1,10 +1,11 @@
 const { rentalService } = require('../../services');
+const { CustomError } = require('../../common/error');
 
 // 대출 데이터 생성 - 관리자
 const createRental = async (ctx) => {
   try {
     if (!ctx.request.body) {
-      ctx.throw(400, 'please provide the information');
+      throw new CustomError(400, 'please provide the information');
     }
     ctx.body = await rentalService.createRental(ctx.request.body);
     ctx.status = 201;
@@ -20,10 +21,10 @@ const getAdminRentals = async (ctx) => {
   } = ctx.request.query;
   try {
     if (!page || !limit) {
-      ctx.throw(400, 'you should provide page and limit');
+      throw new CustomError(400, 'you should provide page and limit');
     }
     if (!bookId && !userId) {
-      ctx.throw(400, 'you should provide information');
+      throw new CustomError(400, 'you should provide information');
     }
     ctx.body = await rentalService.getRentals({
       bookId,
@@ -43,7 +44,7 @@ const getUserRentals = async (ctx) => {
   const { userId } = ctx.state;
   try {
     if (!page || !limit) {
-      ctx.throw(400, 'you should provide page and limit');
+      throw new CustomError(400, 'you should provide page and limit');
     }
     ctx.body = await rentalService.getRentals({
       userId,
@@ -72,7 +73,7 @@ const extendRental = async (ctx) => {
   const { userId } = ctx.state;
   try {
     if (!ctx.params.rentalId) {
-      ctx.throw(400, 'please provide the rental information');
+      throw new CustomError(400, 'please provide the rental information');
     }
     ctx.body = await rentalService.extendRental(rentalId, userId);
     ctx.status = 200;
@@ -85,7 +86,7 @@ const extendRental = async (ctx) => {
 const createBookReturn = async (ctx) => {
   try {
     if (!ctx.request.body) {
-      ctx.throw(400, 'please provide the information');
+      throw new CustomError(400, 'please provide the information');
     }
     ctx.body = await rentalService.createBookReturn(ctx.request.body);
     ctx.status = 201;
@@ -101,10 +102,10 @@ const getAdminReturns = async (ctx) => {
   } = ctx.request.query;
   try {
     if (!bookId && !userId) {
-      ctx.throw(400, 'please provide the information');
+      throw new CustomError(400, 'please provide the information');
     }
     if (!page || !limit) {
-      ctx.throw(400, 'you should provide page and limit');
+      throw new CustomError(400, 'you should provide page and limit');
     }
     ctx.body = await rentalService.getBookReturns({
       bookId,
@@ -124,7 +125,7 @@ const getUserReturns = async (ctx) => {
   const { userId } = ctx.state;
   try {
     if (!page || !limit) {
-      ctx.throw(400, 'you should provide page and limit');
+      throw new CustomError(400, 'you should provide page and limit');
     }
     ctx.body = await rentalService.getBookReturns({
       userId,

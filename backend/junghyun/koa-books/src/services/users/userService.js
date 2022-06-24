@@ -1,6 +1,7 @@
 const { userRepository, adminUserRepository } = require('../../repository/index');
 const { JwtService } = require('../../common/auth/index');
 const hashService = require('../../common/util/hashPassword');
+const { CustomError } = require('../../common/error');
 
 // 유저 데이터 생성 (회원 가입)
 const findOrCreateUser = async (userData) => {
@@ -8,7 +9,7 @@ const findOrCreateUser = async (userData) => {
     ? await adminUserRepository.findOrCreate(userData)
     : await userRepository.findOrCreate(userData);
   if (!created) {
-    throw new Error(400, 'The email provided is already exists');
+    throw new CustomError(400, 'The email provided is already exists');
   }
   return user;
 };
@@ -28,7 +29,7 @@ const adminSignInService = async (userData) => {
   const refreshToken = JwtService.refresh();
   const updateToken = await adminUserRepository.updateRefreshToken({ userId: user.id, refreshToken });
   if (!updateToken) {
-    throw new Error(500, '토큰이 저장되지 않았습니다.');
+    throw new CustomError(500, '토큰이 저장되지 않았습니다.');
   }
   return { Authorization: { accessToken, refreshToken } };
 };
@@ -47,7 +48,7 @@ const userSignInService = async (userData) => {
   const refreshToken = JwtService.refresh();
   const updateToken = await userRepository.updateRefreshToken({ userId: user.id, refreshToken });
   if (!updateToken) {
-    throw new Error(500, '토큰이 저장되지 않았습니다.');
+    throw new CustomError(500, '토큰이 저장되지 않았습니다.');
   }
   return { Authorization: { accessToken, refreshToken } };
 };
