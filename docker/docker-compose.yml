@@ -68,6 +68,16 @@ services:
     build:
       context: ../backend/junghyun/koa-books
 
+  internship-woongbeom:
+    container_name: internship-woongbeom
+    image: internship-woongbeom:latest
+    ports:
+      - '4005:4005'
+    build:
+      context: ../backend/woongbeom
+    depends_on:
+      - internship-postgres
+
   internship-hareem:
     container_name: internship-hareem
     image: internship-hareem

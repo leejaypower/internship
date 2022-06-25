@@ -12,7 +12,7 @@ router
     ctx.body = 'main page';
   });
 
-const PORT = 4000;
+const PORT = process.env.PORT || 4000;
 
 const application = {
   start: async () => {
@@ -21,6 +21,7 @@ const application = {
       schema: graphql.schema,
       csrfPrevention: true,
       context: ({ ctx }) => ctx,
+
     });
     await server.start();
 

@@ -34,8 +34,8 @@ const user = {
 };
 
 const resolveComposition = {
-  'Query.*': [middleware.Query.isAuthenticated()],
-  'Mutation.createUser': [middleware.Mutation.isAuthenticated()],
+//  'Query.*': [middleware.Query.isAuthenticated()],
+//  'Mutation.createUser': [middleware.Mutation.isAuthenticated()],
 };
 const composedResolvers = composeResolvers(user, resolveComposition);
 module.exports = composedResolvers;
