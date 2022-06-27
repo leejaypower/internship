@@ -116,6 +116,16 @@ services:
     ports:
       - "8089:8089"
 
+  internship-junghyun:
+    container_name: internship-junghyun
+    image: internship-junghyun
+    ports:
+      - '4000:4000'
+    depends_on:
+      - internship-postgres
+    build:
+      context: ../backend/junghyun/koa-books
+
 volumes:
   internship-pgdb:
   internship-zk-data:

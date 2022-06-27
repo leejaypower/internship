@@ -70,6 +70,6 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    return queryInterface.bulkDelete('BookInfos', null, {});
+    return queryInterface.bulkDelete('BookInfo', null, {});
   },
 };

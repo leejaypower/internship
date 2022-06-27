@@ -49,6 +49,8 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       comment: '도서 정보 설명 데이터를 담고 있습니다. (목차, 프롤로그 내용 등)',
     },
+  }, {
+    freezeTableName: true,
   });
   BookInfo.associate = (models) => {
     BookInfo.belongsTo(models.Category, {

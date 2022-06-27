@@ -78,7 +78,7 @@ const bookQuery = (data) => {
 const bookInfoQuery = (data) => {
   let where = {};
   const {
-    title, category, author, bookInfoId,
+    title, category, author,
   } = data;
   if ((title) || (category) || (author)) {
     where = {
@@ -147,6 +147,23 @@ const getBookInfoList = async (data) => {
   return bookInfoList;
 };
 
+const getBookInfoByBookId = async (data) => {
+  const where = {};
+  if (data.bookIds && data.overdue) {
+    where.id = { [Op.in]: data.userIds };
+  }
+  try {
+    return Book.findAll({
+      where,
+      attributes: ['bookInfoId'],
+      include: {
+        model: BookInfo,
+        attributes: ['id', 'title'],
+      },
+    });
+  } catch (err) { throw new Error(err.message); }
+};
+
 const destroy = async (bookId) => {
   const deletedBook = await Book.destroy({
     where: { id: bookId },
@@ -162,5 +179,6 @@ module.exports = {
   getOne,
   getOneWithBookInfo,
   getBookInfoList,
+  getBookInfoByBookId,
   destroy,
 };

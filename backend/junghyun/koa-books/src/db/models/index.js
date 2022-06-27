@@ -3,6 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 const Sequelize = require('sequelize');
+require('../../common/util/env');
 
 const basename = path.basename(__filename);
 

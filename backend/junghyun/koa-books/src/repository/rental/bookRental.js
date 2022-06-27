@@ -1,5 +1,9 @@
+const Sequelize = require('sequelize');
+
+const { Op } = Sequelize;
+
 const {
-  sequelize, BookRental, Book, Reservation,
+  sequelize, BookRental, Book, BookInfo, Reservation, User,
 } = require('../../db/models');
 
 const createRentalTransaction = async (data) => {
@@ -48,7 +52,6 @@ const createRentalTransaction = async (data) => {
 
 const getRentals = async (data) => {
   const where = {};
-  if (data.userId) { where.userId = data.userId; }
   if (data.bookId) { where.bookId = data.bookId; }
 
   const bookRentals = await BookRental.findAll({
@@ -58,6 +61,33 @@ const getRentals = async (data) => {
     order: [['createdAt', 'DESC']],
   });
   return bookRentals;
+};
+
+const getRentalsWithUserBook = async (data) => {
+  const where = {};
+  const today = new Date();
+  if (data.overdue) { where.returnDueDate = { [Op.lt]: today }; }
+  try {
+    return BookRental.findAll({
+      where,
+      include: [
+        {
+          model: Book,
+          include: [{
+            model: BookInfo,
+            attributes: ['id', 'title'],
+          }],
+        },
+        {
+          model: User,
+          attributes: ['id', 'userName', 'email', 'overdueCount', 'availableRentalDate'],
+        },
+      ],
+      order: [['createdAt', 'DESC']],
+    });
+  } catch (err) {
+    throw new Error(err.message);
+  }
 };
 
 const getRentalsByBookInfo = async (bookInfoId) => {
@@ -118,5 +148,11 @@ const extendRental = async ({ rentalId, returnDueDate }) => {
 };
 
 module.exports = {
-  getRentals, getRentalsByBookInfo, getOne, getOneWithBook, extendRental, createRentalTransaction,
+  getRentals,
+  getOne,
+  createRentalTransaction,
+  getRentalsWithUserBook,
+  getRentalsByBookInfo,
+  getOneWithBook,
+  extendRental,
 };

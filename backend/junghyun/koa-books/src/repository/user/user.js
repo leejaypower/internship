@@ -1,3 +1,6 @@
+const Sequelize = require('sequelize');
+
+const { Op } = Sequelize;
 const { User } = require('../../db/models');
 const hash = require('../../common/util/hashPassword');
 
@@ -42,6 +45,22 @@ const getOne = async (data) => {
   }
 };
 
+const getUsers = async (data, offset, limit) => {
+  let where = {};
+  if (data.userIds && data.overdue) {
+    where = {
+      id: { [Op.in]: data.userIds },
+    };
+  }
+  try {
+    return User.findAll({
+      where, limit, offset, order: [['createdAt', 'DESC']],
+    });
+  } catch (err) {
+    throw new Error(err.message);
+  }
+};
+
 module.exports = {
-  findOrCreate, updateRefreshToken, getOne,
+  findOrCreate, getOne, getUsers, updateRefreshToken,
 };
