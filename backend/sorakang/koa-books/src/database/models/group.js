@@ -1,21 +1,18 @@
-// const { Model } = require('sequelize');
-
 module.exports = (sequelize, DataTypes) => {
   const Group = sequelize.define(
     'Group',
     {
       id: {
         type: DataTypes.INTEGER,
-        autoIncrement: true,
         primaryKey: true,
+        autoIncrement: true,
+        comment: '그룹의 id 데이터를 담고 있습니다.',
       },
-
       groupName: {
         type: DataTypes.STRING(100),
         unique: true,
         comment: '해당 컬럼은 사용자가 가질 수 있는 group 대한 명칭을 나타냅니다. ex) Administrator ,User ',
       },
-
     },
   );
 

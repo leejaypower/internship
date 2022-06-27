@@ -1,9 +1,9 @@
-const { authUtils } = require('../../utils');
+const bcrypt = require('bcrypt');
 
 module.exports = {
 
   async up(queryInterface, Sequelize) {
-    const password = await authUtils.hashFunc('1111', 10);
+    const password = await bcrypt.hash('1111', 10);
     const users = [];
     for (let i = 0; i < 20; i += 1) {
       if (i > 5) {

@@ -17,5 +17,4 @@ module.exports = {
     await queryInterface.bulkDelete('BookSerials', null, {});
   },
 };
-
 // npx sequelize-cli db:seed --seed 20220520061409-book.js

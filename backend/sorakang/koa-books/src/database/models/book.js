@@ -1,14 +1,12 @@
-/* eslint-disable no-unused-vars */
-// const { Model } = require('sequelize');
-
 module.exports = (sequelize, DataTypes) => {
   const Book = sequelize.define(
     'Book',
     {
       id: {
         type: DataTypes.INTEGER,
-        autoIncrement: true,
         primaryKey: true,
+        autoIncrement: true,
+        comment: '해당 컬럼은 도서의 id 데이터를 담고 있습니다.',
       },
       title: {
         type: DataTypes.STRING(500),
@@ -32,13 +30,13 @@ module.exports = (sequelize, DataTypes) => {
       },
       publisher: {
         type: DataTypes.STRING(500),
-        comment: '해당 컬럼은 출판사 정보를 나타냅니다. ',
         allowNull: false,
+        comment: '해당 컬럼은 출판사 정보를 나타냅니다.',
       },
       publicationDate: {
         type: DataTypes.DATE,
-        comment: '해당 컬럼은 도서의 출간일을 나타냅니다.',
         allowNull: false,
+        comment: '해당 컬럼은 도서의 출간일을 나타냅니다.',
       },
       thumbnail: {
         type: DataTypes.STRING(2048),

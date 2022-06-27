@@ -6,7 +6,6 @@ const context = require('../api/graphql/context');
 
 const port = process.env.PORT || 4000;
 
-// plugin은 어디에서 관리할 지 ..
 const startPlugin = {
   serverWillStart() {
     console.log(`GraphQL Server starting up!${port} 🚀`);

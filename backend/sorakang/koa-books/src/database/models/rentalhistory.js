@@ -1,5 +1,3 @@
-// const { Model } = require('sequelize');
-
 module.exports = (sequelize, DataTypes) => {
   const RentalHistory = sequelize.define(
     'RentalHistory',
@@ -8,6 +6,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true,
+        comment: '대여이력id 데이터를 담고 있습니다.',
       },
       rentalDate: {
         type: DataTypes.DATE,

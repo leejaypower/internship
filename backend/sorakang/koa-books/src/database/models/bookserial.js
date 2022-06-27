@@ -6,6 +6,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true,
+        comment: '도서리얼번호의 id 데이터를 담고 있습니다.',
       },
     },
   );

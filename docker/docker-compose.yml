@@ -108,6 +108,16 @@ services:
       JWT_REFRESH_TOKEN_EXPIRES_IN: 14d
       HASH_SALT: 10
 
+  internship-sora:
+    container_name: internship-sora
+    image: internship-sora
+    ports:
+      - '4002:4002'
+    depends_on:
+      - internship-postgres
+    build:
+      context: ../backend/sorakang/koa-books
+    
   internship-deokhyeong:
     container_name: deokhyeong-weather-app
     build:

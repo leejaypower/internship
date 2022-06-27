@@ -4,8 +4,8 @@ module.exports = (sequelize, DataTypes) => {
     {
       id: {
         type: DataTypes.INTEGER,
-        autoIncrement: true,
         primaryKey: true,
+        autoIncrement: true,
         comment: '해당 컬럼은 사용자의 ID 나타냅니다. ',
       },
       name: {
@@ -22,6 +22,7 @@ module.exports = (sequelize, DataTypes) => {
       password: {
         type: DataTypes.STRING(300),
         allowNull: false,
+        comment: '해당 컬럼은 사용자의 비밀번호를 나타냅니다.',
       },
       phone: {
         type: DataTypes.STRING(50),
@@ -35,14 +36,6 @@ module.exports = (sequelize, DataTypes) => {
   );
 
   User.associate = (models) => {
-    models.User.belongsToMany(models.Category, {
-      through: 'CategoryUser',
-      foreignKey: 'id',
-      onDelete: 'cascade',
-      allowNull: false,
-      comment: '해당 컬럼은 사용자가 선호하는 도서의 카테고리를 나타냅니다. ',
-    });
-
     User.hasMany(models.Rental, {
       foreignKey: 'userId',
       onDelete: 'cascade',
