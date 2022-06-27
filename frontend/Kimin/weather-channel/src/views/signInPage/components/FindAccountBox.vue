@@ -107,7 +107,7 @@ export default {
       if (!this.$refs.form.validate()) return
       const accountInformation = {
         name: this.name,
-        phoneNumber: `${this.phoneNumberFirst}-${this.phoneNumberMiddle}-${this.phoneNumberLast}`,
+        phoneNumber: `${this.phoneNumberFirst}${this.phoneNumberMiddle}${this.phoneNumberLast}`,
       }
       findUserAccount(accountInformation)
     },

@@ -13,6 +13,7 @@
 
         <v-toolbar-title>바로 날씨</v-toolbar-title>
         <v-spacer />
+        <span class="pr-5">{{ `안녕하세요  ${storedMyInfo.name}님` }}</span>
         <v-menu
           left
           bottom
@@ -89,7 +90,7 @@
         </v-list>
       </v-navigation-drawer>
       <div
-        class="fill-height align-start pl-15 pr-15 pt-3"
+        class="align-start pl-10 pr-10 pt-7 main"
       >
         <router-view />
       </div>
@@ -158,5 +159,8 @@ export default {
 <style scoped>
   a {
     text-decoration-line: none;
+  }
+  .main{
+    height: 90%;
   }
 </style>

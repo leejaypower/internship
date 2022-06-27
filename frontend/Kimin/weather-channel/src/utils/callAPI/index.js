@@ -3,6 +3,7 @@ import callCurrentLocation from './callCurrentLocation'
 import callCurrentWeatherAPI from './callCurrentWeatherAPI'
 import callFiveDaysWeather from './callFiveDaysWeather'
 import callGeocodeByQuery from './callGeocodeByQuery'
+import callAirPollutionWeatherAPI from './callAirPollutionWeatherAPI'
 
 export {
   callReverseGeocode,
@@ -10,4 +11,5 @@ export {
   callCurrentWeatherAPI,
   callFiveDaysWeather,
   callGeocodeByQuery,
+  callAirPollutionWeatherAPI,
 }

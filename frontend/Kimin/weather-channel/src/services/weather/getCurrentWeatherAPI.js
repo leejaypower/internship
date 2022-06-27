@@ -6,18 +6,22 @@ const mapRainOrSnowInformation = (weatherInfo) => {
   const isSnowing = !!weatherInfo.snow
 
   if (isRaining) {
+    const timeUnit = Object.keys(weatherInfo.rain)[0] // openWeather.org가 제공가능한 첫번째 시간단위, 1h or 3h
+    const amountOfFall = `비, ${weatherInfo.rain[`${timeUnit}`]}mm/${timeUnit}` // ex) 3mm/1h
     return {
       kind: 'rain',
-      timeUnit: weatherInfo.rain[0], // openWeather.org가 제공가능한 첫번째 시간단위, 1h or 3h
-      amountOfFall: `비, ${weatherInfo.rain[`${this.timeUnit}`]}mm/${this.timeUnit}`, // ex) 3mm/1h
+      timeUnit,
+      amountOfFall,
     }
   }
 
   if (isSnowing) {
+    const timeUnit = Object.keys(weatherInfo.snow)[0] // openWeather.org가 제공가능한 첫번째 시간단위, 1h or 3h
+    const amountOfFall = `눈, ${weatherInfo.snow[`${timeUnit}`]}mm/${timeUnit}` // ex) 3mm/1h
     return {
       kind: 'snow',
-      timeUnit: weatherInfo.snow[0], // openWeather.org가 제공가능한 첫번째 시간단위, 1h or 3h
-      amountOfFall: `눈, ${weatherInfo.snow[`${this.timeUnit}`]}mm/${this.timeUnit}`, // ex) 3mm/1h
+      timeUnit,
+      amountOfFall,
     }
   }
 

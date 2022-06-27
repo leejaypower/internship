@@ -1,6 +1,6 @@
 <template>
-  <div class="main">
-    <header class="d-flex justify-space-between">
+  <div class="main d-flex flex-column justify-flex-start">
+    <v-container class="d-flex justify-space-between">
       <h1>
         개인정보
       </h1>
@@ -8,21 +8,21 @@
         v-show="!showSaveButton"
         @click="tryEdit"
       >
-        edit
+        개인정보수정
       </v-btn>
       <v-btn
         v-show="showSaveButton"
         color="success"
         @click="saveContents"
       >
-        save
+        변경사항저장
       </v-btn>
-    </header>
-    <v-container mt-13>
+    </v-container>
+    <v-container class="mt-10">
       <v-row
-        v-for="(row,i) in rows"
-        :key="i"
-        class="rowHeight"
+        v-for="(row) in rows"
+        :key="row.title"
+        class="rowHeight pl-4"
       >
         <v-col
           cols="1"
@@ -33,7 +33,7 @@
         </v-col>
         <v-col
           cols="9"
-          class="pa-0 pt-2 pb-2"
+          class="pa-0 pt-2 pb-2 pl-10"
           align-self="center"
         >
           <v-text-field
@@ -54,7 +54,7 @@
             v-show="row.title === '주소'"
             @click="addModalToFindAddress"
           >
-            find
+            주소검색
           </v-btn>
         </v-col>
       </v-row>
@@ -65,6 +65,7 @@
     >
       <find-adress-card
         @selectAddress="selectAddress"
+        @closeButton="dialog=false"
       />
     </v-dialog>
   </div>

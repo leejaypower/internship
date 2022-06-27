@@ -1,21 +1,13 @@
-import { callCurrentLocation } from '@/utils/callAPI'
+import { callAirPollutionWeatherAPI, callCurrentLocation, callCurrentWeatherAPI } from '@/utils/callAPI'
+import { divideArray } from '@/utils'
 import {
   getFiveDaysWeather,
   getCurrentWeatherAPI,
   getGeocodeByQuery,
   getReverseGeocode,
+  makeWeatherInfo,
 } from '@/services/weather'
-
-/**
- *
- * @param {*} param0
- * @param {String} 행정구역명
- * @returns coordinate {lat, lon}
- */
-const setMyCoordinate = async (_, address) => {
-  const coords = await getGeocodeByQuery(address)
-  return coords
-}
+import { validateCurrentWeatherResponse, validateAirPollutionResponse, validateCoordinate } from '@/services/validation'
 
 /**
  * services에 위치한 geoLocationAPI를 호출하는 함수
@@ -28,6 +20,7 @@ const getCoordinate = async ({ dispatch, commit }) => {
       lat: coords.latitude,
       lon: coords.longitude,
     }
+    validateCoordinate(coords.latitude, coords.longitude)
     commit('saveTempLocation', location)
   } catch (error) {
     dispatch('alertMessage', { text: '현 위치를 찾지 못하였습니다.', color: 'pink' }, { root: true })
@@ -41,6 +34,7 @@ const getCoordinate = async ({ dispatch, commit }) => {
 const getAddressByGeocode = async ({ dispatch }, coordinate) => {
   try {
     const { lat, lon } = coordinate
+    validateCoordinate(lat, lon)
     const foundedAddress = await getReverseGeocode(lat, lon)
     return foundedAddress
   } catch (error) {
@@ -56,6 +50,7 @@ const getCurrentWeather = async ({ dispatch, commit, getters }) => {
   }
   try {
     const { lat, lon } = location
+    validateCoordinate(lat, lon)
     const currentWeatherResult = getCurrentWeatherAPI(lat, lon)
     const futureWeatherResult = getFiveDaysWeather(lat, lon)
     const results = await Promise.allSettled([futureWeatherResult, currentWeatherResult])
@@ -91,12 +86,28 @@ const findAddress = async ({ dispatch }, query) => {
   }
 }
 
+const getMultiWeathers = async ({ dispatch, commit }, cities) => {
+  try {
+    const dividedArray = divideArray(cities, 3)
+    // 병렬통신을 위해 한번에 6개의 통신수가 가장 적정하다고 생각되며, 도시 1개당 통신 2종의 통신이 사용되기에 3개씩 분할
+
+    for (let i = 0; i < dividedArray.length; i += 1) {
+      const promises = dividedArray[i].map((city) => makeWeatherInfo(city))
+      // eslint-disable-next-line
+      const results = await Promise.all(promises)
+      commit('saveCitiesWeatherInfo', results)
+    }
+  } catch (error) {
+    dispatch('giveMessage', { text: '날씨조회서버에 오류가 있습니다.', color: 'pink' }, { root: true })
+  }
+}
+
 const actions = {
   getAddressByGeocode,
   getCoordinate,
   getCurrentWeather,
-  setMyCoordinate,
   findAddress,
+  getMultiWeathers,
 }
 
 export default actions
