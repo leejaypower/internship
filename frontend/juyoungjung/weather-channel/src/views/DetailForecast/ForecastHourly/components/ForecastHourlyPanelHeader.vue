@@ -2,7 +2,7 @@
   <v-expansion-panel-header>
     <v-row class="d-flex align-center">
       <v-col
-        cols="4"
+        cols="12"
         md="2"
         class="d-flex justify-center"
       >
@@ -10,7 +10,7 @@
       </v-col>
 
       <v-col
-        cols="4"
+        cols="12"
         md="2"
         class="d-flex justify-center"
       >
@@ -18,7 +18,7 @@
       </v-col>
 
       <v-col
-        cols="4"
+        cols="12"
         md="2"
         class="d-flex justify-center"
       >
@@ -32,7 +32,7 @@
       </v-col>
 
       <v-col
-        cols="4"
+        cols="12"
         md="2"
         class="d-flex justify-center"
       >
@@ -48,7 +48,7 @@
       </v-col>
 
       <v-col
-        cols="4"
+        cols="12"
         md="2"
         class="d-flex justify-center"
       >
@@ -63,7 +63,7 @@
       </v-col>
 
       <v-col
-        cols="4"
+        cols="12"
         md="2"
         class="d-flex justify-center"
       >
@@ -89,7 +89,7 @@ export default {
   props: {
     forecastData: {
       type: Object,
-      default: () => null,
+      default: null,
     },
   },
 }

@@ -1,4 +1,4 @@
-const KoreanWeatherDescription = {
+const weatherDescriptionKorean = {
   200: '비를 동반한 천둥구름',
   201: '가벼운 비를 동반한 천둥구름',
   202: '폭우를 동반한 천둥구름',
@@ -74,4 +74,4 @@ const KoreanWeatherDescription = {
   962: '허리케인',
 }
 
-export default KoreanWeatherDescription
+export default weatherDescriptionKorean

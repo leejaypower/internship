@@ -22,15 +22,14 @@
       <v-row class="d-flex justify-center align-center">
         <v-col
           class="text-h3 d-flex justify-center align-center"
-          cols="12"
-          sm="7"
+          cols="7"
         >
           <span> {{ simpleCurrentWeatherData.temp }}</span>
         </v-col>
         <v-col
           class="d-flex justify-center align-center"
-          cols="7"
-          sm="5"
+          md="5"
+          sm="3"
         >
           <v-img
             :src="makeIconUrlMixin(simpleCurrentWeatherData.icon)"

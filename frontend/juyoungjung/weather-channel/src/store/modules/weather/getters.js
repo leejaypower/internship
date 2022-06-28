@@ -1,10 +1,20 @@
 /* eslint-disable camelcase */
 
-import { KoreanWeatherDescription } from '@/data'
+import { weatherDescriptionKorean } from '@/data'
 import {
-  inputCelsiusUnit, inputMillimeterPerHourUnit, inputPercentUnit, inputMeterPerSecondUnit,
+  inputCelsiusUnit,
+  inputMillimeterPerHourUnit,
+  inputPercentUnit,
+  inputMeterPerSecondUnit,
 } from '@/services'
 import dayjs from 'dayjs'
+import {
+  FULL_DATE_ONLY_FORMAT,
+  ONE_HOUR,
+  TIME_FORMAT,
+  SHORT_DATE_WITH_DAY_FORMAT,
+  SHORT_DATE_ONLY_FORMAT,
+} from '@/constants'
 
 const getters = {
   simpleCurrentWeatherData(state) {
@@ -16,18 +26,18 @@ const getters = {
       const unixTimestamp = dayjs.unix(data.dt)
 
       result = {
-        date: unixTimestamp.format('YYYY.MM.DD'),
+        date: unixTimestamp.format(FULL_DATE_ONLY_FORMAT),
         day: unixTimestamp.format('dddd'),
         time: unixTimestamp.format('A hh:mm'),
-        desc: KoreanWeatherDescription[data.weather[0].id],
+        desc: weatherDescriptionKorean[data.weather[0].id],
         icon: data.weather[0].icon,
         temp: inputCelsiusUnit(data.temp),
         feels_like: inputCelsiusUnit(data.feels_like),
         humidity: inputPercentUnit(data.humidity),
         wind_speed: inputMeterPerSecondUnit(data.wind_speed),
         clouds: inputPercentUnit(data.clouds),
-        rain: data.rain ? inputMillimeterPerHourUnit(data.rain['1h']) : null,
-        snow: data.snow ? inputMillimeterPerHourUnit(data.snow['1h']) : null,
+        rain: data.rain ? inputMillimeterPerHourUnit(data.rain[ONE_HOUR]) : null,
+        snow: data.snow ? inputMillimeterPerHourUnit(data.snow[ONE_HOUR]) : null,
       }
     }
 
@@ -44,8 +54,8 @@ const getters = {
       const unixTimestamp = dayjs.unix(data.dt)
 
       return ({
-        key: unixTimestamp.format('DD'),
-        date: unixTimestamp.format('DD(dd)'),
+        key: unixTimestamp.format(SHORT_DATE_ONLY_FORMAT),
+        date: unixTimestamp.format(SHORT_DATE_WITH_DAY_FORMAT),
         icon: data.weather[0].icon,
         temp: inputCelsiusUnit(data.temp.day),
         feels_like: inputCelsiusUnit(data.feels_like.day),
@@ -64,10 +74,10 @@ const getters = {
       const unixTimestamp = dayjs.unix(data.dt)
 
       return ({
-        key: unixTimestamp.format('DD'),
-        date: unixTimestamp.format('YYYY.MM.DD'),
-        day: unixTimestamp.format('DD(dd)'),
-        hour: `${unixTimestamp.format('A hh')}시`,
+        key: unixTimestamp.format(SHORT_DATE_ONLY_FORMAT),
+        date: unixTimestamp.format(FULL_DATE_ONLY_FORMAT),
+        day: unixTimestamp.format(SHORT_DATE_WITH_DAY_FORMAT),
+        hour: `${unixTimestamp.format(TIME_FORMAT)}시`,
         icon: data.weather[0].icon,
         temp: inputCelsiusUnit(data.temp.day),
         feels_like: inputCelsiusUnit(data.feels_like.day),
@@ -90,8 +100,8 @@ const getters = {
       const unixTimestamp = dayjs.unix(data.dt)
 
       return ({
-        key: unixTimestamp.format('DD'),
-        day: unixTimestamp.format('DD(dd)'),
+        key: unixTimestamp.format(SHORT_DATE_ONLY_FORMAT),
+        day: unixTimestamp.format(SHORT_DATE_WITH_DAY_FORMAT),
         icon: data.weather[0].icon,
         temp: inputCelsiusUnit(data.temp.day),
       })
@@ -118,13 +128,13 @@ const getters = {
 
       return ({
         key: unixTimestamp.format('hh'),
-        date: unixTimestamp.format('YYYY.MM.DD'),
+        date: unixTimestamp.format(FULL_DATE_ONLY_FORMAT),
         day: unixTimestamp.format('(dd)'),
-        hour: `${unixTimestamp.format('A hh')}시`,
+        hour: `${unixTimestamp.format(TIME_FORMAT)}시`,
         icon: data.weather[0].icon,
         temp: inputCelsiusUnit(data.temp),
         feels_like: inputCelsiusUnit(data.feels_like),
-        rain: data.rain ? inputMillimeterPerHourUnit(data.rain['1h']) : null,
+        rain: data.rain ? inputMillimeterPerHourUnit(data.rain[ONE_HOUR]) : null,
         clouds: inputPercentUnit(data.clouds),
         humidity: inputPercentUnit(data.humidity),
         uvi: `${data.uvi}`,

@@ -111,6 +111,7 @@ import {
   YELLOW,
   GREEN,
   BLUE,
+  CELSIUS_UNIT,
 } from '@/constants'
 import WindCardGroup from './WindCardGroup.vue'
 
@@ -121,11 +122,12 @@ export default {
     topTabValue: null,
     dayTabValue: null,
     topTabs: ['기온', '강수량', '바람'],
-    beforeClickedIndex: 0,
+    beforeTopTabClickedIndex: 0,
+    beforeDayTabClickedIndex: 0,
     sparklinesConfig: {
       gradient: [RED, YELLOW, GREEN],
       value: [],
-      label: '°C',
+      label: CELSIUS_UNIT,
       fill: true,
     },
     windInfo: null,
@@ -156,64 +158,67 @@ export default {
   },
   methods: {
     makeTopTabItem(topTab) {
+      if (this.beforeTopTabClickedIndex === topTab) {
+        return
+      }
+
       // eslint-disable-next-line default-case
       switch (topTab) {
         case TEMPERATURE_INDEX:
-          if (!this.sparklinesConfig.fill) {
-            this.sparklinesConfig = {
-              value: this.forecastHourlyTemperatureList[0],
-              label: '°C',
-              fill: true,
-              gradient: [RED, YELLOW, GREEN],
-            }
+          this.sparklinesConfig = {
+            value: this.forecastHourlyTemperatureList[this.dayTabValue],
+            label: CELSIUS_UNIT,
+            fill: true,
+            gradient: [RED, YELLOW, GREEN],
           }
           break
         case RAIN_INDEX:
-          if (this.sparklinesConfig.fill) {
-            this.sparklinesConfig = {
-              value: this.forecastHourlyRainList[0],
-              label: '%',
-              fill: false,
-              gradient: [BLUE],
-            }
+          this.sparklinesConfig = {
+            value: this.forecastHourlyRainList[this.dayTabValue],
+            label: '%',
+            fill: false,
+            gradient: [BLUE],
           }
           break
         case WIND_INDEX:
-          this.windInfo = this.forecastHourlyWindList[0]
+          this.windInfo = this.forecastHourlyWindList[this.dayTabValue]
           break
       }
+
+      this.beforeTopTabClickedIndex = topTab
     },
     makeDayTabItem(index) {
+      if (this.beforeDayTabClickedIndex === index) {
+        return
+      }
+
       const indexTemperatureValue = this.forecastHourlyTemperatureList[index]
       const indexRainValue = this.forecastHourlyRainList[index]
-      this.beforeClickedIndex = index
 
       // eslint-disable-next-line default-case
       switch (this.topTabValue) {
         case TEMPERATURE_INDEX:
-          if (this.beforeClickedIndex !== index) {
-            this.sparklinesConfig = {
-              value: indexTemperatureValue,
-              label: '°C',
-              fill: true,
-              gradient: [RED, YELLOW, GREEN],
-            }
+          this.sparklinesConfig = {
+            value: indexTemperatureValue,
+            label: CELSIUS_UNIT,
+            fill: true,
+            gradient: [RED, YELLOW, GREEN],
           }
           break
         case RAIN_INDEX:
-          if (this.beforeClickedIndex !== index) {
-            this.sparklinesConfig = {
-              value: indexRainValue,
-              label: '%',
-              fill: false,
-              gradient: [BLUE],
-            }
+          this.sparklinesConfig = {
+            value: indexRainValue,
+            label: '%',
+            fill: false,
+            gradient: [BLUE],
           }
           break
         case WIND_INDEX:
           this.windInfo = this.forecastHourlyWindList[index]
           break
       }
+
+      this.beforeDayTabClickedIndex = index
     },
   },
 }

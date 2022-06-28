@@ -8,7 +8,6 @@ const isDev = process.env.NODE_ENV !== 'production'
 const store = new Vuex.Store({
   modules,
   strict: isDev, // when true, detecting inappropriate mutations
-  plugins: isDev ? [Vuex.createLogger()] : [],
 })
 
 export default store

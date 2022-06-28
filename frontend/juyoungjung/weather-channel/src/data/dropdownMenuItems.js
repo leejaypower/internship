@@ -1,4 +1,4 @@
-const DropdownMenuItems = {
+const dropdownMenuItems = {
   before_login: [
     {
       title: '회원가입',
@@ -25,4 +25,4 @@ const DropdownMenuItems = {
   ],
 }
 
-export default DropdownMenuItems
+export default dropdownMenuItems

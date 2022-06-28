@@ -45,6 +45,12 @@ const routes = [
         component: () => import('@/views/DetailForecast/ForecastAll/index.vue'),
         meta: { authRequired: true },
       },
+      {
+        path: '/detail-forecast/diagonose',
+        name: 'ForecastDiagonose',
+        component: () => import('@/views/DetailForecast/ForecastDiagonose/index.vue'),
+        meta: { authRequired: true },
+      },
     ],
   },
   {

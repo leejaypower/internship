@@ -54,7 +54,7 @@ export default {
   props: {
     forecastData: {
       type: Object,
-      default: () => null,
+      default: null,
     },
   },
   methods: {

@@ -9,9 +9,10 @@
         {{ subTitle }}
       </h5>
     </v-col>
+
     <v-col
       v-if="currentLocation"
-      cols="8"
+      cols="12"
       lg="4"
     >
       <h3><span class="blue-grey--text">현재 위치</span> {{ currentLocation }}</h3>
@@ -19,8 +20,8 @@
 
     <v-col
       v-if="currentLocation"
-      cols="4"
       lg="2"
+      class="d-flex justify-end"
     >
       <v-tooltip top>
         <template #activator="{ on, attrs }">

@@ -14,7 +14,6 @@
         </v-col>
 
         <v-col
-          cols="12"
           md="4"
           class="d-flex justify-end align-center"
         >
@@ -50,7 +49,6 @@
         </v-col>
 
         <v-col
-          cols="12"
           lg="8"
         >
           <search-location-input-card />

@@ -23,7 +23,6 @@
           <span v-else>현재 계신 곳이 아닌<br> 다른 지역의 날씨정보를 알고 싶으신가요?</span>
         </v-col>
         <v-col
-          cols="12"
           md="6"
           class="d-flex justify-center align-center"
         >

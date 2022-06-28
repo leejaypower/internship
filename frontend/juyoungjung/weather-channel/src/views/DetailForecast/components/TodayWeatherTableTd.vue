@@ -15,10 +15,9 @@
       </v-col>
 
       <v-col
-        cols="12"
         md="6"
       >
-        <span class="text-h6">
+        <span :class="responsiveSheetTableTdFontSize">
           {{ content }}
         </span>
       </v-col>
@@ -29,6 +28,8 @@
 import {
   PC_PADDING,
   MOBILE_PADDING,
+  PC_TABLE_TD_FONT_SIZE,
+  MOBILE_TABLE_TD_FONT_SIZE,
 } from '@/constants'
 
 export default {
@@ -50,6 +51,10 @@ export default {
   computed: {
     responsiveTdPadding() {
       return this.$vuetify.breakpoint.mdAndDown ? MOBILE_PADDING : PC_PADDING
+    },
+    responsiveSheetTableTdFontSize() {
+      return this.$vuetify.breakpoint.mdAndDown
+        ? MOBILE_TABLE_TD_FONT_SIZE : PC_TABLE_TD_FONT_SIZE
     },
   },
 }

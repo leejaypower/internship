@@ -44,13 +44,13 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import { DropdownMenuItems } from '@/data'
+import { dropdownMenuItems } from '@/data'
 
 export default {
   name: 'DropdownMenu',
   data: () => ({
     group: null,
-    dropdownMenuItems: DropdownMenuItems.before_login,
+    dropdownMenuItems: dropdownMenuItems.before_login,
     dropdownBtnText: '환영합니다',
   }),
   computed: {
@@ -62,9 +62,9 @@ export default {
   watch: {
     accessToken(value) {
       if (value) {
-        this.dropdownMenuItems = DropdownMenuItems.after_login
+        this.dropdownMenuItems = dropdownMenuItems.after_login
       } else {
-        this.dropdownMenuItems = DropdownMenuItems.before_login
+        this.dropdownMenuItems = dropdownMenuItems.before_login
       }
     },
     nickname(value) {

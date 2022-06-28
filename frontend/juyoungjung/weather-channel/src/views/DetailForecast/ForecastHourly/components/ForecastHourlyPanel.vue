@@ -25,7 +25,7 @@ export default {
   props: {
     hourlyData: {
       type: Array,
-      default: null,
+      default: () => [],
     },
   },
 }

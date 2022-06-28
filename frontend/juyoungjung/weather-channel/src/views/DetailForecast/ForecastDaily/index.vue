@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-sheet :class="responsiveSheetPaddingMixin">
     <v-skeleton-loader
       v-if="!forecastDaily7DaysList"
       type="image"
@@ -28,12 +28,14 @@
     >
       <forecast-daily-weather-table :selected-day-data="selectedDayData" />
     </v-card>
-  </div>
+  </v-sheet>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
+import { responsiveSheetMixin } from '@/mixins'
 import dayjs from 'dayjs'
+import { SHORT_DATE_ONLY_FORMAT } from '@/constants'
 import ForecastDailySlideCardGroup from './components/ForecastDailySlideCardGroup.vue'
 import ForecastDailyWeatherTable from './components/ForecastDailyWeatherTable.vue'
 import ForecastPageTitle from '../components/ForecastPageTitle.vue'
@@ -41,6 +43,7 @@ import ForecastPageTitle from '../components/ForecastPageTitle.vue'
 export default {
   name: 'ForecastDaily',
   components: { ForecastDailySlideCardGroup, ForecastDailyWeatherTable, ForecastPageTitle },
+  mixins: [responsiveSheetMixin],
   data: () => ({
     selectedDayData: {
       feelsLike: '',
@@ -67,7 +70,7 @@ export default {
   },
   mounted() {
     const routerHash = this.$route.hash.substring(1)
-    const today = dayjs().format('DD')
+    const today = dayjs().format(SHORT_DATE_ONLY_FORMAT)
 
     if (!routerHash) {
       this.goToForecastDailyPageHash(today)
@@ -93,12 +96,9 @@ export default {
           feels_like: feelsLike, rain, humidity, uvi, wind, clouds,
         } = selectedData[0]
 
-        this.selectedDayData.feelsLike = feelsLike
-        this.selectedDayData.rain = rain
-        this.selectedDayData.humidity = humidity
-        this.selectedDayData.uvi = uvi
-        this.selectedDayData.wind = wind
-        this.selectedDayData.clouds = clouds
+        this.selectedDayData = {
+          feelsLike, rain, humidity, uvi, wind, clouds,
+        }
       }
     },
   },

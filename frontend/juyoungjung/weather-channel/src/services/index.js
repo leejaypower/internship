@@ -1,4 +1,3 @@
-export { default as isValidCoords } from './isValidCoords'
 export { default as makeApiResponseInfo } from './makeApiResponseInfo'
 export { default as inputCelsiusUnit } from './inputCelsiusUnit'
 export { default as inputMillimeterPerHourUnit } from './inputMillimeterPerHourUnit'

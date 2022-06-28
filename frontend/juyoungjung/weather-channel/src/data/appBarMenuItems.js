@@ -1,4 +1,4 @@
-const AppBarMenuItems = [
+const appBarMenuItems = [
   {
     icon: 'mdi-view-dashboard',
     text: 'Dashboard',
@@ -23,5 +23,11 @@ const AppBarMenuItems = [
     to: '/detail-forecast/all',
     requiredAuth: true,
   },
+  {
+    icon: 'mdi-earth',
+    text: '날씨 진단하기',
+    to: '/detail-forecast/diagonose',
+    requiredAuth: true,
+  },
 ]
-export default AppBarMenuItems
+export default appBarMenuItems

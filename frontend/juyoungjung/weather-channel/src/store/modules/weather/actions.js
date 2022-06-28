@@ -10,18 +10,23 @@ import {
   DAYJS_DATE_AND_DAY_FORMAT,
   SET_FORECAST_HOURLY_INFO,
   SET_FORECAST_DAILY_INFO,
+  ONE_HOUR,
+  TIME_FORMAT,
 } from '@/constants'
-import { makeApiResponseInfo, isValidCoords, makeWeatherDataToFixedOne } from '@/services'
+import {
+  makeApiResponseInfo,
+  makeWeatherDataToFixedOne,
+} from '@/services'
+import {
+  isValidCoords,
+  makeCoordsValidationResponseInfo,
+} from '@/services/coordsValidation'
 import dayjs from 'dayjs'
 
 const actions = {
   setCurrentCoords({ commit }, payload) {
     if (!isValidCoords(payload)) {
-      const info = makeApiResponseInfo(
-        'warning',
-        '현재 위치의 좌표값이 잘못된 것으로 확인되었습니다. 관리자에게 문의해주세요.',
-        '',
-      )
+      const info = makeCoordsValidationResponseInfo(payload.longitude)
 
       return commit(SET_RESPONSE_API_INFO, info)
     }
@@ -31,11 +36,7 @@ const actions = {
   async getOneCallApi({ commit }, payload) {
     /* eslint-disable camelcase */
     if (!isValidCoords(payload)) {
-      const info = makeApiResponseInfo(
-        'warning',
-        '잘못된 좌표값으로는 현재 날씨 정보를 가져올 수 없습니다. 관리자에게 문의해주세요.',
-        '',
-      )
+      const info = makeCoordsValidationResponseInfo(payload.longitude)
 
       return commit(SET_RESPONSE_API_INFO, info)
     }
@@ -60,56 +61,65 @@ const actions = {
       if (response?.data?.hourly) {
         const { hourly, daily } = response.data
 
-        const dayTypeSet = hourly.reduce((acc, v) => acc.add(
-          dayjs.unix(v.dt).format(DAYJS_DATE_AND_DAY_FORMAT),
-        ), new Set())
+        const dayTypeSet = hourly.reduce((acc, data) => {
+          const dayFormat = dayjs.unix(data.dt).format(DAYJS_DATE_AND_DAY_FORMAT)
+
+          return acc.add(dayFormat)
+        }, new Set())
 
         dayFormatTypeList = Array.from(dayTypeSet)
 
-        const hourlyInfo = dayFormatTypeList.reduce((acc, dayFormatType, idx) => {
-          acc.temperature[idx] = []
-          acc.rain[idx] = []
-          acc.wind[idx] = []
+        const hourlyInfoGroupByDayFormatInitial = dayFormatTypeList.reduce((acc, dayFormatType) => {
+          acc[dayFormatType] = {
+            temperature: [],
+            rain: [],
+            wind: [],
+          }
 
-          hourly.filter((data, index) => {
+          return acc
+        }, {})
+
+        const hourlyInfoGroupByDayFormat = hourly
+          .reduce((acc, data, index) => {
             const dayFormat = dayjs.unix(data.dt).format(DAYJS_DATE_AND_DAY_FORMAT)
 
-            if (dayFormatType === dayFormat) {
-              const oneHourTemperature = Number(makeWeatherDataToFixedOne(data.temp))
+            const oneHourTemperature = makeWeatherDataToFixedOne(data.temp)
+            const oneHourRain = data.rain ? makeWeatherDataToFixedOne(data.rain[ONE_HOUR]) : 0.0
+            const {
+              dt,
+              wind_speed,
+              wind_deg,
+              wind_gust,
+            } = data
 
-              const oneHourRainAmount = data.rain ? Number(makeWeatherDataToFixedOne(data.rain['1h'])) : 0.0
-
-              const {
-                dt,
-                wind_speed,
-                wind_deg,
-                wind_gust,
-              } = data
-
-              const oneHourWindInfo = {
-                key: index,
-                hour: dayjs.unix(dt).format('A hh'),
-                wind_speed,
-                wind_deg,
-                wind_gust,
-              }
-
-              acc.temperature[idx].push(oneHourTemperature)
-              acc.rain[idx].push(oneHourRainAmount)
-              acc.wind[idx].push(oneHourWindInfo)
+            const oneHourWindInfo = {
+              key: index,
+              hour: dayjs.unix(dt).format(TIME_FORMAT),
+              wind_speed,
+              wind_deg,
+              wind_gust,
             }
 
-            return null
-          })
+            acc[dayFormat].temperature.push(oneHourTemperature)
+            acc[dayFormat].rain.push(oneHourRain)
+            acc[dayFormat].wind.push(oneHourWindInfo)
+
+            return acc
+          }, hourlyInfoGroupByDayFormatInitial)
+
+        const hourlyInfo = dayFormatTypeList.reduce((acc, data, idx) => {
+          acc.temperature[idx] = hourlyInfoGroupByDayFormat[data].temperature
+          acc.rain[idx] = hourlyInfoGroupByDayFormat[data].rain
+          acc.wind[idx] = hourlyInfoGroupByDayFormat[data].wind
 
           return acc
         }, initial.hourlyInfo)
 
         const dailyInfo = daily.reduce((acc, data, idx) => {
-          const oneDayTemperature = Number(makeWeatherDataToFixedOne(data.temp.day))
+          const oneDayTemperature = makeWeatherDataToFixedOne(data.temp.day)
 
           const oneDayRainAmount = data.rain
-            ? Number(makeWeatherDataToFixedOne(data.rain)) : 0.0
+            ? makeWeatherDataToFixedOne(data.rain) : 0.0
 
           const {
             dt,
@@ -120,7 +130,7 @@ const actions = {
 
           const oneDayWindInfo = {
             key: idx,
-            hour: dayjs.unix(dt).format('A hh'),
+            hour: dayjs.unix(dt).format(TIME_FORMAT),
             wind_speed,
             wind_deg,
             wind_gust,
@@ -154,17 +164,22 @@ const actions = {
   },
   async getLocationName({ commit }, payload) {
     if (!isValidCoords(payload)) {
-      const info = makeApiResponseInfo(
-        'error',
-        '잘못된 좌표값으로는 현재 위치를 가져올 수 없습니다. 관리자에게 문의해주세요.',
-        '',
-      )
+      const info = makeCoordsValidationResponseInfo(payload.longitude)
 
       return commit(SET_RESPONSE_API_INFO, info)
     }
 
     try {
       const response = await naverOpenApi.getLocationNameByCoords(payload)
+
+      if (!response.data.results[0]) {
+        const info = makeApiResponseInfo(
+          'info',
+          '다음 우편번호 서비스에 현재 위치에 대한 행정동 이름을 요청한 결과 해당하는 데이터가 없습니다.',
+        )
+
+        return commit(SET_RESPONSE_API_INFO, info)
+      }
 
       const { region } = response.data.results[0]
       const locationName = `${region.area1.name} ${region.area2.name} ${region.area3.name}`
@@ -187,8 +202,7 @@ const actions = {
       if (response.data.addresses.length === 0) {
         const info = makeApiResponseInfo(
           'info',
-          '날씨 정보를 가져올 수 없는 주소입니다. 해당 지역의 좌표가 현재 사이트에서 사용하고 있는 다음 우편번호 서비스에 등록되지 않아 날씨 정보를 조회할 수 없습니다.',
-          '',
+          '날씨 정보를 가져올 수 없는 주소입니다. 해당 지역의 좌표가 다음 우편번호 서비스에 등록되지 않아 날씨 정보를 조회할 수 없습니다.',
         )
 
         commit(SET_RESPONSE_API_INFO, info)

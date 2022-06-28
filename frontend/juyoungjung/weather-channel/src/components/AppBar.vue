@@ -46,7 +46,7 @@
   </div>
 </template>
 <script>
-import { AppBarMenuItems } from '@/data'
+import { appBarMenuItems } from '@/data'
 import NavigationDrawer from './NavigationDrawer.vue'
 import AuthTypeChip from './AuthTypeChip.vue'
 import DropdownMenu from './DropdownMenu.vue'
@@ -61,7 +61,7 @@ export default {
   data: () => ({
     clickedMenuName: '',
     isDrawerVisible: false,
-    appBarMenuItems: AppBarMenuItems,
+    appBarMenuItems,
   }),
   methods: {
     toggleDrawerVisible() {

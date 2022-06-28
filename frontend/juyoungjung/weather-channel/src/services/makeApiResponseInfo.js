@@ -1,6 +1,6 @@
 const makeApiResponseInfo = (type, desc, code) => ({
   type,
-  text: `${desc} ${code}`,
+  text: code ? `${desc} ${code}` : desc,
   visible: true,
 })
 

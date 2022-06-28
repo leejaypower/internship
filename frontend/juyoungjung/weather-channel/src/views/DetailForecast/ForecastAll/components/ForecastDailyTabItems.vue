@@ -84,6 +84,7 @@ import {
   YELLOW,
   GREEN,
   BLUE,
+  CELSIUS_UNIT,
 } from '@/constants'
 import openWeatherMapIconMixin from '@/mixins/openweathermap-icon-mixin'
 import WindCardGroup from './WindCardGroup.vue'
@@ -101,7 +102,7 @@ export default {
     sparklinesConfig: {
       gradient: [RED, YELLOW, GREEN],
       value: [],
-      label: '°C',
+      label: CELSIUS_UNIT,
       fill: true,
     },
     windInfo: null,
@@ -131,34 +132,34 @@ export default {
   },
   methods: {
     makeTopTabItem(topTabIndex) {
-      this.beforeClickedIndex = topTabIndex
+      if (this.beforeClickedIndex === topTabIndex) {
+        return
+      }
 
       // eslint-disable-next-line default-case
       switch (topTabIndex) {
         case TEMPERATURE_INDEX:
-          if (this.beforeClickedIndex !== topTabIndex) {
-            this.sparklinesConfig = {
-              value: this.forecastDaily7DaysTemperatureList,
-              label: '°C',
-              fill: true,
-              gradient: [RED, YELLOW, GREEN],
-            }
+          this.sparklinesConfig = {
+            value: this.forecastDaily7DaysTemperatureList,
+            label: CELSIUS_UNIT,
+            fill: true,
+            gradient: [RED, YELLOW, GREEN],
           }
           break
         case RAIN_INDEX:
-          if (this.beforeClickedIndex !== topTabIndex) {
-            this.sparklinesConfig = {
-              value: this.forecastDaily7DaysRainList,
-              label: '%',
-              fill: false,
-              gradient: [BLUE],
-            }
+          this.sparklinesConfig = {
+            value: this.forecastDaily7DaysRainList,
+            label: '%',
+            fill: false,
+            gradient: [BLUE],
           }
           break
         case WIND_INDEX:
           this.windInfo = this.forecastDaily7DaysWindList
           break
       }
+
+      this.beforeClickedIndex = topTabIndex
     },
   },
 }

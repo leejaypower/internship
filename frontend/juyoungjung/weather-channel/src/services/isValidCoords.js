@@ -1,9 +1,9 @@
 const isValidCoords = ({ longitude, latitude }) => {
-  if (longitude < -90 && longitude > 90) {
+  if (longitude < -180 || longitude > 180) {
     return false
   }
 
-  if (latitude < -180 && latitude > 180) {
+  if (latitude < -90 || latitude > 90) {
     return false
   }
 

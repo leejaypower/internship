@@ -57,6 +57,26 @@
 - 시간별 날씨 정보 기온, 강수량 차트로 보여주기, 바람 정보 카드로 보여주기
 - 요일별 날씨 정보 기온, 강수량 차트로 보여주기, 바람 정보 카드로 보여주기
 
+### 전체 날씨 보기 페이지(상세 페이지)[8주차]
+
+- 주소로 위치 검색 버튼 넣기
+- 시간별 날씨 정보 기온, 강수량 차트로 보여주기, 바람 정보 카드로 보여주기
+- 요일별 날씨 정보 기온, 강수량 차트로 보여주기, 바람 정보 카드로 보여주기
+
+### 날씨 진단하기 페이지(상세 페이지)[9주차]
+
+- 현재 위치의 날씨정보와 [기상청 기후평년값](https://data.kma.go.kr/normals/info1.do)을 비교하기
+
+- 자료 조건 
+
+|항목|내용| 
+|------|---| 
+|평년값|30년(1991~2020)| 
+|종류|월별 평년값(일반요소)| 
+|지점|전국| 
+|요소|평균 기온, 최고 기온, 최저 기온, 풍속, 강수량|
+
+- 출처: [기상청 기후표](https://data.kma.go.kr/normals/table.do)
 ## 3. mobile & pc 반응형 구현하기
 
 # Using Libraray
@@ -89,15 +109,14 @@
 │   ├── index.js
 │   ├── middleware
 │   │   ├── checkTokenExpireTime.js
-│   │   └── isJWTValid.js
+│   │   └── index.js
 │   ├── router
 │   │   └── index.js
 │   └── services
-│       ├── JWT
-│       │   ├── index.js
-│       │   └── makeJWT.js
 │       ├── checkDuplicatedInfo.js
 │       ├── getUserInfoList.js
+│       ├── index.js
+│       ├── makeJWT.js
 │       ├── makeReturn.js
 │       └── saveUserInfoAtLocalStorage.js
 ├── jest.config.js
@@ -118,7 +137,16 @@
 │   │   ├── openWeatherMap.js
 │   │   └── user.js
 │   ├── assets
-│   │   ├── logo.png
+│   │   ├── images
+│   │   │   ├── buy-local-food.png
+│   │   │   ├── climate-average-info.png
+│   │   │   ├── electrical-plug.png
+│   │   │   ├── kma-main-page.png
+│   │   │   ├── logo.png
+│   │   │   ├── maintain-room-temperature.png
+│   │   │   ├── road-bicycle.png
+│   │   │   ├── sustainable-lifecycle.png
+│   │   │   └── vegetarian-diet.png
 │   │   └── styles
 │   │       └── global.scss
 │   ├── components
@@ -134,25 +162,44 @@
 │   │   ├── ResponseInfoAlert.vue
 │   │   └── ScrollToTopBtn.vue
 │   ├── constants
+│   │   ├── index.js
 │   │   ├── localStorage-types.js
 │   │   ├── modal-types.js
 │   │   ├── mutation-types.js
+│   │   ├── sheet-types.js
 │   │   └── weather-types.js
 │   ├── data
-│   │   ├── AppBarMenuItems.js
-│   │   ├── DropdownMenuItems.js
-│   │   └── weatherDescKo.js
+│   │   ├── appBarMenuItems.js
+│   │   ├── dailyChallengeForEarthCardList.js
+│   │   ├── dropdownMenuItems.js
+│   │   ├── environmentalOrganizationInfoList.js
+│   │   ├── climaticAverageListKorea.js
+│   │   ├── weatherDescriptionKorean.js
+│   │   └── index.js
 │   ├── main.js
 │   ├── mixins
 │   │   ├── check-refreshtoken-mixin.js
 │   │   ├── daum-postcode-mixin.js
 │   │   ├── index.js
 │   │   └── openweathermap-icon-mixin.js
+│   │   └── responsive-sheet-mixin.js
 │   ├── plugins
 │   │   └── vuetify.js
 │   ├── router
 │   │   └── index.js
 │   ├── services
+│   │   ├── coordsValidation
+│   │   │   ├── checkValidationCause.js
+│   │   │   ├── index.js
+│   │   │   ├── isValidCoords.js
+│   │   │   ├── isValidLatitude.js
+│   │   │   ├── isValidLongitude.js
+│   │   │   └── makeCoordsValidationResponseInfo.js
+│   │   ├── index.js
+│   │   ├── inputCelsiusUnit.js
+│   │   ├── inputMeterPerSecondUnit.js
+│   │   ├── inputMillimeterPerHourUnit.js
+│   │   ├── inputPercentUnit.js
 │   │   ├── isValidCoords.js
 │   │   ├── makeApiResponseInfo.js
 │   │   ├── makeWeatherDataToFixedOne.js
@@ -166,12 +213,14 @@
 │   │       │   ├── actions.js
 │   │       │   ├── getters.js
 │   │       │   ├── index.js
-│   │       │   └── mutations.js
+│   │       │   ├── mutations.js
+│   │       │   └── state.js
 │   │       └── weather
 │   │           ├── actions.js
 │   │           ├── getters.js
 │   │           ├── index.js
-│   │           └── mutations.js
+│   │           ├── mutations.js
+│   │           └── state.js
 │   └── views
 │       ├── DashBoard
 │       │   ├── components
@@ -190,12 +239,24 @@
 │       │   │   │   ├── ForecastDailyCardGroup.vue
 │       │   │   │   ├── ForecastDailyTabItems.vue
 │       │   │   │   ├── ForecastHourlyTabItems.vue
+│       │   │   │   ├── WindCard.vue
 │       │   │   │   └── WindCardGroup.vue
 │       │   │   └── index.vue
 │       │   ├── ForecastDaily
 │       │   │   ├── components
 │       │   │   │   ├── ForecastDailySlideCardGroup.vue
 │       │   │   │   └── ForecastDailyWeatherTable.vue
+│       │   │   └── index.vue
+│       │   ├── ForecastDiagonose
+│       │   │   ├── components
+│       │   │   │   ├── ClimateAverageInfoImage.vue
+│       │   │   │   ├── CompareCurrentTemperatureWithAverage.vue
+│       │   │   │   ├── CompareCurrentWeatherWithAverage.vue
+│       │   │   │   ├── DailyChallengeForEarthCard.vue
+│       │   │   │   ├── DailyChallengeForEarthContent.vue
+│       │   │   │   ├── EnvironmentalOrganizationSlideGroup.vue
+│       │   │   │   ├── KMAMainPageCard.vue
+│       │   │   │   └── WeatherProgressLinear.vue
 │       │   │   └── index.vue
 │       │   ├── ForecastHourly
 │       │   │   ├── components
