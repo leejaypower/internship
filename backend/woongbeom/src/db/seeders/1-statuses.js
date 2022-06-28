@@ -9,6 +9,10 @@ module.exports = {
         id: 1,
         description: '대출 불가',
       },
+      {
+        id: 2,
+        description: '대출 불가, 예약중',
+      },
     ], {});
   },
 
@@ -16,3 +20,9 @@ module.exports = {
     await queryInterface.bulkDelete('Statuses', null, {});
   },
 };
+
+/**
+ * TODO
+ * status 를 숫자값이 아닌 ENUM 으로 관리하는 것에 대해 고민해보자.
+ * enum type 이해, status 테이블 유지 여부 등에 대하여도 고민해보자.
+ */

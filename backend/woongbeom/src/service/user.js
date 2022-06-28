@@ -1,8 +1,14 @@
 const repository = require('../repository');
 const { sequelize } = require('../db/models');
-const { errorHandler } = require('../../lib/util/error');
 const lib = require('../../lib');
 
+const { constant } = lib.common;
+const { errorHandler } = lib.util.error;
+
+/**
+ * 유저 회원가입
+ * @param { Object } userData 유저 email, name, password
+ */
 const createUser = async (userData) => {
   const result = await sequelize.transaction(async (transaction) => {
     const { name, email, password } = userData;
@@ -44,17 +50,29 @@ const updateUserName = async (id, name) => {
   return numOfUpdatedRow;
 };
 
-
+/**
+ * 유저 로그인
+ * @param { String } email 유저의 이메일
+ * @param { String} password 유저의 패스워드
+ */
 const signIn = async (email, password) => {
   const matchedUser = await repository.user.getUserByEmail(email);
   if (matchedUser.email !== email) {
-    lib.util.error.errorHandler(1, 'User email does not exist.');
+    errorHandler(1, 'User email does not exist.');
   }
+
   const matchPassword = await lib.auth.hash.comparePassword(password, matchedUser.password);
   if (!matchPassword) {
-    lib.util.error.errorHandler(1, 'Wrong password');
+    errorHandler(1, 'Wrong password');
   }
-  const token = lib.auth.jwt.sign({ email, role: lib.common.constant.ROLE.USER }, { expiresIn: lib.common.constant.token.expiresIn });
+
+  const token = lib.auth.jwt.sign({
+    id: matchedUser.dataValues.id,
+    email,
+    role: constant.ROLE.USER,
+  }, {
+    expiresIn: constant.token.expiresIn,
+  });
   return token;
 };
 

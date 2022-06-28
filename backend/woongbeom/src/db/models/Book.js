@@ -40,6 +40,13 @@ module.exports = (sequelize, DataTypes) => {
       onDelete: 'cascade',
       comment: '하나의 책은 여러 대여건을 갖는 것이 가능합니다.',
     });
+    Book.hasMany(models.Reservation, {
+      foreignKey: 'bookId',
+      sourceKey: 'id',
+      allowNull: true,
+      onDelete: 'cascade',
+      comment: '하나의 책은 여러 예약건을 갖는 것이 가능합니다.',
+    });
     Book.belongsTo(models.Status, {
       foreignKey: 'statusCode',
       targetKey: 'id',

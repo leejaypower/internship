@@ -1,33 +1,38 @@
 const lib = require('../../../../lib');
 
 /**
- * auth resolver
- * query, mutation 말고 depth 자체를 빼두면 로직이 겹치지 않게 설계할 수 있을 듯 하다.
+ * ToDo
+ * 문구 중복 방지 작업
  */
+const { errorHandler } = lib.util.error;
+
 const auth = {
   Query: {
     isAuthenticatedUser: () => (next) => async (parent, args, context) => {
       const token = context.request.header.authorization;
       if (!token) {
-        return context.throw('error');
+        errorHandler(1, 'Auth token does not exist.');
       }
       const decodedToken = await lib.auth.jwt.verify(token);
-      if (decodedToken.ROLE !== lib.common.constant.ROLE.ADMIN) {
-        return context.throw('error');
+
+      if (decodedToken.role !== lib.common.constant.ROLE.USER) {
+        errorHandler(1, 'This token has invalid role.');
       }
-      return next();
+      return next(parent, args, decodedToken);
     },
 
     isAuthenticatedAdmin: () => (next) => async (parent, args, context) => {
       const token = context.request.header.authorization;
       if (!token) {
-        return context.throw('error');
+        errorHandler(1, 'Auth token does not exist.');
       }
-      const decodedToken = await jwt.verify(token);
-      if (decodedToken.role !== ROLE.ADMIN) {
-        return context.throw('error');
+
+      const decodedToken = await lib.auth.jwt.verify(token);
+
+      if (decodedToken.role !== lib.common.constant.ROLE.ADMIN) {
+        errorHandler(1, 'This token has invalid role.');
       }
-      return next();
+      return next(parent, args, decodedToken);
     },
   },
   Mutation: {
@@ -37,8 +42,9 @@ const auth = {
         errorHandler(1, 'Auth token does not exist.');
       }
       const decodedToken = await lib.auth.jwt.verify(token);
+
       if (decodedToken.role !== lib.common.constant.ROLE.USER) {
-        errorHandler(1, 'This token has invalid role.')
+        errorHandler(1, 'This token has invalid role.');
       }
       return next(parent, args, decodedToken);
     },
@@ -46,15 +52,23 @@ const auth = {
     isAuthenticatedAdmin: () => (next) => async (parent, args, context) => {
       const token = context.request.header.authorization;
       if (!token) {
-        return context.throw('error');
+        errorHandler(1, 'Auth token does not exist.');
       }
-      const decodedToken = await jwt.verify(token);
-      if (decodedToken.role !== ROLE.ADMIN) {
-        return context.throw('error');
+
+      const decodedToken = await lib.auth.jwt.verify(token);
+
+      if (decodedToken.role !== lib.common.constant.ROLE.ADMIN) {
+        errorHandler(1, 'This token has invalid role.');
       }
-      return next();
+      return next(parent, args, decodedToken);
     },
   },
 };
 
 module.exports = auth;
+
+/**
+ * ToDo
+ * Query, Mutation depth에서 작업하니 중복코드가 발생
+ * depth를 끌어올려 미들웨어로 부착할 수 있도록 작업
+ */

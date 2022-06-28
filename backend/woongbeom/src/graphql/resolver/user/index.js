@@ -39,3 +39,7 @@ const resolveComposition = {
 };
 const composedResolvers = composeResolvers(user, resolveComposition);
 module.exports = composedResolvers;
+
+/**
+ * Auth resolver 리팩토링 하면서 주석 해제하여 붙이겠습니다.
+ */

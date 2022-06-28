@@ -1,0 +1,9 @@
+type Reservation {
+  id: Int
+  bookId: Int
+  userId: Int
+}
+
+type Mutation {
+  createReservation(bookId: Int!): Reservation
+}

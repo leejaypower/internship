@@ -4,7 +4,14 @@ const admin = require('./admin');
 const auth = require('./auth');
 const rental = require('./rental');
 const returnBook = require('./returnBook');
+const reservation = require('./reservation');
 
 module.exports = {
-  book, user, admin, auth, rental, returnBook,
+  book,
+  user,
+  admin,
+  auth,
+  rental,
+  returnBook,
+  reservation,
 };
