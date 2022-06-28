@@ -6,7 +6,9 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "docker:build": "docker build -t juyoungjung-weather-channel-app-image .",
+    "docker:run": "docker run -it -p 8090:8090 --rm --name juyoungjung-weather-channel-app juyoungjung-weather-channel-app-image"
   },
   "dependencies": {
     "@mdi/font": "^6.6.96",

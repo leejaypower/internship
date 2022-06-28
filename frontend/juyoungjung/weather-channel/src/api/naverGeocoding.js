@@ -4,7 +4,7 @@ const CLIENT_ID = process.env.VUE_APP_NAVER_API_CLIENT_ID
 const CLIENT_SECRET = process.env.VUE_APP_CLIENT_SECRET
 
 const api = axios.create({
-  baseURL: 'http://localhost:8080',
+  baseURL: process.env.NODE_ENV === 'production' ? 'http://localhost:8090' : 'http://localhost:8080',
   headers: {
     'Content-Type': 'application/json',
     'X-NCP-APIGW-API-KEY-ID': CLIENT_ID,

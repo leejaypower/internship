@@ -108,6 +108,16 @@ services:
       JWT_REFRESH_TOKEN_EXPIRES_IN: 14d
       HASH_SALT: 10
 
+
+  internship-juyoungjung:
+  container_name: juyoungjung-weather-channel-app
+  build:
+    context: ../frontend/juyoungjung/weather-channel
+    dockerfile: Dockerfile
+  ports:
+    - "8090:8090"
+
+
   internship-sora:
     container_name: internship-sora
     image: internship-sora
@@ -118,6 +128,7 @@ services:
     build:
       context: ../backend/sorakang/koa-books
     
+
   internship-deokhyeong:
     container_name: deokhyeong-weather-app
     build:
@@ -135,6 +146,7 @@ services:
       - internship-postgres
     build:
       context: ../backend/junghyun/koa-books
+
 
 volumes:
   internship-pgdb:
