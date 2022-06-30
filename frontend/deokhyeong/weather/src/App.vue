@@ -31,8 +31,25 @@ export default {
     }
     this.isAppLoading = false
   },
+  errorCaptured(error, vm, info) {
+    this.handleError({
+      errorLog: {
+        type: 'vue',
+        name: error.name,
+        message: error.message,
+        stack: error.stack,
+        originElement: vm.$el.innerHTML,
+        uri: vm.$route.fullPath,
+        isOnlyLogginUserPage: vm.$route.meta,
+        lifecycle: info,
+      },
+    })
+
+    return false
+  },
   methods: {
     ...mapActions('auth', ['getUserInfo']),
+    ...mapActions('error', ['handleError']),
   },
 }
 </script>

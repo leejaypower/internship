@@ -1,11 +1,5 @@
-const status = (state) => state.status
-const message = (state) => state.message
-const createdAt = (state) => state.createdAt
-const timeout = (state) => state.timeout
+const errorLogs = (state) => state.errorLogs
 
 export default {
-  status,
-  message,
-  createdAt,
-  timeout,
+  errorLogs,
 }

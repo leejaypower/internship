@@ -8,6 +8,10 @@ const bookmarkLocations = (state) => state.bookmarkLocations
 const selectedLocation = (state) => state.selectedLocation
 const currentLocation = (state) => state.currentLocation
 const defaultLocation = (state) => state.defaultLocation
+const userBasicInfo = (state) => ({
+  userId: state.userId,
+  email: state.email,
+})
 
 // eslint-disable-next-line max-len
 const priorityLocation = (state) => state.selectedLocation || state.currentLocation || state.defaultLocation
@@ -24,4 +28,5 @@ export default {
   currentLocation,
   defaultLocation,
   priorityLocation,
+  userBasicInfo,
 }

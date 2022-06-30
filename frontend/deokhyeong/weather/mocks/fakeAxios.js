@@ -71,6 +71,9 @@ class FakeAxios {
       if (endPoint === '/location/init') {
         response = await fakeServer.fetchInitLocation(this.config.headers, body)
       }
+      if (endPoint === '/errorLog') {
+        response = await fakeServer.fetchErrorLog(this.config.headers, body)
+      }
 
       console.log('post 요청', this.config)
       return response

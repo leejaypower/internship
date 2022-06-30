@@ -1,5 +1,6 @@
 import weatherApi from '@/service/api/weather'
 import weatherMapping from '@/service/mapping/weatherMapping'
+import errorDomain from '@/service/domain/error'
 
 const currentWeatherSetting = async ({ commit, dispatch }, {
   lat, lon, lang = 'kr', units = 'metric',
@@ -16,12 +17,14 @@ const currentWeatherSetting = async ({ commit, dispatch }, {
     }
     return response
   } catch (error) {
-    // PR 290 feature-issue271 브랜치에서 catchAsync 방식을 해당 방식으로 바꾸고
-    // 추가적으로 에러 핸들링 관련 메서드를 만들 수 있다면
-    // 거기서 만들어서 여기에 머지 후 적용하겠습니다.
-    dispatch('alert/alertOpen', {
-      status: error.status,
-      message: error.data.message,
+    dispatch('error/handleError', {
+      errorLog: {
+        type: 'api',
+        status: error.status,
+        originMessage: error.data?.message,
+        message: errorDomain.weatherErrorMessageParser(error.data?.message),
+        responseURL: error.request?.responseURL,
+      },
     }, { root: true })
     return error
   }
@@ -40,12 +43,14 @@ const currentAirPollutionSetting = async ({ commit, dispatch }, { lat, lon }) =>
     }
     return response
   } catch (error) {
-    // PR 290 feature-issue271 브랜치에서 catchAsync 방식을 해당 방식으로 바꾸고
-    // 추가적으로 에러 핸들링 관련 메서드를 만들 수 있다면
-    // 거기서 만들어서 여기에 머지 후 적용하겠습니다.
-    dispatch('alert/alertOpen', {
-      status: error.status,
-      message: error.data.message,
+    dispatch('error/handleError', {
+      errorLog: {
+        type: 'api',
+        status: error.status,
+        originMessage: error.data?.message,
+        message: errorDomain.weatherErrorMessageParser(error.data?.message),
+        responseURL: error.request?.responseURL,
+      },
     }, { root: true })
     return error
   }
@@ -66,9 +71,14 @@ const oneWeekWeathersSetting = async ({ commit, dispatch }, {
     }
     return response
   } catch (error) {
-    dispatch('alert/alertOpen', {
-      status: error.status,
-      message: '날씨 정보를 받아오는데 실패했습니다.',
+    dispatch('error/handleError', {
+      errorLog: {
+        type: 'api',
+        status: error.status,
+        originMessage: error.data?.message,
+        message: errorDomain.weatherErrorMessageParser(error.data?.message, '날씨 정보를 받아오는데 실패했습니다.'),
+        responseURL: error.request?.responseURL,
+      },
     }, { root: true })
     return error
   }
@@ -89,9 +99,14 @@ const hourlyWeathersSetting = async ({ commit, dispatch }, {
     }
     return response
   } catch (error) {
-    dispatch('alert/alertOpen', {
-      status: error.status,
-      message: '날씨 정보를 받아오는데 실패했습니다.',
+    dispatch('error/handleError', {
+      errorLog: {
+        type: 'api',
+        status: error.status,
+        originMessage: error.data?.message,
+        message: errorDomain.weatherErrorMessageParser(error.data?.message, '날씨 정보를 받아오는데 실패했습니다.'),
+        responseURL: error.request?.responseURL,
+      },
     }, { root: true })
     return error
   }

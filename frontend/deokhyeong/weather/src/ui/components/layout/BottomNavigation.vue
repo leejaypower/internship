@@ -28,10 +28,24 @@
       <span>마이 페이지</span>
       <v-icon>mdi-account</v-icon>
     </v-btn>
+    <v-btn
+      v-if="isTestTabView"
+      to="/error-test"
+      height="100%"
+      text
+    >
+      <span>테스트 페이지</span>
+      <v-icon>mdi-ab-testing</v-icon>
+    </v-btn>
   </v-bottom-navigation>
 </template>
 <script>
 export default {
   name: 'BottomNavigation',
+  data() {
+    return {
+      isTestTabView: process.env.NODE_ENV !== 'production',
+    }
+  },
 }
 </script>

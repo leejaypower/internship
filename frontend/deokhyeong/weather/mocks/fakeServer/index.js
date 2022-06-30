@@ -8,6 +8,7 @@ import fetchAddLocation from './fetchAddLocation'
 import fetchDeleteLocation from './fetchDeleteLocation'
 import fetchSelectLocation from './fetchSelectLocation'
 import fetchInitLocation from './fetchInitLocation'
+import fetchErrorLog from './fetchErrorLog'
 
 export default {
   fetchSignIn,
@@ -20,4 +21,5 @@ export default {
   fetchDeleteLocation,
   fetchSelectLocation,
   fetchInitLocation,
+  fetchErrorLog,
 }

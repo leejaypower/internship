@@ -4,7 +4,7 @@ import locationApi from '@/service/api/location'
 import locationDomain from '@/service/domain/location'
 import userMapping from '@/service/mapping/userMapping'
 import locationMapping from '@/service/mapping/locationMapping'
-import authErrorMessageParser from '@/service/domain/auth/authErrorMessageParser'
+import errorDomain from '@/service/domain/error'
 
 const signIn = async ({ commit, dispatch }, { email, password }) => {
   try {
@@ -18,9 +18,14 @@ const signIn = async ({ commit, dispatch }, { email, password }) => {
     }
     return response
   } catch (error) {
-    dispatch('alert/alertOpen', {
-      status: error.status,
-      message: authErrorMessageParser(error.data.message, '로그인 실패'),
+    dispatch('error/handleError', {
+      errorLog: {
+        type: 'api',
+        status: error.status,
+        originMessage: error.data?.message,
+        message: errorDomain.authErrorMessageParser(error.data?.message, '로그인 실패'),
+        responseURL: error.request?.responseURL,
+      },
     }, { root: true })
     return error
   }
@@ -34,9 +39,14 @@ const getUserInfo = async ({ commit, dispatch }) => {
     }
     return response
   } catch (error) {
-    dispatch('alert/alertOpen', {
-      status: error.status,
-      message: authErrorMessageParser(error.data.message),
+    dispatch('error/handleError', {
+      errorLog: {
+        type: 'api',
+        status: error.status,
+        originMessage: error.data?.message,
+        message: errorDomain.authErrorMessageParser(error.data?.message),
+        responseURL: error.request?.responseURL,
+      },
     }, { root: true })
     return error
   }
@@ -51,9 +61,14 @@ const signUp = async ({ dispatch }, { email, password }) => {
     }, { root: true })
     return response
   } catch (error) {
-    dispatch('alert/alertOpen', {
-      status: error.status,
-      message: authErrorMessageParser(error.data.message, '회원가입 실패'),
+    dispatch('error/handleError', {
+      errorLog: {
+        type: 'api',
+        status: error.status,
+        originMessage: error.data?.message,
+        message: errorDomain.authErrorMessageParser(error.data?.message, '회원가입 실패'),
+        responseURL: error.request?.responseURL,
+      },
     }, { root: true })
     return error
   }
@@ -67,9 +82,14 @@ const refreshSignIn = async ({ commit, dispatch }) => {
     }
     return response
   } catch (error) {
-    dispatch('alert/alertOpen', {
-      status: error.status,
-      message: authErrorMessageParser(error.data.message, '로그인 접속 기간 만료, 재로그인 필요'),
+    dispatch('error/handleError', {
+      errorLog: {
+        type: 'api',
+        status: error.status,
+        originMessage: error.data?.message,
+        message: errorDomain.authErrorMessageParser(error.data?.message, '로그인 접속 기간 만료, 재로그인 필요'),
+        responseURL: error.request?.responseURL,
+      },
     }, { root: true })
     return error
   }
@@ -87,9 +107,14 @@ const repairUserInfo = async ({ commit, dispatch }, { repairUserData }) => {
     }
     return response
   } catch (error) {
-    dispatch('alert/alertOpen', {
-      status: error.status,
-      message: authErrorMessageParser(error.data.message, '정보 수정 실패'),
+    dispatch('error/handleError', {
+      errorLog: {
+        type: 'api',
+        status: error.status,
+        originMessage: error.data?.message,
+        message: errorDomain.authErrorMessageParser(error.data?.message, '정보 수정 실패'),
+        responseURL: error.request?.responseURL,
+      },
     }, { root: true })
     return error
   }
@@ -107,9 +132,14 @@ const addNewLocation = async ({ commit, dispatch }, { newLocation }) => {
     }
     return response
   } catch (error) {
-    dispatch('alert/alertOpen', {
-      status: error.status,
-      message: error.data.message,
+    dispatch('error/handleError', {
+      errorLog: {
+        type: 'api',
+        status: error.status,
+        originMessage: error.data?.message,
+        message: errorDomain.locationErrorMessageParser(error.data?.message),
+        responseURL: error.request?.responseURL,
+      },
     }, { root: true })
     return error
   }
@@ -127,9 +157,14 @@ const deleteLocation = async ({ commit, dispatch }, { location }) => {
     }
     return response
   } catch (error) {
-    dispatch('alert/alertOpen', {
-      status: error.status,
-      message: error.data.message,
+    dispatch('error/handleError', {
+      errorLog: {
+        type: 'api',
+        status: error.status,
+        originMessage: error.data?.message,
+        message: errorDomain.locationErrorMessageParser(error.data?.message),
+        responseURL: error.request?.responseURL,
+      },
     }, { root: true })
     return error
   }
@@ -148,9 +183,14 @@ const selectLocation = async ({ commit, dispatch }, { location }) => {
     }
     return response
   } catch (error) {
-    dispatch('alert/alertOpen', {
-      status: error.status,
-      message: error.data.message,
+    dispatch('error/handleError', {
+      errorLog: {
+        type: 'api',
+        status: error.status,
+        originMessage: error.data?.message,
+        message: errorDomain.locationErrorMessageParser(error.data?.message),
+        responseURL: error.request?.responseURL,
+      },
     }, { root: true })
     return error
   }
@@ -168,9 +208,14 @@ const initLocation = async ({ commit, dispatch }) => {
     }
     return response
   } catch (error) {
-    dispatch('alert/alertOpen', {
-      status: error.status,
-      message: error.data.message,
+    dispatch('error/handleError', {
+      errorLog: {
+        type: 'api',
+        status: error.status,
+        originMessage: error.data?.message,
+        message: errorDomain.locationErrorMessageParser(error.data?.message),
+        responseURL: error.request?.responseURL,
+      },
     }, { root: true })
     return error
   }
@@ -187,9 +232,14 @@ const currentLocationSetting = async ({ commit, dispatch }) => {
     }
     return response
   } catch (error) {
-    dispatch('alert/alertOpen', {
-      status: error.errorCode,
-      message: error.data.message,
+    dispatch('error/handleError', {
+      errorLog: {
+        type: 'api',
+        status: error.status,
+        originMessage: error.data?.message,
+        message: errorDomain.locationErrorMessageParser(error.data?.message),
+        responseURL: error.request?.responseURL,
+      },
     }, { root: true })
     return error
   }
@@ -206,9 +256,14 @@ const fetchCurrentLocationName = async ({ commit, dispatch }, { longitude, latit
     }
     return response
   } catch (error) {
-    dispatch('alert/alertOpen', {
-      status: error.data.status.code,
-      message: '올바른 지명 정보를 받아오지 못했습니다.',
+    dispatch('error/handleError', {
+      errorLog: {
+        type: 'api',
+        status: error.status,
+        originMessage: error.data?.message,
+        message: errorDomain.naverErrorMessageParser(error.data?.message),
+        responseURL: error.request?.responseURL,
+      },
     }, { root: true })
     return error
   }

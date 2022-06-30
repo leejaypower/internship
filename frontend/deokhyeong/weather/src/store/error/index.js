@@ -6,10 +6,7 @@ import getters from './getters'
 const error = {
   namespaced: true,
   state: {
-    createdAt: '',
-    status: '',
-    message: '',
-    timeout: 4000,
+    errorLogs: [],
   },
   getters,
   mutations,

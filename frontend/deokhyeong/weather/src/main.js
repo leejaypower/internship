@@ -5,11 +5,13 @@ import App from './App'
 import router from './router'
 import store from './store'
 import vuetify from './plugins/vuetify'
+import windowErrorLogger from './plugins/windowErrorLogger'
 
-const { requestInterceptor, responseFailInterceptor } = interceptors
+window.onerror = (...arg) => windowErrorLogger(...arg, store)
 
 Vue.config.productionTip = false
 
+const { requestInterceptor, responseFailInterceptor } = interceptors
 fakeHttp.setRequestInterceptor(
   (config) => requestInterceptor(config, router),
 )

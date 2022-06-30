@@ -8,8 +8,16 @@ import WeatherTable from '@/ui/views/ForecastDetail/WeatherTable'
 import WeatherGraph from '@/ui/views/ForecastDetail/WeatherGraph'
 import dayjs from 'dayjs'
 import OneWeekForecast from '@/ui/views/OneWeekForecast'
+import ErrorTest from '@/ui/views/ErrorTest'
+import NotFound from '@/ui/views/NotFound'
 
 export default [
+  {
+    path: '*',
+    name: 'NotFound',
+    component: NotFound,
+    meta: { requiresAuth: true },
+  },
   {
     path: '/',
     name: 'MainHome',
@@ -45,6 +53,19 @@ export default [
     name: 'SignIn',
     component: SignIn,
     meta: { noRequiresAuth: true },
+  },
+  {
+    path: '/error-test',
+    name: 'ErrorTest',
+    component: ErrorTest,
+    meta: { requiresAuth: true },
+    beforeEnter(to, from, next) {
+      if (process.env.NODE_ENV === 'production') {
+        next('/')
+      } else {
+        next()
+      }
+    },
   },
   {
     path: '/forecast-detail',
