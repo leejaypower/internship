@@ -14,8 +14,9 @@ export default {
       const result = await getWeahterDataFetch(getters.currentCoords)
       const { current, daily, hourly } = result.data
       commit('updateCurrentWeatherData', { current, daily, hourly })
-    } catch (error) {
-      alert.error(error.message, '통신을 실패했습니다.')
+    } catch ({ errorMessage }) {
+      const { title, desc } = errorMessage
+      alert.error(title, desc)
     }
   },
   async currentLocationUpdate({ commit, dispatch }) {
@@ -24,9 +25,9 @@ export default {
       const currentCoord = await getCurrentLocation()
       commit('updateCurrentCoord', currentCoord)
       const settledResult = await Promise.allSettled(fetchs(currentCoord))
-      const isReject = settledResult.some((result) => result.status === 'rejected')
+      const isReject = settledResult.filter((result) => result.status === 'rejected')[0]
       if (isReject) {
-        throw Error('통신 실패')
+        throw isReject.reason
       }
       const { current, daily, hourly } = settledResult[0].value.data
       commit('updateCurrentWeatherData', { current, daily, hourly })
@@ -36,17 +37,8 @@ export default {
       const currenName = `${area1.name} ${area2.name} ${name} ${number1}`
       commit('updateCurrentName', { name: currenName })
     } catch (error) {
-      switch (error.message) {
-        case 'User denied Geolocation':
-          alert.error('위치 엑세스 차단', '위치 엑세스가 차단되었습니다. <br/>허용해주세요<br/>기본 위치의 날씨를 보여줍니다.')
-          break
-        case 'Origin does not have permission to use Geolocation service':
-          alert.error('위치 서비스 거부', '위치 서비스가 거부되었습니다.<br/>기본 위치의 날씨를 보여줍니다.')
-          break
-        default:
-          alert.error(error.message, '통신을 실패했습니다.<br/>기본 위치의 날씨를 보여줍니다.')
-          break
-      }
+      const { title, desc } = error.errorMessage
+      alert.error(title, desc)
       dispatch('defaultLocationUpdate')
     }
   },
@@ -56,8 +48,9 @@ export default {
       const { data } = await getWeahterDataFetch(coords)
       commit('updateLocationCoord', { ...coords, name })
       commit('updateLocationData', data)
-    } catch (error) {
-      alert.error('통신 실패', error.message)
+    } catch ({ errorMessage }) {
+      const { title, desc } = errorMessage
+      alert.error(title, desc)
     }
   },
   async updateBookmarksData({ commit }, payload) {
@@ -80,8 +73,9 @@ export default {
         }
       })
       commit('updateBookmarksData', res)
-    } catch (error) {
-      alert.error('통신 에러', error.message)
+    } catch ({ errorMessage }) {
+      const { title, desc } = errorMessage
+      alert.error(title, desc)
     }
   },
   async updateBookmark({ commit }, payload) {
@@ -89,8 +83,9 @@ export default {
     try {
       const result = await getBookmarkDataFetch(coords)
       commit('updateBookmark', { idx, result })
-    } catch (error) {
-      alert.error('통신 에러', error.message)
+    } catch ({ errorMessage }) {
+      const { title, desc } = errorMessage
+      alert.error(title, desc)
     }
   },
   removeBookmark({ commit }, payload) {

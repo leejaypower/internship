@@ -1,3 +1,4 @@
+import { errorMap } from '@/utils/mapping'
 import axios from 'axios'
 
 const WEATHER_URL = 'https://api.openweathermap.org/data/2.5/onecall'
@@ -14,6 +15,14 @@ const weather = axios.create({
   },
 })
 
+weather.interceptors.response.use((response) => response, (error) => {
+  const newError = {
+    ...error,
+    errorMessage: errorMap.openWeatherErrorMap(error.message),
+  }
+  return Promise.reject(newError)
+})
+
 const naver = axios.create({
   baseURL: NAVER_URL,
   method: 'GET',
@@ -26,6 +35,14 @@ const naver = axios.create({
     output: 'json',
     orders: 'roadaddr',
   },
+})
+
+naver.interceptors.response.use((response) => response, (error) => {
+  const newError = {
+    ...error,
+    errorMessage: errorMap.naverErrorMap(error.response.data.error.message),
+  }
+  return Promise.reject(newError)
 })
 
 export { weather, naver }

@@ -1,3 +1,5 @@
+import { errorMap } from '../mapping'
+
 /**
  * window.navigator.geolocation를 이용하여 현재 위치 가져오기
  */
@@ -8,8 +10,9 @@ const getCurrentLocation = () => new Promise((resolve, reject) => {
   }
   geolocationAPI.getCurrentPosition(({ coords }) => {
     resolve({ lat: coords.latitude, lon: coords.longitude })
-  }, (e) => {
-    reject(e)
+  }, ({ code, message }) => {
+    const newError = { code, message, errorMessage: errorMap.geolocationErrorMap(message) }
+    reject(newError)
   })
 })
 
