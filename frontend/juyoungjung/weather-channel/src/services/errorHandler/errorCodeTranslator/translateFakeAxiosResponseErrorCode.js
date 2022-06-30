@@ -1,5 +1,6 @@
-const translateResponseErrorCode = (code) => {
+const translateFakeAxiosResponseErrorCode = (code) => {
   let message = ''
+
   switch (code) {
     case 'Duplicated nickname':
       message = '다른 사용자가 이미 사용중인 닉네임입니다.'
@@ -35,4 +36,4 @@ const translateResponseErrorCode = (code) => {
   return message
 }
 
-export default translateResponseErrorCode
+export default translateFakeAxiosResponseErrorCode

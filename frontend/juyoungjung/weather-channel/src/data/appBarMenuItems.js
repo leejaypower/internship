@@ -29,5 +29,11 @@ const appBarMenuItems = [
     to: '/detail-forecast/diagonose',
     requiredAuth: true,
   },
+  {
+    icon: 'mdi-alert-circle-check-outline',
+    text: '에러 테스트하기',
+    to: '/test-error',
+    requiredAuth: false,
+  },
 ]
 export default appBarMenuItems

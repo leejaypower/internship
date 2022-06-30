@@ -1,8 +1,2 @@
 export { default as makeApiResponseInfo } from './makeApiResponseInfo'
-export { default as inputCelsiusUnit } from './inputCelsiusUnit'
-export { default as inputMillimeterPerHourUnit } from './inputMillimeterPerHourUnit'
-export { default as inputPercentUnit } from './inputPercentUnit'
-export { default as inputMeterPerSecondUnit } from './inputMeterPerSecondUnit'
-export { default as saveTargetAtLocalStorage } from './saveTargetAtLocalStorage'
-export { default as translateResponseErrorCode } from './translateResponseErrorCode'
 export { default as makeWeatherDataToFixedOne } from './makeWeatherDataToFixedOne'

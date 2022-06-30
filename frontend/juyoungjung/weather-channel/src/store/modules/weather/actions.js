@@ -1,8 +1,6 @@
 import { openWeatherApi, naverOpenApi } from '@/api'
 import {
   SET_CURRENT_LOCATION,
-  SET_RESPONSE_API_INFO,
-  RESET_RESPONSE_API_INFO,
   SET_ONE_CALL_API_DATA,
   SET_CURRENT_COORDS,
   SET_SEARCH_COORDS,
@@ -14,6 +12,10 @@ import {
   TIME_FORMAT,
 } from '@/constants'
 import {
+  naverGeocodingApiErrorHandler,
+  openWeatherMapApiErrorHandler,
+} from '@/services/errorHandler'
+import {
   makeApiResponseInfo,
   makeWeatherDataToFixedOne,
 } from '@/services'
@@ -24,21 +26,21 @@ import {
 import dayjs from 'dayjs'
 
 const actions = {
-  setCurrentCoords({ commit }, payload) {
+  setCurrentCoords({ commit, dispatch }, payload) {
     if (!isValidCoords(payload)) {
       const info = makeCoordsValidationResponseInfo(payload.longitude)
 
-      return commit(SET_RESPONSE_API_INFO, info)
+      return dispatch('alert/setWeatherApiResponse', info, { root: true })
     }
 
     return commit(SET_CURRENT_COORDS, payload)
   },
-  async getOneCallApi({ commit }, payload) {
+  async getOneCallApi({ commit, dispatch, rootGetters }, payload) {
     /* eslint-disable camelcase */
     if (!isValidCoords(payload)) {
       const info = makeCoordsValidationResponseInfo(payload.longitude)
 
-      return commit(SET_RESPONSE_API_INFO, info)
+      return dispatch('alert/setWeatherApiResponse', info, { root: true })
     }
 
     try {
@@ -153,20 +155,31 @@ const actions = {
 
       return null
     } catch (error) {
+      let userInfo = null
+
+      if (rootGetters['user/myInfo']) {
+        const { email, nickname } = rootGetters['user/myInfo']
+        userInfo = {
+          email, nickname,
+        }
+      }
+
+      openWeatherMapApiErrorHandler(error, userInfo)
+
       const info = makeApiResponseInfo(
         'error',
         '일일 예보 데이터를 가져오는 도중 문제가 발생했습니다. 최신 날씨 현황 가져오기를 위한 새로고침 버튼 클릭 시에도 동일한 문제가 발생할 경우 관리자에게 문의해주세요.',
         error.code,
       )
 
-      return commit(SET_RESPONSE_API_INFO, info)
+      return dispatch('alert/setWeatherApiResponse', info, { root: true })
     }
   },
-  async getLocationName({ commit }, payload) {
+  async getLocationName({ commit, dispatch, rootGetters }, payload) {
     if (!isValidCoords(payload)) {
       const info = makeCoordsValidationResponseInfo(payload.longitude)
 
-      return commit(SET_RESPONSE_API_INFO, info)
+      return dispatch('alert/setWeatherApiResponse', info, { root: true })
     }
 
     try {
@@ -178,7 +191,7 @@ const actions = {
           '다음 우편번호 서비스에 현재 위치에 대한 행정동 이름을 요청한 결과 해당하는 데이터가 없습니다.',
         )
 
-        return commit(SET_RESPONSE_API_INFO, info)
+        return dispatch('alert/setWeatherApiResponse', info, { root: true })
       }
 
       const { region } = response.data.results[0]
@@ -186,16 +199,27 @@ const actions = {
 
       return commit(SET_CURRENT_LOCATION, locationName)
     } catch (error) {
+      let userInfo = null
+
+      if (rootGetters['user/myInfo']) {
+        const { email, nickname } = rootGetters['user/myInfo']
+        userInfo = {
+          email, nickname,
+        }
+      }
+
+      naverGeocodingApiErrorHandler(error, userInfo)
+
       const info = makeApiResponseInfo(
         'error',
         '현재 위치의 행정동 이름을 가져오는 도중 문제가 발생했습니다. 관리자에게 문의해주세요.',
         error.code,
       )
 
-      return commit(SET_RESPONSE_API_INFO, info)
+      return dispatch('alert/setWeatherApiResponse', info, { root: true })
     }
   },
-  async getLocationCoords({ commit, dispatch }, payload) {
+  async getLocationCoords({ commit, dispatch, rootGetters }, payload) {
     try {
       const response = await naverOpenApi.getLocationCoordsByAddress(payload)
 
@@ -205,7 +229,7 @@ const actions = {
           '날씨 정보를 가져올 수 없는 주소입니다. 해당 지역의 좌표가 다음 우편번호 서비스에 등록되지 않아 날씨 정보를 조회할 수 없습니다.',
         )
 
-        commit(SET_RESPONSE_API_INFO, info)
+        dispatch('alert/setWeatherApiResponse', info, { root: true })
       } else {
         const longitude = response.data.addresses[0].x
         const latitude = response.data.addresses[0].y
@@ -217,20 +241,25 @@ const actions = {
 
       return null
     } catch (error) {
+      let userInfo = null
+
+      if (rootGetters['user/myInfo']) {
+        const { email, nickname } = rootGetters['user/myInfo']
+        userInfo = {
+          email, nickname,
+        }
+      }
+
+      naverGeocodingApiErrorHandler(error, userInfo)
+
       const info = makeApiResponseInfo(
         'error',
         '검색한 주소의 좌표를 가져오는 도중 문제가 발생했습니다. 해당 페이지의 주소검색 버튼을 이용해 다시 시도해주세요.',
         error.code,
       )
 
-      return commit(SET_RESPONSE_API_INFO, info)
+      return dispatch('alert/setWeatherApiResponse', info, { root: true })
     }
-  },
-  setApiResponseInfo({ commit }, payload) {
-    commit(SET_RESPONSE_API_INFO, payload)
-  },
-  resetApiResponseInfo({ commit }) {
-    commit(RESET_RESPONSE_API_INFO)
   },
 }
 

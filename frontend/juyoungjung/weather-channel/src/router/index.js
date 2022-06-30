@@ -23,6 +23,11 @@ const routes = [
     meta: { authRequired: true },
   },
   {
+    path: '/test-error',
+    name: 'TestError',
+    component: () => import('@/views/TestError.vue'),
+  },
+  {
     path: '/detail-forecast',
     name: 'DetailForecast',
     component: () => import('@/views/DetailForecast/index.vue'),
@@ -75,8 +80,8 @@ router.beforeEach((to, from, next) => {
     return
   }
 
-  if (from.name !== 'SignUp' && store.getters['user/responseInfo'].type === 'success') {
-    store.dispatch('user/resetResponseInfo')
+  if (from.name !== 'SignUp' && store.getters['alert/userApiResponse'].type === 'success') {
+    store.dispatch('alert/resetUserApiResponse')
   }
 
   next()

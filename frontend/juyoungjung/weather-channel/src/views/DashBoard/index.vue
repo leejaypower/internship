@@ -1,7 +1,8 @@
 <template>
   <div>
-    <response-info-alert />
-    <response-api-info-alert />
+    <user-api-response-alert />
+    <weather-api-response-alert />
+
     <v-container class="dashboard-container">
       <v-row class="px-4 py-10">
         <v-col
@@ -66,8 +67,8 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import ResponseInfoAlert from '@/components/ResponseInfoAlert.vue'
-import ResponseApiInfoAlert from '@/components/ResponseApiInfoAlert.vue'
+import UserApiResponseAlert from '@/components/UserApiResponseAlert.vue'
+import WeatherApiResponseAlert from '@/components/WeatherApiResponseAlert.vue'
 import ScrollToTopBtn from '@/components/ScrollToTopBtn.vue'
 import SimpleDailyWeatherCard from './components/SimpleDailyWeatherCard.vue'
 import SimpleCurrentWeatherCard from './components/SimpleCurrentWeatherCard.vue'
@@ -77,8 +78,8 @@ import SearchLocationInputCard from './components/SearchLocationInputCard.vue'
 export default {
   name: 'DashBoard',
   components: {
-    ResponseInfoAlert,
-    ResponseApiInfoAlert,
+    UserApiResponseAlert,
+    WeatherApiResponseAlert,
     SimpleCurrentWeatherCard,
     LoginFormModal,
     SimpleDailyWeatherCard,

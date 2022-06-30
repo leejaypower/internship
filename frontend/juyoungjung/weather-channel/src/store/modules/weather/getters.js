@@ -6,7 +6,7 @@ import {
   inputMillimeterPerHourUnit,
   inputPercentUnit,
   inputMeterPerSecondUnit,
-} from '@/services'
+} from '@/services/inputUnit'
 import dayjs from 'dayjs'
 import {
   FULL_DATE_ONLY_FORMAT,
@@ -161,12 +161,6 @@ const getters = {
   },
   currentCoords(state) {
     return state.currentCoords
-  },
-  responseApiInfo(state) {
-    return state.responseApiInfo
-  },
-  responseApiInfoMessage(state) {
-    return state.responseApiInfo.text
   },
 }
 

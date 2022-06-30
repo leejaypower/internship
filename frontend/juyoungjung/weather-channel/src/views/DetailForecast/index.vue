@@ -1,6 +1,6 @@
 <template>
   <div>
-    <response-api-info-alert />
+    <weather-api-response-alert />
 
     <router-view />
 
@@ -9,12 +9,12 @@
 </template>
 <script>
 import ScrollToTopBtn from '@/components/ScrollToTopBtn.vue'
-import ResponseApiInfoAlert from '@/components/ResponseApiInfoAlert.vue'
+import WeatherApiResponseAlert from '@/components/WeatherApiResponseAlert.vue'
 import { checkRefreshTokenMixin } from '@/mixins'
 
 export default {
   name: 'DetailForecast',
-  components: { ScrollToTopBtn, ResponseApiInfoAlert },
+  components: { ScrollToTopBtn, WeatherApiResponseAlert },
   mixins: [checkRefreshTokenMixin],
   mounted() {
     if (!this.isRefreshTokenSavedAtLocalStorageMixin()) {

@@ -51,7 +51,8 @@ function setupFakeAxios(tokenType) {
       }
     }
 
-    return null
+    // 10. 401 에러가 아니거나 401 에러임에도 2~9번까지의 로직에 해당하지 않는 경우 error객체 반환하기
+    return Promise.reject(error)
   })
 
   return fakeAxios

@@ -14,6 +14,7 @@ import AppBar from './components/AppBar.vue'
 import { USER_INFO_LIST } from './constants'
 import { setUserInfoListAtLocalStorage } from '../fakeServer'
 import { makeApiResponseInfo } from './services'
+import { geolocationPositionErrorHandler, translateNavigatorGeolocationErrorCode } from './services/errorHandler'
 
 export default {
   name: 'App',
@@ -24,7 +25,7 @@ export default {
   }),
   computed: {
     ...mapGetters('user', [
-      'accessToken',
+      'accessToken', 'myInfo',
     ]),
     ...mapGetters('weather', [
       'currentCoords',
@@ -63,13 +64,23 @@ export default {
       await this.$store.dispatch('weather/getOneCallApi', { longitude, latitude })
     },
     positionError(error) {
+      let userInfo = null
+      if (this.myInfo) {
+        const { email, nickname } = this.myInfo
+        userInfo = {
+          email, nickname,
+        }
+      }
+
+      geolocationPositionErrorHandler(error, userInfo)
+
       const info = makeApiResponseInfo(
         'error',
-        '현재 위치를 가져오는데 실패했습니다. 페이지 새로고침 시에도 같은 문제가 발생할 경우 관리자에게 문의해주세요.',
-        error.message,
+        '현재 위치를 가져오는데 실패했습니다.',
+        translateNavigatorGeolocationErrorCode(error.code),
       )
 
-      this.$store.dispatch('weather/setApiResponseInfo', info)
+      this.$store.dispatch('alert/setWeatherApiResponse', info)
     },
   },
 }

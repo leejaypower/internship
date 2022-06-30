@@ -15,11 +15,6 @@ const state = () => ({
     wind: [],
     rain: [],
   },
-  responseApiInfo: {
-    type: 'info',
-    text: '',
-    visible: false,
-  },
 })
 
 export default state

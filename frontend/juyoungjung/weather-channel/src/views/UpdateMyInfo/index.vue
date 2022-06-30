@@ -1,6 +1,6 @@
 <template>
   <div>
-    <response-info-alert />
+    <user-api-response-alert />
 
     <v-alert
       v-show="isWarningAlertVisible"
@@ -83,7 +83,7 @@
 import { mapGetters } from 'vuex'
 import EmailInput from '@/components/EmailInput.vue'
 import NicknameInput from '@/components/NicknameInput.vue'
-import ResponseInfoAlert from '@/components/ResponseInfoAlert.vue'
+import UserApiResponseAlert from '@/components/UserApiResponseAlert.vue'
 import UpdatePasswordModal from './components/UpdatePasswordModal.vue'
 
 export default {
@@ -91,7 +91,7 @@ export default {
   components: {
     EmailInput,
     NicknameInput,
-    ResponseInfoAlert,
+    UserApiResponseAlert,
     UpdatePasswordModal,
   },
   data: () => ({
@@ -103,7 +103,8 @@ export default {
     isWarningAlertVisible: false,
   }),
   computed: {
-    ...mapGetters('user', ['myInfo', 'responseInfo', 'responseInfoType']),
+    ...mapGetters('user', ['myInfo']),
+    ...mapGetters('alert', ['userApiResponse']),
     updateNicknameBtnText() {
       return this.isNicknameInputDisabled ? '수정하기' : '저장하기'
     },
@@ -122,10 +123,13 @@ export default {
         this.$router.push('/')
       }
     },
-    responseInfoType(value) {
-      if (value === 'success' && !this.isNicknameInputDisabled) {
-        this.toggleNicknameInputWritable()
-      }
+    userApiResponse: {
+      deep: true,
+      handler(value) {
+        if (value.type === 'success' && !this.isNicknameInputDisabled) {
+          this.toggleNicknameInputWritable()
+        }
+      },
     },
   },
   mounted() {
@@ -135,7 +139,7 @@ export default {
   methods: {
     onChangeNickname(newValue) {
       if (this.isWarningAlertVisible) this.setWarningAlertVisible(false)
-      if (this.responseInfo.visible) this.$store.dispatch('user/resetResponseInfo')
+      if (this.userApiResponse.visible) this.$store.dispatch('alert/resetUserApiResponse')
       this.newNickname = newValue
     },
     toggleNicknameInputWritable() {
@@ -149,7 +153,7 @@ export default {
       this.isWarningAlertVisible = state
     },
     setUpdatePasswordModal(state) {
-      if (state) this.$store.dispatch('user/resetResponseInfo')
+      if (state) this.$store.dispatch('alert/resetUserApiResponse')
       if (!this.isNicknameInputDisabled) this.resetNicknameChange()
       this.isUpdatePasswordModalVisible = state
     },

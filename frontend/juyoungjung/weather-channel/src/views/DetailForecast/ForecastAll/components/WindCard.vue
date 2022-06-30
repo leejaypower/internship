@@ -26,7 +26,7 @@
   </v-card>
 </template>
 <script>
-import { inputMeterPerSecondUnit } from '@/services'
+import { inputMeterPerSecondUnit } from '@/services/inputUnit'
 
 export default {
   name: 'WindCard',

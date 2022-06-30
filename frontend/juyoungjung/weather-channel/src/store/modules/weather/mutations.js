@@ -1,7 +1,5 @@
 import {
   SET_CURRENT_LOCATION,
-  SET_RESPONSE_API_INFO,
-  RESET_RESPONSE_API_INFO,
   SET_ONE_CALL_API_DATA,
   SET_CURRENT_COORDS,
   SET_SEARCH_COORDS,
@@ -35,16 +33,6 @@ const mutations = {
   },
   [SET_CURRENT_LOCATION](state, payload) {
     state.currentLocation = payload
-  },
-  [SET_RESPONSE_API_INFO](state, payload) {
-    state.responseApiInfo = payload
-  },
-  [RESET_RESPONSE_API_INFO](state) {
-    state.responseApiInfo = {
-      type: 'info',
-      text: '',
-      visible: false,
-    }
   },
 }
 

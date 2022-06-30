@@ -11,15 +11,6 @@ const getters = {
   accessToken(state) {
     return state.myInfo?.accessToken
   },
-  responseInfo(state) {
-    return state.responseInfo
-  },
-  responseInfoType(state) {
-    return state.responseInfo.type
-  },
-  responseInfoMessage(state) {
-    return state.responseInfo.message
-  },
 }
 
 export default getters

@@ -1,0 +1,25 @@
+const WINDOW_ON_ERROR = 'window.onerror'
+const WINDOW_ON_UNHANDLED_REJECTION = 'window.onunhandledRejection'
+const VUE_ERROR_HANDLER = 'vue.errorHandler'
+const ERROR_LOG = 'error log'
+const NAVER_GEOCODING_API_ERROR = 'naver geocodeing API error'
+const OPEN_WEATHER_API_ERROR = 'openweather API error'
+const FAKE_AXIOS_ERROR = 'fakeAxios API error'
+const GEOLOCATION_POSITION_ERROR = 'GeolocationPositionError'
+const PERMISSION_DENIED = 1
+const POSITION_UNAVAILABLE = 2
+const TIMEOUT = 3
+
+export {
+  WINDOW_ON_ERROR,
+  WINDOW_ON_UNHANDLED_REJECTION,
+  VUE_ERROR_HANDLER,
+  ERROR_LOG,
+  NAVER_GEOCODING_API_ERROR,
+  OPEN_WEATHER_API_ERROR,
+  FAKE_AXIOS_ERROR,
+  GEOLOCATION_POSITION_ERROR,
+  PERMISSION_DENIED,
+  POSITION_UNAVAILABLE,
+  TIMEOUT,
+}

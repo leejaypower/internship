@@ -23,6 +23,15 @@
 
 ## 1. fakeServer와 fakeAxios 만들기[5주차]
 
+** 해당 프로젝트 실행 시 회원가입 없이 바로 로그인할 수 있는 테스트계정 정보는 다음과 같습니다.
+```
+email: test@test.com
+password: test
+
+email: test1@test.com
+password: test
+```
+
 - `accessToken` 만료기간은 3분, `refreshToken` 만료기간은 하루로 설정되어 있으며 `/fakeserver/services/JWT/makeJWT.js`에서 해당 만료기간 설정을 바꿀 수 있습니다.
 - 클라이언트에서는 `vuex store`에 서버로 부터 발급된 `accessToken`이 저장되어 있고, `refreshToken`은 브라우저 `localStorage`에 저장되어 있습니다.
 
@@ -77,6 +86,18 @@
 |요소|평균 기온, 최고 기온, 최저 기온, 풍속, 강수량|
 
 - 출처: [기상청 기후표](https://data.kma.go.kr/normals/table.do)
+### 에러 테스트 페이지[10주차]
+
+ - UI 레이어, API 레이어, 브라우저로 나누어 에러 핸들링하기
+
+|분류|Error Handler| 
+|------|---| 
+|API|naverGeocodingApiErrorHandler, openWeatherMapApiErrorHandler, fakeAxiosErrorHandler, geolocationPositionErrorHandler| 
+|Vue|vueErrorHandler| 
+|Window|windowOnErrorHandler, windowOnUnhandledRejectionHandler| 
+
+ - 에러로그 데이터 localStorage에 저장하기
+
 ## 3. mobile & pc 반응형 구현하기
 
 # Using Libraray
@@ -158,10 +179,11 @@
 │   │   ├── NicknameInput.vue
 │   │   ├── PasswordCheckInput.vue
 │   │   ├── PasswordInput.vue
-│   │   ├── ResponseApiInfoAlert.vue
-│   │   ├── ResponseInfoAlert.vue
-│   │   └── ScrollToTopBtn.vue
+│   │   ├── ScrollToTopBtn.vue
+│   │   ├── UserApiResponseAlert.vue
+│   │   └── WeatherApiResponseAlert.vue
 │   ├── constants
+│   │   ├── error-types.js
 │   │   ├── index.js
 │   │   ├── localStorage-types.js
 │   │   ├── modal-types.js
@@ -195,19 +217,41 @@
 │   │   │   ├── isValidLatitude.js
 │   │   │   ├── isValidLongitude.js
 │   │   │   └── makeCoordsValidationResponseInfo.js
+│   │   ├── errorHandler
+│   │   │   ├── apiHandler
+│   │   │   │   ├── fakeAxiosErrorHandler.js
+│   │   │   │   ├── geolocationPositionErrorHandler.js
+│   │   │   │   ├── naverGeocodingApiErrorHandler.js
+│   │   │   │   └── openWeatherMapApiErrorHandler.js
+│   │   │   ├── errorCodeTranslator
+│   │   │   │   ├── translateFakeAxiosResponseErrorCode.js
+│   │   │   │   └── translateNavigatorGeolocationErrorCode.js
+│   │   │   ├── index.js
+│   │   │   ├── localStorageLogController
+│   │   │   │   ├── makeLocalStorageErrorLogList.js
+│   │   │   │   └── saveErrorLogAtLocalStorage.js
+│   │   │   ├── vueErrorHandler.js
+│   │   │   └── windowHandler
+│   │   │       ├── windowOnErrorHandler.js
+│   │   │       └── windowOnUnhandledRejectionHandler.js
 │   │   ├── index.js
-│   │   ├── inputCelsiusUnit.js
-│   │   ├── inputMeterPerSecondUnit.js
-│   │   ├── inputMillimeterPerHourUnit.js
-│   │   ├── inputPercentUnit.js
-│   │   ├── isValidCoords.js
+│   │   ├── inputUnit
+│   │   │   ├── index.js
+│   │   │   ├── inputCelsiusUnit.js
+│   │   │   ├── inputMeterPerSecondUnit.js
+│   │   │   ├── inputMillimeterPerHourUnit.js
+│   │   │   └── inputPercentUnit.js
 │   │   ├── makeApiResponseInfo.js
-│   │   ├── makeWeatherDataToFixedOne.js
-│   │   ├── saveTargetAtLocalStorage.js
-│   │   └── translateResponseErrorCode.js
+│   │   └── makeWeatherDataToFixedOne.js
 │   ├── store
 │   │   ├── index.js
 │   │   └── modules
+│   │       ├── alert
+│   │       │   ├── actions.js
+│   │       │   ├── getters.js
+│   │       │   ├── index.js
+│   │       │   ├── mutations.js
+│   │       │   └── state.js
 │   │       ├── index.js
 │   │       ├── user
 │   │       │   ├── actions.js
@@ -270,6 +314,7 @@
 │       │   └── index.vue
 │       ├── NotFound.vue
 │       ├── SignUp.vue
+│       ├── TestError.vue
 │       └── UpdateMyInfo
 │           ├── components
 │           │   └── UpdatePasswordModal.vue

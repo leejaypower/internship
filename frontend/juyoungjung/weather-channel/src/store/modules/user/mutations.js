@@ -2,8 +2,6 @@ import {
   SET_MY_INFO,
   REMOVE_MY_INFO,
   SET_LOGIN_FORM_MODAL_VISIBLE,
-  SET_RESPONSE_INFO,
-  RESET_RESPONSE_INFO,
   UPDATE_NICKNAME,
   REFRESH_TOKEN,
   REFRESH_TOKEN_EXPIRE_TIME,
@@ -39,18 +37,6 @@ const mutations = {
   },
   [SET_LOGIN_FORM_MODAL_VISIBLE](state, payload) {
     state.isLoginFormModalVisible = payload.visible
-  },
-  [SET_RESPONSE_INFO](state, payload) {
-    state.responseInfo = {
-      visible: true,
-      message: payload.message,
-      type: payload.type,
-    }
-  },
-  [RESET_RESPONSE_INFO](state) {
-    state.responseInfo.message = ''
-    state.responseInfo.type = 'info'
-    state.responseInfo.visible = false
   },
   [UPDATE_NICKNAME](state, payload) {
     state.myInfo.nickname = payload.data.nickname

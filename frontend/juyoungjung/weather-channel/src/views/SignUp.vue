@@ -1,6 +1,7 @@
 <template>
   <div>
-    <response-info-alert />
+    <user-api-response-alert />
+
     <h1 class="text-center mt-10 mb-2">
       회원가입
     </h1>
@@ -77,7 +78,7 @@ import EmailInput from '@/components/EmailInput.vue'
 import NicknameInput from '@/components/NicknameInput.vue'
 import PasswordInput from '@/components/PasswordInput.vue'
 import PasswordCheckInput from '@/components/PasswordCheckInput.vue'
-import ResponseInfoAlert from '@/components/ResponseInfoAlert.vue'
+import UserApiResponseAlert from '@/components/UserApiResponseAlert.vue'
 
 export default {
   name: 'SignUp',
@@ -86,7 +87,7 @@ export default {
     NicknameInput,
     PasswordInput,
     PasswordCheckInput,
-    ResponseInfoAlert,
+    UserApiResponseAlert,
   },
   data: () => ({
     valid: true,
@@ -103,15 +104,18 @@ export default {
     isLoginBtnVisible: false,
   }),
   computed: {
-    ...mapGetters('user', [
-      'responseInfoType',
+    ...mapGetters('alert', [
+      'userApiResponse',
     ]),
   },
   watch: {
-    responseInfoType(value) {
-      if (value === 'success') {
-        this.$router.push('/')
-      }
+    userApiResponse: {
+      deep: true,
+      handler(value) {
+        if (value.type === 'success') {
+          this.$router.push('/')
+        }
+      },
     },
   },
   methods: {

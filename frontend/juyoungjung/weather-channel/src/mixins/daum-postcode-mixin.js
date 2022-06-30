@@ -1,7 +1,7 @@
 const daumPostcodeMixin = {
   methods: {
     setDaumPostcodePopupVisibleMixin() {
-      this.$store.dispatch('weather/resetApiResponseInfo')
+      this.$store.dispatch('alert/resetWeatherApiResponse')
 
       new window.daum.Postcode({
         oncomplete: (result) => {
