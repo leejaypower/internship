@@ -148,6 +148,14 @@ services:
       context: ../backend/junghyun/koa-books
 
 
+  internship-gihwan:
+    container_name: gihwan-weather-app
+    build:
+      context: ../frontend/gihwan/weather
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+
 volumes:
   internship-pgdb:
   internship-zk-data:
