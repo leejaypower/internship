@@ -1,4 +1,4 @@
-const { LoginInfo } = require('../../database/models');
+const { LoginInfo } = require('../database/models');
 
 const getIsLogin = async (userId) => {
   const isLogin = await LoginInfo.findOne({

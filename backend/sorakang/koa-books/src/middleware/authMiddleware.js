@@ -1,5 +1,5 @@
 const { verify } = require('jsonwebtoken');
-const { userService } = require('../services');
+const service = require('../services');
 const { authRepository } = require('../repositories');
 
 const verifyToken = (...auth) => async (ctx, next) => {
@@ -21,7 +21,7 @@ const verifyToken = (...auth) => async (ctx, next) => {
     }
 
     // access Token을 확인하여 verify
-    const { data } = await userService.getSingleUser(aTokenDecode.userId);
+    const { data } = await service.user.getSingleUser(aTokenDecode.userId);
 
     // refresh token의 iat가 같은지 확인하여 중복 로그인 방지..
     const { iat } = await authRepository.verifyAuth(rTokenDecode.userId);

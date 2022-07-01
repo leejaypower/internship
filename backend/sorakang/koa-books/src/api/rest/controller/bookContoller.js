@@ -1,4 +1,4 @@
-const { bookService } = require('../../../services');
+const service = require('../../../services');
 
 const getAllBook = async (ctx) => {
   try {
@@ -11,9 +11,9 @@ const getAllBook = async (ctx) => {
     const dateCursor = new Date(Number(cursorArray[0]));
     const bookId = Number(cursorArray[1]);
 
-    ctx.body = await bookService.getAllBook(Number(limit), dateCursor, bookId, search);
+    ctx.body = await service.book.getAllBook(Number(limit), dateCursor, bookId, search);
   } catch (err) {
-    throw new Error(err); // 임시 error handling
+    throw new Error(err);
   }
 };
 
@@ -27,7 +27,7 @@ const getSingleBook = async (ctx) => {
       // 임시 error handling
     }
     // 개별 책 조회 -> 책 정보 , 동일 책  권수, 시리얼 넘버 list 반환
-    ctx.body = await bookService.getSingleBook(bookId);
+    ctx.body = await service.book.getSingleBook(bookId);
   } catch (err) {
     throw new Error(err.message);/// 임시 error handling
   }
@@ -39,7 +39,7 @@ const createBook = async (ctx) => {
 
     if (!bookList?.length === 0) { /* error handling 필요 */ }
 
-    const body = await bookService.createBook(bookList);
+    const body = await service.book.createBook(bookList);
 
     ctx.body = body;
   } catch (err) {
@@ -56,7 +56,7 @@ const updateBook = async (ctx) => {
       throw new Error(404, 'Invalid request body or query');
     }
 
-    const { state, message } = await bookService.updateBook(bookId, bookInfo);
+    const { state, message } = await service.book.updateBook(bookId, bookInfo);
 
     ctx.status = state;
     ctx.body = { message };
@@ -73,7 +73,7 @@ const deleteBook = async (ctx) => {
       throw new Error(404, 'Invalid request body ');
     }
 
-    const result = await bookService.deleteBook(idList);
+    const result = await service.book.deleteBook(idList);
     if (result === 0) {
       throw new Error(404, 'Not Found');
     }
@@ -92,7 +92,7 @@ const deleteSingleBook = async (ctx) => {
       throw new Error(404, 'Invalid request params ');
     }
 
-    const result = await bookService.deleteSingleBook(bookId);
+    const result = await service.book.deleteSingleBook(bookId);
 
     if (result === 0) {
       throw new Error(404, 'Not Found');
@@ -105,5 +105,10 @@ const deleteSingleBook = async (ctx) => {
 };
 
 module.exports = {
-  getAllBook, getSingleBook, createBook, updateBook, deleteBook, deleteSingleBook,
+  getAllBook,
+  getSingleBook,
+  createBook,
+  updateBook,
+  deleteBook,
+  deleteSingleBook,
 };

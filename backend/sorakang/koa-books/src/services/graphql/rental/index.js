@@ -1,9 +1,7 @@
 const { ApolloError } = require('apollo-server-koa');
-const {
-  rentalRepository, reserveRepository, bookSerialRepository,
-} = require('../../../repositories');
+const { rentalRepository, reserveRepository } = require('../../../repositories');
 const { Sequelize } = require('../../../database/models');
-const { commonUtils } = require('../../../utils');
+const { commonUtils } = require('../../../libs');
 
 const { Op } = Sequelize;
 

@@ -1,5 +1,5 @@
 // set environment variable globally
-require('./utils/common/env');
+require('./config/env');
 
 const { sequelize } = require('./database/models/index');
 const app = require('./server/app');

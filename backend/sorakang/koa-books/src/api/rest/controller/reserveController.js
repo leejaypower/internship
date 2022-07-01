@@ -1,4 +1,4 @@
-const { reserveService } = require('../../../services');
+const service = require('../../../services');
 
 /**
  * user 또는 특정 book에 대한 전체 예약 기록 검색 - 유저, 관리자
@@ -12,7 +12,7 @@ const getAllReservation = async (ctx) => {
     if (!input.userId && !input.bookId) {
       ctx.throw(400, 'Bad Request : Invalid query');
     }
-    const { reserveList } = await reserveService.getAllReservation(input);
+    const { reserveList } = await service.reservation.getAllReservation(input);
 
     if (reserveList?.length !== 0) { // reservation 이 undefined가 아니고 reservation이 빈 배열이 아닌 경우
       ctx.body = { message: 'Not found : reservation does not exist' };
@@ -38,7 +38,7 @@ const createReservation = async (ctx) => {
     if (!userId || !bookId) {
       ctx.throw(400, 'Bad Request : Invalid body');
     }
-    const { reservationInfo, isReserved } = await reserveService.createReservation(userId, bookId);
+    const { reservationInfo, isReserved } = await service.reservation.createReservation(userId, bookId);
 
     if (!isReserved) {
       ctx.throw(409, 'This book is already been reserved');
@@ -73,7 +73,7 @@ const updateReservation = async (ctx) => {
 const deleteReservation = async (ctx) => {
   try {
     const { reservationId } = ctx.params;
-    const { isDeleted } = await reserveService.deleteReservation(reservationId);
+    const { isDeleted } = await service.reservation.deleteReservation(reservationId);
 
     ctx.body = { message: 'successfully deleted' };
   } catch (err) {

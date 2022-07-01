@@ -1,4 +1,4 @@
-const { authService } = require('../../../services');
+const service = require('../../../services');
 
 const getAccessToken = async (ctx) => {
   try {
@@ -7,7 +7,7 @@ const getAccessToken = async (ctx) => {
     if (!refreshToken) {
       throw new Error('invalid refresh token, please log in again');
     }
-    const { accessToken } = await authService.getAccessToken(refreshToken);
+    const { accessToken } = await service.auth.getAccessToken(refreshToken);
 
     ctx.body = { accessToken, message: 'accessToken issued' };
   } catch (err) {

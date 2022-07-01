@@ -1,11 +1,11 @@
-const { rentalService } = require('../../../services');
+const service = require('../../../services');
 
 /**
  * 모든 대출 내역 조회
  */
 const getAllRental = async (ctx) => {
   try {
-    const { rentalList } = await rentalService.getAllRental();
+    const { rentalList } = await service.rental.getAllRental();
 
     ctx.status = 200;
     ctx.body = { data: rentalList };
@@ -27,7 +27,7 @@ const getRentalInfo = async (ctx) => {
       ctx.throw(400, 'Bad Request : Invalid query');
     }
 
-    const { rentalList } = await rentalService.getRentalInfo(input);
+    const { rentalList } = await service.rental.getRentalInfo(input);
 
     ctx.status = 200;
     ctx.body = { data: rentalList };
@@ -49,7 +49,7 @@ const createRental = async (ctx) => {
       ctx.throw(400, 'Bad Request : Invalid request body');
     }
 
-    const { rental, isCreated } = await rentalService.createRental(userId, bookId);
+    const { rental, isCreated } = await service.rental.createRental(userId, bookId);
 
     if (!isCreated) {
       ctx.throw(409, 'This book is already on loan');
@@ -78,7 +78,7 @@ const extendRentDate = async (ctx) => {
       ctx.throw(400, 'Bad Request : Invalid request query');
     }
 
-    const { updatedCount } = await rentalService.extendRentDate(bookId, rentalId);
+    const { updatedCount } = await service.rental.extendRentDate(bookId, rentalId);
     if (!updatedCount) {
       ctx.throw('Updated failed');
     }
@@ -99,7 +99,7 @@ const extendRentDate = async (ctx) => {
 const returnRental = async (ctx) => {
   try {
     const { rentalId } = ctx.params;
-    const { rentHistory } = await rentalService.returnRental(rentalId);
+    const { rentHistory } = await service.rental.returnRental(rentalId);
     if (!rentHistory) {
       ctx.throw('Delete failed');
     }

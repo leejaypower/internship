@@ -1,4 +1,4 @@
-require('../../utils/common/env');
+require('../../config/env');
 
 const development = {
   username: process.env.DATABASE_USERNAME,

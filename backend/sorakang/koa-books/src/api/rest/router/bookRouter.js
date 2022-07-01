@@ -3,7 +3,9 @@ const { authMiddleware } = require('../../../middleware');
 
 const bookRouter = new Router();
 const { bookController } = require('../controller');
-const { ROLES } = require('../../../utils/constant');
+const { constant } = require('../../../libs');
+
+const { ROLES } = constant;
 
 bookRouter.get('/', bookController.getAllBook);
 bookRouter.get('/:bookId', bookController.getSingleBook);

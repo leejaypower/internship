@@ -1,6 +1,6 @@
 const { verify } = require('jsonwebtoken');
-const { authRepository } = require('../repositories');
-const { tokenFunc } = require('../utils/auth');
+const { authRepository } = require('../../repositories');
+const { authUtils } = require('../../libs');
 
 const getAccessToken = async (rToken) => {
   // decode rToken
@@ -21,7 +21,7 @@ const getAccessToken = async (rToken) => {
   const exp = process.env.ACCESS_EXP_DATE;
   const secret = process.env.ACCESS_SECRET_KEY;
 
-  const aToken = tokenFunc.getToken(payload, secret, exp);
+  const aToken = authUtils.tokenFunc.getToken(payload, secret, exp);
 
   return { aToken, iat };
 };

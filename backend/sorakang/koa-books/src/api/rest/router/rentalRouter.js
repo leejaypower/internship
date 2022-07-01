@@ -4,7 +4,9 @@ const { authMiddleware } = require('../../../middleware');
 const rentalRouter = new Router();
 const { rentalController } = require('../controller');
 
-const { ROLES } = require('../../../utils/constant');
+const { constant } = require('../../../libs');
+
+const { ROLES } = constant;
 
 rentalRouter.get('/', authMiddleware.verifyToken(ROLES.ADMIN), rentalController.getAllRental);
 rentalRouter.get('/info', authMiddleware.verifyToken(ROLES.COMMON), rentalController.getRentalInfo);

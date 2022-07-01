@@ -1,9 +1,7 @@
 const bcrypt = require('bcrypt');
 const { UserInputError } = require('apollo-server-koa');
-const { getToken } = require('../../../utils/auth');
 const { userRepository } = require('../../../repositories');
-const { commonUtils } = require('../../../utils');
-
+const { commonUtils, authUtils } = require('../../../libs');
 const { Sequelize } = require('../../../database/models');
 
 const { Op } = Sequelize;
@@ -47,8 +45,8 @@ const signIn = async ({ input }) => {
   const role = groupName.toUpperCase();
   const issuedAt = new Date().getTime();
 
-  const accessToken = getToken({ userId, role }, process.env.ACCESS_SECRET_KEY, accessTokenExp);
-  const refreshToken = getToken({ userId, role, issuedAt }, process.env.REFRESH_SECRET_KEY, refreshTokenExp);
+  const accessToken = authUtils.getToken({ userId, role }, process.env.ACCESS_SECRET_KEY, accessTokenExp);
+  const refreshToken = authUtils.getToken({ userId, role, issuedAt }, process.env.REFRESH_SECRET_KEY, refreshTokenExp);
 
   await userRepository.loginInfo.createIsLogin(userId, issuedAt);
 

@@ -4,7 +4,7 @@ const { Sequelize } = require('../../../database/models');
 
 const { Op } = Sequelize;
 
-const getAllBooks = async (parent, { limit, curCursor, bookId }, context) => {
+const getAllBooks = async (parent, { limit, curCursor, bookId }, _context) => {
   // 쿼리 options
   const whereOptions = {
     [Op.or]: [
@@ -31,11 +31,6 @@ const getAllBooks = async (parent, { limit, curCursor, bookId }, context) => {
     edges: rows,
     pageInfo: { endCursor, hasNextPage },
   };
-};
-
-const getBooksById = async ({ bookIds }) => {
-  const bookList = await bookRepository.getBooksById(bookIds);
-  return bookList;
 };
 
 /**
@@ -82,5 +77,8 @@ const deleteBook = async (bookIdList) => {
 };
 
 module.exports = {
-  getAllBooks, createBook, getBooksById, getBookBySerialId, deleteBook,
+  getAllBooks,
+  createBook,
+  getBookBySerialId,
+  deleteBook,
 };

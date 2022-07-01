@@ -1,4 +1,4 @@
-const { userService } = require('../../../services');
+const service = require('../../../services');
 
 const getUser = async (ctx) => {
   // input validation -> error handling 주차에 같이 진행
@@ -7,7 +7,7 @@ const getUser = async (ctx) => {
       limit = 20, cursor = 0, name = '', email = '', phone = '',
     } = ctx.request.query;
 
-    const { data } = await userService.getUser(Number(limit), cursor, name, email, phone);
+    const { data } = await service.user.getUser(Number(limit), cursor, name, email, phone);
 
     ctx.status = 200;
     ctx.body = { data };
@@ -20,7 +20,7 @@ const getSingleUser = async (ctx) => {
   try {
     const { userId } = ctx.params;
 
-    const { data } = await userService.getSingleUser(userId);
+    const { data } = await service.user.getSingleUser(userId);
 
     ctx.body = { data };
   } catch (err) {
@@ -32,7 +32,7 @@ const createUser = async (ctx) => {
   try {
     const { userInfo } = ctx.request.body;
 
-    await userService.createUser(userInfo);
+    await service.user.createUser(userInfo);
 
     ctx.status = 201;
     ctx.body = { message: 'Successfully created' };
@@ -46,7 +46,7 @@ const updateUser = async (ctx) => {
     const { userInfo } = ctx.request.body;
     const { userId } = ctx.params;
 
-    const { isUpdated } = await userService.updateUser(userId, userInfo);
+    const { isUpdated } = await service.user.updateUser(userId, userInfo);
     if (!isUpdated) {
       ctx.throw(404, 'Not found : User does not exist');
     }
@@ -61,7 +61,7 @@ const updateUser = async (ctx) => {
 const deleteUser = async (ctx) => {
   try {
     const { userId } = ctx.params;
-    const { isDeleted } = await userService.deleteUser(userId);
+    const { isDeleted } = await service.user.deleteUser(userId);
 
     if (!isDeleted) {
       ctx.throw(404, 'Not found : User does not exist');
@@ -78,7 +78,7 @@ const signIn = async (ctx) => {
   try {
     const { email, password } = ctx.request.body;
 
-    const { accessToken, refreshToken } = await userService.signIn(email, password);
+    const { accessToken, refreshToken } = await service.user.signIn(email, password);
 
     ctx.status = 200;
 
@@ -92,7 +92,7 @@ const signOut = async (ctx) => {
   try {
     const userId = ctx.user.id;
 
-    const { user } = await userService.signOut(userId);
+    const { user } = await service.user.signOut(userId);
 
     if (!user) {
       throw new Error('user not found');

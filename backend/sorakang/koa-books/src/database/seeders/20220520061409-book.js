@@ -1,4 +1,4 @@
-const { commonUtils } = require('../../utils');
+const { commonUtils } = require('../../libs');
 
 module.exports = {
   async up(queryInterface) {

@@ -1,5 +1,5 @@
 const { ApolloError } = require('apollo-server-koa');
-const { isValidToken } = require('../../../utils/auth');
+const { isValidToken } = require('../../../libs');
 
 /**
  * Check authentication and return user role

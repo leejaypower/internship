@@ -1,6 +1,6 @@
 const {
   reserveRepository, rentalRepository, bookRepository,
-} = require('../repositories');
+} = require('../../repositories');
 
 /**
  * user 또는 특정 book에 대한 전체 예약 기록 검색 - 유저, 관리자

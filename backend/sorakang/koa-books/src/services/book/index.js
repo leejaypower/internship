@@ -1,6 +1,6 @@
-const { bookRepository, bookSerialRepository } = require('../repositories');
-const { transaction } = require('../repositories');
-const retry = require('../utils/retry');
+const { bookRepository, bookSerialRepository } = require('../../repositories');
+const { commonUtils } = require('../../libs');
+const { sequelize } = require('../../database/models');
 
 const getAllBook = async (limit, cursor, bookId, search) => {
   const bookList = await bookRepository.getAllBook(limit, cursor, bookId, search);
@@ -38,14 +38,24 @@ const getBooksById = async (bookIdList) => {
 };
 
 const createBook = async (bookList) => {
+  // service로 이동
+  const createBookTransaction = async (bookData) => {
+    const result = await sequelize.transaction(async (t) => {
+      const { bookInfo, _ } = await bookRepository.createBook(bookData, t);
+      const bookSerial = await bookSerialRepository.createBookSerial(bookInfo, t);
+      return { bookInfo, bookSerial };
+    });
+    return result;
+  };
+
   const promiseArr = await bookList.map(async (bookInfo) => {
-    const promise = await transaction.bookTransaction.createBook(bookInfo.book);
+    const promise = await createBookTransaction(bookInfo.book);
     return promise;
   });
 
   // retry 횟수 제한 count = 5
-  const result = await retry(5, promiseArr, async (book) => {
-    const promise = await transaction.bookTransaction.createBook(book);
+  const result = await commonUtils.retry(5, promiseArr, async (book) => {
+    const promise = await createBookTransaction(book);
     return promise;
   });
 

@@ -1,5 +1,5 @@
 const { Op } = require('sequelize');
-const { User } = require('../../database/models');
+const { User } = require('../database/models');
 
 const getUser = async (limit, cursor, name, email, phone) => {
   try {

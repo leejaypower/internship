@@ -1,5 +1,6 @@
+const { ApolloError } = require('apollo-server-koa');
+const service = require('../../../services');
 const { bookSerialLoader } = require('../dataLoader');
-const { bookGraphController } = require('../controller');
 
 const bookResolver = {
 
@@ -11,35 +12,47 @@ const bookResolver = {
   },
 
   Query: {
-    getAllBooks: async (parent, { limit = 5, afterCursor }, context) => {
-      const data = bookGraphController.getAllBooks(parent, { limit, afterCursor }, context);
-      return data;
-    },
+    getAllBooks: async (parent, { limit = 5, afterCursor = `${new Date().getTime()}-1` }, context) => {
+      // cursor 모듈화 진행할 것
+      const cursorArray = afterCursor.split('-');
+      const curCursor = new Date(Number(cursorArray[0]));
+      const bookId = Number(cursorArray[1]);
 
-    getBooksById: async (parent, { bookIds }, context) => {
-      const bookList = bookGraphController.getBooksById(parent, { bookIds }, context);
+      const bookList = service.gql.book.getAllBooks(parent, { limit, curCursor, bookId }, context);
+
       return bookList;
     },
 
-    getBookBySerialId: async (parent, { serialId }, context) => {
-      const book = bookGraphController.getBookBySerialId(parent, { serialId }, context);
+    getBooksById: async (parent, { bookIds }, _context) => {
+      const bookList = await service.book.getBooksById(bookIds);
+      return bookList;
+    },
+
+    getBookBySerialId: async (parent, { serialId }, _context) => {
+      const book = await service.gql.book.getBookBySerialId(serialId);
       return book;
     },
   },
 
   Mutation: {
-    createBook: async (parent, { bookInfo }, context) => {
-      const data = await bookGraphController.createBook(parent, { bookInfo }, context);
-      return data;
-    },
-    updateBook: async (parent, { updateInfo }, context) => {
-      const data = await bookGraphController.updateBook(parent, { updateInfo }, context);
+    createBook: async (parent, { bookInfo }, _context) => {
+      const data = await service.gql.book.createBook(bookInfo);
       return data;
     },
 
-    deleteBook: async (parent, { bookIdList }, context) => {
-      const data = await bookGraphController.deleteBook(parent, { bookIdList }, context);
-      return data;
+    updateBook: async (parent, { updateInfo }, _context) => {
+      const { bookId, ...bookInfo } = updateInfo;
+      // update된 정보 같이 return하도록 수정하기
+      const isUpdated = await service.book.updateBook(bookId, bookInfo);
+      return { message: 'Successfully updated' };
+    },
+
+    deleteBook: async (parent, { bookIdList }, _context) => {
+      const deletedCount = await service.gql.book.deleteBook(bookIdList);
+      if (!deletedCount) {
+        throw new ApolloError('Delete Rejected: Data does not exist');
+      }
+      return { message: 'Successfully deleted' };
     },
 
   },

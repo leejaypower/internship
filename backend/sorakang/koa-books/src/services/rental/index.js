@@ -1,5 +1,5 @@
-const { rentalRepository, bookRepository, reserveRepository } = require('../repositories');
-const { kafkaClients, returnEventType } = require('../kafka');
+const { rentalRepository, bookRepository, reserveRepository } = require('../../repositories');
+const { kafkaClients, returnEventType } = require('../../kafka');
 
 /**
  * 모든 대출 내역 조회

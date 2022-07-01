@@ -1,9 +1,17 @@
-const userService = require('./userService');
-const authService = require('./authService');
-const bookService = require('./bookService');
-const rentalService = require('./rentalService');
-const reserveService = require('./reserveService');
+const auth = require('./auth');
+const book = require('./book');
+const graphql = require('./graphql');
+const rental = require('./rental');
+const reservation = require('./reservation');
+const user = require('./user');
+const transaction = require('./transactions');
 
 module.exports = {
-  bookService, userService, authService, rentalService, reserveService,
+  graphql,
+  user,
+  book,
+  rental,
+  reservation,
+  auth,
+  transaction,
 };
