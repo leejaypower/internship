@@ -1,5 +1,5 @@
-const service = require('../../service');
-const lib = require('../../../lib');
+const service = require('../service');
+const lib = require('../lib');
 
 const { errorHandler } = lib.util.error;
 

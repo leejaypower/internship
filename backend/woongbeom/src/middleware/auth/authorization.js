@@ -1,4 +1,4 @@
-const lib = require('../../../lib');
+const lib = require('../../lib');
 
 const authorize = async (ctx) => {
   if (!ctx.req.headers.authorization) {

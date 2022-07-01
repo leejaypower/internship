@@ -1,20 +1,22 @@
 const { composeResolvers } = require('@graphql-tools/resolvers-composition');
 
-const controller = require('../../../controller/graphql');
+const service = require('../../../service');
 const middleware = require('../auth');
 
 const Rental = {
   Query: {
-    getRentals: async (parent, rentalQuery) => {
-      const result = await controller.rental.getRentals(rentalQuery);
+    getRentals: async (parent, args) => {
+      const rentalQuery = args;
+      const result = await service.rental.getRentals(rentalQuery);
       return result;
     },
   },
   Mutation: {
-    createRental: async (parent, rentalData, context) => {
+    createRental: async (parent, args, context) => {
+      const rentalData = args;
       const userEmail = context.email;
 
-      const result = await controller.rental.createRental(rentalData, userEmail);
+      const result = await service.rental.createRental(rentalData, userEmail);
       return result;
     },
   },

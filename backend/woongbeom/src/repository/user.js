@@ -1,6 +1,6 @@
 const { Op } = require('sequelize');
 const db = require('../db/models');
-const { hash } = require('../../lib/auth');
+const { hash } = require('../lib/auth');
 
 const createUser = async (userInstance) => {
   const {

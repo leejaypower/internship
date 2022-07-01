@@ -1,5 +1,7 @@
-const service = require('../../service');
-const { jwt } = require('../../../lib/auth');
+const service = require('../service');
+const lib = require('../lib');
+
+const { jwt } = lib.auth;
 
 const createReservation = async (ctx) => {
   try {

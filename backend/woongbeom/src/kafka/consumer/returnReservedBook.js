@@ -1,6 +1,6 @@
 const { kafka } = require('../client');
 const repository = require('../../repository');
-const lib = require('../../../lib');
+const lib = require('../../lib');
 
 const { emailSender } = lib.util.emailer;
 

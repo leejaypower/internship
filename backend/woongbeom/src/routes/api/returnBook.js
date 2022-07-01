@@ -1,10 +1,13 @@
 const Router = require('koa-router');
 
 const controller = require('../../controller');
-const { authorization } = require('../../middleware/auth');
+const middleware = require('../../middleware');
 
 const returnRouter = new Router();
 
-returnRouter.post('/', authorization.authorizeUser, controller.apis.returnBook.createReturn);
+const { authorizeUser } = middleware.auth.authorization;
+const { returnBook } = controller;
+
+returnRouter.post('/', authorizeUser, returnBook.createReturn);
 
 module.exports = returnRouter;

@@ -1,14 +1,14 @@
 const { composeResolvers } = require('@graphql-tools/resolvers-composition');
 
-const controller = require('../../../controller/graphql');
+const service = require('../../../service');
 const middleware = require('../auth');
 
 const returnBook = {
   Query: {},
   Mutation: {
     createReturn: async (parent, args) => {
-      const rentalId = args.rentalId;
-      const result = await controller.returnBook.createReturn(rentalId);
+      const { rentalId } = args;
+      const result = await service.returnBook.createReturn(rentalId);
       return result;
     },
   },

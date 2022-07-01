@@ -1,8 +1,8 @@
 const DataLoader = require('dataloader');
-const controller = require('../../controller/graphql');
+const service = require('../../service');
 
 const batchRental = async (ids) => {
-  const rentalList = await controller.rental.getRentalsAllByIds(ids)
+  const rentalList = await service.rental.getRentalsAllByIds(ids);
 
   const rentalMap = {};
 
@@ -17,7 +17,7 @@ const batchRental = async (ids) => {
     const result = rentalMap[rental] || [];
     return result;
   });
-  
+
   return mapping;
 };
 

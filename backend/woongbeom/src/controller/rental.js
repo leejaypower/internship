@@ -1,18 +1,20 @@
-const service = require('../../service');
-const { errorHandler } = require('../../../lib/util/error');
-const { jwt } = require('../../../lib/auth');
+const service = require('../service');
+const lib = require('../lib');
+
+const { errorHandler } = lib.util.error;
+const { jwt } = lib.auth;
 
 const createRental = async (ctx) => {
   try {
     const rentalData = ctx.request.body;
     if (!rentalData) {
-      errorHandler(1, 'Data does not exist.')
+      errorHandler(1, 'Data does not exist.');
     }
     if (typeof (rentalData.bookId) !== 'number') {
-      errorHandler(1, 'Book ID should be Number type.')
+      errorHandler(1, 'Book ID should be Number type.');
     }
     if (typeof (rentalData.userId) !== 'number') {
-      errorHandler(1, 'User ID should be Number type.')
+      errorHandler(1, 'User ID should be Number type.');
     }
 
     const token = ctx.request.header.authorization;
@@ -21,7 +23,7 @@ const createRental = async (ctx) => {
 
     ctx.body = await service.rental.createRental(rentalData, userEmail);
   } catch (err) {
-    ctx.throw(err)
+    ctx.throw(err);
   }
 };
 
@@ -31,7 +33,7 @@ const getRentals = async (ctx) => {
   } catch (err) {
     ctx.throw(err);
   }
-};  
+};
 
 module.exports = {
   createRental,

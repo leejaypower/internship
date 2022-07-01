@@ -1,4 +1,4 @@
-const service = require('../../service');
+const service = require('../service');
 
 const signIn = async (ctx) => {
   try {

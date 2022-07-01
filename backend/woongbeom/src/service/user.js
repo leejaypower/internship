@@ -1,6 +1,6 @@
 const repository = require('../repository');
 const { sequelize } = require('../db/models');
-const lib = require('../../lib');
+const lib = require('../lib');
 
 const { constant } = lib.common;
 const { errorHandler } = lib.util.error;

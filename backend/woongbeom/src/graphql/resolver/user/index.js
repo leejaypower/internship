@@ -1,33 +1,37 @@
 const { composeResolvers } = require('@graphql-tools/resolvers-composition');
 
-const controller = require('../../../controller/graphql');
+const service = require('../../../service');
 const middleware = require('../auth');
 
 const user = {
   Query: {
-    getUsers: async (_, userQuery) => {
-      const result = await controller.user.getUsers(userQuery);
+    getUsers: async (parent, args) => {
+      const userQuery = args;
+      const result = await service.user.getUsers(userQuery);
       return result;
     },
-    getUserById: async (_, userId) => {
-      const userNumber = userId.id;
-      const result = await controller.user.getUserById(userNumber);
+    getUserById: async (parent, args) => {
+      const userId = args.id;
+      const result = await service.user.getUserById(userId);
       return [result];
     },
   },
   Mutation: {
-    createUser: async (_, userData) => {
-      const result = await controller.user.createUser(userData);
+    createUser: async (parent, args) => {
+      const userData = args;
+      const result = await service.user.createUser(userData);
       return [result];
     },
-    updateUserName: async (_, userName) => {
-      const updateUserId = userName.id;
-      const result = await controller.user.updateUserName(updateUserId, userName);
+    updateUserName: async (parent, args) => {
+      const userId = args.id;
+      const newUserName = args.name;
+
+      const result = await service.user.updateUserName(userId, newUserName);
       return result;
     },
-    signIn: async (_, args) => {
+    signIn: async (parent, args) => {
       const { email, password } = args;
-      const token = await controller.user.signIn(email, password);
+      const token = await service.user.signIn(email, password);
       return { token };
     },
   },

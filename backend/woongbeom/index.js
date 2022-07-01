@@ -1,4 +1,4 @@
-require('./lib/common/env');
+require('./src/lib/common/env');
 
 const app = require('./src/app');
 

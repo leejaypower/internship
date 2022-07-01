@@ -1,5 +1,7 @@
-const service = require('../../service');
-const { errorHandler } = require('../../../lib/util/error');
+const service = require('../service');
+const lib = require('../lib');
+
+const { errorHandler } = lib.util.error;
 
 const createUser = async (ctx) => {
   try {

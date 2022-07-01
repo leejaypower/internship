@@ -5,7 +5,10 @@ const middleware = require('../../middleware');
 
 const rentalsRouter = new Router();
 
-rentalsRouter.post('/', middleware.auth.authorization.authorizeUser, controller.apis.rental.createRental);
-rentalsRouter.get('/', controller.apis.rental.getRentals);
+const { authorizeUser } = middleware.auth.authorization;
+const { rental } = controller;
+
+rentalsRouter.post('/', authorizeUser, rental.createRental);
+rentalsRouter.get('/', rental.getRentals);
 
 module.exports = rentalsRouter;

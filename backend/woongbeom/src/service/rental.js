@@ -1,6 +1,6 @@
 const repository = require('../repository');
 const { sequelize } = require('../db/models');
-const lib = require('../../lib');
+const lib = require('../lib');
 
 /**
  * 도서 대출 (파라미터 수정 필요합니다. 추가로 작업하겠습니다.)

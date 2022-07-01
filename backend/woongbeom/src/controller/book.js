@@ -1,5 +1,5 @@
-const service = require('../../service');
-const { errorHandler } = require('../../../lib/util/error');
+const service = require('../service');
+const { errorHandler } = require('../lib/util/error');
 
 const createBook = async (ctx) => {
   try {

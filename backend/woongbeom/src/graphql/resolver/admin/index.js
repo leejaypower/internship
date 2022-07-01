@@ -1,11 +1,11 @@
-const controller = require('../../../controller/graphql');
+const service = require('../../../service');
 
 const signIn = {
   Query: {},
   Mutation: {
     adminSignIn: async (parent, args) => {
       const { email, password } = args;
-      const token = await controller.admin.signIn(email, password);
+      const token = await service.admin.signIn(email, password);
       return { token };
     },
   },

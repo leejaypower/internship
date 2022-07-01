@@ -5,14 +5,9 @@ const { ApolloServer } = require('apollo-server-koa');
 const graphql = require('./graphql');
 const router = require('./routes');
 const kafka = require('./kafka');
-const lib = require('../lib');
+const lib = require('./lib');
 
 const { constant } = lib.common;
-
-router
-  .get('/', (ctx) => {
-    ctx.body = 'main page';
-  });
 
 const PORT = process.env.PORT || 4000;
 

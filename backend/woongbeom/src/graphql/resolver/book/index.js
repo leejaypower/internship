@@ -1,21 +1,23 @@
 const { composeResolvers } = require('@graphql-tools/resolvers-composition');
-const controller = require('../../../controller/graphql');
+const service = require('../../../service');
 const middleware = require('../auth');
 const loader = require('../../dataloader');
 
 const book = {
   Query: {
-    getBooks: async (parent, bookQuery) => {
-      const result = await controller.book.getBooks(bookQuery);
+    getBooks: async (parent, args) => {
+      const bookQuery = args;
+      const result = await service.book.getBooks(bookQuery);
       return result;
     },
     getBookById: async (_, args) => {
       const bookId = args.id;
-      const result = await controller.book.getBookById(bookId);
+      const result = await service.book.getBookById(bookId);
       return [result];
     },
-    getBooksAllByIds: async (parent, { ids }, context) => {
-      const books = await controller.book.getBooksAllByIds(ids);
+    getBooksAllByIds: async (parent, args) => {
+      const { ids } = args;
+      const books = await service.book.getBooksAllByIds(ids);
       return books;
     },
   },
@@ -23,14 +25,14 @@ const book = {
     createBook: async (_, args) => {
       const inputValues = args.createBookInput;
 
-      const result = await controller.book.createBook(inputValues);
+      const result = await service.book.createBook(inputValues);
       return [result];
     },
     updateBook: async (_, args) => {
       const updateBookId = args.updateBookInput.id;
       const inputValues = args.updateBookInput;
 
-      const result = await controller.book.updateBook(updateBookId, inputValues);
+      const result = await service.book.updateBook(updateBookId, inputValues);
       return result;
     },
   },

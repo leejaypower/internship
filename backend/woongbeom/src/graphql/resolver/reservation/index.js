@@ -1,16 +1,16 @@
 const { composeResolvers } = require('@graphql-tools/resolvers-composition');
 
-const controller = require('../../../controller/graphql');
+const service = require('../../../service');
 const middleware = require('../auth');
 
 const Reservation = {
   Query: {},
   Mutation: {
-    createReservation: async (parent, reservationData, context) => {
-      const book = reservationData.bookId;
+    createReservation: async (parent, args, context) => {
+      const { bookId } = args;
       const userMail = context.email;
 
-      const result = await controller.reservation.createReservation(book, userMail);
+      const result = await service.reservation.createReservation(bookId, userMail);
       return result;
     },
   },

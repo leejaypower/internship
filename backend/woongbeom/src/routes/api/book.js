@@ -6,7 +6,7 @@ const middleware = require('../../middleware');
 const booksRouter = new Router();
 
 const { authorizeAdmin } = middleware.auth.authorization;
-const { books } = controller.apis;
+const { books } = controller;
 
 booksRouter.post('/', authorizeAdmin, books.createBook);
 booksRouter.get('/', books.getBooks);

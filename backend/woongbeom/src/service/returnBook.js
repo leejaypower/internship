@@ -1,6 +1,6 @@
 const { sequelize } = require('../db/models');
 const repository = require('../repository');
-const lib = require('../../lib');
+const lib = require('../lib');
 const kafka = require('../kafka');
 
 const { errorHandler } = lib.util.error;
