@@ -23,5 +23,4 @@ $ npx sequelize db:seed
 현재 .env 환경에서 사용하고 있습니다.
 ```
 // .env
-$ npm start
 ```

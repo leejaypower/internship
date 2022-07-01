@@ -397,6 +397,24 @@ module.exports = {
         createdAt: new Date(),
         updatedAt: new Date(),
       },
+      {
+        title: '코딩 자율학습 HTML + CSS + 자바스크립트',
+        author: '김기수',
+        publisher: '길벗',
+        page: 612,
+        statusCode: 0,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        title: 'UX/UI 디자이너를 위한 실무 피그마',
+        author: '클레어 정',
+        publisher: '한빛미디어',
+        page: 352,
+        statusCode: 0,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
     ], {});
   },
 

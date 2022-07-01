@@ -1,7 +1,7 @@
 {
   "name": "woongbeom",
   "version": "1.0.0",
-  "description": "barogo internship library project",
+  "description": "barogo internship library porject",
   "main": "index.js",
   "scripts": {
     "db:create": "npx sequelize db:create",
@@ -28,6 +28,7 @@
     "graphql": "^16.5.0",
     "graphql-tools": "^8.2.9",
     "jsonwebtoken": "^8.5.1",
+    "kafkajs": "^2.0.2",
     "koa": "^2.13.4",
     "koa-bodyparser": "^4.3.0",
     "koa-router": "^10.1.1",
