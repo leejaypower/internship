@@ -2,6 +2,7 @@
   <div>
     <div class="text-center px-3 my-16">
       <h2>시간별 날씨 현황</h2>
+
       <h5 class="grey--text mt-2 mb-9">
         현재 시간으로부터 48시간의 날씨 예보를 1시간 간격으로 확인하실 수 있습니다.
       </h5>
@@ -172,6 +173,7 @@ export default {
             gradient: [RED, YELLOW, GREEN],
           }
           break
+
         case RAIN_INDEX:
           this.sparklinesConfig = {
             value: this.forecastHourlyRainList[this.dayTabValue],
@@ -180,6 +182,7 @@ export default {
             gradient: [BLUE],
           }
           break
+
         case WIND_INDEX:
           this.windInfo = this.forecastHourlyWindList[this.dayTabValue]
           break
@@ -205,6 +208,7 @@ export default {
             gradient: [RED, YELLOW, GREEN],
           }
           break
+
         case RAIN_INDEX:
           this.sparklinesConfig = {
             value: indexRainValue,
@@ -213,6 +217,7 @@ export default {
             gradient: [BLUE],
           }
           break
+
         case WIND_INDEX:
           this.windInfo = this.forecastHourlyWindList[index]
           break

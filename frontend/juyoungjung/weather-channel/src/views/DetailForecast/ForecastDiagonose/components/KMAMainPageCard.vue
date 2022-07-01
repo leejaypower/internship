@@ -21,6 +21,7 @@
                 v-on="on"
               >
             </template>
+
             <span>기후평년값에 대해 더 자세히 알아보러 가기</span>
           </v-tooltip>
         </v-card>

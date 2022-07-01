@@ -5,6 +5,7 @@
     <h1 class="text-center mt-10 mb-2">
       회원가입
     </h1>
+
     <h5 class="text-center grey--text mb-10">
       The Weather Channel에 가입하시면 더 많은 날씨 정보를 받아보실 수 있습니다.
     </h5>
@@ -14,44 +15,50 @@
       v-model="valid"
     >
       <v-container>
-        <v-row>
+        <div>
           <email-input
             :email="email"
             :disabled="false"
             @onChangeEmail="onChangeEmail"
           />
-        </v-row>
-        <v-row class="mt-6">
+        </div>
+
+        <div class="mt-6">
           <nickname-input
             :nickname="nickname"
             :disabled="false"
             @onChangeNickname="onChangeNickname"
           />
-        </v-row>
-        <v-row class="mt-6">
+        </div>
+
+        <div class="mt-6">
           <password-input
             :label="passwordLabel"
             :password="password"
             @onChangePassword="onChangePassword"
           />
-        </v-row>
-        <v-row class="mt-6">
+        </div>
+
+        <div class="mt-6">
           <password-check-input
             :password="password"
             :password-check="passwordCheck"
             @onChangePasswordCheck="onChangePasswordCheck"
           />
-        </v-row>
-        <v-row class="mt-4">
+        </div>
+
+        <div class="mt-4">
           <v-checkbox
             v-model="isAgreePrivateInfoUse"
             :rules="isAgreePrivateInfoUseRule"
             label="The Weather Channel에서 회원가입을 위해 위에 입력하신 정보를 이용하는데 동의하십니까?"
             required
           />
-        </v-row>
-        <v-row class="mt-10 d-flex justify-center">
+        </div>
+
+        <div class="mt-10 d-flex justify-center">
           <v-btn
+            type="submit"
             color="primary"
             class="mr-4"
             x-large
@@ -59,6 +66,7 @@
           >
             가입하기
           </v-btn>
+
           <v-btn
             color="orange"
             x-large
@@ -67,7 +75,7 @@
           >
             모두 지우기
           </v-btn>
-        </v-row>
+        </div>
       </v-container>
     </v-form>
   </div>
@@ -79,6 +87,7 @@ import NicknameInput from '@/components/NicknameInput.vue'
 import PasswordInput from '@/components/PasswordInput.vue'
 import PasswordCheckInput from '@/components/PasswordCheckInput.vue'
 import UserApiResponseAlert from '@/components/UserApiResponseAlert.vue'
+import { isAgreePrivateInfoUseRule } from '@/services/inputValidation'
 
 export default {
   name: 'SignUp',
@@ -97,9 +106,7 @@ export default {
     passwordLabel: '비밀번호',
     passwordCheck: '',
     select: null,
-    isAgreePrivateInfoUseRule: [
-      (v) => !!v || '회원가입을 계속 진행하시려먼 개인정보이용에 동의하셔야 합니다.',
-    ],
+    isAgreePrivateInfoUseRule,
     isAgreePrivateInfoUse: false,
     isLoginBtnVisible: false,
   }),
@@ -131,13 +138,20 @@ export default {
     onChangePasswordCheck(newValue) {
       this.passwordCheck = newValue
     },
-    submitForm() {
+    submitForm(e) {
+      e.preventDefault()
+
       const isValid = this.$refs.form.validate()
 
       if (isValid) {
-        this.$store.dispatch('user/signup', { email: this.email, nickname: this.nickname, password: this.password })
-      } else {
-        this.passwordCheckError = true
+        this.$store.dispatch(
+          'user/signup',
+          {
+            email: this.email,
+            nickname: this.nickname,
+            password: this.password,
+          },
+        )
       }
     },
     resetForm() {

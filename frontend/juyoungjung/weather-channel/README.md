@@ -1,4 +1,4 @@
-# weather-channel
+# The Weather Channel With Vue
 
 - `Vue.js`와 `Vuetify`, `Vue Router`, `Vuex`, `OpenWeather API` 등등을 이용해 만든 날씨정보를 알려주는 웹페이지입니다. fakeServer와 fakeAxios를 통해 JWT로 서버와 통신하는 듯한 효과를 내었습니다.
 - 현재 코드는 `fakeServer`에서 JWT를 만들어 decode해서 클라이언트쪽으로 `accessToken과` `refreshToken과` 함께 `accessTokenExpireTime`과 `refreshTokenExpireTime`을 전달해준다는 시나리오를 바탕으로 작성되었습니다.
@@ -33,17 +33,67 @@ password: test
 ```
 
 - `accessToken` 만료기간은 3분, `refreshToken` 만료기간은 하루로 설정되어 있으며 `/fakeserver/services/JWT/makeJWT.js`에서 해당 만료기간 설정을 바꿀 수 있습니다.
+
 - 클라이언트에서는 `vuex store`에 서버로 부터 발급된 `accessToken`이 저장되어 있고, `refreshToken`은 브라우저 `localStorage`에 저장되어 있습니다.
 
 - 클라이언트에서 `fakeAxios`를 사용하는 관련 페이지 및 컴포넌트 목록은 다음과 같습니다.
-
 1. 회원가입 페이지
 2. 로그인 모달창
 3. 내 정보 수정하기 페이지
 
+- `setupFakeAxios`에서 `fakeAxios.interceptor.response.use` error callback에서의 호출 순서는 다음과 같습니다.
+```
+  fakeAxios.interceptor.response.use((response) => response, async (error) => {
+    const originalRequest = error.config
+    const { method, url, data } = originalRequest
+
+    // 1. fakeServer에서 accessToken 또는 refreshToken 확인 시 만료되었다면 401에러가 반환되는데
+
+    if (error.response.status === 401) {
+
+      // 2. refreshToken가 만료되었다면
+
+      if (url === '/check-refreshToken') {
+
+        // 3. 바로 error.response를 반환해 로그아웃해서 localStorage에서 refreshToken을 삭제하기
+
+        return Promise.reject(error.response)
+      }
+
+      // 4. refreshToken이 localStorage에 저장되어 있는 상황에서 api요청을 보냈을 때 accessToken가 만료되어 401에러가 발생한 상황이라면
+      
+      const refreshToken = localStorage.getItem(REFRESH_TOKEN)
+      if (refreshToken) {
+
+        // 5. 새로운 accessToken 갱신하기
+
+        await store.dispatch('user/renewalAccessTokenInfo')
+
+        // 6. 이때 refreshToken이 만료된 상황이라면 3번으로 이동하게 될 것이고
+
+        if (store.getters['user/accessToken']) {
+
+          // 7. 6번이 아니라면 새로운 accessToken으로 401에러가 발생한 요청을 그대로 다시 서버로 보내기
+
+          requestInstance(ACCESS_TOKEN)
+          await fakeAxios[method](url, data)
+        }
+
+        // 9.refreshToken이 만료된 상황이라면 갱신되지 않은 기존 요청의 error.response를 반환하기
+
+        return Promise.reject(error.response)
+      }
+    }
+
+    // 10. 401 에러가 아니거나 401 에러임에도 2~9번까지의 로직에 해당하지 않는 경우 error객체 반환하기
+    
+    return Promise.reject(error)
+  })
+```
+
 ## 2. DashBoard, 요일별, 시간별, 전체 날씨보기 총 4가지 페이지로 구성하기
 
-### DashBoard Page(첫화면)[6주차]
+### DashBoard Page(홈화면)[6주차]
 
 - 주소로 위치 검색 기능 구현
 - 새로고침 버튼 구현, 클릭 시 데이터 실시간으로 가져오기, 버튼 클릭 안하면 1시간간격으로 가져오기
@@ -66,24 +116,18 @@ password: test
 - 시간별 날씨 정보 기온, 강수량 차트로 보여주기, 바람 정보 카드로 보여주기
 - 요일별 날씨 정보 기온, 강수량 차트로 보여주기, 바람 정보 카드로 보여주기
 
-### 전체 날씨 보기 페이지(상세 페이지)[8주차]
-
-- 주소로 위치 검색 버튼 넣기
-- 시간별 날씨 정보 기온, 강수량 차트로 보여주기, 바람 정보 카드로 보여주기
-- 요일별 날씨 정보 기온, 강수량 차트로 보여주기, 바람 정보 카드로 보여주기
-
 ### 날씨 진단하기 페이지(상세 페이지)[9주차]
 
 - 현재 위치의 날씨정보와 [기상청 기후평년값](https://data.kma.go.kr/normals/info1.do)을 비교하기
 
-- 자료 조건 
+- 기후평년값 데이터(src/data/climaticAverageListKorea.js) 조건 
 
-|항목|내용| 
-|------|---| 
-|평년값|30년(1991~2020)| 
-|종류|월별 평년값(일반요소)| 
-|지점|전국| 
-|요소|평균 기온, 최고 기온, 최저 기온, 풍속, 강수량|
+  |항목|내용| 
+  |------|---| 
+  |평년값|30년(1991~2020)| 
+  |종류|월별 평년값(일반요소)| 
+  |지점|전국| 
+  |요소|평균 기온, 최고 기온, 최저 기온, 풍속, 강수량|
 
 - 출처: [기상청 기후표](https://data.kma.go.kr/normals/table.do)
 ### 에러 테스트 페이지[10주차]
@@ -98,6 +142,31 @@ password: test
 
  - 에러로그 데이터 localStorage에 저장하기
 
+ ### Jest test code 작성 및 validation 고도화하기 [11, 12주차]
+ - services layer 회원가입 시 이메일 형식 정규식, 위도 경도 범위 유효성 검사, 날씨 데이터 소수점 한자리로 변환하기 함수 test code 작성하기
+ ```
+│   ├── services
+│   │   ├── __tests__
+│   │   │   ├── emailInputRule.test.js
+│   │   │   ├── isValidCoords.test.js
+│   │   │   └── makeWeatherDataToFixedOne.test.js
+```
+
+- store layer user module signup action, weather module getOneCallApi action test code 작성하기
+```
+│   ├── store
+│   │   ├── __tests__
+│   │   │   ├── userActions.test.js
+│   │   │   └── weatherActions.test.js
+```
+
+- view layer signup page submitForm test code 작성하기
+```
+│       ├── SignUp
+│       │   ├── __tests__
+│       │   │   └── signup.test.js
+│       │   └── index.vue
+```
 ## 3. mobile & pc 반응형 구현하기
 
 # Using Libraray
@@ -117,6 +186,7 @@ password: test
 
 ```
 .
+├── Dockerfile
 ├── README.md
 ├── babel.config.js
 ├── fakeAxios
@@ -141,7 +211,9 @@ password: test
 │       ├── makeReturn.js
 │       └── saveUserInfoAtLocalStorage.js
 ├── jest.config.js
+├── jest.setup.js
 ├── jsconfig.json
+├── nginx.conf
 ├── package-lock.json
 ├── package.json
 ├── public
@@ -192,24 +264,28 @@ password: test
 │   │   └── weather-types.js
 │   ├── data
 │   │   ├── appBarMenuItems.js
+│   │   ├── climaticAverageListKorea.js
 │   │   ├── dailyChallengeForEarthCardList.js
 │   │   ├── dropdownMenuItems.js
 │   │   ├── environmentalOrganizationInfoList.js
-│   │   ├── climaticAverageListKorea.js
-│   │   ├── weatherDescriptionKorean.js
-│   │   └── index.js
+│   │   ├── index.js
+│   │   └── weatherDescriptionKorean.js
 │   ├── main.js
 │   ├── mixins
 │   │   ├── check-refreshtoken-mixin.js
 │   │   ├── daum-postcode-mixin.js
 │   │   ├── index.js
-│   │   └── openweathermap-icon-mixin.js
+│   │   ├── openweathermap-icon-mixin.js
 │   │   └── responsive-sheet-mixin.js
 │   ├── plugins
 │   │   └── vuetify.js
 │   ├── router
 │   │   └── index.js
 │   ├── services
+│   │   ├── __tests__
+│   │   │   ├── emailInputRule.test.js
+│   │   │   ├── isValidCoords.test.js
+│   │   │   └── makeWeatherDataToFixedOne.test.js
 │   │   ├── coordsValidation
 │   │   │   ├── checkValidationCause.js
 │   │   │   ├── index.js
@@ -241,9 +317,19 @@ password: test
 │   │   │   ├── inputMeterPerSecondUnit.js
 │   │   │   ├── inputMillimeterPerHourUnit.js
 │   │   │   └── inputPercentUnit.js
+│   │   ├── inputValidation
+│   │   │   ├── emailRules.js
+│   │   │   ├── index.js
+│   │   │   ├── isAgreePrivateInfoUseRule.js
+│   │   │   ├── nicknameRules.js
+│   │   │   ├── passwordCheckRules.js
+│   │   │   └── passwordRules.js
 │   │   ├── makeApiResponseInfo.js
 │   │   └── makeWeatherDataToFixedOne.js
 │   ├── store
+│   │   ├── __tests__
+│   │   │   ├── userActions.test.js
+│   │   │   └── weatherActions.test.js
 │   │   ├── index.js
 │   │   └── modules
 │   │       ├── alert
@@ -296,6 +382,7 @@ password: test
 │       │   │   │   ├── ClimateAverageInfoImage.vue
 │       │   │   │   ├── CompareCurrentTemperatureWithAverage.vue
 │       │   │   │   ├── CompareCurrentWeatherWithAverage.vue
+│       │   │   │   ├── CompareCurrentWeatherWithAverageCard.vue
 │       │   │   │   ├── DailyChallengeForEarthCard.vue
 │       │   │   │   ├── DailyChallengeForEarthContent.vue
 │       │   │   │   ├── EnvironmentalOrganizationSlideGroup.vue
@@ -313,15 +400,15 @@ password: test
 │       │   │   └── TodayWeatherTableTd.vue
 │       │   └── index.vue
 │       ├── NotFound.vue
-│       ├── SignUp.vue
+│       ├── SignUp
+│       │   ├── __tests__
+│       │   │   └── signup.test.js
+│       │   └── index.vue
 │       ├── TestError.vue
 │       └── UpdateMyInfo
 │           ├── components
 │           │   └── UpdatePasswordModal.vue
 │           └── index.vue
-├── tests
-│   └── unit
-│       └── dashboard.spec.js
 └── vue.config.js
 ```
 
@@ -346,7 +433,8 @@ npm run build
 ### Run your unit tests
 
 ```
-npm run test:unit
+"test": "jest",
+"test:watch": "jest --watch",
 ```
 
 ### Lints and fixes files

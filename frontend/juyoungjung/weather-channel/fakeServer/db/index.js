@@ -1,8 +1,6 @@
 import { makeJWT } from '../services'
 
-const {
-  createAccessToken, createRefreshToken,
-} = makeJWT()
+const { createAccessToken, createRefreshToken } = makeJWT()
 const { accessToken, accessTokenExpireTime } = createAccessToken()
 const { refreshToken, refreshTokenExpireTime } = createRefreshToken()
 

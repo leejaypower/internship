@@ -2,6 +2,7 @@
   <div>
     <div class="text-center px-3 my-16">
       <h2>요일별 날씨 현황</h2>
+
       <h5 class="grey--text mt-2 mb-9">
         오늘로부터 7일간의 날씨 예보를 확인하실 수 있습니다.
       </h5>
@@ -146,6 +147,7 @@ export default {
             gradient: [RED, YELLOW, GREEN],
           }
           break
+
         case RAIN_INDEX:
           this.sparklinesConfig = {
             value: this.forecastDaily7DaysRainList,
@@ -154,6 +156,7 @@ export default {
             gradient: [BLUE],
           }
           break
+
         case WIND_INDEX:
           this.windInfo = this.forecastDaily7DaysWindList
           break

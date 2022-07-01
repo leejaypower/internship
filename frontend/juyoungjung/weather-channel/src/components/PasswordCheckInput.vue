@@ -15,6 +15,8 @@
   />
 </template>
 <script>
+import { passwordCheckRules } from '@/services/inputValidation'
+
 export default {
   name: 'PasswordCheckInput',
   props: {
@@ -30,9 +32,7 @@ export default {
   emits: ['onChangePasswordCheck'],
   data: () => ({
     isPasswordCheckVisible: false,
-    passwordCheckRules: [
-      (v) => (!!v && !!v.trim()) || '비밀번호 확인하기는 필수 입력값입니다.',
-    ],
+    passwordCheckRules,
   }),
   computed: {
     handlePasswordCheckVisible() {
@@ -43,7 +43,9 @@ export default {
     },
   },
   mounted() {
-    this.passwordCheckRules.push((v) => (v === this.password) || '비밀번호가 일치하지 않습니다.')
+    if (this.passwordCheckRules.length === 1) {
+      this.passwordCheckRules.push((v) => (v === this.password) || '비밀번호가 일치하지 않습니다.')
+    }
   },
   methods: {
     togglePasswordCheckVisible() {

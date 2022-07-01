@@ -1,6 +1,7 @@
 <template>
   <div>
     <user-api-response-alert />
+
     <weather-api-response-alert />
 
     <v-container class="dashboard-container">
@@ -35,6 +36,7 @@
                 <v-icon>mdi-restore</v-icon>
               </v-btn>
             </template>
+
             <span>최신 날씨 현황을 가져옵니다.</span>
           </v-tooltip>
         </v-col>

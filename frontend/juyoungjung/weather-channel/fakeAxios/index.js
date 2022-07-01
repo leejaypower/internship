@@ -13,12 +13,14 @@ const methodFunc = (method) => (url, data) => {
       checkedData = null
 
       const paramsEntries = Object.entries(data.params)
+
       const queryString = paramsEntries
         .reduce((acc, [key, value], idx) => {
           const temp = `${acc}${key}=${value}`
-          return idx + 1 !== paramsEntries.length
-            ? `${temp}&` : temp
+
+          return idx + 1 !== paramsEntries.length ? `${temp}&` : temp
         }, '')
+
       checkedUrl = `${url}?${queryString}`
     }
 
@@ -40,7 +42,10 @@ const methodFunc = (method) => (url, data) => {
     const isAccepted = requestAcceptedHttpStatusCodeList.some((code) => code === result.status)
 
     if (isAccepted) {
-      if (response.success)response.success(Promise.resolve(result))
+      if (response.success) {
+        return response.success(Promise.resolve(result))
+      }
+
       return Promise.resolve(result)
     }
 
@@ -72,4 +77,5 @@ const fakeAxios = {
   post: methodFunc('post'),
   patch: methodFunc('patch'),
 }
+
 export default fakeAxios

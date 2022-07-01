@@ -15,11 +15,13 @@
           <span>
             {{ dropdownBtnText }}
           </span>
+
           <v-icon class="ml-1">
             mdi-menu-down
           </v-icon>
         </v-btn>
       </template>
+
       <v-list-item-group
         v-model="group"
       >

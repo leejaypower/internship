@@ -14,9 +14,11 @@
           <v-list-item-title class="text-h6 my-1">
             {{ forecastData.date }}
           </v-list-item-title>
+
           <v-list-item-subtitle class="text-h6 mb-1">
             {{ forecastData.temp }}
           </v-list-item-subtitle>
+
           <v-list-item-subtitle>
             체감온도: {{ forecastData.feels_like }}
           </v-list-item-subtitle>
@@ -38,6 +40,7 @@
             mdi-water
           </v-icon>
         </v-list-item-icon>
+
         <v-list-item-subtitle>
           강수량 {{ forecastData.rain || '0mm/h' }}
         </v-list-item-subtitle>

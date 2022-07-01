@@ -39,6 +39,7 @@
       <div class="text-center">
         <div :class="responsiveSheetTitleSize">
           <p>기후평년값은 현재 기후를 진단하고 미래 기후를 예측하기 위해 만들어졌으며,</p>
+
           <p>현재 날씨와 기후를 객관적으로 파악하기 위한 기준지표입니다.</p>
         </div>
 

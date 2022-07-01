@@ -8,8 +8,11 @@
         v-show="$vuetify.breakpoint.smAndDown"
         @click="toggleDrawerVisible"
       />
+
       <v-toolbar-title>The Weather Channel</v-toolbar-title>
+
       <v-spacer />
+
       <v-btn-toggle
         v-for="item in appBarMenuItems"
         v-show="!$vuetify.breakpoint.smAndDown"
@@ -34,11 +37,14 @@
           </v-btn>
         </v-toolbar-title>
       </v-btn-toggle>
+
       <v-spacer />
+
       <v-toolbar-title class="mr-2">
         <dropdown-menu />
       </v-toolbar-title>
     </v-app-bar>
+
     <navigation-drawer
       :is-drawer-visible="isDrawerVisible"
       @onChangeIsDrawerVisible="toggleDrawerVisible"

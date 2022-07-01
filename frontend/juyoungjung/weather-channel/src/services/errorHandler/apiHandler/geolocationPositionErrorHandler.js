@@ -4,6 +4,10 @@ import makeLocalStorageErrorLogList from '../localStorageLogController/makeLocal
 import saveErrorLogAtLocalStorage from '../localStorageLogController/saveErrorLogAtLocalStorage'
 
 const geolocationPositionErrorHandler = (error, userInfo) => {
+  if (!error) {
+    return
+  }
+
   const { code, message } = error
 
   const log = {

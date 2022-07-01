@@ -7,11 +7,15 @@ import {
   checkDuplicatedInfo,
 } from '../services'
 import isJWTValid from '../middleware'
-import { USER_INFO_EMAIL, USER_INFO_NICKNAME } from '../constant'
+import {
+  USER_INFO_EMAIL,
+  USER_INFO_NICKNAME,
+} from '../constant'
 
 const getCheckRefreshToken = (req) => {
   const UserInfoList = getUserInfoList()
   const token = req.headers.Authorization.split(' ')[1]
+
   const verifyUserInfo = UserInfoList.filter(
     (user) => user.refreshToken === token,
   )
@@ -32,6 +36,7 @@ const getCheckRefreshToken = (req) => {
   } = UserInfoList[id]
 
   saveUserInfoAtLocalStorage(UserInfoList)
+
   return makeReturn(200, {
     email,
     nickname,
@@ -56,7 +61,10 @@ const postLogin = (req) => {
   const { refreshToken, refreshTokenExpireTime } = createRefreshToken()
 
   const {
-    id, email, nickname, password,
+    id,
+    email,
+    nickname,
+    password,
   } = verifyUserInfo[0]
 
   const newUserInfo = {
@@ -80,8 +88,8 @@ const postLogin = (req) => {
 
 const postSignup = (req) => {
   const UserInfoList = getUserInfoList()
-
   const needCheckListKey = [USER_INFO_EMAIL, USER_INFO_NICKNAME]
+
   const duplicatedInfo = needCheckListKey.filter((key) => checkDuplicatedInfo(key, req.body[key]))
 
   if (duplicatedInfo.length > 0) {
@@ -126,6 +134,7 @@ const patchNickname = (req) => {
 const patchPassword = (req) => {
   const UserInfoList = getUserInfoList()
   const token = req.headers.Authorization.split(' ')[1]
+
   const verifyUserInfo = UserInfoList.filter(
     (user) => user.accessToken === token && user.password === req.body.oldPassword,
   )
@@ -145,14 +154,18 @@ const patchPassword = (req) => {
 const get = (param, req) => {
   let response = makeReturn(401, { code: 'Unauthorized request' })
 
-  if (req.headers) {
-    const checkAccessTokenResult = isJWTValid(req.headers.Authorization)
+  if (!req.headers) {
+    return response
+  }
 
-    if (checkAccessTokenResult) {
-      if (param === '/check-refreshToken') {
-        response = getCheckRefreshToken(req)
-      }
-    }
+  const checkAccessTokenResult = isJWTValid(req.headers.Authorization)
+
+  if (!checkAccessTokenResult) {
+    return response
+  }
+
+  if (param === '/check-refreshToken') {
+    response = getCheckRefreshToken(req)
   }
 
   return response
@@ -161,17 +174,21 @@ const get = (param, req) => {
 const patch = (param, req) => {
   let response = makeReturn(401, { code: 'Unauthorized request' })
 
-  if (req.headers) {
-    const checkAccessTokenResult = isJWTValid(req.headers.Authorization)
+  if (!req.headers) {
+    return response
+  }
 
-    if (checkAccessTokenResult) {
-      if (param === '/nickname') {
-        response = patchNickname(req)
-      }
-      if (param === '/password') {
-        response = patchPassword(req)
-      }
-    }
+  const checkAccessTokenResult = isJWTValid(req.headers.Authorization)
+
+  if (!checkAccessTokenResult) {
+    return response
+  }
+
+  if (param === '/nickname') {
+    response = patchNickname(req)
+  }
+  if (param === '/password') {
+    response = patchPassword(req)
   }
 
   return response
@@ -179,12 +196,14 @@ const patch = (param, req) => {
 
 const post = (param, req) => {
   let response = makeReturn(400, { code: 'Invalid request' })
+
   if (param === '/signup') {
     response = postSignup(req)
   }
   if (param === '/login') {
     response = postLogin(req)
   }
+
   return response
 }
 

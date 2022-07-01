@@ -26,7 +26,7 @@ const actions = {
 
       const info = makeApiResponseInfo(
         'error',
-        translateFakeAxiosResponseErrorCode(error.data.code),
+        translateFakeAxiosResponseErrorCode(error.data?.code),
       )
 
       dispatch('alert/setUserApiResponse', info, { root: true })
@@ -47,7 +47,7 @@ const actions = {
 
       const info = makeApiResponseInfo(
         'error',
-        translateFakeAxiosResponseErrorCode(error.data.code),
+        translateFakeAxiosResponseErrorCode(error.data?.code),
       )
 
       dispatch('alert/setUserApiResponse', info, { root: true })
@@ -70,6 +70,7 @@ const actions = {
 
       if (getters.myInfo) {
         const { email, nickname } = getters.myInfo
+
         userInfo = {
           email,
           nickname,
@@ -80,7 +81,7 @@ const actions = {
 
       const info = makeApiResponseInfo(
         'error',
-        translateFakeAxiosResponseErrorCode(error.data.code),
+        translateFakeAxiosResponseErrorCode(error.data?.code),
       )
 
       dispatch('alert/setUserApiResponse', info, { root: true })
@@ -101,6 +102,7 @@ const actions = {
 
       if (getters.myInfo) {
         const { email, nickname } = getters.myInfo
+
         userInfo = {
           email,
           nickname,
@@ -111,7 +113,7 @@ const actions = {
 
       const info = makeApiResponseInfo(
         'error',
-        translateFakeAxiosResponseErrorCode(error.data.code),
+        translateFakeAxiosResponseErrorCode(error.data?.code),
       )
 
       dispatch('alert/setUserApiResponse', info, { root: true })
@@ -127,6 +129,7 @@ const actions = {
 
       if (getters.myInfo) {
         const { email, nickname } = getters.myInfo
+
         userInfo = {
           email,
           nickname,

@@ -62,17 +62,15 @@ export default
       default: null,
     },
   },
-  data() {
-    return {
-      currentTemperatureValue: 0,
-      averageTemperatureValue: 0,
-      maxAverageTemperatureValue: 0,
-      minAverageTemperatureValue: 0,
-      intervalCurrentTemperature: 0,
-      intervalAverageTemperature: 0,
-      CELSIUS_UNIT,
-    }
-  },
+  data: () => ({
+    currentTemperatureValue: 0,
+    averageTemperatureValue: 0,
+    maxAverageTemperatureValue: 0,
+    minAverageTemperatureValue: 0,
+    intervalCurrentTemperature: 0,
+    intervalAverageTemperature: 0,
+    CELSIUS_UNIT,
+  }),
   computed: {
     ...mapGetters('weather', [
       'simpleCurrentWeatherData',
@@ -104,6 +102,7 @@ export default
         this.currentTemperatureValue = currentTemperature
         this.maxAverageTemperatureValue = this.currentMonthClimateAverageValue.temp.max
         this.minAverageTemperatureValue = this.currentMonthClimateAverageValue.temp.min
+
         this.setImageVisible()
 
         return clearInterval(this.intervalCurrentTemperature)
@@ -112,6 +111,7 @@ export default
       setTimeout(() => {
         this.intervalCurrentTemperature = setTimeout(() => {
           this.currentTemperatureValue += 1
+
           return setTimeout(this.autoPlusCurrentTemperatureValue, 30)
         }, 30)
       }, 30)
@@ -130,6 +130,7 @@ export default
       setTimeout(() => {
         this.intervalAverageTemperature = setTimeout(() => {
           this.averageTemperatureValue += 1
+
           return setTimeout(this.autoPlusAverageTemperatureValue, 30)
         }, 30)
       }, 30)

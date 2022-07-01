@@ -33,7 +33,11 @@ const patchUpdatePassword = async (data) => {
 }
 
 const userApi = {
-  postSignup, postLogin, getCheckRefreshToken, patchUpdateNickname, patchUpdatePassword,
+  postSignup,
+  postLogin,
+  getCheckRefreshToken,
+  patchUpdateNickname,
+  patchUpdatePassword,
 }
 
 export default userApi

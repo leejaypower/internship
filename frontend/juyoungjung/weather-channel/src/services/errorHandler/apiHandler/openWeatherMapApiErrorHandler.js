@@ -4,6 +4,10 @@ import makeLocalStorageErrorLogList from '../localStorageLogController/makeLocal
 import saveErrorLogAtLocalStorage from '../localStorageLogController/saveErrorLogAtLocalStorage'
 
 const openWeatherMapApiErrorHandler = (error, userInfo) => {
+  if (!error.response) {
+    return
+  }
+
   const {
     status, statusText, data, config,
   } = error.response

@@ -18,11 +18,9 @@
 <script>
 export default {
   name: 'ScrollToTopBtn',
-  data() {
-    return {
-      isBtnShow: false,
-    }
-  },
+  data: () => ({
+    isBtnShow: false,
+  }),
   methods: {
     onScroll() {
       this.$nextTick(() => {

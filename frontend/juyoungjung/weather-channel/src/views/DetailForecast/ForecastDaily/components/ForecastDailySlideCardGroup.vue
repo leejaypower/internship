@@ -25,11 +25,13 @@
                 <v-list-item-title class="text-h6 my-3">
                   {{ data.day }}
                 </v-list-item-title>
+
                 <v-list-item-subtitle class="text-h5 mb-2">
                   {{ data.temp }}
                 </v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
+
             <v-list-item class="d-flex justify-center">
               <div>
                 <v-img

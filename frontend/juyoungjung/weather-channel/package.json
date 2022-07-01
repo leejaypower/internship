@@ -5,7 +5,8 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "test:unit": "vue-cli-service test:unit",
+    "test": "jest",
+    "test:watch": "jest --watch",
     "lint": "vue-cli-service lint",
     "docker:build": "docker build -t juyoungjung-weather-channel-app-image .",
     "docker:run": "docker run -it -p 8090:8090 --rm --name juyoungjung-weather-channel-app juyoungjung-weather-channel-app-image"
@@ -15,7 +16,7 @@
     "axios": "^0.27.2",
     "core-js": "^3.8.3",
     "dayjs": "^1.11.1",
-    "vue": "^2.6.14", 
+    "vue": "^2.6.14",
     "vue-router": "^3.5.1",
     "vuetify": "^2.6.0",
     "vuex": "^3.6.2"

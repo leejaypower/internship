@@ -3,6 +3,7 @@
     <p>
       {{ text }}
     </p>
+
     <div>
       <v-chip
         v-if="requiredAuth"
@@ -13,6 +14,7 @@
       >
         회원전용
       </v-chip>
+
       <v-chip
         v-else
         color="light-blue"

@@ -37,6 +37,7 @@ const actions = {
   },
   async getOneCallApi({ commit, dispatch, rootGetters }, payload) {
     /* eslint-disable camelcase */
+
     if (!isValidCoords(payload)) {
       const info = makeCoordsValidationResponseInfo(payload.longitude)
 
@@ -45,6 +46,10 @@ const actions = {
 
     try {
       const response = await openWeatherApi.fetchOneCallApi(payload)
+
+      if (!response.data) {
+        return null
+      }
 
       let dayFormatTypeList = []
       const initial = {
@@ -60,69 +65,31 @@ const actions = {
         },
       }
 
-      if (response?.data?.hourly) {
-        const { hourly, daily } = response.data
+      const { hourly, daily } = response.data
 
-        const dayTypeSet = hourly.reduce((acc, data) => {
+      const dayTypeSet = hourly.reduce((acc, data) => {
+        const dayFormat = dayjs.unix(data.dt).format(DAYJS_DATE_AND_DAY_FORMAT)
+
+        return acc.add(dayFormat)
+      }, new Set())
+
+      dayFormatTypeList = Array.from(dayTypeSet)
+
+      const hourlyInfoGroupByDayFormatInitial = dayFormatTypeList.reduce((acc, dayFormatType) => {
+        acc[dayFormatType] = {
+          temperature: [],
+          rain: [],
+          wind: [],
+        }
+
+        return acc
+      }, {})
+
+      const hourlyInfoGroupByDayFormat = hourly
+        .reduce((acc, data, index) => {
           const dayFormat = dayjs.unix(data.dt).format(DAYJS_DATE_AND_DAY_FORMAT)
-
-          return acc.add(dayFormat)
-        }, new Set())
-
-        dayFormatTypeList = Array.from(dayTypeSet)
-
-        const hourlyInfoGroupByDayFormatInitial = dayFormatTypeList.reduce((acc, dayFormatType) => {
-          acc[dayFormatType] = {
-            temperature: [],
-            rain: [],
-            wind: [],
-          }
-
-          return acc
-        }, {})
-
-        const hourlyInfoGroupByDayFormat = hourly
-          .reduce((acc, data, index) => {
-            const dayFormat = dayjs.unix(data.dt).format(DAYJS_DATE_AND_DAY_FORMAT)
-
-            const oneHourTemperature = makeWeatherDataToFixedOne(data.temp)
-            const oneHourRain = data.rain ? makeWeatherDataToFixedOne(data.rain[ONE_HOUR]) : 0.0
-            const {
-              dt,
-              wind_speed,
-              wind_deg,
-              wind_gust,
-            } = data
-
-            const oneHourWindInfo = {
-              key: index,
-              hour: dayjs.unix(dt).format(TIME_FORMAT),
-              wind_speed,
-              wind_deg,
-              wind_gust,
-            }
-
-            acc[dayFormat].temperature.push(oneHourTemperature)
-            acc[dayFormat].rain.push(oneHourRain)
-            acc[dayFormat].wind.push(oneHourWindInfo)
-
-            return acc
-          }, hourlyInfoGroupByDayFormatInitial)
-
-        const hourlyInfo = dayFormatTypeList.reduce((acc, data, idx) => {
-          acc.temperature[idx] = hourlyInfoGroupByDayFormat[data].temperature
-          acc.rain[idx] = hourlyInfoGroupByDayFormat[data].rain
-          acc.wind[idx] = hourlyInfoGroupByDayFormat[data].wind
-
-          return acc
-        }, initial.hourlyInfo)
-
-        const dailyInfo = daily.reduce((acc, data, idx) => {
-          const oneDayTemperature = makeWeatherDataToFixedOne(data.temp.day)
-
-          const oneDayRainAmount = data.rain
-            ? makeWeatherDataToFixedOne(data.rain) : 0.0
-
+          const oneHourTemperature = makeWeatherDataToFixedOne(data.temp)
+          const oneHourRain = data.rain ? makeWeatherDataToFixedOne(data.rain[ONE_HOUR]) : 0.0
           const {
             dt,
             wind_speed,
@@ -130,35 +97,69 @@ const actions = {
             wind_gust,
           } = data
 
-          const oneDayWindInfo = {
-            key: idx,
+          const oneHourWindInfo = {
+            key: index,
             hour: dayjs.unix(dt).format(TIME_FORMAT),
             wind_speed,
             wind_deg,
             wind_gust,
           }
 
-          acc.temperature.push(oneDayTemperature)
-          acc.rain.push(oneDayRainAmount)
-          acc.wind.push(oneDayWindInfo)
+          acc[dayFormat].temperature.push(oneHourTemperature)
+          acc[dayFormat].rain.push(oneHourRain)
+          acc[dayFormat].wind.push(oneHourWindInfo)
 
           return acc
-        }, initial.dailyInfo)
+        }, hourlyInfoGroupByDayFormatInitial)
 
-        return (
-          commit(SET_ONE_CALL_API_DATA, response.data),
-          commit(SET_FORECAST_HOURLY_DAY_TYPE, dayFormatTypeList),
-          commit(SET_FORECAST_HOURLY_INFO, hourlyInfo),
-          commit(SET_FORECAST_DAILY_INFO, dailyInfo)
-        )
-      }
+      const hourlyInfo = dayFormatTypeList.reduce((acc, data, idx) => {
+        acc.temperature[idx] = hourlyInfoGroupByDayFormat[data].temperature
+        acc.rain[idx] = hourlyInfoGroupByDayFormat[data].rain
+        acc.wind[idx] = hourlyInfoGroupByDayFormat[data].wind
 
-      return null
+        return acc
+      }, initial.hourlyInfo)
+
+      const dailyInfo = daily.reduce((acc, data, idx) => {
+        const oneDayTemperature = makeWeatherDataToFixedOne(data.temp.day)
+
+        const oneDayRainAmount = data.rain
+          ? makeWeatherDataToFixedOne(data.rain) : 0.0
+
+        const {
+          dt,
+          wind_speed,
+          wind_deg,
+          wind_gust,
+        } = data
+
+        const oneDayWindInfo = {
+          key: idx,
+          hour: dayjs.unix(dt).format(TIME_FORMAT),
+          wind_speed,
+          wind_deg,
+          wind_gust,
+        }
+
+        acc.temperature.push(oneDayTemperature)
+        acc.rain.push(oneDayRainAmount)
+        acc.wind.push(oneDayWindInfo)
+
+        return acc
+      }, initial.dailyInfo)
+
+      return (
+        commit(SET_ONE_CALL_API_DATA, response.data),
+        commit(SET_FORECAST_HOURLY_DAY_TYPE, dayFormatTypeList),
+        commit(SET_FORECAST_HOURLY_INFO, hourlyInfo),
+        commit(SET_FORECAST_DAILY_INFO, dailyInfo)
+      )
     } catch (error) {
       let userInfo = null
 
       if (rootGetters['user/myInfo']) {
         const { email, nickname } = rootGetters['user/myInfo']
+
         userInfo = {
           email, nickname,
         }
@@ -203,6 +204,7 @@ const actions = {
 
       if (rootGetters['user/myInfo']) {
         const { email, nickname } = rootGetters['user/myInfo']
+
         userInfo = {
           email, nickname,
         }
@@ -245,6 +247,7 @@ const actions = {
 
       if (rootGetters['user/myInfo']) {
         const { email, nickname } = rootGetters['user/myInfo']
+
         userInfo = {
           email, nickname,
         }

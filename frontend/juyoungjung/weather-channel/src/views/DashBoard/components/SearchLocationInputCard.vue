@@ -20,6 +20,7 @@
             v-if="nickname"
             class="mb-2"
           >현재 {{ nickname }}님이 계신 곳이 아닌<br> 다른 지역의 날씨정보를 알고 싶으신가요?</span>
+
           <span v-else>현재 계신 곳이 아닌<br> 다른 지역의 날씨정보를 알고 싶으신가요?</span>
         </v-col>
         <v-col

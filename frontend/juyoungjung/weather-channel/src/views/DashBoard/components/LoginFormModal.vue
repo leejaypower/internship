@@ -7,7 +7,7 @@
     <v-card>
       <v-toolbar
         dark
-        color="primary"
+        color="light-blue"
       >
         <v-btn
           icon
@@ -17,10 +17,12 @@
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </v-toolbar>
+
       <v-card-title class="my-14 d-flex flex-column justify-center">
         <h3 class="mb-10">
           The Weather Channel
         </h3>
+
         <v-row
           class="d-flex justify-center align-center flex-wrap"
         >
@@ -33,6 +35,7 @@
           >
             요일별
           </v-chip>
+
           <v-chip
             class="ma-2"
             color="orange"
@@ -45,6 +48,7 @@
           날씨정보를 확인해보세요!
         </v-row>
       </v-card-title>
+
       <v-form
         ref="form"
         v-model="valid"
@@ -64,21 +68,24 @@
               @keyup.enter.native="submitForm"
             />
           </v-card-text>
+
           <v-card-actions class="my-14 d-flex justify-center align-center">
             <router-link to="/signup">
               <v-btn
+                type="submit"
                 class="mr-5"
                 x-large
-                color="primary"
+                color="light-blue"
                 text
                 @click="closeLoginFormModal()"
               >
                 회원가입
               </v-btn>
             </router-link>
+
             <v-btn
               x-large
-              color="primary"
+              color="light-blue"
               class="white--text"
               @click="submitForm"
             >
@@ -115,8 +122,7 @@ export default {
     },
     responsiveFormWidth() {
       return this.$vuetify.breakpoint.smAndDown
-        ? MOBILE_FORM_WRAPPER_CLASS
-        : PC_FORM_WRAPPER_CLASS
+        ? MOBILE_FORM_WRAPPER_CLASS : PC_FORM_WRAPPER_CLASS
     },
   },
   methods: {
@@ -131,7 +137,9 @@ export default {
         visible: false,
       })
     },
-    submitForm() {
+    submitForm(e) {
+      e.preventDefault()
+
       const isValid = this.$refs.form.validate()
 
       if (isValid) {

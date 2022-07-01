@@ -1,6 +1,7 @@
 <template>
   <v-app class="mx-auto overflow-hidden">
     <app-bar />
+
     <v-main class="mt-16 pa-10 d-flex justify-center">
       <router-view />
     </v-main>
@@ -65,8 +66,10 @@ export default {
     },
     positionError(error) {
       let userInfo = null
+
       if (this.myInfo) {
         const { email, nickname } = this.myInfo
+
         userInfo = {
           email, nickname,
         }

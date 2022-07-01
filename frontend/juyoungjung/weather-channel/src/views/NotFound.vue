@@ -8,6 +8,7 @@
         찾을 수 없는 페이지입니다.
       </p>
     </v-card-text>
+
     <v-card-actions>
       <v-btn
         text

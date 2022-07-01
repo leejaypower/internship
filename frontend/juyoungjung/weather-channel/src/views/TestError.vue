@@ -1,6 +1,7 @@
 <template>
   <div class="d-flex flex-column justify-center align-center">
     <weather-api-response-alert />
+
     <user-api-response-alert />
 
     <h1>에러 테스트하기</h1>
@@ -11,6 +12,7 @@
     >
       Reference Error 만들기
     </v-btn>
+
     <v-btn
       class="my-2"
       x-large
@@ -18,6 +20,7 @@
     >
       FakeAxios Error 만들기
     </v-btn>
+
     <v-btn
       class="my-2"
       x-large
@@ -25,6 +28,7 @@
     >
       Naver Reverse Geocoding API Error 만들기
     </v-btn>
+
     <v-btn
       class="my-2"
       x-large
@@ -32,6 +36,7 @@
     >
       Openweather API Error 만들기
     </v-btn>
+
     <v-btn
       class="my-2"
       x-large
@@ -80,7 +85,7 @@ export default {
 
         const info = makeApiResponseInfo(
           'error',
-          translateFakeAxiosResponseErrorCode('Gateway error'),
+          translateFakeAxiosResponseErrorCode('Duplicated nickname'),
         )
 
         this.$store.dispatch('alert/setUserApiResponse', info, { root: true })

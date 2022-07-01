@@ -6,6 +6,7 @@ function checkTokenExpireTime(key, userInfo) {
   if (now < userInfo[key]) {
     return true
   }
+
   return false
 }
 export default checkTokenExpireTime

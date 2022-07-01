@@ -4,6 +4,10 @@ import makeLocalStorageErrorLogList from '../localStorageLogController/makeLocal
 import saveErrorLogAtLocalStorage from '../localStorageLogController/saveErrorLogAtLocalStorage'
 
 const windowOnUnhandledRejectionHandler = (errorEvent) => {
+  if (!errorEvent.reason) {
+    return
+  }
+
   const {
     code, config, message, name, status,
   } = errorEvent.reason
@@ -22,6 +26,9 @@ const windowOnUnhandledRejectionHandler = (errorEvent) => {
 
   const newList = makeLocalStorageErrorLogList(log)
   saveErrorLogAtLocalStorage(JSON.stringify(newList))
+
+  // eslint-disable-next-line consistent-return
+  return false
 }
 
 export default windowOnUnhandledRejectionHandler

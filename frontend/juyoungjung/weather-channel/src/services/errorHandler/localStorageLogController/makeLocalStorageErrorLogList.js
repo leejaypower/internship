@@ -5,7 +5,9 @@ const makeLocalStorageErrorLogList = (log) => {
   const errorLogList = JSON.parse(localStorageErrorLog)
 
   if (errorLogList) {
-    return errorLogList.push(log)
+    errorLogList.push(log)
+
+    return errorLogList
   }
 
   return [log]

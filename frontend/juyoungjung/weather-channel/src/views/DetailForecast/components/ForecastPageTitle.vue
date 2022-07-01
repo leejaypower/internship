@@ -38,6 +38,7 @@
             <v-icon>mdi-target</v-icon>
           </v-btn>
         </template>
+
         <span>다른 지역의 날씨를 찾아보세요.</span>
       </v-tooltip>
 
@@ -55,6 +56,7 @@
             <v-icon>mdi-restore</v-icon>
           </v-btn>
         </template>
+
         <span>최신 날씨 현황을 가져옵니다.</span>
       </v-tooltip>
     </v-col>

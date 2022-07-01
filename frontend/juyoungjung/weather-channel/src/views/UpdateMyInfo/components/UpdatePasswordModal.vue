@@ -17,17 +17,20 @@
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </v-toolbar>
+
       <v-alert
         v-show="isWarningAlertVisible"
         type="warning"
       >
         기존 비밀번호와 다르게 비밀번호를 설정해주세요.
       </v-alert>
+
       <v-card-title class="my-10 d-flex justify-center">
         <h3>
           비밀번호 수정하기
         </h3>
       </v-card-title>
+
       <v-form
         ref="form"
         v-model="valid"
@@ -56,6 +59,7 @@
               />
             </div>
           </v-card-text>
+
           <v-card-actions class="mb-16 d-flex flex-column justify-center">
             <v-btn
               color="orange"

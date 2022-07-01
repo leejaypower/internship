@@ -10,6 +10,7 @@
                 :icon="'mdi-thermometer-plus'"
                 :label="'체감 온도'"
               />
+
               <today-weather-table-td
                 :content="forecastData.rain || '0mm/h'"
                 :icon="'mdi-water'"
@@ -23,6 +24,7 @@
                 :icon="'mdi-water-percent'"
                 :label="'습도'"
               />
+
               <today-weather-table-td
                 :content="forecastData.uvi"
                 :icon="'mdi-water-percent'"
@@ -36,6 +38,7 @@
                 :icon="'mdi-send'"
                 :label="'풍속'"
               />
+
               <today-weather-table-td
                 :content="forecastData.clouds"
                 :icon="'mdi-cloud-outline'"

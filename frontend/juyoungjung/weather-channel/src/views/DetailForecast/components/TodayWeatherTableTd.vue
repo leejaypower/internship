@@ -11,6 +11,7 @@
         >
           {{ icon }}
         </v-icon>
+
         <span>{{ label }}</span>
       </v-col>
 

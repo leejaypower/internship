@@ -9,6 +9,7 @@
     >
       {{ windInfo.hour }}시
     </p>
+
     <div :style="transformIconRotate(windInfo.wind_deg)">
       <v-icon
         class="text-center"
@@ -17,9 +18,11 @@
         mdi-send
       </v-icon>
     </div>
+
     <span class="pt-4 grey--text text-center">
       속도: {{ inputMeterPerSecondUnit(windInfo.wind_speed) }}
     </span>
+
     <span class="grey--text text-center">
       돌풍: {{ inputMeterPerSecondUnit(windInfo.wind_gust) }}
     </span>

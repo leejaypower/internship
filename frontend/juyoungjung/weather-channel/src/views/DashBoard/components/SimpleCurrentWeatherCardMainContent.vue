@@ -6,11 +6,13 @@
           <v-list-item-title class="text-h6 mb-2">
             {{ currentLocation }}
           </v-list-item-title>
+
           <v-list-item-subtitle class="mb-2">
             {{ simpleCurrentWeatherData.date }},
             {{ simpleCurrentWeatherData.day }},
             {{ simpleCurrentWeatherData.time }}
           </v-list-item-subtitle>
+
           <v-list-item-subtitle>
             {{ simpleCurrentWeatherData.desc }}
           </v-list-item-subtitle>
@@ -26,6 +28,7 @@
         >
           <span> {{ simpleCurrentWeatherData.temp }}</span>
         </v-col>
+
         <v-col
           class="d-flex justify-center align-center"
           md="5"
