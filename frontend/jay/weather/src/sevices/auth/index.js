@@ -11,6 +11,11 @@ async function refreshLogin() {
   return loginResult
 }
 
+async function sendFailedRequest() {
+  const notfoundResult = await axios.post('/wrong')
+  return notfoundResult
+}
+
 const today = new Date()
 const now = today.getMonth() + 1
 const rightNow = today.getTime()
@@ -54,5 +59,5 @@ const responseVerify = (originRequest, response, store) => {
 }
 
 export {
-  tryLogin, refreshLogin, requestVerify, responseVerify,
+  tryLogin, refreshLogin, requestVerify, responseVerify, sendFailedRequest,
 }

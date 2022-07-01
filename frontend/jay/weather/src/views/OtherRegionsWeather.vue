@@ -1,7 +1,9 @@
 <template>
   <v-container class="pa-5">
     <error-alert />
-    <v-row>
+    <v-row
+      v-if="!error.show"
+    >
       <v-col>
         <h1 class="ml-2">
           다른 지역 날씨
@@ -17,6 +19,7 @@
         xs="10"
       >
         <div
+          v-if="!error.show"
           class="map-wrapper"
         >
           <img
@@ -51,7 +54,7 @@
           list-item-avatar-three-line, list-item-avatar-three-line"
         />
         <div
-          v-if="!isLoading && !errorInfo.show"
+          v-if="successAll"
           class="weather-info text-center align-center"
           justify="center"
         >
@@ -66,7 +69,7 @@
           <p><b>{{ currentWeather.temp }} ℃ </b>| {{ desc }}</p>
         </div>
         <v-card
-          v-if="!isLoading && !errorInfo.show"
+          v-if="successAll"
           outlined
           class="grey lighten-5"
         >
@@ -107,13 +110,14 @@ import dayjs from 'dayjs'
 import 'dayjs/locale/ko'
 
 import ErrorAlert from '@/components/ErrorAlert.vue'
-import regions from '@/util/regions/index'
+import regions from '@/util/regions'
 import weatherDescMap from '@/util/weatherDesc'
 
 dayjs.locale('ko')
 
 const { mapGetters: alertGetters } = createNamespacedHelpers('alertStore')
 const { mapGetters: weatherGetters } = createNamespacedHelpers('weatherStore')
+const { mapGetters: errorGetters } = createNamespacedHelpers('errorStore')
 
 export default {
   components: { ErrorAlert },
@@ -131,11 +135,17 @@ export default {
   }),
 
   computed: {
-    ...alertGetters(['isLoading', 'errorInfo']),
+    ...alertGetters(['isLoading']),
+    ...errorGetters(['error']),
     ...weatherGetters(['regionalcurrentWeather', 'regionalweeklyWeather']),
+    successAll() {
+      return !this.isLoading && !this.error.show
+    },
   },
 
   async created() {
+    await this.$store.dispatch('errorStore/clearError')
+
     const { lat, lon } = regions[0]
     await this.$store.dispatch('weatherStore/fetchDistrictWeather', { lat, lon })
 

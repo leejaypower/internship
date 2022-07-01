@@ -46,7 +46,7 @@
 <script>
 import { createNamespacedHelpers } from 'vuex'
 
-import clothes from '@/util/clothes/index'
+import clothes from '@/util/clothes'
 
 const { mapGetters } = createNamespacedHelpers('weatherStore')
 

@@ -1,6 +1,6 @@
 import {
   checkUserId, tryRegister, matchPassword, modifyPassword,
-} from '@/sevices/user/index'
+} from '@/sevices/user'
 
 export default {
   namespaced: true,
@@ -50,12 +50,7 @@ export default {
         }, { root: true })
         return response
       } catch (error) {
-        if (error.message === 'duplicated') {
-          dispatch('alertStore/setAlertInfo', {
-            type: 'error',
-            message: '이미 사용되는 아이디입니다.',
-          }, { root: true })
-        }
+        dispatch('errorStore/handlePredictableError', error, { root: true })
         return 'failed'
       }
     },
@@ -68,7 +63,7 @@ export default {
         }, { root: true })
         return response
       } catch (error) {
-        dispatch('alertStore/setAlertInfo', { type: 'error', message: error.message }, { root: true })
+        dispatch('errorStore/handlePredictableError', error, { root: true })
         return 'failed'
       }
     },
@@ -77,12 +72,9 @@ export default {
         const response = await matchPassword(checkData)
         return response
       } catch (error) {
-        dispatch('alertStore/setAlertInfo', {
-          type: 'warning',
-          message: '현재 비밀번호가 맞지않습니다. 다시 확인해주세요.',
-        }, { root: true })
+        dispatch('errorStore/handlePredictableError', error, { root: true })
+        return 'failed'
       }
-      return 'failed'
     },
     async modifyPassword({ dispatch }, modifyData) {
       try {
@@ -93,7 +85,7 @@ export default {
         }, { root: true })
         return response
       } catch (error) {
-        dispatch('alertStore/setAlertInfo', { type: 'error', message: error.message }, { root: true })
+        dispatch('errorStore/handlePredictableError', error, { root: true })
         return 'failed'
       }
     },

@@ -1,5 +1,4 @@
 import { fetchCurrentWeather, fetchWeeklyWeather, fetchRegionalWeather } from '@/util/api/openweather'
-import { getErrorMessage } from '@/util/api/errorHandling/index'
 
 export default {
   namespaced: true,
@@ -56,9 +55,8 @@ export default {
         commit('SET_CURRENT_TEMP', temparature)
         dispatch('alertStore/removeIsLoading', null, { root: true })
       } catch (error) {
-        const errorMessage = getErrorMessage(error.response.status)
+        dispatch('errorStore/handlePredictableError', { error, errorCode: error.response.status }, { root: true })
         dispatch('alertStore/removeIsLoading', null, { root: true })
-        dispatch('alertStore/setErrorInfo', errorMessage, { root: true })
       }
     },
 
@@ -69,9 +67,8 @@ export default {
         commit('SET_WEEKLY_WEATHER', responseData)
         dispatch('alertStore/removeIsLoading', null, { root: true })
       } catch (error) {
-        const errorMessage = getErrorMessage(error.response.status)
+        dispatch('errorStore/handlePredictableError', { error, errorCode: error.response.status }, { root: true })
         dispatch('alertStore/removeIsLoading', null, { root: true })
-        dispatch('alertStore/setErrorInfo', errorMessage, { root: true })
       }
     },
 
@@ -84,8 +81,8 @@ export default {
 
       results.forEach((item) => {
         if (item.status === 'rejected') {
-          const errorMessage = getErrorMessage(item.value.status)
-          dispatch('alertStore/setErrorInfo', errorMessage, { root: true })
+          dispatch('errorStore/handlePredictableError', { error: item.value, errorCode: item.value.status }, { root: true })
+          dispatch('alertStore/removeIsLoading', null, { root: true })
           return
         }
         if (item.value.data.current) {
@@ -109,9 +106,8 @@ export default {
         commit('SET_REGIONAL_WEEKLY_WEATHER', regionalweeklyWeather)
         dispatch('alertStore/removeIsLoading', null, { root: true })
       } catch (error) {
+        dispatch('errorStore/handlePredictableError', { error, errorCode: error.response.status }, { root: true })
         dispatch('alertStore/removeIsLoading', null, { root: true })
-        const errorMessage = getErrorMessage(error.response.status)
-        dispatch('alertStore/setErrorInfo', errorMessage, { root: true })
       }
     },
   },

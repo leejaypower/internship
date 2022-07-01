@@ -69,7 +69,9 @@ function loginManage(loginData, header) {
         reject(new Error('재로그인이 필요합니다.'))
       }
     }
-    reject(new Error('유효하지 않은 요청입니다.'))
+    const error = new Error('INVALID_PERMISSION_REQUEST')
+    Object.assign(error, { errorCode: 401 })
+    reject(error)
   })
 }
 
@@ -124,7 +126,9 @@ function retryLogin(header) {
       localStorage.removeItem('refresh-token')
       reject(new Error('재로그인이 필요합니다.'))
     }
-    reject(new Error('유효하지 않은 요청입니다.'))
+    const error = new Error('INVALID_PERMISSION_REQUEST')
+    Object.assign(error, { errorCode: 401 })
+    reject(error)
   })
 }
 
@@ -139,9 +143,11 @@ function findDuplicateId(id) {
       resolve(id)
     }
     if (isDuplicateId) {
-      reject(new Error('duplicated'))
+      reject(new Error('이미 같은 아이디가 있습니다.'))
     }
-    reject(new Error('유효하지 않은 요청입니다.'))
+    const error = new Error('INVALID_FAKE_SERVER_REQUEST')
+    Object.assign(error, { errorCode: 404 })
+    reject(error)
   })
 }
 
@@ -159,7 +165,9 @@ function registerUser(newData) {
       resolve(newData)
       return
     }
-    reject(new Error('유효하지 않은 요청입니다.'))
+    const error = new Error('INVALID_FAKE_SERVER_REQUEST')
+    Object.assign(error, { errorCode: 404 })
+    reject(error)
   })
 }
 
@@ -171,7 +179,7 @@ function matchPassword(checkData) {
       resolve(checkData.id)
       return
     }
-    reject(new Error('입력한 비밀번호가 맞지 않음'))
+    reject(new Error('입력한 비밀번호가 맞지 않습니다.'))
   })
 }
 
@@ -190,13 +198,17 @@ function modifyPassword(userData) {
         resolve(userData.id)
       }
     }
-    reject(new Error('유효하지 않은 요청입니다.'))
+    const error = new Error('INVALID_FAKE_SERVER_REQUEST')
+    Object.assign(error, { errorCode: 404 })
+    reject(error)
   })
 }
 
 function notFoundError() {
   return new Promise((resolve, reject) => {
-    reject(new Error('에러 발생! 요청을 처리할 수 없습니다!'))
+    const error = new Error('INVALID_TEST_REQUEST')
+    Object.assign(error, { errorCode: 1004 })
+    reject(error)
   })
 }
 

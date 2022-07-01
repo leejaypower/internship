@@ -41,4 +41,6 @@ async function fetchRegionalWeather(lat, lon) {
   return response
 }
 
-export { fetchCurrentWeather, fetchWeeklyWeather, fetchRegionalWeather }
+export {
+  fetchCurrentWeather, fetchWeeklyWeather, fetchRegionalWeather,
+}

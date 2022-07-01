@@ -10,10 +10,6 @@ export default {
       message: '',
       confirm: false,
     },
-    errorInfo: {
-      show: false,
-      message: [],
-    },
     isLoading: false,
   },
   getters: {
@@ -25,9 +21,6 @@ export default {
     },
     isLoading(state) {
       return state.isLoading
-    },
-    errorInfo(state) {
-      return state.errorInfo
     },
   },
   mutations: {
@@ -57,14 +50,6 @@ export default {
     REMOVE_IS_LOADING(state) {
       state.isLoading = false
     },
-    SET_ERROR_INFO(state, message) {
-      state.errorInfo.show = true
-      state.errorInfo.message.push(message)
-    },
-    REMOVE_ERROR_INFO(state) {
-      state.errorInfo.show = false
-      state.errorInfo.message = []
-    },
   },
   actions: {
     setAlertInfo({ commit }, alertInfo) {
@@ -87,12 +72,6 @@ export default {
     },
     removeIsLoading({ commit }) {
       commit('REMOVE_IS_LOADING')
-    },
-    setErrorInfo({ commit }, message) {
-      commit('SET_ERROR_INFO', message)
-    },
-    removeErrorInfo({ commit }) {
-      commit('REMOVE_ERROR_INFO')
     },
   },
 }

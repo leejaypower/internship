@@ -5,6 +5,7 @@ import alertStore from '@/store/modules/alertStore'
 import authStore from '@/store/modules/authStore'
 import locationStore from '@/store/modules/locationStore'
 import weatherStore from '@/store/modules/weatherStore'
+import errorStore from '@/store/modules/errorStore'
 
 Vue.use(Vuex)
 
@@ -15,5 +16,6 @@ export default new Vuex.Store({
     authStore,
     locationStore,
     weatherStore,
+    errorStore,
   },
 })

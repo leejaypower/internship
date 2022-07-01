@@ -1,7 +1,9 @@
 <template>
   <v-container class="pa-5">
     <error-alert />
-    <v-row>
+    <v-row
+      v-if="!error.show"
+    >
       <v-col>
         <h1
           class="header ml-2 d-inline-block"
@@ -29,7 +31,7 @@
           type="table-tbody"
         />
         <v-expansion-panels
-          v-if="!isLoading && !errorInfo.show"
+          v-if="successAll"
           popout
           focusable
         >
@@ -114,6 +116,7 @@ dayjs.locale('ko')
 const { mapGetters: weatherGetters } = createNamespacedHelpers('weatherStore')
 const { mapGetters: locationGetters } = createNamespacedHelpers('locationStore')
 const { mapGetters: alertGetters } = createNamespacedHelpers('alertStore')
+const { mapGetters: errorGetters } = createNamespacedHelpers('errorStore')
 
 export default {
   components: { ErrorAlert, SparkLine },
@@ -123,13 +126,20 @@ export default {
   }),
   computed: {
     ...weatherGetters(['temperature', 'currentWeatherResponse', 'dailyWeatherResponse']),
-    ...alertGetters(['isLoading', 'errorInfo']),
+    ...alertGetters(['isLoading']),
+    ...errorGetters(['error']),
     ...locationGetters(['lat', 'lon', 'address']),
+    successAll() {
+      return !this.isLoading && !this.error.show
+    },
+
     checkCurrentTemp() {
       return this.temperature !== '-' ? `${Math.floor(this.temperature)}℃` : this.temperature
     },
   },
   async created() {
+    await this.$store.dispatch('errorStore/clearError')
+
     if (this.currentWeatherResponse.current && this.dailyWeatherResponse.daily) {
       this.currentTime = this.setCurrentTime(this.currentWeatherResponse.current)
       this.dailyWeather = this.setWeekWeather(this.dailyWeatherResponse.daily)
@@ -143,7 +153,7 @@ export default {
     }
 
     await this.getWeather()
-    if (this.errorInfo.show) {
+    if (this.error.show) {
       this.$store.dispatch('alertStore/setAlertInfo', { type: 'error', message: '데이터를 받아오지 못했습니다. 다시 시도해주세요.' })
       return
     }
@@ -165,7 +175,7 @@ export default {
 
     async refreshLocation() {
       await this.getWeather()
-      if (this.errorInfo.show) {
+      if (this.error.show) {
         this.$store.dispatch('alertStore/setAlertInfo', { type: 'error', message: '데이터를 받아오지 못했습니다. 다시 시도해주세요.' })
         return
       }

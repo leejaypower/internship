@@ -1,4 +1,4 @@
-import { tryLogin, refreshLogin } from '@/sevices/auth/index'
+import { tryLogin, refreshLogin } from '@/sevices/auth'
 import jwtDecode from 'jwt-decode'
 
 export default {
@@ -58,6 +58,10 @@ export default {
           dispatch('userStore/setUserInfo', response, { root: true })
         }
       } catch (error) {
+        if (error.errorCode) {
+          dispatch('errorStore/handlePredictableError', error, { root: true })
+          return
+        }
         dispatch('alertStore/setAlertInfo', { type: 'error', message: error.message }, { root: true })
       }
     },
@@ -96,7 +100,7 @@ export default {
           commit('SET_TOKEN', localStorage.getItem('refresh-token'))
         }
       } catch (error) {
-        dispatch('alertStore/setAlertInfo', { type: 'error', message: error.message }, { root: true })
+        dispatch('errorStore/handlePredictableError', error, { root: true })
       }
     },
   },

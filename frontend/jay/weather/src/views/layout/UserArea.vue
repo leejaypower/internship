@@ -38,6 +38,7 @@
           >
             refresh 만료
           </v-btn>
+          <error-test-menu />
         </div>
       </template>
       <template v-else>
@@ -53,11 +54,12 @@ import { createNamespacedHelpers } from 'vuex'
 import LoginForm from '@/components/LoginForm.vue'
 import ModifyDialog from '@/components/ModifyDialog.vue'
 import jwtDecode from 'jwt-decode'
+import ErrorTestMenu from '@/components/ErrorTestMenu.vue'
 
 const { mapGetters } = createNamespacedHelpers('userStore')
 
 export default {
-  components: { LoginForm, ModifyDialog },
+  components: { LoginForm, ModifyDialog, ErrorTestMenu },
   computed: {
     ...mapGetters(['isLogin']),
     ...mapGetters(['userInfo']),

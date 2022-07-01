@@ -1,6 +1,6 @@
 <template>
   <v-row
-    v-if="errorInfo.show"
+    v-if="error.show"
   >
     <v-col
       cols="12"
@@ -10,11 +10,11 @@
       </h1>
       <v-divider />
       <p
-        v-for="errorItem in errorMessage"
-        :key="errorItem"
+        v-for="(errorItem,i) in errorMessage"
+        :key="errorItem.message + i"
         class="mt-10"
       >
-        {{ errorItem }}
+        {{ errorItem.message }}
       </p>
     </v-col>
   </v-row>
@@ -23,12 +23,12 @@
 <script>
 import { createNamespacedHelpers } from 'vuex'
 
-const { mapGetters } = createNamespacedHelpers('alertStore')
+const { mapGetters } = createNamespacedHelpers('errorStore')
 export default {
   computed: {
-    ...mapGetters(['errorInfo']),
+    ...mapGetters(['error']),
     errorMessage() {
-      return this.errorInfo.message
+      return this.error.info
     },
   },
 }

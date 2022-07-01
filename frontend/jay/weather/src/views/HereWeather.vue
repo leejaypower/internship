@@ -1,7 +1,9 @@
 <template>
   <v-container class="pa-5">
     <error-alert />
-    <v-row>
+    <v-row
+      v-if="!error.show"
+    >
       <v-col>
         <h1 class="header d-inline-block ml-2">
           오늘 <b>{{ address }}</b> 날씨
@@ -111,6 +113,8 @@ import { v4 as uuidv4 } from 'uuid'
 const { mapGetters: weatherGetters } = createNamespacedHelpers('weatherStore')
 const { mapGetters: locationGetters } = createNamespacedHelpers('locationStore')
 const { mapGetters: alertGetters } = createNamespacedHelpers('alertStore')
+const { mapGetters: errorGetters } = createNamespacedHelpers('errorStore')
+
 export default {
   components: { ErrorAlert },
   data: () => ({
@@ -121,9 +125,9 @@ export default {
   }),
   computed: {
     ...weatherGetters(['temperature', 'currentWeatherResponse']),
-    ...alertGetters(['isLoading', 'errorInfo']),
+    ...alertGetters(['isLoading']),
     ...locationGetters(['lat', 'lon', 'address']),
-
+    ...errorGetters(['error']),
     iconUrl() {
       return `http://openweathermap.org/img/wn/${this.mainIcon}@4x.png`
     },
@@ -134,10 +138,11 @@ export default {
       return dayjs.unix(this.currentWeather.sunset).format('HH:mm')
     },
     successAll() {
-      return !this.isLoading && !this.errorInfo.show
+      return !this.isLoading && !this.error.show
     },
   },
   async created() {
+    await this.$store.dispatch('errorStore/clearError')
     const currentWeather = this.currentWeatherResponse.current
     const hourlyWeather = this.currentWeatherResponse.hourly
     if (currentWeather && hourlyWeather) {

@@ -1,6 +1,5 @@
 import fetchMyLocation from '@/util/geolocation'
 import fetchMyAddress from '@/util/api/naverReverseGeocoding'
-import { getErrorMessage, getErrorMessageForGeolocation } from '@/util/api/errorHandling/index'
 
 export default {
   namespaced: true,
@@ -36,11 +35,10 @@ export default {
       try {
         const response = await fetchMyLocation()
         commit('SET_LOCATION', response)
-      } catch (error) {
-        const errorMessage = getErrorMessageForGeolocation(error)
-
         dispatch('alertStore/removeIsLoading', null, { root: true })
-        dispatch('alertStore/setAlertInfo', { type: 'error', message: errorMessage }, { root: true })
+      } catch (error) {
+        dispatch('errorStore/handlePredictableError', { error, errorCode: error.code }, { root: true })
+        dispatch('alertStore/removeIsLoading', null, { root: true })
       }
     },
     async fetchAddress({ getters, commit, dispatch }) {
@@ -48,19 +46,15 @@ export default {
         const response = await fetchMyAddress(getters.lat, getters.lon)
 
         if (response.data.status.name === 'no results') {
-          throw new Error('현재 위치의 이름을 불러오지 못했습니다.')
+          const error = new Error('현재 위치의 이름을 불러오지 못했습니다.')
+          Object.assign(error, { errorCode: 77 })
+          throw error
         }
 
         const region = `${response.data.results[0].region.area2.name} ${response.data.results[0].region.area3.name}`
         commit('SET_ADDRESS', region)
       } catch (error) {
-        if (error.response) {
-          const errorMessage = getErrorMessage(error)
-          dispatch('alertStore/setAlertInfo', { type: 'error', message: errorMessage }, { root: true })
-        }
-
-        dispatch('alertStore/removeIsLoading', null, { root: true })
-        dispatch('alertStore/setAlertInfo', { type: 'error', message: error.message }, { root: true })
+        dispatch('errorStore/handlePredictableError', { error, errorCode: error.errorCode }, { root: true })
       }
     },
   },
