@@ -4,7 +4,7 @@
  - 폴더 구조
  - Paths(경로)
  - Auth(접근 권한)
-
+ - 실행 명령어
 # 오늘의 날씨
 ![스크린샷 2022-05-05 오전 12.33.26.png](https://postfiles.pstatic.net/MjAyMjA1MDVfODIg/MDAxNjUxNzM0OTM1Njc0.ltlp---tWKw8OciSzjAPOw7MoPeir5wn-y8usZ_w7zEg.z7vmabFSgAjLMRkRK7vsTufKI3nt-J7NawSAnq03Xu8g.PNG.john2323/%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7_2022-05-05_%EC%98%A4%EC%A0%84_12.33.26.png?type=w773)
 
@@ -14,83 +14,120 @@
 # 기술 스택
 - vue
 - vuetify
+- vue-chartjs
 - vue-router
 - vuex
 - axios
-- vue-chartjs
 - jest
+- uuid
 
-# 목표 (순서 유관)
+# 구현 순서
 
 1. 로그인 / 회원가입 localStorage를 이용해 구현 (4,5주차)
-    1. 로그인 :  localStorage를 서버라고 생각하고 server에서 토큰을 가져와 저장하는 로직을 구성해본다.
-    2. 회원가입 : localStorage를 서버라고 생각하고 server에 저장하는 로직을 구성해본다.
-    3. 핵심은 서버**와 소통하는 Layer**를 잘 구성하는 것이라고 생각함 (이것에 대한 고민 필요)
+    - 로그인 :  localStorage를 서버라고 생각하고 server에서 토큰을 가져와 저장하는 로직을 구성해본다.
+    - 회원가입 : localStorage를 서버라고 생각하고 server에 저장하는 로직을 구성해본다.
+    - 서버**와 소통하는 Layer**를 구성 (FakeServer 구현)
+    - uri라우팅으로 로그인 되지 않은 회원에대한 라우팅 기능 구현 (로그인 페이지로 이동)
 2. 위치 정보 추가 (4,5주차)
-    1. 내 정보를 수정하는 마이페이지 대신 즐겨찾는 위치 정보를 계정 정보에 추가하려고 합니다.
-        1. **추후 여유가 되어 지도 API를 붙이게 되면** 지도 위에 즐겨찾는 위치정보를 기반으로한 마크업된 페이지를 만들 예정
-    2. 해당 내용을 함께하면 auth에 대한 고민을 함께하고 싶음
-        1. 위치 정보 즐겨찾기나 위치 정보 서비스는 유저 권한에 따라 접근을 못 하게 하고 싶습니다.
-            1. 특별 회원의 권한에서 위치 정보 즐겨찾기에 접근하던 사람이 어느날 일반 회원으로 내려갔을 때 uri라우팅으로 접근 시도를 하면 리다이렉트 시켜주는 것과 같은 auth에 대한 고민
-        2. 기본적으로 큰 목표 **1과 2는 JWT token에 대한 고민과 서버와 소통하는 Layer에 대한 고민이 병행** 될 것
-3. 날씨 API를 이용한 날씨 View페이지(날씨 목록, 날씨 상세, 날씨 그래프, 표) 동일한 store볼 수 있도록 구현 예정 (6, 7, 8주차)
+    - 마이페이지 내에 계정 정보 수정과 즐겨찾는 위치 정보 기능 구현
+3. 날씨 API를 이용한 날씨 View페이지(날씨 목록, 날씨 상세, 날씨 그래프, 표) 동일한 store볼 수 있도록 구현 (6, 7, 8주차)
+    - 홈 페이지 (현재 날씨 페이지 정보 확인 가능)
+    - 주간 날씨 목록 페이지 구현(API 한계로 당일과 다음날 만 상세페이지 날씨 확인 가능)
+    - 상세 페이지 날씨 (그래프, 표)로 확인 가능
 - 날씨 API : [OpenWeather API](https://openweathermap.org/api)
-4. 👀  **Have not to do**
-    1. 네이버 지도 API를 이용하여 위치 설정 정보를 지도위에 마크업 해주는 페이지 만들기
-    2. 6, 7, 8 주차 안에 모든 Task가 원할하게 돌아갈 때 고려하자
 
 # 폴더 구조
 
 ```bash
-src
-├── App.vue
-├── assets
-│   ├── config
-│   │   └── README.md
-│   └── styles
-│       └── README.md
-├── main.js
-├── plugins
-│   └── vuetify.js
-├── router
-│   └── index.js
-├── service
-│   ├── api
-│   │   ├── README.md
-│   │   ├── auth
-│   │   │   └── index.js
-│   │   └── fakeHttp.js
-│   └── domain
-│       ├── README.md
-│       └── auth
-│           ├── index.js
-│           └── validations.js
-├── store
-│   ├── auth
-│   │   ├── actions.js
-│   │   ├── index.js
-│   │   └── mutations.js
-│   └── index.js
-└── ui
-    ├── components
-    │   ├── BarChart.vue
-    │   ├── LogoAndTitle.vue
-    │   ├── SubmitCardForm.vue
-    │   └── layouts
-    └── views
-        ├── MainHome.vue
-        ├── SignIn.vue
-        └── SignUp.vue
+weather
+├── Dockerfile
+├── mocks
+│   └── fakeServer
+├── public
+│   ├── data
+│   └── images
+├── src
+│   ├── App.vue
+│   ├── constants
+│   │   ├── colors
+│   │   ├── ruleSentences
+│   │   ├── tokenNames
+│   │   └── weatherDescriptions
+│   ├── lib
+│   │   ├── fakeHttp
+│   │   │   └── interceptor
+│   │   ├── http
+│   │   │   └── interceptor
+│   │   ├── locationHttp
+│   │   └── naverHttp
+│   ├── main.js
+│   ├── plugins
+│   │   ├── vuetify.js
+│   │   └── windowErrorLogger.js
+│   ├── router
+│   │   ├── index.js
+│   │   └── routes.js
+│   ├── service
+│   │   ├── api
+│   │   │   ├── auth
+│   │   │   ├── error
+│   │   │   ├── location
+│   │   │   └── weather
+│   │   ├── domain
+│   │   │   ├── auth
+│   │   │   ├── day
+│   │   │   ├── error
+│   │   │   ├── location
+│   │   │   └── weather
+│   │   └── mapping
+│   │       ├── errorMapping
+│   │       ├── locationMapping
+│   │       ├── userMapping
+│   │       └── weatherMapping
+│   ├── store
+│   │   ├── alert
+│   │   ├── auth
+│   │   ├── error
+│   │   ├── loading
+│   │   └── weather
+│   ├── ui
+│   │   ├── components
+│   │   │   └── layout
+│   │   └── views
+│   │       ├── ErrorTest
+│   │       ├── ForecastDetail
+│   │       │   ├── WeatherGraph
+│   │       │   ├── WeatherTable
+│   │       │   └── WeatherViewSwitch
+│   │       ├── LocationAdd
+│   │       ├── MainHome
+│   │       │   └── CurrentWeather
+│   │       ├── MyPage
+│   │       │   └── SelectedListCardForm
+│   │       ├── NotFound
+│   │       │   └── index.vue
+│   │       ├── OneWeekForecast
+│   │       │   └── DailyWeatherCard
+│   │       │ 
+│   │       ├── SignIn
+│   │       │  
+│   │       └── SignUp
+│   │        
+│   └── utils
+│       └── test
 ```
 
 ❗️ 상위 폴더명과 무엇을 하는 것인지만 간략하게 설명하겠습니다.
 
-- [분류 이유(초안)](https://barogohq.notion.site/Vue-Layer-7a1a2202b6a0412db7f510043998fef6)
+참고) 폴더 구조를 나누며 한 고민 개인적인 고민 ([레이어에 대한 고민](https://www.notion.so/barogohq/a8ce919f06f145c69a3302fa12dab2dc))
 
 | 폴더명 | 설명 |
 | --- | --- |
-| assets | config, image, css처럼 정적인 파일들을 모아놓은 폴더 |
+| mocks | fakeServer를 구축하면서 mock이란 개념으로 이곳에 모아놓음 |
+| public | image, css, json처럼 정적인 파일들을 모아놓은 폴더 |
 | constants | 범용적으로 사용되는 string을 모아놓은 폴더 |
+| lib | axios, dayjs같은 기본 세팅을 라이브러리의 기본 세팅을 모아놓은 폴더 |
+| utils | 공용으로 사용될 유틸리티 성격의 함수를 모아놓은 폴더 |
 | plugins | Vue Plugin을 모아놓은 폴더 |
 | router | vue-router 설정 관련 폴더 |
 | service | api : 서버와 통신하는 로직 , domain : api로 받아온 데이터를 다루는 비즈니스 로직을 모아놓은 폴더 |
@@ -133,13 +170,23 @@ src
 /404 : Not Found 페이지
 
  # Auth 접근 권한
-| Path | redirect | 비회원 | 일반 회원 | 특별 회원 |
-| --- | --- | --- | --- | --- |
-| / | /sign-in | 🔴 | 🟢 | 🟢 |
-| /sign-in | / | 🟢 | 🔴 | 🔴 |
-| /sign-up | / | 🟢 | 🔴 | 🔴 |
-| /one-week-forecast | /sign-in | 🔴 | 🟢 | 🟢 |
-| /forecast-detail/[table,graph] | /sign-in | 🔴 | 🟢 | 🟢 |
-| /mypage | /sign-in | 🔴 | 🟢 | 🟢 |
-| /mypage/location-add | 회원 :  /, 비회원 : /sign-in | 🔴 | 🔴 | 🟢 |
-| /* | /404 | 🔴 | 🔴 | 🔴 |
+| Path | redirect | 비회원 | 회원 |
+| --- | --- | --- | --- |
+| / | /sign-in | 🔴 | 🟢 |
+| /sign-in | / | 🟢 | 🔴 |
+| /sign-up | / | 🟢 | 🔴 |
+| /one-week-forecast | /sign-in | 🔴 | 🟢 |
+| /forecast-detail/[table,graph] | /sign-in | 🔴 | 🟢 |
+| /mypage | /sign-in | 🔴 | 🟢 |
+| /mypage/location-add | 회원 :  /, 비회원 : /sign-in | 🔴 | 🔴 |
+| /* | /404 | 🔴 | 🔴 |
+
+# 실행 명령 안내
+dev 서버 실행 : `npm run serve`
+build 실행 : `npm run build`
+test 코드 실행 : `npm run test`
+test 코드 실행(watch모드, 커밋 기준 변경점만 테스트) : `npm run test:watch`
+test 코드 실행(watchAll모드, 커밋 기준 변경점만 테스트) : `npm run test:watch-all`
+lint 검사 : `npm run lint`
+docker 이미지 생성: `npm run docker:build`
+docker 컨테이너 실행: `npm run docker:run`

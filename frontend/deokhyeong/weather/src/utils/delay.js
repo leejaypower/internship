@@ -1,8 +1,8 @@
-const delay = (promise, s) => {
+const delay = (value, s) => {
   const seconds = s * 1000
 
   return new Promise((resolve) => {
-    setTimeout(() => resolve(promise), seconds)
+    setTimeout(() => resolve(value), seconds)
   })
 }
 
