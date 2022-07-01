@@ -1,6 +1,6 @@
-const { rentalService } = require('../../services');
-const { graphqlRentalService } = require('../services');
-const { CustomError } = require('../../common/error');
+const { rentalService } = require('../../../services/restAPI');
+const { graphqlRentalService } = require('../../../services/graphql');
+const { CustomError } = require('../../../common/error');
 
 const createRental = async (root, args, { ctx }) => {
   try {

@@ -3,5 +3,10 @@ const bookService = require('./books');
 const { rentalService, reservationService, overdueService } = require('./rental');
 
 module.exports = {
-  userService, bookService, rentalService, reservationService, overdueService,
+  userService,
+  authService,
+  bookService,
+  rentalService,
+  reservationService,
+  overdueService,
 };

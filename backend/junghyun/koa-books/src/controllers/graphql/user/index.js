@@ -1,4 +1,4 @@
-const { userService, authService } = require('../../services');
+const { userService, authService } = require('../../../services/restAPI');
 
 // 회원가입
 const signUp = async (root, args, { ctx }) => {

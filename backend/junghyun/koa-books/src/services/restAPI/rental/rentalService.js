@@ -1,8 +1,8 @@
 const {
   rentalRepository, returnRepository, reservationRepository, bookRepository, userRepository,
-} = require('../../repository');
-const { pagination } = require('../../common/util/pagination');
-const { CustomError } = require('../../common/error');
+} = require('../../../repository');
+const { pagination } = require('../../../common/util/pagination');
+const { CustomError } = require('../../../common/error');
 
 // 연체 체크 로직 - (연체된 고객은 [반납 / 대출 연장 / 예약]을 할 수 없음)
 const checkOverdue = async (userId) => {

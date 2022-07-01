@@ -1,7 +1,7 @@
-const { userRepository, adminUserRepository } = require('../../repository/index');
-const { JwtService } = require('../../common/auth/index');
-const hashService = require('../../common/util/hashPassword');
-const { CustomError } = require('../../common/error');
+const { userRepository, adminUserRepository } = require('../../../repository/index');
+const { JwtService } = require('../../../common/auth/index');
+const hashService = require('../../../common/util/hashPassword');
+const { CustomError } = require('../../../common/error');
 
 // 유저 데이터 생성 (회원 가입)
 const findOrCreateUser = async (userData) => {

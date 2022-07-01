@@ -1,5 +1,5 @@
-const { userService, authService } = require('../../services');
-const { CustomError } = require('../../common/error');
+const { userService, authService } = require('../../../services/restAPI');
+const { CustomError } = require('../../../common/error');
 
 // 회원가입
 const signUp = async (ctx) => {

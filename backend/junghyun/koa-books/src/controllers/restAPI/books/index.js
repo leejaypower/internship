@@ -1,5 +1,5 @@
-const { bookService } = require('../../services');
-const { CustomError } = require('../../common/error');
+const { bookService } = require('../../../services/restAPI');
+const { CustomError } = require('../../../common/error');
 
 // 도서 등록 - 관리자
 const createBook = async (ctx) => {

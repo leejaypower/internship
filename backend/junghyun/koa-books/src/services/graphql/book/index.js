@@ -1,5 +1,5 @@
-const { bookRepository } = require('../../repository');
-const { pagination } = require('../../common/util/pagination');
+const { bookRepository } = require('../../../repository');
+const { pagination } = require('../../../common/util/pagination');
 
 const createBook = async (data) => {
   const newBook = await bookRepository.createBookTransaction(data);

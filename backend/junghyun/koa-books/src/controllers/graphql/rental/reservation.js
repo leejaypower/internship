@@ -1,4 +1,4 @@
-const { reservationService } = require('../../services');
+const { reservationService } = require('../../../services/restAPI');
 
 // 예약 데이터 생성 - 유저
 const createReservation = async (root, args, { ctx }) => {

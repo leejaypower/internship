@@ -1,5 +1,5 @@
-const { reservationService } = require('../../services');
-const { CustomError } = require('../../common/error');
+const { reservationService } = require('../../../services/restAPI');
+const { CustomError } = require('../../../common/error');
 
 // 예약 데이터 생성 - 유저
 const createReservation = async (ctx) => {

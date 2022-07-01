@@ -1,5 +1,5 @@
 const Router = require('koa-router');
-const { reservationController } = require('../../controllers/index');
+const { reservationController } = require('../../controllers/restAPI');
 const { userAdminAuthorized, adminAuthorized } = require('../../common/auth');
 
 const reservationRouter = new Router();

@@ -1,6 +1,6 @@
-const { bookService } = require('../../services');
-const { graphqlBookService } = require('../services');
-const { CustomError } = require('../../common/error');
+const { bookService } = require('../../../services/restAPI');
+const { graphqlBookService } = require('../../../services/graphql');
+const { CustomError } = require('../../../common/error');
 
 const createBook = async (root, args, { ctx }) => {
   try {

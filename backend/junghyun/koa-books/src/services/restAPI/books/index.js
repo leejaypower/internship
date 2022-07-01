@@ -1,5 +1,5 @@
-const { bookRepository } = require('../../repository');
-const { pagination } = require('../../common/util/pagination');
+const { bookRepository } = require('../../../repository');
+const { pagination } = require('../../../common/util/pagination');
 
 // 도서 데이터 생성
 const createBook = async (data) => {

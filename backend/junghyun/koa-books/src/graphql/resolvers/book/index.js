@@ -1,5 +1,5 @@
 const { composeResolvers } = require('@graphql-tools/resolvers-composition');
-const { graphqlBookController } = require('../../controller');
+const { graphqlBookController } = require('../../../controllers/graphql');
 const { graphqlAdminAuthorized } = require('../../../common/auth');
 
 const resolvers = {

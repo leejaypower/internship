@@ -1,4 +1,4 @@
-const { graphqlUserController } = require('../../controller');
+const { graphqlUserController } = require('../../../controllers/graphql');
 
 const userResolver = {
   Mutation: {

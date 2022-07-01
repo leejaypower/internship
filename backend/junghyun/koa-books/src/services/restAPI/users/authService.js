@@ -1,5 +1,5 @@
-const { JwtService } = require('../../common/auth/index');
-const { CustomError } = require('../../common/error');
+const { JwtService } = require('../../../common/auth/index');
+const { CustomError } = require('../../../common/error');
 
 // 액세스 토큰 재발급
 const refreshAccessToken = async (data) => {

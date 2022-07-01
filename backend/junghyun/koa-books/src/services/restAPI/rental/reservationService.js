@@ -1,10 +1,10 @@
 /* eslint-disable max-len */
 const {
   rentalRepository, reservationRepository, deactivatedReservationRepository,
-} = require('../../repository');
+} = require('../../../repository');
 const { checkOverdue } = require('./rentalService');
-const { pagination } = require('../../common/util/pagination');
-const { CustomError } = require('../../common/error');
+const { pagination } = require('../../../common/util/pagination');
+const { CustomError } = require('../../../common/error');
 
 // 예약 데이터 생성
 const createReservation = async (reservationCode, bookInfoId, userId) => {

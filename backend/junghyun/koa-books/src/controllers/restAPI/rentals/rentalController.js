@@ -1,5 +1,5 @@
-const { rentalService } = require('../../services');
-const { CustomError } = require('../../common/error');
+const { rentalService } = require('../../../services/restAPI');
+const { CustomError } = require('../../../common/error');
 
 // 대출 데이터 생성 - 관리자
 const createRental = async (ctx) => {

@@ -1,5 +1,5 @@
 require('../../../common/util/env');
-const { overdueService } = require('../../../services');
+const { overdueService } = require('../../../services/restAPI');
 
 const { kafka, topic } = require('../../index');
 
