@@ -13,7 +13,7 @@ module.exports = {
         comment: '유저 이름',
       },
       contact: {
-        type: Sequelize.STRING(32), // secret hex code(32bytes)
+        type: Sequelize.STRING(80),
         allowNull: false,
         comment: '유저 연락처',
       },

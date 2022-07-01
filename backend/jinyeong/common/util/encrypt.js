@@ -1,18 +1,16 @@
 const bcrypt = require('bcrypt');
-const crypto = require('node:crypto');
+const CryptoJS = require('crypto-js');
 const { errorHandling } = require('./errorHandling');
 
-const salt = Number(process.env.SALT);
-const algorithm = 'aes-256-cbc';
-const initVector = crypto.randomBytes(16);
-const securityKey = crypto.randomBytes(32);
+const saltRounds = Number(process.env.SALT_ROUNDS);
+const secretKey = process.env.SECRET_KEY;
 
 // 입력받은 비밀번호로 해시값을 만듭니다.(회원가입 시 활용)
 const hashPassword = async (password) => {
   if (!password) {
     errorHandling.throwError(400, '비밀번호가 누락되었습니다.');
   }
-  const encryptedPassword = await bcrypt.hash(password, salt);
+  const encryptedPassword = await bcrypt.hash(password, saltRounds);
 
   return encryptedPassword;
 };
@@ -35,12 +33,9 @@ const cipher = (message) => {
   if (!message) {
     errorHandling.throwError(400, '암호화 시킬 데이터가 누락되었습니다.');
   }
-  const encrypt = crypto.createCipheriv(algorithm, securityKey, initVector);
 
-  let encryptResult = encrypt.update(message, 'utf-8', 'hex');
-  encryptResult += encrypt.final('hex');
-
-  return encryptResult;
+  const ciphertext = CryptoJS.AES.encrypt(message, secretKey).toString();
+  return ciphertext;
 };
 
 // Crypto 복호화
@@ -48,12 +43,11 @@ const decipher = (encryptedData) => {
   if (!encryptedData) {
     errorHandling.throwError(400, '복호화 시킬 데이터가 누락되었습니다.');
   }
-  const decrypt = crypto.createDecipheriv(algorithm, securityKey, initVector);
 
-  let decryptedResult = decrypt.update(encryptedData, 'hex', 'utf-8');
-  decryptedResult += decrypt.final('utf-8');
+  const bytes = CryptoJS.AES.decrypt(encryptedData, secretKey);
 
-  return decryptedResult;
+  const originalText = bytes.toString(CryptoJS.enc.Utf8);
+  return originalText;
 };
 
 module.exports = {

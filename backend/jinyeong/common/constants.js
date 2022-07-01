@@ -11,7 +11,22 @@ const RESERVATION_STATE = {
   CANCELED: 'CANCELED',
 };
 
+const KAFKA_CLIENT_ID = {
+  INTERNSHIP_JINYEONG: 'internship-jinyeong',
+};
+
+const KAFKA_TOPIC = {
+  DUE_DATE_NOTIFICATION: 'due-date-notification',
+};
+
+const KAFKA_CONSUMER_GROUP_ID = {
+  DUE_DATE_MAILER: 'due-date-mailer',
+};
+
 module.exports = {
   BOOK_STATE,
   RESERVATION_STATE,
+  KAFKA_CLIENT_ID,
+  KAFKA_TOPIC,
+  KAFKA_CONSUMER_GROUP_ID,
 };

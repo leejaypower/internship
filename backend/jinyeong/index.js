@@ -5,7 +5,14 @@ const Koa = require('koa');
 const cors = require('@koa/cors');
 const bodyParser = require('koa-bodyparser');
 const logger = require('koa-logger');
+
 const { createApolloServer } = require('./graphQL');
+
+const { producers, consumers } = require('./kafka');
+
+const httpServer = http.createServer();
+
+const apolloServer = createApolloServer(httpServer);
 
 const port = process.env.PORT || 4000;
 const app = new Koa();
@@ -13,10 +20,10 @@ const app = new Koa();
 const router = require('./routes');
 
 const startServer = async () => {
-  const httpServer = http.createServer();
-  const apolloServer = createApolloServer(httpServer);
-
   await apolloServer.start();
+
+  await consumers.dueDateMailer.run();
+  await producers.dueDateScheduler.run();
 
   app
     .use(cors())
