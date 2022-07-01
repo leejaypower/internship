@@ -1,14 +1,17 @@
 <template>
   <v-bottom-navigation
     v-model="value"
-    color="primary"
     class="elevation-0"
     grow
+    background-color="transparent"
   >
     <v-btn
+      class="navigation-button"
       value="/forecast-detail/table"
+      color="primary"
       outlined
       height="100%"
+      :style="buttonBackgroundStyle"
       @click="switchView('table')"
     >
       <span class="subtitle-1 font-weight-bold">
@@ -16,9 +19,12 @@
       </span>
     </v-btn>
     <v-btn
+      class="navigation-button"
       value="/forecast-detail/graph"
+      color="primary"
       outlined
       height="100%"
+      :style="buttonBackgroundStyle"
       @click="switchView('graph')"
     >
       <span class="subtitle-1 font-weight-bold">
@@ -42,6 +48,9 @@ export default {
 
     return {
       value: currentPath,
+      buttonBackgroundStyle: {
+        background: 'white',
+      },
     }
   },
   methods: {

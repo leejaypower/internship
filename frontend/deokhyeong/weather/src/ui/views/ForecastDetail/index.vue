@@ -1,11 +1,13 @@
 <template>
   <div
     class="d-flex flex-column pa-4 full-height"
+    :style="backgroundImageStyle"
   >
     <div>
       <v-icon
         x-large
         color="#2196F3"
+        class="back-arrow-wrapper"
         @click="handleBackArrow"
       >
         mdi-arrow-left
@@ -37,6 +39,7 @@ import TitleHeader from '@/ui/components/TitleHeader'
 import WeatherViewSwitch from '@/ui/views/ForecastDetail/WeatherViewSwitch'
 import locationDomain from '@/service/domain/location'
 import dayjs from 'dayjs'
+import weatherDomain from '@/service/domain/weather'
 
 export default {
   name: 'ForecastDetail',
@@ -56,6 +59,12 @@ export default {
         return '알 수 없음'
       }
       return dayjs(this.$route.params.date).format('YYYY년 MM월 DD일')
+    },
+    backgroundImageStyle() {
+      return {
+        'background-image': `url(${weatherDomain.getWeatherBackground(this.hourlyWeathers[0]?.main)})`,
+        'background-size': 'cover',
+      }
     },
   },
   created() {
@@ -91,5 +100,9 @@ export default {
 <style>
 .weather-content-wrapper{
   height: 75%;
+}
+
+.back-arrow-wrapper {
+  background: white;
 }
 </style>

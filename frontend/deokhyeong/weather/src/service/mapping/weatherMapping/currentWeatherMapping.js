@@ -3,6 +3,7 @@ import dayjs from 'dayjs'
 
 // 현재 날씨 조회 API 응답값 Mapping 함수
 const currentWeatherMapping = (mapTarget) => ({
+  main: mapTarget?.weather[0]?.main,
   date: mapTarget?.dt ? dayjs(mapTarget.dt * 1000).format('YYYY-MM-DD') : '정보 없음',
   temperature: weatherDomain.temperatureParser(mapTarget?.main?.temp),
   maxTemperature: weatherDomain.temperatureParser(mapTarget?.main?.temp_max),

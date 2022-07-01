@@ -1,6 +1,7 @@
 <template>
   <div
     class="d-flex flex-column full-height"
+    :style="backgroundImageStyle"
   >
     <circular-loading v-if="isLoading" />
     <div
@@ -33,6 +34,7 @@ import { mapActions, mapGetters } from 'vuex'
 import CircularLoading from '@/ui/components/CircularLoading'
 import DailyWeatherCard from '@/ui/views/OneWeekForecast/DailyWeatherCard'
 import locationDomain from '@/service/domain/location'
+import weatherDomain from '@/service/domain/weather'
 
 export default {
   name: 'OneWeekForecast',
@@ -48,6 +50,12 @@ export default {
     ...mapGetters('loading', ['isLoading']),
     currentPageSubTitle() {
       return this.priorityLocation?.location
+    },
+    backgroundImageStyle() {
+      return {
+        'background-image': `url(${weatherDomain.getWeatherBackground(this.oneWeekWeathers[0]?.main)})`,
+        'background-size': 'cover',
+      }
     },
   },
   created() {

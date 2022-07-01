@@ -5,6 +5,7 @@ import weatherDomain from '@/service/domain/weather'
 const dayWeatherMapping = (mapTarget) => {
   const timestamp = mapTarget.dt * 1000
   return ({
+    main: mapTarget?.weather[0]?.main,
     dayName: mapTarget?.dt ? dayDomain.timestampToDayName(timestamp) : '정보 없음',
     date: mapTarget?.dt ? dayjs(timestamp).format('YYYY-MM-DD') : '정보 없음',
     maxTemperature: weatherDomain.temperatureParser(mapTarget?.temp?.max),

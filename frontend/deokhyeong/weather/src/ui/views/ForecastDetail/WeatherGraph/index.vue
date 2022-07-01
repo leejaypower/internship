@@ -6,6 +6,7 @@
       chart-id="line-chart"
       :width="400"
       :height="400"
+      css-classes="weather-chart-generator"
     />
     <line-chart-generator
       :chart-options="chartOptions"
@@ -13,6 +14,7 @@
       chart-id="line-chart"
       :width="400"
       :height="400"
+      css-classes="weather-chart-generator"
     />
   </div>
 </template>
@@ -112,3 +114,9 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+.weather-chart-generator{
+  background: white;
+}
+</style>

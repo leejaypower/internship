@@ -13,7 +13,7 @@
       >
         <div>
           <span>
-            {{ isToday ? '오늘 날씨' : dayName }}
+            {{ isToday ? '오늘' : dayName }}
           </span>
         </div>
       </v-col>

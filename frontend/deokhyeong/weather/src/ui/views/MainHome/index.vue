@@ -1,6 +1,7 @@
 <template>
   <div
     class="d-flex flex-column full-height"
+    :style="backgroundImageStyle"
   >
     <circular-loading v-if="isLoading" />
     <div
@@ -9,6 +10,7 @@
     >
       <title-header
         :title="currentPageTitle"
+        :sub-title="currentPageSubTitle"
       />
       <current-weather
         :current-weather="currentWeather"
@@ -28,6 +30,7 @@ import CircularLoading from '@/ui/components/CircularLoading'
 import CurrentWeather from '@/ui/views/MainHome/CurrentWeather'
 import utils from '@/utils'
 import locationDomain from '@/service/domain/location'
+import weatherDomain from '@/service/domain/weather'
 
 export default {
   name: 'MainHome',
@@ -47,7 +50,16 @@ export default {
     ...mapGetters('weather', ['currentWeather', 'currentAirPollution']),
     ...mapGetters('loading', ['isLoading']),
     currentPageTitle() {
-      return this.priorityLocation?.location
+      return this.priorityLocation?.location?.split('/')[0]
+    },
+    currentPageSubTitle() {
+      return this.priorityLocation?.location?.split('/')[1] || ''
+    },
+    backgroundImageStyle() {
+      return {
+        'background-image': `url(${weatherDomain.getWeatherBackground(this.currentWeather.main)})`,
+        'background-size': 'cover',
+      }
     },
   },
   created() {

@@ -6,6 +6,7 @@ const hourWeatherMapping = (mapTarget) => {
   const timestamp = mapTarget.dt * 1000
 
   return ({
+    main: mapTarget?.weather[0]?.main,
     hour: dayjs(timestamp).format('HH:mm'),
     date: dayjs(timestamp).format('YYYY-MM-DD'),
     temperature: mapTarget.temp,

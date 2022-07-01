@@ -1,7 +1,8 @@
 <template>
   <v-card
     color="#F5F5F5"
-    class="d-flex justify-space-between align-center px-8 mb-3"
+    class="d-flex justify-space-between align-center mb-3"
+    :class="mobileSize"
   >
     <v-card-title class="text-h6">
       {{ location }}
@@ -29,6 +30,20 @@ export default {
     location: {
       type: String,
       default: '',
+    },
+  },
+  computed: {
+    mobileSize() {
+      if (this.$vuetify.breakpoint.width < 500) {
+        return {
+          'flex-column': true,
+          'px-1': true,
+          'pb-4': true,
+        }
+      }
+      return {
+        'px-8': true,
+      }
     },
   },
 }
