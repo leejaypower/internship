@@ -6,7 +6,9 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "docker:build": "docker build -t jay-weather-app-image .",
+    "docker:run": "docker run -it -p 8088:8088 --rm --name jay-weather-app jay-weather-app-image"
   },
   "dependencies": {
     "axios": "^0.27.2",

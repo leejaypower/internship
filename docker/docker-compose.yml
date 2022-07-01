@@ -57,7 +57,6 @@ services:
     depends_on:
       - internship-postgres
 
-
   internship-junghyun:
     container_name: internship-junghyun
     image: internship-junghyun
@@ -108,7 +107,6 @@ services:
       JWT_REFRESH_TOKEN_EXPIRES_IN: 14d
       HASH_SALT: 10
 
-
   internship-juyoungjung:
   container_name: juyoungjung-weather-channel-app
   build:
@@ -116,7 +114,6 @@ services:
     dockerfile: Dockerfile
   ports:
     - "8090:8090"
-
 
   internship-sora:
     container_name: internship-sora
@@ -128,7 +125,6 @@ services:
     build:
       context: ../backend/sorakang/koa-books
     
-
   internship-deokhyeong:
     container_name: deokhyeong-weather-app
     build:
@@ -136,17 +132,6 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8089:8089"
-
-  internship-junghyun:
-    container_name: internship-junghyun
-    image: internship-junghyun
-    ports:
-      - '4000:4000'
-    depends_on:
-      - internship-postgres
-    build:
-      context: ../backend/junghyun/koa-books
-
 
   internship-gihwan:
     container_name: gihwan-weather-app
@@ -156,6 +141,14 @@ services:
     ports:
       - "8080:8080"
 
+  internship-jay:
+    container_name: jay-weather-app
+    build:
+      context: ../frontend/jay/weather
+      dockerfile: Dockerfile
+    ports:
+     - "8088:8088"
+     
 volumes:
   internship-pgdb:
   internship-zk-data:
