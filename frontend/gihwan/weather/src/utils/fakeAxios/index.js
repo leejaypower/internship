@@ -8,11 +8,15 @@ const fakeAxios = {
     options: null,
   },
   setInterceptor(interceptor) {
-    if (typeof interceptor === 'function') {
-      this.interceptor.function = interceptor
-    }
-    if (typeof interceptor === 'object') {
-      this.interceptor.options = interceptor
+    switch (typeof interceptor) {
+      case 'function':
+        this.interceptor.function = interceptor
+        break
+      case 'object':
+        this.interceptor.options = interceptor
+        break
+      default:
+        break
     }
   },
   post(url, data) {
@@ -25,7 +29,6 @@ const fakeAxios = {
         return IsIdDuplicateCheck(data, options)
       case 'auth/signup':
         return signup(data, options)
-
       default:
         return notFound()
     }

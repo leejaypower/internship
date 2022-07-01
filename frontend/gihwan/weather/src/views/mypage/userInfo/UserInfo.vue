@@ -32,7 +32,7 @@
 <script>
 import authMixins from '@/mixins/auth'
 import { alert } from '@/lib'
-import { deleteUserFetch } from '@/apis/user'
+import { deleteUserFetch } from '@/services/api/user'
 import { ChangeName, ChangePassword } from './components'
 
 export default {

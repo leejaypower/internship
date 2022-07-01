@@ -43,7 +43,7 @@
 
 <script>
 import weatherMixins from '@/mixins/weather'
-import { weatherIdDescMap } from '@/utils/mapping'
+import { weatherIdDescMap } from '@/services/mapping'
 
 export default {
   mixins: [weatherMixins],

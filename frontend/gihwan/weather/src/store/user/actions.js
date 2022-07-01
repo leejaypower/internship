@@ -1,5 +1,5 @@
-import { loginFetch } from '@/apis/auth'
-import { changeUserNameFetch } from '@/apis/user'
+import { loginFetch } from '@/services/api/auth'
+import { changeUserNameFetch } from '@/services/api/user'
 
 export default {
   async login({ commit }, payload) {

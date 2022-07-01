@@ -7,7 +7,7 @@ import vuetify from './plugins/vuetify'
 
 import './style/global.css'
 import 'sweetalert2/dist/sweetalert2.min.css'
-import { browserError, vueError, axiosErorr } from './services/error'
+import { browserError, vueError, axiosError } from './services/error'
 
 Vue.use(VueApexCharts)
 
@@ -17,7 +17,7 @@ Vue.config.productionTip = false
 
 window.onerror = browserError
 Vue.config.errorHandler = vueError
-axiosErorr()
+axiosError()
 
 new Vue({
   router,

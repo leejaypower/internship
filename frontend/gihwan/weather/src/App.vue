@@ -48,8 +48,8 @@
 <script>
 import tokenCheck from '@/utils/interceptor'
 import logo from '@/assets/logo.png'
+import { getAlertDataFetch } from '@/services/api/weather'
 import fakeAxios from './utils/fakeAxios'
-import { getAlertDataFetch } from './apis/weather'
 import { alert } from './lib'
 
 export default {

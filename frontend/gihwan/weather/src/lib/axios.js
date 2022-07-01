@@ -1,10 +1,10 @@
-import { errorMap } from '@/utils/mapping'
 import axios from 'axios'
+import { naverErrorMap, openWeatherErrorMap } from '@/services/mapping'
 
 const WEATHER_URL = 'https://api.openweathermap.org/data/2.5/onecall'
 const NAVER_URL = '/map-reversegeocode/v2/gc'
 
-const weather = axios.create({
+const weatherAxios = axios.create({
   baseURL: WEATHER_URL,
   method: 'GET',
   params: {
@@ -15,15 +15,15 @@ const weather = axios.create({
   },
 })
 
-weather.interceptors.response.use((response) => response, (error) => {
+weatherAxios.interceptors.response.use((response) => response, (error) => {
   const newError = {
     ...error,
-    errorMessage: errorMap.openWeatherErrorMap(error.message),
+    errorMessage: openWeatherErrorMap(error.message),
   }
   return Promise.reject(newError)
 })
 
-const naver = axios.create({
+const naverAxios = axios.create({
   baseURL: NAVER_URL,
   method: 'GET',
   headers: {
@@ -37,12 +37,12 @@ const naver = axios.create({
   },
 })
 
-naver.interceptors.response.use((response) => response, (error) => {
+naverAxios.interceptors.response.use((response) => response, (error) => {
   const newError = {
     ...error,
-    errorMessage: errorMap.naverErrorMap(error.response.data.error.message),
+    errorMessage: naverErrorMap(error.response.data.error.message),
   }
   return Promise.reject(newError)
 })
 
-export { weather, naver }
+export { weatherAxios, naverAxios }

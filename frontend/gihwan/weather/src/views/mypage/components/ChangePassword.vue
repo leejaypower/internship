@@ -70,7 +70,7 @@
 <script>
 import authMixins from '@/mixins/auth'
 import { pwRules, pwCheckRules, newPwRules } from '@/utils/inputRules'
-import { changeUserPasswordFetch } from '@/apis/user'
+import { changeUserPasswordFetch } from '@/services/api/user'
 import { alert } from '@/lib'
 
 export default {

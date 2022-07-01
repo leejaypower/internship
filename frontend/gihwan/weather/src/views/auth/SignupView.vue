@@ -133,7 +133,7 @@ import {
 } from '@/utils/inputRules'
 import { alert } from '@/lib'
 import logo from '@/assets/logo.png'
-import { idDuplicateFetch, signupFetch } from '@/apis/auth'
+import { idDuplicateFetch, signupFetch } from '@/services/api/auth'
 
 export default {
   mixins: [authMixins],

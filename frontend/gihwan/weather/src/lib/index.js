@@ -1,4 +1,4 @@
-import * as axios from './axios'
+import { naverAxios, weatherAxios } from './axios'
 import alert from './sweetalert'
 
-export { axios, alert }
+export { naverAxios, weatherAxios, alert }

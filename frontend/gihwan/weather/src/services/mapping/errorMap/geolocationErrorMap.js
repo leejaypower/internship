@@ -1,5 +1,5 @@
-const geolocationErrorMap = (erorrMessage) => {
-  switch (erorrMessage) {
+const geolocationErrorMap = (errorMessage) => {
+  switch (errorMessage) {
     case 'User denied Geolocation':
       return { title: '위치 가져오기 실패', desc: '위치 권한을 활성화 해주세요.' }
     case 'unable to retrieve location':

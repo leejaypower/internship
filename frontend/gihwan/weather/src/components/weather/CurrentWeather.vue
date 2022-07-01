@@ -71,10 +71,12 @@
             :class="chipPaddingObject"
           >
             <v-icon>mdi-windsock</v-icon>
-            <span v-if="!isMobile">바람</span>
-            <span>(</span>
-            <span :style="{transform: windDeg(currentData.wind_deg), margin:'5px'}">⬆</span>
-            <span>)</span>
+            <template v-if="!isMobile">
+              <span>바람</span>
+              <span>(</span>
+              <span :style="{transform: windDeg(currentData.wind_deg), margin:'5px'}">⬆</span>
+              <span>)</span>
+            </template>
             <span>{{ currentData.wind_speed }}m/s</span>
           </v-chip>
         </v-col>
@@ -103,7 +105,7 @@
 
 <script>
 import weatherMixins from '@/mixins/weather'
-import { weatherIdDescMap } from '@/utils/mapping'
+import { weatherIdDescMap } from '@/services/mapping'
 
 export default {
   name: 'CurrentWeatherCard',

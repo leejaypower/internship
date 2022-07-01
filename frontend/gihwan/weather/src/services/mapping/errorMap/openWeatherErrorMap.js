@@ -1,5 +1,5 @@
-const openWeatherErrorMap = (erorrMessage) => {
-  switch (erorrMessage) {
+const openWeatherErrorMap = (errorMessage) => {
+  switch (errorMessage) {
     case 'Request failed with status code 401':
       return { title: '날씨 정보 가져오기 실패', desc: 'API키를 확인해 주세요.' }
     default:

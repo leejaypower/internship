@@ -1,5 +1,5 @@
-const naverErrorMap = (erorrMessage) => {
-  switch (erorrMessage) {
+const naverErrorMap = (errorMessage) => {
+  switch (errorMessage) {
     case 'invalid request':
     case 'Bad Request Exception':
     case 'Authentication Failed':

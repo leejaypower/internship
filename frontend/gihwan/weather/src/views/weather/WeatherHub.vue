@@ -66,10 +66,7 @@ export default {
       return this.$route.name
     },
     isSelectSiGu() {
-      if (this.currentPathName === 'location' && !this.locationCoord) {
-        return false
-      }
-      return true
+      return !(this.currentPathName === 'location' && !this.locationCoord)
     },
     isBookmarkIconShow() {
       return this.isLogin && this.isSelectSiGu && !(this.currentPathName === 'compare') && (this.isWeatherFetchResult || this.locationCoord)
@@ -100,20 +97,21 @@ export default {
       })
       this.isBookmark = isBookmark
     },
-    bookmarkData(result) {
+    bookmarkData({ value: userInputValue }) {
+      const defaultObject = {
+        idx: uuid(),
+        userIdx: this.userIdx,
+        title: userInputValue,
+      }
       switch (this.currentPathName) {
         case 'current':
           return {
-            idx: uuid(),
-            userIdx: this.userIdx,
-            title: result.current,
+            ...defaultObject,
             coords: this.currentCoords,
           }
         case 'location':
           return {
-            idx: uuid(),
-            userIdx: this.userIdx,
-            title: result.value,
+            ...defaultObject,
             coords: this.locationCoord,
           }
         default:

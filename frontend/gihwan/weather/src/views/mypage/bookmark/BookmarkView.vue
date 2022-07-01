@@ -56,9 +56,6 @@ export default {
   computed: {
     ...mapGetters('user', ['userIdx']),
     ...mapGetters('weather', ['weatherBookmarks']),
-    cols() {
-      return this.isMobile ? 12 : 6
-    },
   },
   async mounted() {
     await this.updateBookmarks()

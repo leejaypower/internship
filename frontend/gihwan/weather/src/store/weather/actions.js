@@ -1,6 +1,7 @@
-import { getLocationName, getBookmarkDataFetch, getWeahterDataFetch } from '@/apis/weather'
+import { getLocationName, getBookmarkDataFetch, getWeahterDataFetch } from '@/services/api/weather'
 import { alert } from '@/lib'
 import getCurrentLocation from '@/utils/geolocation'
+import { isNumberCheck, isStringCheck } from '@/services/validation/typeCheck'
 
 export default {
   updateCurrentName({ commit }, payload) {
@@ -10,7 +11,10 @@ export default {
     commit('updateCurrentName', { name: currenName })
   },
   async defaultLocationUpdate({ getters, commit }) {
+    const { lat, lon } = getters.currentCoords
     try {
+      isNumberCheck(lat, '위도')
+      isNumberCheck(lon, '경도')
       const result = await getWeahterDataFetch(getters.currentCoords)
       const { current, daily, hourly } = result.data
       commit('updateCurrentWeatherData', { current, daily, hourly })
@@ -23,6 +27,9 @@ export default {
     const fetchs = (coords) => [getWeahterDataFetch(coords), getLocationName(coords)]
     try {
       const currentCoord = await getCurrentLocation()
+      const { lat, lon } = currentCoord
+      isNumberCheck(lat, '위도')
+      isNumberCheck(lon, '경도')
       commit('updateCurrentCoord', currentCoord)
       const settledResult = await Promise.allSettled(fetchs(currentCoord))
       const isReject = settledResult.filter((result) => result.status === 'rejected')[0]
@@ -36,8 +43,8 @@ export default {
       const { area1, area2 } = region
       const currenName = `${area1.name} ${area2.name} ${name} ${number1}`
       commit('updateCurrentName', { name: currenName })
-    } catch (error) {
-      const { title, desc } = error.errorMessage
+    } catch ({ errorMessage }) {
+      const { title, desc } = errorMessage
       alert.error(title, desc)
       dispatch('defaultLocationUpdate')
     }
@@ -45,6 +52,10 @@ export default {
   async locationGetData({ commit }, payload) {
     const { coords, name } = payload
     try {
+      const { lat, lon } = coords
+      isNumberCheck(lat, '위도')
+      isNumberCheck(lon, '경도')
+      isStringCheck(name, '지역 이름')
       const { data } = await getWeahterDataFetch(coords)
       commit('updateLocationCoord', { ...coords, name })
       commit('updateLocationData', data)
@@ -81,6 +92,10 @@ export default {
   async updateBookmark({ commit }, payload) {
     const { idx, coords } = payload
     try {
+      const { lat, lon } = coords
+      isNumberCheck(lat, '위도')
+      isNumberCheck(lon, '경도')
+      isStringCheck(idx, '북마크 id')
       const result = await getBookmarkDataFetch(coords)
       commit('updateBookmark', { idx, result })
     } catch ({ errorMessage }) {
