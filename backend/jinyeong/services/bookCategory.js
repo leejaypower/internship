@@ -8,6 +8,11 @@ const getAll = async () => {
   return bookCategoryList;
 };
 
+const getAllByIds = async (ids) => {
+  const bookInfoList = await bookCategoryQuery.getAllByIds(ids);
+  return bookInfoList;
+};
+
 const getById = async (id) => {
   const bookCategory = await bookCategoryQuery.getOneById(id);
 
@@ -42,6 +47,7 @@ const deleteBookCategory = async (id) => {
 
 module.exports = {
   getAll,
+  getAllByIds,
   getById,
   createBookCategory,
   deleteBookCategory,

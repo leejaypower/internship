@@ -1,7 +1,7 @@
 const Router = require('koa-router');
 
 const adminRouter = new Router();
-const { adminApi } = require('../apis');
+const { adminApi } = require('../controller');
 
 // POST 요청
 adminRouter.post('/sign-up', adminApi.signUp); // 관리자계정 회원가입 요청

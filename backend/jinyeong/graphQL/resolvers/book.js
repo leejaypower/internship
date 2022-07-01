@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-const { bookService } = require('../services');
+const { bookService } = require('../../services');
 const { userAuth, adminAuth } = require('./auth');
 
 const bookResolvers = {

@@ -59,7 +59,7 @@ const logIn = async (ctx) => {
 
     const accessToken = await adminService.logIn({ email, password });
 
-    ctx.body = accessToken; // 발급된 액세스토큰을 전달
+    ctx.body = { accessToken }; // 발급된 액세스토큰을 전달
   } catch (err) {
     console.log(err.message);
     ctx.throw(err.name, err.message);

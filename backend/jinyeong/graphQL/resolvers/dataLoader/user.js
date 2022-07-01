@@ -1,5 +1,5 @@
 const DataLoader = require('dataloader');
-const { userService } = require('../../services');
+const { userService } = require('../../../services');
 
 const batchGetUser = async (userIds) => {
   const userList = await userService.getAllByIds(userIds);

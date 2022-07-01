@@ -23,15 +23,18 @@ const signUp = async (body) => {
   // 이메일 중복여부 검사
   const adminInfo = await adminQuery.getOneByInputData({ email });
 
-  if (adminInfo !== null) {
+  if (adminInfo) {
     errorHandling.throwError(400, '이미 존재하는 이메일입니다.');
   }
 
   const encryptedPassword = await encrypt.hashPassword(password); // 비밀번호 해시값 생성
 
-  const inputData = { email, password: encryptedPassword };
+  const createdAdminInfo = await adminQuery.createAdmin({
+    email,
+    password: encryptedPassword,
+  });
 
-  await adminQuery.createAdmin(inputData);
+  return createdAdminInfo;
 };
 
 // 관리자 로그인 요청에 해당하는 비지니스 로직
@@ -72,7 +75,7 @@ const logIn = async (body) => {
 
   await adminQuery.updateAdmin(adminInfo.id, { accessToken });
 
-  return { accessToken };
+  return accessToken;
 };
 
 // 관리자계정 정보조회 by adminId

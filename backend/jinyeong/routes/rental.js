@@ -1,5 +1,5 @@
 const Router = require('koa-router');
-const { rentalApi } = require('../apis');
+const { rentalApi } = require('../controller');
 
 const rentalRouter = new Router();
 

@@ -1,12 +1,12 @@
 /* eslint-disable no-unused-vars */
-const { adminService } = require('../services');
+const { adminService } = require('../../services');
 
 const adminResolver = {
   Query: {
     adminLogIn: async (parent, args, context) => {
       const { email, password } = args.input;
 
-      const accessToken = await adminService.adminLogin(email, password);
+      const accessToken = await adminService.logIn({ email, password });
 
       return { accessToken };
     },
@@ -15,11 +15,11 @@ const adminResolver = {
     adminSignUp: async (parent, args, context) => {
       const { email, password, secretCode } = args.input;
 
-      const createdAdminInfo = await adminService.adminSignUp(
+      const createdAdminInfo = await adminService.signUp({
         email,
         password,
         secretCode,
-      );
+      });
 
       return {
         code: 201,

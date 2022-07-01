@@ -2,7 +2,7 @@ const Router = require('koa-router');
 
 const bookInfoRouter = new Router();
 
-const { bookInfoApi } = require('../apis');
+const { bookInfoApi } = require('../controller');
 
 // GET 메소드
 bookInfoRouter.get('/', bookInfoApi.getAll);

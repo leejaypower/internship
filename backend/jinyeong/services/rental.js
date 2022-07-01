@@ -12,13 +12,18 @@ const { errorHandling } = util;
 const { BOOK_STATE, RESERVATION_STATE } = constants;
 
 const getAll = async () => {
-  const result = await rentalQuery.getListAll();
-  return result;
+  const rentalList = await rentalQuery.getListAll();
+  return rentalList;
+};
+
+const getById = async (id) => {
+  const rentalInfo = await rentalQuery.getOneById(id);
+  return rentalInfo;
 };
 
 const searchByQuery = async (query) => {
-  const result = await rentalQuery.getListByInputData(query);
-  return result;
+  const rentalList = await rentalQuery.getListByInputData(query);
+  return rentalList;
 };
 
 // 대기상태의 도서 대출로직
@@ -238,6 +243,7 @@ const extendRentalPeriodByBookId = async (bookId) => {
 
 module.exports = {
   getAll,
+  getById,
   searchByQuery,
   rentalOnWaitingBook,
   rentalOnReservatedBook,

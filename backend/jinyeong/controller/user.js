@@ -62,7 +62,7 @@ const logIn = async (ctx) => {
 
     const accessToken = await userService.logIn({ email, password });
 
-    ctx.body = accessToken;
+    ctx.body = { accessToken };
   } catch (err) {
     console.log(err.message);
     ctx.throw(err.name, err.message);

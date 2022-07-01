@@ -1,9 +1,9 @@
 const DataLoader = require('dataloader');
-const { rentalService } = require('../../services');
+const { rentalService } = require('../../../services');
 
 // 유저별 도서대출이력 조회에 필요한 Batch Function
 const batchGetRentalsByUserIds = async (userIds) => {
-  const rentalList = await rentalService.getListByUserIds(userIds);
+  const rentalList = await rentalService.searchByQuery({ userId: userIds });
 
   const mappedList = userIds.map((userId) => {
     const filterd = rentalList.filter((rental) => {
@@ -18,7 +18,7 @@ const batchGetRentalsByUserIds = async (userIds) => {
 
 // 도서별 도서대출이력 조회에 필요한 Batch Function
 const batchGetRentalsByBookIds = async (bookIds) => {
-  const rentalList = await rentalService.getListByBookIds(bookIds);
+  const rentalList = await rentalService.searchByQuery({ bookId: bookIds });
 
   const mappedList = bookIds.map((bookId) => {
     const filterd = rentalList.filter((rental) => {

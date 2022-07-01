@@ -1,5 +1,5 @@
 const DataLoader = require('dataloader');
-const { bookCategoryService } = require('../../services');
+const { bookCategoryService } = require('../../../services');
 
 const batchGetBookCategory = async (bookCategoryIds) => {
   const bookCategoryList = await bookCategoryService.getAllByIds(bookCategoryIds);

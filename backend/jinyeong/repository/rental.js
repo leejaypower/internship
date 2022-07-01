@@ -21,17 +21,6 @@ const getOneById = async (id) => {
   return rentalInfo?.dataValues;
 };
 
-const getListByInputData = async (inputData) => {
-  const rentalList = await Rental.findAll({
-    where: inputData,
-    order: [['createdAt', 'DESC']],
-  });
-
-  return rentalList.map((rental) => {
-    return rental.dataValues;
-  });
-};
-
 const createRental = async (inputData) => {
   await Rental.create(inputData);
 };

@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-const { userService } = require('../services');
+const { userService } = require('../../services');
 const { userAuth } = require('./auth');
 
 const userResolver = {
@@ -7,7 +7,7 @@ const userResolver = {
     logIn: async (parent, args, context) => {
       const { email, password } = args.input;
 
-      const accessToken = await userService.logIn(email, password);
+      const accessToken = await userService.logIn({ email, password });
 
       return { accessToken };
     },

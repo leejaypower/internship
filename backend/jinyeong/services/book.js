@@ -8,6 +8,11 @@ const getAll = async () => {
   return bookList;
 };
 
+const getAllByIds = async (ids) => {
+  const bookList = await bookQuery.getAllByIds(ids);
+  return bookList;
+};
+
 const getById = async (id) => {
   const book = await bookQuery.getOneById(id);
 
@@ -27,9 +32,8 @@ const createBook = async (body) => {
     errorHandling.throwError(400, '입력하신 도서 정보 ID에 해당하는 자료를 찾을 수 없습니다.');
   }
 
-  await bookQuery.createBook({
-    bookInfoId,
-  });
+  const createdBook = await bookQuery.createBook({ bookInfoId });
+  return createdBook;
 };
 
 const updateBook = async (id, body) => {
@@ -56,6 +60,7 @@ const deleteBook = async (id) => {
 
 module.exports = {
   getAll,
+  getAllByIds,
   getById,
   createBook,
   updateBook,

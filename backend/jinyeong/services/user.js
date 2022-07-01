@@ -22,12 +22,14 @@ const signUp = async (body) => {
 
   const encryptedContact = encrypt.cipher(contact);
 
-  await userQuery.createUser({
+  const createdUserInfo = await userQuery.createUser({
     name,
     contact: encryptedContact,
     email,
     password: encryptedPassword,
   });
+
+  return createdUserInfo;
 };
 
 const logIn = async (body) => {
@@ -51,11 +53,17 @@ const logIn = async (body) => {
     id: userInfo.id,
     role: 'user',
   }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN });
-  return { accessToken };
+
+  return accessToken;
 };
 
 const getAll = async () => {
   const userInfoList = await userQuery.getListAll();
+  return userInfoList;
+};
+
+const getAllByIds = async (ids) => {
+  const userInfoList = await userQuery.getAllByIds(ids);
   return userInfoList;
 };
 
@@ -72,6 +80,16 @@ const getById = async (userId) => {
   return userInfo;
 };
 
+const getOneByInputData = async (inputData) => {
+  const userInfo = await userQuery.getOneByInputData(inputData);
+  return userInfo;
+};
+
+const getMypage = async (userId) => {
+  const userInfo = await userQuery.getOneById(userId);
+  return userInfo;
+};
+
 const deleteMyAccount = async (userId) => {
   await userQuery.deleteUser(userId);
 };
@@ -80,6 +98,9 @@ module.exports = {
   signUp,
   logIn,
   getAll,
+  getAllByIds,
   getById,
+  getOneByInputData,
+  getMypage,
   deleteMyAccount,
 };

@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-const { reservationService } = require('../services');
+const { reservationService } = require('../../services');
 const { userAuth, adminAuth } = require('./auth');
 
 const reservationResolvers = {
@@ -9,7 +9,7 @@ const reservationResolvers = {
 
       await userAuth(context);
 
-      const reservationInfo = await reservationService.getOneById(id);
+      const reservationInfo = await reservationService.getById(id);
       return reservationInfo;
     },
     reservations: async (parent, args, context) => {

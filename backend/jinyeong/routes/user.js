@@ -1,7 +1,7 @@
 const Router = require('koa-router');
 
 const userRouter = new Router();
-const { userApi } = require('../apis');
+const { userApi } = require('../controller');
 
 // GET 메소드
 userRouter.get('/', userApi.getAll);
