@@ -5,4 +5,11 @@ const createReservation = async (bookId, userId) => {
   return newReservation;
 };
 
-module.exports = { createReservation };
+const getReservationByBookId = async (bookId) => {
+  const reservation = await db.Reservation.findOne({
+    where: { bookId },
+  });
+  return reservation;
+};
+
+module.exports = { createReservation, getReservationByBookId };

@@ -1,3 +1,4 @@
 const error = require('./error');
+const emailer = require('./emailer');
 
-module.exports = { error };
+module.exports = { error, emailer };

@@ -5,6 +5,9 @@ const { ApolloServer } = require('apollo-server-koa');
 const graphql = require('./graphql');
 const router = require('./routes');
 const kafka = require('./kafka');
+const lib = require('../lib');
+
+const { constant } = lib.common;
 
 router
   .get('/', (ctx) => {
@@ -32,11 +35,14 @@ const application = {
       .use(bodyParser())
       .use(router.routes());
 
+    await kafka.admin.topicCreator.createTopic(constant.topic.returnReservedBook);
+    await kafka.consumer.returnReservedBook.consumMessage(constant.topic.returnReservedBook);
+
     server.applyMiddleware({ app });
     httpServer.on('request', app.callback());
     const serverListen = await new Promise(resolve => httpServer.listen({ port: PORT }, resolve));
     console.log(`Server is listening on PORT ${PORT}`);
-    console.log(`🚀 ApolloServer ready at http://localhost:4000${server.graphqlPath}`);
+    console.log(`🚀 ApolloServer ready at http://localhost:${PORT}${server.graphqlPath}`);
     return { server, app };
   },
 };

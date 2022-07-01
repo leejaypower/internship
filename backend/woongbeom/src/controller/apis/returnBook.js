@@ -1,9 +1,11 @@
 const service = require('../../service');
-const { errorHandler } = require('../../../lib/util/error');
+const lib = require('../../../lib');
+
+const { errorHandler } = lib.util.error;
 
 const createReturn = async (ctx) => {
   try {
-    const rentalId = ctx.request.body;
+    const { rentalId } = ctx.request.body;
     if (typeof (rentalId) !== 'number') {
       errorHandler(1, 'Rental Id should be type Number');
     }
