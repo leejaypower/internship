@@ -30,6 +30,7 @@ const sequelize = new Sequelize(
     define: {
       // 테이블 정의 관련 옵션 설정
     },
+    logging: false,
   },
 );
 

@@ -22,8 +22,8 @@ const router = require('./routes');
 const startServer = async () => {
   await apolloServer.start();
 
-  await consumers.dueDateMailer.run();
-  await producers.dueDateScheduler.run();
+  await consumers.dueDateMailer.start();
+  await producers.dueDateScheduler.start();
 
   app
     .use(cors())
