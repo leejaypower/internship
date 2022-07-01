@@ -45,7 +45,6 @@ const createRental = async (ctx) => {
   try {
     const { bookId } = ctx.request.body;
     const userId = ctx.user.id; // 권한 검사 시 token에서 추출한 userId
-
     if (!bookId) {
       ctx.throw(400, 'Bad Request : Invalid request body');
     }

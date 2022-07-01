@@ -1,4 +1,5 @@
 const { rentalRepository, bookRepository, reserveRepository } = require('../repositories');
+const { kafkaClients, returnEventType } = require('../kafka');
 
 /**
  * 모든 대출 내역 조회
@@ -94,36 +95,48 @@ const extendRentDate = async (bookId, rentalId) => {
  * rentalId : 반납 할 대여 ID
  */
 const returnRental = async (rentalId) => {
-  const { rentList } = await rentalRepository.getRentalInfo({ id: rentalId });
-  const rentInfo = rentList[0].dataValues;
-
+  const { rentalList } = await rentalRepository.getRentalInfo({ id: rentalId });
+  const rentInfo = rentalList[0];
   const {
     returnDate, rentalDate, userId, bookId,
   } = rentInfo;
-    // overdue 처리 스켑줄러 필요. 추구 후현 예정 ㅜ
+  // overdue 처리 스켑줄러 필요. 추구 후현 예정 ㅜ
 
   // overdue 임시 처리
   const extDate = Number(process.env.EXT_DATE);
   const dueDay = rentInfo.isExtend ? extDate : extDate * 2;
 
   const overdue = (returnDate - rentalDate) > dueDay ? returnDate - rentalDate : 0; // 수정 필요
-  // rentHistory에 저장될 data
-  const rentHistoryInfo = {
-    userId,
-    returnDate,
-    rentalDate,
-    overdue,
-  };
-    // rental table 에서 삭제 & 사용자 rental history에 저장
-  const { isDeleted, rentHistory } = await rentalRepository.returnRental(bookId, rentHistoryInfo);
+
+  // rental table 에서 삭제 & 사용자 rental history에 저장
+  const { isDeleted } = await rentalRepository.returnRentalKafka(bookId);
+
+  // Kafka
+  if (isDeleted) {
+    // rentHistory에 저장될 data
+    const messageObj = {
+      userId,
+      returnDate: returnDate.getTime(), // date type으로 보내지지 않아서 timestamps 로 변형
+      rentalDate: rentalDate.getTime(),
+      overdue,
+    };
+
+    kafkaClients.returnHistoryProducer.sendMessage(returnEventType, messageObj);
+  }
 
   // 예약있다면 rent 등록
-  const reservation = await reserveRepository.getReservation(userId);
+  const reservation = await reserveRepository.getAllReservation(userId);
   if (reservation) {
     await createRental(userId, bookId);
   }
 
   // 사용자 notify
+  const rentHistory = {
+    userId,
+    returnDate,
+    rentalDate,
+    overdue,
+  };
   return { rentHistory };
 };
 

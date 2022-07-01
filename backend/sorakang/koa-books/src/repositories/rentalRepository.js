@@ -119,31 +119,13 @@ const returnRental = async (bookId, rentHistoryInfo) => {
   return { isDeleted, rentHistory };
 };
 
-const updateRental = async (attributes, whereOptions) => {
-  try {
-    const result = await sequelize.transaction(async (t) => {
-      const rentalUpdatedCount = await Rental.update(attributes, whereOptions, { transaction: t });
+// 임시
+const returnRentalKafka = async (bookId) => {
+  const t = await sequelize.transaction();
 
-      const { rental } = await getSingleRental(whereOptions.where.id);
-      const {
-        userId, returnDate, rentalDate, overdue,
-      } = rental;
+  const isDeleted = await Rental.destroy({ where: { bookId }, t });
 
-      const rentHistory = await RentalHistory.create({
-        userId, returnDate, rentalDate, overdue,
-      }, { transaction: t });
-
-      return { rentalUpdatedCount, rentHistory };
-    });
-    return result;
-  } catch (err) {
-    throw new Error(err);
-  }
-};
-
-const findAndCountAllRental = async (options) => {
-  const { rows, count } = await Rental.findAndCountAll(options);
-  return { rows, count };
+  return { isDeleted };
 };
 
 module.exports = {
@@ -153,6 +135,5 @@ module.exports = {
   createRental,
   extendRentDate,
   returnRental,
-  findAndCountAllRental,
-  updateRental,
+  returnRentalKafka,
 };
