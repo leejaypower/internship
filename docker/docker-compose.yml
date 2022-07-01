@@ -108,12 +108,12 @@ services:
       HASH_SALT: 10
 
   internship-juyoungjung:
-  container_name: juyoungjung-weather-channel-app
-  build:
-    context: ../frontend/juyoungjung/weather-channel
-    dockerfile: Dockerfile
-  ports:
-    - "8090:8090"
+    container_name: juyoungjung-weather-channel-app
+    build:
+      context: ../frontend/juyoungjung/weather-channel
+      dockerfile: Dockerfile
+    ports:
+      - "8090:8090"
 
   internship-sora:
     container_name: internship-sora
@@ -132,6 +132,14 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8089:8089"
+
+  internship-kimin:
+    container_name: kimin-weather-app
+    build:
+      context: ../frontend/Kimin/weather-channel
+      dockerfile: Dockerfile
+    ports:
+      - "8081:80"
 
   internship-gihwan:
     container_name: gihwan-weather-app

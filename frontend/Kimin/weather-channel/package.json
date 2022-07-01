@@ -6,7 +6,9 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "docker:build": "docker build -t kimin-weather-app-image .",
+    "docker:run": "docker run -it -p 8081:80 --rm --name kimin-weather-app kimin-weather-app-image"
   },
   "dependencies": {
     "axios": "^0.27.2",
