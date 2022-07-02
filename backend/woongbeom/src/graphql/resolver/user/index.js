@@ -1,7 +1,7 @@
 const { composeResolvers } = require('@graphql-tools/resolvers-composition');
 
 const service = require('../../../service');
-const middleware = require('../auth');
+const auth = require('../auth');
 
 const user = {
   Query: {
@@ -38,12 +38,9 @@ const user = {
 };
 
 const resolveComposition = {
-//  'Query.*': [middleware.Query.isAuthenticated()],
-//  'Mutation.createUser': [middleware.Mutation.isAuthenticated()],
+  'Query.*': [auth.admin()],
+  'Mutation.updateUserName': [auth.user()],
 };
+
 const composedResolvers = composeResolvers(user, resolveComposition);
 module.exports = composedResolvers;
-
-/**
- * Auth resolver 리팩토링 하면서 주석 해제하여 붙이겠습니다.
- */

@@ -5,7 +5,9 @@ type Rental {
 }
 
 type Query {
-  getRentals(id: Int, bookId: Int!, userId: Int): [Rental]
+  getRentalsById(id: Int!, bookId: Int, userId: Int): [Rental]
+  getRentalsByBookId(id: Int, bookId: Int!, userId: Int): [Rental]
+  getRentalsByUserId(id: Int, bookId: Int, userId: Int!): [Rental]
 }
 
 type Mutation {

@@ -1,7 +1,7 @@
 // 사용자 역할 상수
-const ROLE = {
-  USER: 'USER',
-  ADMIN: 'ADMIN',
+const role = {
+  user: 'user',
+  admin: 'admin',
 };
 
 // 토큰 관련 상수
@@ -22,12 +22,12 @@ const topic = {
 };
 
 module.exports = {
-  ROLE,
+  role,
   token,
   bookStatus,
   topic,
 };
 
 /**
- * role 소문자 작업하자 (이전 pr에서 했는데 꼬였습니다)
+ * 도서 상태코드 DB 모델링도 string으로 변경하기 (숫자는 가독성을 해친다!)
  */

@@ -5,14 +5,9 @@ type book {
   page: Int
 }
 
-extend type book {
-  rentalHistory: [Rental]!
-}
-
 type Query {
   getBooks(title: String, author: String, publisher: String): [book]
   getBookById(id: Int!): [book]
-  getBooksWithRentalHistory(id: Int): [book]
   getBooksAllByIds(ids: [Int]): [book]
 }
 

@@ -2,42 +2,45 @@ const repository = require('../repository');
 const { sequelize } = require('../db/models');
 const lib = require('../lib');
 
+const { constant } = lib.common;
+const { errorHandler } = lib.util.error;
+
 /**
- * 도서 대출 (파라미터 수정 필요합니다. 추가로 작업하겠습니다.)
- * @param { Object } rentalData 도서의 id, 유저의 id -> 수정 필요
- * @param { String } userEmail 유저의 이메일
+ * @param { Object } rentalData 도서의 id, 유저의 email
  */
-const createRental = async (rentalData, userEmail) => {
-  const result = await sequelize.transaction(async (transaction) => {
-    const user = await repository.user.getUserById(rentalData.userId);
+const createRental = async (rentalData) => {
+  const { bookId, userEmail } = rentalData;
 
-    if (user.email !== userEmail) {
-      lib.util.error.errorHandler(1, 'You cannot rent book by other\'s account');
-    }
+  const book = await repository.book.getBookById(bookId);
+  if (!book) {
+    errorHandler(1, 'Book does not exist');
+  }
 
-    const book = await repository.book.getBookById(rentalData.bookId);
-    if (!book) {
-      lib.util.error.errorHandler(1, 'Book does not exist');
-    }
+  if (book.statusCode === constant.bookStatus.currentlyBorrowed) {
+    errorHandler(1, 'This book is already occupied');
+  }
+  if (book.statusCode === constant.bookStatus.reserved) {
+    errorHandler(1, 'This book is already on reservation');
+  }
 
-    if (book.statusCode === 1) { // 1: 대출중
-      lib.util.error.errorHandler(1, 'This book is already occupied');
-    }
-    if (book.statusCode === 2) { // 2. 예약중
-      lib.util.error.errorHandler(1, 'This book is already on reservation');
-    }
+  const user = await repository.user.getUserByEmail(userEmail);
+  const userId = user.id;
 
-    const status = { statusCode: 1 };
+  const transactionResult = await sequelize.transaction(async (transaction) => {
+    const status = { statusCode: constant.bookStatus.currentlyBorrowed };
     await repository.book.updateBook(
-      rentalData.bookId,
+      bookId,
       status,
       { transaction },
     );
 
-    const newRental = await repository.rental.createRental(rentalData, { transaction });
+    const rentalInstance = { bookId, userId };
+
+    const newRental = await repository.rental.createRental(rentalInstance, { transaction });
     return newRental;
   });
-  return result;
+
+  return transactionResult;
 };
 
 const getRentals = async (rentalQuery) => {

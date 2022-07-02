@@ -1,7 +1,7 @@
 const { composeResolvers } = require('@graphql-tools/resolvers-composition');
 
 const service = require('../../../service');
-const middleware = require('../auth');
+const auth = require('../auth');
 
 const returnBook = {
   Query: {},
@@ -15,8 +15,9 @@ const returnBook = {
 };
 
 const resolverComposition = {
-  'Mutation.*': [middleware.Mutation.isAuthenticatedUser()],
+  'Mutation.*': [auth.user()],
 };
+
 const composedResolvers = composeResolvers(returnBook, resolverComposition);
 
 module.exports = composedResolvers;

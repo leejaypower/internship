@@ -1,7 +1,7 @@
 const { composeResolvers } = require('@graphql-tools/resolvers-composition');
 const service = require('../../../service');
-const middleware = require('../auth');
 const loader = require('../../dataloader');
+const auth = require('../auth');
 
 const book = {
   Query: {
@@ -22,13 +22,13 @@ const book = {
     },
   },
   Mutation: {
-    createBook: async (_, args) => {
+    createBook: async (parent, args) => {
       const inputValues = args.createBookInput;
 
       const result = await service.book.createBook(inputValues);
       return [result];
     },
-    updateBook: async (_, args) => {
+    updateBook: async (parent, args) => {
       const updateBookId = args.updateBookInput.id;
       const inputValues = args.updateBookInput;
 
@@ -45,8 +45,9 @@ const book = {
 };
 
 const resolveComposition = {
-  'Mutation.*': [middleware.Query.isAuthenticatedAdmin()],
+  'Mutation.*': [auth.admin()],
 };
+
 const composedResolvers = composeResolvers(book, resolveComposition);
 
 module.exports = composedResolvers;

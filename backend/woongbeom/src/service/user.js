@@ -1,33 +1,29 @@
 const repository = require('../repository');
-const { sequelize } = require('../db/models');
 const lib = require('../lib');
 
 const { constant } = lib.common;
 const { errorHandler } = lib.util.error;
+const { jwt, hash } = lib.auth;
 
 /**
  * 유저 회원가입
  * @param { Object } userData 유저 email, name, password
  */
 const createUser = async (userData) => {
-  const result = await sequelize.transaction(async (transaction) => {
-    const { name, email, password } = userData;
-    const emailCheck = await repository.user.getUserByEmail(email, { transaction });
-    if (emailCheck) {
-      errorHandler(1, 'This email already exist');
-    }
+  const { name, email, password } = userData;
+  const emailCheck = await repository.user.getUserByEmail(email);
+  if (emailCheck) {
+    errorHandler(1, 'This email already exist');
+  }
 
-    const newUserData = await repository.user.createUser({
-      name,
-      email,
-      password,
-    }, {
-      transaction,
-    });
-    newUserData.password = undefined;
-    return newUserData;
+  const newUserData = await repository.user.createUser({
+    name,
+    email,
+    password,
   });
-  return result;
+
+  newUserData.password = undefined;
+  return newUserData;
 };
 
 const getUsers = async (userQuery) => {
@@ -61,18 +57,19 @@ const signIn = async (email, password) => {
     errorHandler(1, 'User email does not exist.');
   }
 
-  const matchPassword = await lib.auth.hash.comparePassword(password, matchedUser.password);
+  const matchPassword = await hash.comparePassword(password, matchedUser.password);
   if (!matchPassword) {
     errorHandler(1, 'Wrong password');
   }
 
-  const token = lib.auth.jwt.sign({
+  const token = jwt.sign({
     id: matchedUser.dataValues.id,
     email,
-    role: constant.ROLE.USER,
+    role: constant.role.user,
   }, {
     expiresIn: constant.token.expiresIn,
   });
+
   return token;
 };
 

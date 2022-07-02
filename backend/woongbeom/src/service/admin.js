@@ -6,21 +6,25 @@ const { hash, jwt } = lib.auth;
 const { constant } = lib.common;
 
 const signIn = async (email, password) => {
-  const adminInfo = await repository.admin.getByEmail(email);
+  const matchedAdmin = await repository.admin.getByEmail(email);
 
-  if (!adminInfo) {
+  if (!matchedAdmin) {
     errorHandler(1, 'Admin email does not exist.');
   }
 
-  const matchPassword = await hash.comparePassword(password, adminInfo.password);
+  const matchPassword = await hash.comparePassword(password, matchedAdmin.password);
   if (!matchPassword) {
     errorHandler(1, 'Wrong password');
   }
 
-  const token = jwt.sign(
-    { email, ROLE: constant.ROLE.ADMIN },
-    { expiresIn: constant.token.expiresIn },
-  );
+  const token = jwt.sign({
+    id: matchedAdmin.dataValues.id,
+    email,
+    role: constant.role.user,
+  }, {
+    expiresIn: constant.token.expiresIn,
+  });
+
   return token;
 };
 
