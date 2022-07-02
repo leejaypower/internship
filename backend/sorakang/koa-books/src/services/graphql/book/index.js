@@ -1,11 +1,10 @@
-const { ApolloError } = require('apollo-server-koa');
 const { transaction, bookRepository, bookSerialRepository } = require('../../../repositories');
 const { Sequelize } = require('../../../database/models');
+const { customError } = require('../../../libs').errorHandler;
 
 const { Op } = Sequelize;
 
 const getAllBooks = async (parent, { limit, curCursor, bookId }, _context) => {
-  // 쿼리 options
   const whereOptions = {
     [Op.or]: [
       { publicationDate: { [Op.lt]: curCursor } },
@@ -19,6 +18,10 @@ const getAllBooks = async (parent, { limit, curCursor, bookId }, _context) => {
   const order = [['publicationDate', 'DESC'], ['id', 'ASC']];
 
   const { rows, count } = await bookRepository.findAndCountAllBook(limit, whereOptions, order);
+
+  if (!rows?.length) {
+    throw new customError.NoContentError();
+  }
 
   // 다음 커서 생성
   const time = rows[rows.length - 1].publicationDate.getTime();
@@ -44,15 +47,18 @@ const getBookBySerialId = async (serialId) => {
     attributes: ['bookId'],
     returning: ['*'],
   };
-  const { bookId } = await bookSerialRepository.getBooksBySerialId(options)
-    .then((result) => result[0]);
-  if (!bookId) {
-    throw new ApolloError('Data not found');
+
+  const bookSerialList = await bookSerialRepository.getBooksBySerialId(options);
+
+  if (!bookSerialList?.length) {
+    throw new customError.NoContentError();
   }
-  const book = await bookRepository.getSingleBook(bookId);
+
+  const book = await bookRepository.getSingleBook(bookSerialList[0]);
   return book;
 };
 
+// Rest service랑 병합하기
 /**
  * DB에 책 등록
  * @param {Array of object} bookList
@@ -73,6 +79,9 @@ const createBook = async (bookList) => {
  */
 const deleteBook = async (bookIdList) => {
   const deletedCount = await bookRepository.deleteBook(bookIdList);
+  if (!deletedCount) {
+    throw new customError.NoContentError('삭제 할 데이터가 없습니다');
+  }
   return deletedCount;
 };
 

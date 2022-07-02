@@ -33,7 +33,7 @@ input CreateInput {
 
 # response
 type CreatedResponse {
-  message:Message!
+  message:String!
   data:Rental
 }
 

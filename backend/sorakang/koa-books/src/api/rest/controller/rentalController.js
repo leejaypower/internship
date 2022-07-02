@@ -4,14 +4,9 @@ const service = require('../../../services');
  * 모든 대출 내역 조회
  */
 const getAllRental = async (ctx) => {
-  try {
-    const { rentalList } = await service.rental.getAllRental();
-
-    ctx.status = 200;
-    ctx.body = { data: rentalList };
-  } catch (err) {
-    ctx.throw(err);
-  }
+  const { rentalList } = await service.rental.getAllRental();
+  ctx.status = 200;
+  ctx.body = { data: rentalList };
 };
 
 /**
@@ -20,20 +15,16 @@ const getAllRental = async (ctx) => {
  * query : userId 또는 bookId
  */
 const getRentalInfo = async (ctx) => {
-  try {
-    const input = ctx.request.query;
+  const input = ctx.request.query;
 
-    if (!input.userId && !input.bookId) {
-      ctx.throw(400, 'Bad Request : Invalid query');
-    }
-
-    const { rentalList } = await service.rental.getRentalInfo(input);
-
-    ctx.status = 200;
-    ctx.body = { data: rentalList };
-  } catch (err) {
-    ctx.throw(err);
+  if (!input.userId && !input.bookId) {
+    ctx.throw(400, 'Bad Request : Invalid query');
   }
+
+  const { rentalList } = await service.rental.getRentalInfo(input);
+
+  ctx.status = 200;
+  ctx.body = { data: rentalList };
 };
 
 /**
@@ -42,25 +33,17 @@ const getRentalInfo = async (ctx) => {
  * params : userId and bookId
  */
 const createRental = async (ctx) => {
-  try {
-    const { bookId } = ctx.request.body;
-    const userId = ctx.user.id; // 권한 검사 시 token에서 추출한 userId
-    if (!bookId) {
-      ctx.throw(400, 'Bad Request : Invalid request body');
-    }
+  const { bookId } = ctx.request.body;
+  const userId = ctx.user.id; // 권한 검사 시 token에서 추출한 userId
 
-    const { rental, isCreated } = await service.rental.createRental(userId, bookId);
-
-    if (!isCreated) {
-      ctx.throw(409, 'This book is already on loan');
-    }
-
-    ctx.status = 201;
-    ctx.body = { data: rental };
-  } catch (err) {
-    ctx.throw(err);
-    console.errer(err);
+  if (!bookId) {
+    ctx.throw(400, 'Bad Request : Invalid request body');
   }
+
+  const { rental, isCreated } = await service.rental.createRental(userId, bookId);
+
+  ctx.status = 201;
+  ctx.body = { data: rental };
 };
 
 /**
@@ -70,25 +53,17 @@ const createRental = async (ctx) => {
  * query : bookId
  */
 const extendRentDate = async (ctx) => {
-  try {
-    const { bookId } = ctx.request.query;
-    const { rentalId } = ctx.params;
+  const { bookId } = ctx.request.query;
+  const { rentalId } = ctx.params;
 
-    if (!bookId) {
-      ctx.throw(400, 'Bad Request : Invalid request query');
-    }
-
-    const { updatedCount } = await service.rental.extendRentDate(bookId, rentalId);
-    if (!updatedCount) {
-      ctx.throw('Updated failed');
-    }
-
-    ctx.status = 201;
-    ctx.body = { message: 'Successfully updated' };
-  } catch (err) {
-    ctx.throw(err);
-    console.log(err);
+  if (!bookId) {
+    ctx.throw(400, 'Bad Request : Invalid request query');
   }
+
+  await service.rental.extendRentDate(bookId, rentalId);
+
+  ctx.status = 201;
+  ctx.body = { message: 'Successfully updated' };
 };
 
 /**
@@ -97,18 +72,10 @@ const extendRentDate = async (ctx) => {
  * params : rentalId
  */
 const returnRental = async (ctx) => {
-  try {
-    const { rentalId } = ctx.params;
-    const { rentHistory } = await service.rental.returnRental(rentalId);
-    if (!rentHistory) {
-      ctx.throw('Delete failed');
-    }
+  const { rentalId } = ctx.params;
+  await service.rental.returnRental(rentalId);
 
-    ctx.body = { message: 'Successfully deleted' };
-  } catch (err) {
-    console.log(err);
-    ctx.throw(err);
-  }
+  ctx.body = { message: 'Successfully deleted' };
 };
 
 module.exports = {

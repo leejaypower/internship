@@ -42,7 +42,9 @@
     "path": "^0.12.7",
     "pg": "^8.7.3",
     "pg-hstore": "^2.3.4",
-    "sequelize": "^6.19.0"
+    "sequelize": "^6.19.0",
+    "winston": "^3.8.0",
+    "winston-daily-rotate-file": "^4.7.1"
   },
   "devDependencies": {
     "axios": "^0.27.2",

@@ -15,27 +15,16 @@ const dbInit = async () => {
 };
 
 const init = async () => {
-  try{
+  try {
     await dbInit();
-    await kafkaClients.returnHistoryConsume.consumeMessage();
+    // await kafkaClients.returnHistoryConsume.consumeMessage();
     startApolloServer(app);
   } catch (err) {
     console.error('Initialization failed', err);
-    await kafkaClients.returnHistoryProducer.producerShutdown()
+    await kafkaClients.returnHistoryProducer.producerShutdown();
     await kafkaClients.returnHistoryConsume.consumerShutdown();
     process.exit(1);
+  }
 };
 
-
-
-// sequelize
-//   .authenticate()
-//   .then(() => {
-//     console.log('Connection has been established successfully!');
-//   })
-//   // .then(sequelize.sync())
-//   .catch((err) => {
-//     console.error('Unable to connect to the database', err);
-//     process.exit(1);
-//   });
-// startApolloServer(app);
+init();

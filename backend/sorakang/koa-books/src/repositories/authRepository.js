@@ -5,10 +5,6 @@ const verifyAuth = async (userId) => {
     where: { userId },
     attributes: ['iat'],
   }).then((result) => result.dataValues);
-
-  if (!iat) {
-    throw new Error('invalid refresh token, please log in again');
-  }
   return { iat };
 };
 

@@ -1,6 +1,5 @@
-const {
-  reserveRepository, rentalRepository, bookRepository,
-} = require('../../repositories');
+const { reserveRepository, rentalRepository, bookRepository } = require('../../repositories');
+const { customError } = require('../../libs').errorHandler;
 
 /**
  * user 또는 특정 book에 대한 전체 예약 기록 검색 - 유저, 관리자
@@ -10,6 +9,9 @@ const {
 const getAllReservation = async (input) => {
   const { reserveList } = await reserveRepository.getAllReservation(input);
 
+  if (!reserveList?.length) {
+    throw new customError.NoContentError('예약 데이터가 없습니다');
+  }
   return { reserveList };
 };
 
@@ -24,35 +26,36 @@ const createReservation = async (userId, bookId) => {
   // 해당 책이 도서관에 없는 책이라면 예약 불가
   const book = await bookRepository.getSingleBook(bookId);
   if (!book) {
-    throw new Error('없는 책입니다');
+    throw new customError.NoContentError('책이 존재하지 않습니다');
   }
 
   // 대여 권수 10권 초과 시 예약 불가능
   const userRentList = await rentalRepository.getRentalInfo({ userId });
-  if (userRentList && userRentList.rentalList.length > 10) {
-    throw new Error('대출 가능 회수 초과');
+  if (userRentList?.rentalList.length > 10) {
+    throw new customError.DataUnavailableError('대여 권수를 초과하였습니다', { '현재 대여 수량': userRentList.rentalList.length });
   }
   // 연체중인 책이 있는 경우 예약 불가
   const isOverdue = userRentList.rentalList.filter((rent) => rent.overdue !== null && rent.overdue !== 0);
 
   if (isOverdue.length) {
-    throw new Error('연체된 책을 반납해 주세요');
+    throw new customError.DataUnavailableError('연채중인 책을 반납해주세요');
   }
 
   // 이미 예약된 책 3권 초과 시 예약 불가능
   const { reserveList } = await reserveRepository.getAllReservation({ userId });
-  if (reserveList && reserveList.length > process.env.RESERVE_QTY) {
-    throw new Error('예약 횟수 초과');
+  if (reserveList?.length > process.env.RESERVE_QTY) {
+    throw new customError.DataUnavailableError('예약 가능 횟수를 초과하였습니다', { '현재 예약 횟수': reserveList.length });
   }
-
+  // refactoring (gql 따로 생성하기)
   const { rentalList } = await rentalRepository.getRentalInfo({ bookId });
-  if (rentalList && !rentalList.length) {
-    throw new Error('대여가 가능한 책입니다');
+
+  if (!rentalList?.length) {
+    throw new customError.DataUnavailableError('대여가 가능한 책입니다. 도서대여를 진행 해주세요');
   }
   const { reservationInfo, isReserved } = await reserveRepository.createReservation(input);
 
   if (!isReserved && reservationInfo) {
-    throw new Error('예약 불가 : 이미 예약된 도서입니다');
+    throw new customError.DataAlreadyExistsError('도서 연장 불가 : 이미 예약된 도서입니다');
   }
 
   return { reservationInfo };
@@ -64,6 +67,9 @@ const createReservation = async (userId, bookId) => {
  */
 const updateReservation = async (userId, bookId) => {
   const updatedCount = await reserveRepository.updateReservation(userId, bookId);
+  if (!updatedCount) {
+    throw new customError.NoContentError('업데이트 할 예약이 존재하지 않습니다');
+  }
   return { updatedCount };
 };
 
@@ -75,6 +81,9 @@ const updateReservation = async (userId, bookId) => {
 const deleteReservation = async (reservationId) => {
   const { isDeleted } = await reserveRepository.deleteReservation(reservationId);
 
+  if (!isDeleted) {
+    throw new customError.NoContentError('삭제 할 예약이 존재하지 않습니다');
+  }
   return { isDeleted };
 };
 

@@ -1,5 +1,6 @@
 const { verify } = require('jsonwebtoken');
 const { userRepository } = require('../../repositories');
+const { customError } = require('../error');
 
 /**
  * Check if token is valid
@@ -10,8 +11,7 @@ const { userRepository } = require('../../repositories');
 const isValidToken = async (accessToken) => {
   const decodeToken = verify(accessToken, process.env.ACCESS_SECRET_KEY);
 
-  const { user } = await userRepository.user.getSingleUser(decodeToken?.userId);
-
+  const { user } = await userRepository.getSingleUser(decodeToken?.userId);
   if (!user) {
     return { state: false, data: {} };
   }

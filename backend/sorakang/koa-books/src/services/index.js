@@ -4,7 +4,6 @@ const graphql = require('./graphql');
 const rental = require('./rental');
 const reservation = require('./reservation');
 const user = require('./user');
-const transaction = require('./transactions');
 
 module.exports = {
   graphql,
@@ -13,5 +12,4 @@ module.exports = {
   rental,
   reservation,
   auth,
-  transaction,
 };

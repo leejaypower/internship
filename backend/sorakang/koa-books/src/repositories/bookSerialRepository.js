@@ -1,16 +1,11 @@
-const { Op } = require('sequelize');
 const { BookSerial } = require('../database/models');
 
 const getBookSerial = async (bookId) => {
-  try {
-    const bookSerialList = await BookSerial.findAll({
-      where: { bookId },
-    });
+  const bookSerialList = await BookSerial.findAll({
+    where: { bookId },
+  });
 
-    return bookSerialList;
-  } catch (err) {
-    return err.message;// 임시 error handling
-  }
+  return bookSerialList;
 };
 
 /**
@@ -39,15 +34,11 @@ const getBooksBySerialId = async (options) => {
 };
 
 const createBookSerial = async (book, t) => {
-  try {
-    const { id } = book;
-    const bookSerialInfo = await BookSerial.create({
-      bookId: id, t,
-    });
-    return bookSerialInfo;
-  } catch (err) {
-    throw new Error(err.message);// 임시 error handling
-  }
+  const { id } = book;
+  const bookSerialInfo = await BookSerial.create({
+    bookId: id, t,
+  });
+  return bookSerialInfo;
 };
 
 module.exports = {

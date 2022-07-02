@@ -1,4 +1,5 @@
 const { sign } = require('jsonwebtoken');
+const { customError } = require('../error');
 
 const getToken = (payload, secretKey, exp) => {
   const token = sign(

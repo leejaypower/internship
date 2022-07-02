@@ -1,18 +1,17 @@
 const service = require('../../../services');
+const { errorHandler } = require('../../../libs');
 
-const getAccessToken = async (ctx) => {
-  try {
-    const refreshToken = ctx.cookies.get('refresh_token');
+const { UnauthenticatedError } = errorHandler.customError;
 
-    if (!refreshToken) {
-      throw new Error('invalid refresh token, please log in again');
-    }
-    const { accessToken } = await service.auth.getAccessToken(refreshToken);
+const getAccessToken = async (ctx, next) => {
+  const refreshToken = ctx.cookies.get('refresh_token');
 
-    ctx.body = { accessToken, message: 'accessToken issued' };
-  } catch (err) {
-    throw Error(err);
+  if (!refreshToken) {
+    throw new UnauthenticatedError('다시 로그인 해주세요');
   }
+  const { accessToken } = await service.auth.getAccessToken(refreshToken);
+
+  ctx.body = { accessToken, message: 'accessToken issued' };
 };
 
 module.exports = {

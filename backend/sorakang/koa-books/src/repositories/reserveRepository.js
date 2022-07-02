@@ -6,17 +6,13 @@ const { Reservation } = require('../database/models');
  * input : userId or bookId
  */
 const getAllReservation = async (input) => {
-  try {
-    const reserveList = await Reservation.findAll({ where: input });
+  const reserveList = await Reservation.findAll({ where: input });
 
-    if (!reserveList) {
-      throw new Error('Data not Found');
-    }
-
-    return { reserveList };
-  } catch (err) {
-    console.error(err);
+  if (!reserveList) {
+    throw new Error('Data not Found');
   }
+
+  return { reserveList };
 };
 
 /**
@@ -36,15 +32,11 @@ const getReservation = async (options) => {
  */
 const createReservation = async (input) => {
   const { userId, bookId } = input;
-  try {
-    const [reservationInfo, isReserved] = await Reservation.findOrCreate({
-      where: { bookId },
-      defaults: { userId, bookId },
-    });
-    return { reservationInfo, isReserved };
-  } catch (err) {
-    console.error(err);
-  }
+  const [reservationInfo, isReserved] = await Reservation.findOrCreate({
+    where: { bookId },
+    defaults: { userId, bookId },
+  });
+  return { reservationInfo, isReserved };
 };
 
 /**
@@ -62,12 +54,8 @@ const updateReservation = async (attributes, whereOptions) => {
  * reservationId : 예약 Id
  */
 const deleteReservation = async (reservationId) => {
-  try {
-    const isDeleted = await Reservation.destroy({ where: { id: reservationId } });
-    return { isDeleted };
-  } catch (err) {
-    console.error(err);
-  }
+  const isDeleted = await Reservation.destroy({ where: { id: reservationId } });
+  return { isDeleted };
 };
 
 const findAndCountAllReservation = async (options) => {

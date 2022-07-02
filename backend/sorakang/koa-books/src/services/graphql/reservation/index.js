@@ -1,6 +1,6 @@
-const { ApolloError } = require('apollo-server-koa');
 const { reserveRepository } = require('../../../repositories');
 const { Sequelize } = require('../../../database/models');
+const { customError } = require('../../../libs').errorHandler;
 
 const { Op } = Sequelize;
 
@@ -30,7 +30,7 @@ const getAllReservation = async ({ limit, afterCursor, search }) => {
   const { rows, count } = await reserveRepository.findAndCountAllReservation(options);
 
   if (!rows?.length) {
-    throw new ApolloError('조회 불가 : 데이터 없음');
+    throw new customError.NoContentError('예약 정보가 없습니다');
   }
 
   const endCursor = rows.length ? rows[rows.length - 1].id : null;
@@ -46,7 +46,7 @@ const getReservationByUserId = async ({ userId }) => {
   const options = { where: { userId } };
   const reservation = await reserveRepository.getReservation(options);
   if (!reservation) {
-    throw ApolloError('데이터가 없습니다');
+    throw new customError.NoContentError('예약 정보가 없습니다');
   }
   return reservation;
 };
@@ -56,6 +56,9 @@ const updateReservation = async (reservationInfo, userId) => {
   const whereOptions = { where: { userId } };
 
   const reservationUpdated = await reserveRepository.updateReservation(attributes, whereOptions);
+  if (!reservationUpdated) {
+    throw new customError.NoContentError('예약 정보가 없습니다');
+  }
   return reservationUpdated;
 };
 
@@ -66,6 +69,9 @@ const updateReservation = async (reservationInfo, userId) => {
    */
 const deleteReservation = async (reservationId) => {
   const { isDeleted } = await reserveRepository.deleteReservation(reservationId);
+  if (!isDeleted) {
+    throw new customError.NoContentError('예약 정보가 없습니다');
+  }
 
   return { isDeleted };
 };

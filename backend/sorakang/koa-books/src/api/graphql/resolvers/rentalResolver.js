@@ -7,14 +7,14 @@ const rentalResolver = {
 
     book: async (parent, __args, _context) => {
       const { bookId: serialId } = parent;
-      const book = await service.gql.book.getBookBySerialId(serialId);
+      const book = await service.graphql.book.getBookBySerialId(serialId);
       return book;
     },
   },
 
   Query: {
     getAllRental: async (parent, { limit = 5, afterCursor }, _context) => {
-      const rentalList = await service.gql.rental.getAllRental({ limit, afterCursor });
+      const rentalList = await service.graphql.rental.getAllRental({ limit, afterCursor });
       return rentalList;
     },
 
@@ -28,43 +28,27 @@ const rentalResolver = {
 
   Mutation: {
     createRental: async (parent, { rentalInfo }, context) => {
-      try {
-        const { bookSerialId } = rentalInfo;
-        const userId = context.code === 'ADMIN' ? rentalInfo.userId : context.user.id;
+      const { bookSerialId } = rentalInfo;
+      const userId = context.code === 'ADMIN' ? rentalInfo.userId : context.user.id;
 
-        const { rentInfo, isCreated } = await service.gql.rental.createRental({ userId, bookSerialId });
+      const { rentInfo } = await service.graphql.rental.createRental({ userId, bookSerialId });
 
-        // 이런 것도 validation 이겠지? 어디서 해줄지 다음 pr에서 고민
-        if (isCreated) {
-          return { message: 'Successfully created', data: rentInfo };
-        }
-        return { message: 'Already reserved', data: rentInfo };
-      } catch (error) {
-        throw Error(error);
-      }
+      return { message: 'Successfully created', data: rentInfo };
     },
 
     extendRentDate: async (parent, { rentalInfo }, _context) => {
-      try {
-        const { rentalId, bookSerialId } = rentalInfo;
-        const { updatedCount } = await service.rental.extendRentDate(bookSerialId, rentalId);
-        if (!updatedCount) {
-          return { message: 'Extend failed' };
-        }
-        return { message: 'Successfully Extended' };
-      } catch (error) {
-        throw Error(error);
+      const { rentalId, bookSerialId } = rentalInfo;
+      const { updatedCount } = await service.rental.extendRentDate(bookSerialId, rentalId);
+      if (!updatedCount) {
+        return { message: 'Extend failed' };
       }
+      return { message: 'Successfully Extended' };
     },
 
     returnRentalBook: async (parent, { input }, _context) => {
-      try {
-        const { rentalId, bookSerialId } = input;
-        const { rentalUpdatedCount, rentHistory } = await service.gql.rental.returnRentalBook({ rentalId, bookSerialId });
-        return { data: rentHistory.dataValues, message: { message: 'Successfully returned' } };
-      } catch (error) {
-        throw Error(error);
-      }
+      const { rentalId, bookSerialId } = input;
+      const { rentalUpdatedCount, rentHistory } = await service.graphql.rental.returnRentalBook({ rentalId, bookSerialId });
+      return { data: rentHistory.dataValues, message: { message: 'Successfully returned' } };
     },
   },
 };

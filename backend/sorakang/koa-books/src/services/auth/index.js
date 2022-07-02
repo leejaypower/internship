@@ -1,20 +1,22 @@
 const { verify } = require('jsonwebtoken');
 const { authRepository } = require('../../repositories');
-const { authUtils } = require('../../libs');
+const { authUtils, errorHandler } = require('../../libs');
+
+const { UnauthenticatedError } = errorHandler.customError;
 
 const getAccessToken = async (rToken) => {
   // decode rToken
   const decode = verify(rToken, process.env.REFRESH_SECRET_KEY);
 
   if (!decode) {
-    throw Error('invalid refresh token, please log in again');
+    throw new UnauthenticatedError('다시 로그인 해주세요');
   }
 
   // check userId is valid
   const { iat } = await authRepository.verifyAuth(decode.userId);
 
-  if (iat !== decode.iat) {
-    throw new Error('invalid refresh token, please log in again');
+  if (!iat || iat !== decode.iat) {
+    throw new UnauthenticatedError('다시 로그인 해주세요');
   }
 
   const payload = { ...decode };

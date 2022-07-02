@@ -6,23 +6,14 @@ const service = require('../../../services');
  * query : userId and bookId
  */
 const getAllReservation = async (ctx) => {
-  try {
-    const input = ctx.request.query;
+  const input = ctx.request.query;
 
-    if (!input.userId && !input.bookId) {
-      ctx.throw(400, 'Bad Request : Invalid query');
-    }
-    const { reserveList } = await service.reservation.getAllReservation(input);
-
-    if (reserveList?.length !== 0) { // reservation 이 undefined가 아니고 reservation이 빈 배열이 아닌 경우
-      ctx.body = { message: 'Not found : reservation does not exist' };
-      ctx.throw(404, 'Not found : reservation does not exist');
-    }
-
-    ctx.body = { data: reserveList };
-  } catch (err) {
-    console.error(err);
+  if (!input.userId && !input.bookId) {
+    ctx.throw(400, 'Bad Request : Invalid query');
   }
+  const { reserveList } = await service.reservation.getAllReservation(input);
+
+  ctx.body = { data: reserveList };
 };
 
 /**
@@ -32,23 +23,15 @@ const getAllReservation = async (ctx) => {
  */
 // bookSerial이 아닌 bookID를 참조해야 한다. 늦게 발견..추후 수정..ㅜ
 const createReservation = async (ctx) => {
-  try {
-    const { userId, bookId } = ctx.request.body;
+  const { userId, bookId } = ctx.request.body;
 
-    if (!userId || !bookId) {
-      ctx.throw(400, 'Bad Request : Invalid body');
-    }
-    const { reservationInfo, isReserved } = await service.reservation.createReservation(userId, bookId);
-
-    if (!isReserved) {
-      ctx.throw(409, 'This book is already been reserved');
-    }
-
-    ctx.status = 201;
-    ctx.body = { data: reservationInfo };
-  } catch (err) {
-    console.error(err);
+  if (!userId || !bookId) {
+    ctx.throw(400, 'Bad Request : Invalid body');
   }
+  const { reservationInfo } = await service.reservation.createReservation(userId, bookId);
+
+  ctx.status = 201;
+  ctx.body = { data: reservationInfo };
 };
 
 /**
@@ -58,11 +41,7 @@ const createReservation = async (ctx) => {
  * 아직 예약 정보를 업데이트 해야하는 경우가 없으므로 아직 구현하지 않았습니다.
  */
 const updateReservation = async (ctx) => {
-  try {
 
-  } catch (err) {
-    console.error(err);
-  }
 };
 
 /**
@@ -71,14 +50,10 @@ const updateReservation = async (ctx) => {
  * params : bookId, userId
  */
 const deleteReservation = async (ctx) => {
-  try {
-    const { reservationId } = ctx.params;
-    const { isDeleted } = await service.reservation.deleteReservation(reservationId);
+  const { reservationId } = ctx.params;
+  const { isDeleted } = await service.reservation.deleteReservation(reservationId);
 
-    ctx.body = { message: 'successfully deleted' };
-  } catch (err) {
-    console.error(err);
-  }
+  ctx.body = { message: 'successfully deleted' };
 };
 
 module.exports = {

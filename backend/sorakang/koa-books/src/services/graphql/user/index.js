@@ -1,44 +1,49 @@
 const bcrypt = require('bcrypt');
 const { UserInputError } = require('apollo-server-koa');
-const { userRepository } = require('../../../repositories');
+const { userRepository, loginInfoRepository } = require('../../../repositories');
 const { commonUtils, authUtils } = require('../../../libs');
 const { Sequelize } = require('../../../database/models');
+const { customError } = require('../../../libs').errorHandler;
 
 const { Op } = Sequelize;
 
 const getAllUser = async ({ first, after }) => {
-  // 전체적으로 아래와 같이 쿼리 option을 service에서 구축 예정입니다.
   const whereOptions = {};
-
   if (after) {
     whereOptions.createdAt = { [Op.gt]: commonUtils.decodeCursor(after) };
   }
 
   const order = [['createdAt', 'ASC']];
-  const { rows, count } = await userRepository.user.findAndCountAll(first, whereOptions, order);
+  const { rows, count } = await userRepository.findAndCountAll(first, whereOptions, order);
+  if (!rows?.length) {
+    throw new customError.NoContentError('사용자가 존재하지 않습니다');
+  }
+
   return { rows, count };
 };
 
 const signIn = async ({ input }) => {
-  const { user } = await userRepository.user.findByEmail(input.email);
+  // User 유무 확인
+  const { user } = await userRepository.findByEmail(input.email);
   if (!user) {
-    throw new UserInputError('User does not exist');
+    throw new customError.NoContentError('사용자가 존재하지 않습니다');
   }
-
   const { id: userId, password, groupName } = user.dataValues;
 
+  // 비밀번호 유효성확인
   const isValidPassword = bcrypt.compareSync(input.password, password);
   if (!isValidPassword) {
     throw new UserInputError('Wrong user password');
   }
 
-  const { isLogin } = await userRepository.loginInfo.getIsLogin(userId);
+  // 로그인 중복 확인
+  const { isLogin } = await loginInfoRepository.getIsLogin(userId);
 
   if (isLogin) {
-    return { message: 'already logged in' };
+    throw new customError.DataAlreadyExistsError('이미 로그인 되어있습니다');
   }
-  // GET TOKEN
 
+  // GET TOKEN
   const accessTokenExp = Number(process.env.ACCESS_EXP_DATE);
   const refreshTokenExp = Number(process.env.REFRESH_EXP_DATE);
 
@@ -48,11 +53,12 @@ const signIn = async ({ input }) => {
   const accessToken = authUtils.getToken({ userId, role }, process.env.ACCESS_SECRET_KEY, accessTokenExp);
   const refreshToken = authUtils.getToken({ userId, role, issuedAt }, process.env.REFRESH_SECRET_KEY, refreshTokenExp);
 
-  await userRepository.loginInfo.createIsLogin(userId, issuedAt);
+  await loginInfoRepository.createIsLogin(userId, issuedAt);
 
   return { accessToken, refreshToken };
 };
 
+// rest api와 병합하기 (다음 pr)
 const signOut = async (parent, { input }, context) => {
   try {
     const { userId } = input;
@@ -70,12 +76,16 @@ const updateUser = async ({ input, userId }) => {
     const { user } = await userRepository.user.findByEmail(input.email);
 
     if (user) {
-      throw new UserInputError('Email already exist');
+      throw new customError.DataAlreadyExistsError('존재하는 email 입니다');
     }
   }
 
   const { isUpdated } = await userRepository.user.updateUser(userId, input);
-  // update가 안되었을 경우 error처리하기
+
+  if (!isUpdated) {
+    throw new customError.NoContentError('사용자가 존재하지 않습니다');
+  }
+
   return { isUpdated };
 };
 

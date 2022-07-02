@@ -1,4 +1,3 @@
-const { ApolloError } = require('apollo-server-koa');
 const service = require('../../../services');
 const { bookSerialLoader } = require('../dataLoader');
 
@@ -18,7 +17,7 @@ const bookResolver = {
       const curCursor = new Date(Number(cursorArray[0]));
       const bookId = Number(cursorArray[1]);
 
-      const bookList = service.gql.book.getAllBooks(parent, { limit, curCursor, bookId }, context);
+      const bookList = service.graphql.book.getAllBooks(parent, { limit, curCursor, bookId }, context);
 
       return bookList;
     },
@@ -29,32 +28,28 @@ const bookResolver = {
     },
 
     getBookBySerialId: async (parent, { serialId }, _context) => {
-      const book = await service.gql.book.getBookBySerialId(serialId);
+      const book = await service.graphql.book.getBookBySerialId(serialId);
       return book;
     },
   },
 
   Mutation: {
     createBook: async (parent, { bookInfo }, _context) => {
-      const data = await service.gql.book.createBook(bookInfo);
+      const data = await service.book.createBook(bookInfo);
       return data;
     },
 
     updateBook: async (parent, { updateInfo }, _context) => {
       const { bookId, ...bookInfo } = updateInfo;
       // update된 정보 같이 return하도록 수정하기
-      const isUpdated = await service.book.updateBook(bookId, bookInfo);
+      await service.book.updateBook(bookId, bookInfo);
       return { message: 'Successfully updated' };
     },
 
     deleteBook: async (parent, { bookIdList }, _context) => {
-      const deletedCount = await service.gql.book.deleteBook(bookIdList);
-      if (!deletedCount) {
-        throw new ApolloError('Delete Rejected: Data does not exist');
-      }
+      await service.graphql.book.deleteBook(bookIdList);
       return { message: 'Successfully deleted' };
     },
-
   },
 };
 

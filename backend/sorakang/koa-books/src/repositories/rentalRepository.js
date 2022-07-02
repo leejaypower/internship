@@ -1,4 +1,3 @@
-const { Op } = require('sequelize');
 const { sequelize } = require('../database/models');
 const { Rental, RentalHistory } = require('../database/models');
 
@@ -6,19 +5,10 @@ const { Rental, RentalHistory } = require('../database/models');
  * 모든 대출 내역 조회
  */
 const getAllRental = async () => {
-  try {
-    const rentalList = await Rental.findAll({
-      raw: true,
-    });
-
-    if (!rentalList) {
-      throw new Error('Data not Found');
-    }
-
-    return { rentalList };
-  } catch (err) {
-    throw new Error(err);
-  }
+  const rentalList = await Rental.findAll({
+    raw: true,
+  });
+  return { rentalList };
 };
 
 /**
@@ -32,10 +22,6 @@ const getRentalInfo = async (input) => {
     returning: ['*'],
   });
 
-  if (!rentalList.length) {
-    throw new Error('Data not Found');
-  }
-
   return { rentalList };
 };
 
@@ -46,10 +32,6 @@ const getRentalInfo = async (input) => {
  */
 const getSingleRental = async (rentalId) => {
   const rental = await Rental.findByPk(rentalId, { raw: true });
-
-  if (!rental) {
-    throw new Error('Data not Found');
-  }
 
   return { rental };
 };
@@ -62,26 +44,21 @@ const getSingleRental = async (rentalId) => {
  * returnDate : 반납일자
  */
 const createRental = async (userId, bookId, returnDate) => {
-  try {
-    const input = {
-      rentalDate: new Date(),
-      returnDate,
-      state: true,
-      overdue: null,
-      userId,
-      bookId,
-      isExtend: 1,
-    };
+  const input = {
+    rentalDate: new Date(),
+    returnDate,
+    state: true,
+    overdue: null,
+    userId,
+    bookId,
+    isExtend: 1,
+  };
 
-    const [rental, isCreated] = await Rental.findOrCreate({
-      where: { bookId },
-      defaults: { ...input },
-    });
-    return { rental, isCreated };
-  } catch (err) {
-    console.log(err);
-    throw new Error(err);
-  }
+  const [rental, isCreated] = await Rental.findOrCreate({
+    where: { bookId },
+    defaults: { ...input },
+  });
+  return { rental, isCreated };
 };
 
 /**
@@ -92,16 +69,11 @@ const createRental = async (userId, bookId, returnDate) => {
  * extDay : 연장일
  */
 const extendRentDate = async (rentalId, extDate) => {
-  try {
-    const updatedCount = await Rental.update(
-      { returnDate: extDate, isExtend: 0 },
-      { where: { id: rentalId } },
-    );
-    return { updatedCount };
-  } catch (err) {
-    console.log(err);
-    throw new Error(err);
-  }
+  const updatedCount = await Rental.update(
+    { returnDate: extDate, isExtend: 0 },
+    { where: { id: rentalId } },
+  );
+  return { updatedCount };
 };
 
 /**
@@ -119,6 +91,24 @@ const returnRental = async (bookId, rentHistoryInfo) => {
   return { isDeleted, rentHistory };
 };
 
+// const updateRental = async (attributes, whereOptions) => {
+//   const result = await sequelize.transaction(async (t) => {
+//     const rentalUpdatedCount = await Rental.update(attributes, whereOptions, { transaction: t });
+
+//     const { rental } = await getSingleRental(whereOptions.where.id);
+
+//     const {
+//       userId, returnDate, rentalDate, overdue,
+//     } = rental;
+
+//     const rentHistory = await RentalHistory.create({
+//       userId, returnDate, rentalDate, overdue,
+//     }, { transaction: t });
+
+//     return { rentalUpdatedCount, rentHistory };
+//   });
+//   return result;
+// };
 // 임시
 const returnRentalKafka = async (bookId) => {
   const t = await sequelize.transaction();
