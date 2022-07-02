@@ -11,11 +11,19 @@ const getAll = async () => {
 };
 
 const getAllByIds = async (ids) => {
+  if (!Array.isArray(ids)) {
+    throw new CustomError(ERROR_CODE.INTERNAL_SERVER_ERROR);
+  }
+
   const bookInfoList = await bookInfoQuery.getAllByIds(ids);
   return bookInfoList;
 };
 
 const getById = async (id) => {
+  if (!id) {
+    throw new CustomError(ERROR_CODE.INTERNAL_SERVER_ERROR);
+  }
+
   const bookInfo = await bookInfoQuery.getOneById(id);
 
   if (!bookInfo) {
@@ -30,6 +38,10 @@ const createBookInfo = async (body) => {
     categoryId,
   } = body;
 
+  if (!categoryId) {
+    throw new CustomError(ERROR_CODE.REQUIRED_INPUT_NULL);
+  }
+
   // NOTE: 사전에 정의된 카테고리가 아닌 경우, 도서정보를 생성할 수 없기에 카테고리 DB를 확인
   const bookCategory = await bookCategoryQuery.getOneById(categoryId);
 
@@ -41,6 +53,10 @@ const createBookInfo = async (body) => {
 };
 
 const updateBookInfo = async (id, body) => {
+  if (!id || typeof body !== 'object') {
+    throw new CustomError(ERROR_CODE.INTERNAL_SERVER_ERROR);
+  }
+
   const { categoryId } = body;
 
   if (categoryId) {
@@ -55,6 +71,10 @@ const updateBookInfo = async (id, body) => {
 };
 
 const deleteBookInfo = async (id) => {
+  if (!id) {
+    throw new CustomError(ERROR_CODE.INTERNAL_SERVER_ERROR);
+  }
+
   const deleteTestResult = await bookInfoQuery.getOneById(id);
 
   if (!deleteTestResult) {

@@ -40,6 +40,7 @@ const httpStatusCodeErrorMapping = {
 
   // Unexpected Error
   INTERNAL_SERVER_ERROR: 500,
+  DB_TRANSACTION_ERROR: 500,
 };
 
 const messageErrorMapping = {
@@ -76,6 +77,7 @@ const messageErrorMapping = {
 
   // Unexpected Error
   INTERNAL_SERVER_ERROR: '서버에 에러가 발생했습니다',
+  DB_TRANSACTION_ERROR: 'DB 트랜잭션 과정에서 에러가 발생했습니다',
 };
 
 module.exports = {

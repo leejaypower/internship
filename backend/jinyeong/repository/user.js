@@ -1,4 +1,8 @@
 const { User } = require('../db');
+const { util, constants } = require('../common');
+
+const { errorHandler } = util;
+const { ERROR_CODE } = constants;
 
 const getListAll = async () => {
   const userInfoList = await User.findAll({
@@ -11,6 +15,10 @@ const getListAll = async () => {
 };
 
 const getAllByIds = async (ids) => {
+  if (!Array.isArray(ids)) {
+    throw new errorHandler.CustomError(ERROR_CODE.INTERNAL_SERVER_ERROR);
+  }
+
   const userInfoList = await User.findAll({
     where: { id: ids },
     attributes: { exclude: ['password', 'contact'] },
@@ -22,6 +30,10 @@ const getAllByIds = async (ids) => {
 };
 
 const getOneById = async (id) => {
+  if (!id) {
+    throw new errorHandler.CustomError(ERROR_CODE.INTERNAL_SERVER_ERROR);
+  }
+
   const userInfo = await User.findOne({
     where: { id },
     attributes: { exclude: ['password'] },
@@ -30,6 +42,10 @@ const getOneById = async (id) => {
 };
 
 const getOneByInputData = async (inputData) => {
+  if (typeof inputData !== 'object') {
+    throw new errorHandler.CustomError(ERROR_CODE.INTERNAL_SERVER_ERROR);
+  }
+
   const userInfo = await User.findOne({
     where: inputData,
     paranoid: false,
@@ -38,11 +54,19 @@ const getOneByInputData = async (inputData) => {
 };
 
 const createUser = async (inputData) => {
+  if (typeof inputData !== 'object') {
+    throw new errorHandler.CustomError(ERROR_CODE.INTERNAL_SERVER_ERROR);
+  }
+
   const createdUserInfo = await User.create(inputData);
   return createdUserInfo?.dataValues;
 };
 
 const deleteUser = async (id) => {
+  if (!id) {
+    throw new errorHandler.CustomError(ERROR_CODE.INTERNAL_SERVER_ERROR);
+  }
+
   await User.destroy({ where: { id } });
 };
 

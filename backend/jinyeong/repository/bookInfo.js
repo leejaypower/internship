@@ -1,4 +1,8 @@
 const { BookInfo } = require('../db');
+const { util, constants } = require('../common');
+
+const { errorHandler } = util;
+const { ERROR_CODE } = constants;
 
 const getListAll = async () => {
   const bookInfoList = await BookInfo.findAll();
@@ -21,6 +25,10 @@ const getListAll = async () => {
 
 // BookInfo SELECT ALL IN ARRAY
 const getAllByIds = async (ids) => {
+  if (!Array.isArray(ids)) {
+    throw new errorHandler.CustomError(ERROR_CODE.INTERNAL_SERVER_ERROR);
+  }
+
   const bookInfoList = await BookInfo.findAll({ where: { id: ids } });
 
   return bookInfoList.map((bookInfo) => {
@@ -29,20 +37,35 @@ const getAllByIds = async (ids) => {
 };
 
 const getOneById = async (id) => {
+  if (!id) {
+    throw new errorHandler.CustomError(ERROR_CODE.INTERNAL_SERVER_ERROR);
+  }
+
   const bookInfo = await BookInfo.findOne({ where: { id } });
   return bookInfo?.dataValues;
 };
 
 const createBookInfo = async (inputData) => {
+  if (typeof inputData !== 'object') {
+    throw new errorHandler.CustomError(ERROR_CODE.INTERNAL_SERVER_ERROR);
+  }
+
   await BookInfo.create(inputData);
 };
 
 const updateBookInfo = async (id, inputData) => {
+  if (!id || typeof inputData !== 'object') {
+    throw new errorHandler.CustomError(ERROR_CODE.INTERNAL_SERVER_ERROR);
+  }
+
   await BookInfo.update(inputData, { where: { id } });
 };
 
 const deleteBookInfo = async (id) => {
-  // TODO: 누가, 언제 지웠는지 로그 쌓을 수 있도록 구현하기
+  if (!id) {
+    throw new errorHandler.CustomError(ERROR_CODE.INTERNAL_SERVER_ERROR);
+  }
+
   await BookInfo.destroy({ where: { id } });
 };
 

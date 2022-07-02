@@ -17,6 +17,10 @@ const signUp = async (body) => {
   */
   const { email, password, secretCode } = body;
 
+  if (!email || !password || !secretCode) {
+    throw new errorHandler.CustomError(ERROR_CODE.REQUIRED_INPUT_NULL);
+  }
+
   // 시크릿코드 일치여부 확인
   if (secretCode !== process.env.SECRET_CODE) {
     throw new CustomError(ERROR_CODE.INVALID_ADMIN_SECRET_CODE);
@@ -50,6 +54,10 @@ const logIn = async (body) => {
   */
   const { email, password } = body;
 
+  if (!email || !password) {
+    throw new errorHandler.CustomError(ERROR_CODE.REQUIRED_INPUT_NULL);
+  }
+
   const adminInfo = await adminQuery.getOneByInputData({ email });
 
   if (!adminInfo) {
@@ -82,6 +90,10 @@ const logIn = async (body) => {
 
 // 관리자계정 정보조회 by adminId
 const getOneByAdminId = async (adminId) => {
+  if (!adminId) {
+    throw new errorHandler.CustomError(ERROR_CODE.INTERNAL_SERVER_ERROR);
+  }
+
   const adminInfo = await adminQuery.getOneByInputData({ id: adminId });
   return adminInfo;
 };

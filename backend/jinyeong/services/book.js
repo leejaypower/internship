@@ -10,11 +10,19 @@ const getAll = async () => {
 };
 
 const getAllByIds = async (ids) => {
+  if (!Array.isArray(ids)) {
+    throw new CustomError(ERROR_CODE.INTERNAL_SERVER_ERROR);
+  }
+
   const bookList = await bookQuery.getAllByIds(ids);
   return bookList;
 };
 
 const getById = async (id) => {
+  if (!id) {
+    throw new CustomError(ERROR_CODE.INTERNAL_SERVER_ERROR);
+  }
+
   const book = await bookQuery.getOneById(id);
 
   if (!book) {
@@ -27,6 +35,10 @@ const getById = async (id) => {
 const createBook = async (body) => {
   const { bookInfoId } = body;
 
+  if (!bookInfoId) {
+    throw new CustomError(ERROR_CODE.REQUIRED_INPUT_NULL);
+  }
+
   const bookInfo = await bookInfoQuery.getOneById(bookInfoId);
 
   if (!bookInfo) {
@@ -38,6 +50,10 @@ const createBook = async (body) => {
 };
 
 const updateBook = async (id, body) => {
+  if (!id || typeof body !== 'object') {
+    throw new CustomError(ERROR_CODE.INTERNAL_SERVER_ERROR);
+  }
+
   const { bookInfoId } = body;
 
   const bookInfo = await bookInfoQuery.getOneById(bookInfoId);
@@ -50,6 +66,10 @@ const updateBook = async (id, body) => {
 };
 
 const deleteBook = async (id) => {
+  if (!id) {
+    throw new CustomError(ERROR_CODE.INTERNAL_SERVER_ERROR);
+  }
+
   const deleteTestResult = await bookQuery.getOneById(id);
 
   if (!deleteTestResult) {

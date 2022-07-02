@@ -10,11 +10,19 @@ const getAll = async () => {
 };
 
 const getAllByIds = async (ids) => {
+  if (!Array.isArray(ids)) {
+    throw new CustomError(ERROR_CODE.INTERNAL_SERVER_ERROR);
+  }
+
   const bookInfoList = await bookCategoryQuery.getAllByIds(ids);
   return bookInfoList;
 };
 
 const getById = async (id) => {
+  if (!id) {
+    throw new CustomError(ERROR_CODE.INTERNAL_SERVER_ERROR);
+  }
+
   const bookCategory = await bookCategoryQuery.getOneById(id);
 
   if (!bookCategory) {
@@ -30,6 +38,10 @@ const createBookCategory = async (body) => {
     name,
   } = body;
 
+  if (!koreanDecimalClassificationCode || !name) {
+    throw new CustomError(ERROR_CODE.REQUIRED_INPUT_NULL);
+  }
+
   await bookCategoryQuery.createBookCategory({
     koreanDecimalClassificationCode,
     name,
@@ -37,6 +49,10 @@ const createBookCategory = async (body) => {
 };
 
 const deleteBookCategory = async (id) => {
+  if (!id) {
+    throw new CustomError(ERROR_CODE.INTERNAL_SERVER_ERROR);
+  }
+
   const deleteTestResult = await bookCategoryQuery.getOneById(id);
 
   if (!deleteTestResult) {

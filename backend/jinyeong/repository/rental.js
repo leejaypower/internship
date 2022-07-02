@@ -1,4 +1,9 @@
 const { Op } = require('sequelize');
+const { util, constants } = require('../common');
+
+const { errorHandler } = util;
+const { ERROR_CODE } = constants;
+
 const {
   Rental,
   User,
@@ -16,15 +21,14 @@ const getListAll = async () => {
   });
 };
 
-const getOneById = async (id) => {
-  const rentalInfo = await Rental.findOne({ where: { id } });
-  return rentalInfo?.dataValues;
-};
-
+// Rental 입력된 조건에 따라 데이터 조회
 const getListByInputData = async (inputData) => {
+  if (typeof inputData !== 'object') {
+    throw new errorHandler.CustomError(ERROR_CODE.INTERNAL_SERVER_ERROR);
+  }
+
   const rentalList = await Rental.findAll({
     where: inputData,
-    order: [['createdAt', 'DESC']],
   });
 
   return rentalList.map((rental) => {
@@ -32,11 +36,28 @@ const getListByInputData = async (inputData) => {
   });
 };
 
+const getOneById = async (id) => {
+  if (!id) {
+    throw new errorHandler.CustomError(ERROR_CODE.INTERNAL_SERVER_ERROR);
+  }
+
+  const rentalInfo = await Rental.findOne({ where: { id } });
+  return rentalInfo?.dataValues;
+};
+
 const createRental = async (inputData) => {
+  if (typeof inputData !== 'object') {
+    throw new errorHandler.CustomError(ERROR_CODE.INTERNAL_SERVER_ERROR);
+  }
+
   await Rental.create(inputData);
 };
 
 const updateRental = async (id, inputData) => {
+  if (!id || typeof inputData !== 'object') {
+    throw new errorHandler.CustomError(ERROR_CODE.INTERNAL_SERVER_ERROR);
+  }
+
   await Rental.update(inputData, { where: { id } });
 };
 

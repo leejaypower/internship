@@ -17,11 +17,19 @@ const getAll = async () => {
 };
 
 const getById = async (id) => {
+  if (!id) {
+    throw new CustomError(ERROR_CODE.INTERNAL_SERVER_ERROR);
+  }
+
   const rentalInfo = await rentalQuery.getOneById(id);
   return rentalInfo;
 };
 
 const searchByQuery = async (query) => {
+  if (typeof query !== 'object') {
+    throw new CustomError(ERROR_CODE.INTERNAL_SERVER_ERROR);
+  }
+
   const rentalList = await rentalQuery.getListByInputData(query);
   return rentalList;
 };
@@ -29,6 +37,10 @@ const searchByQuery = async (query) => {
 // 대기상태의 도서 대출로직
 const rentalOnWaitingBook = async (body) => {
   const { userId, bookId } = body;
+
+  if (!userId || !bookId) {
+    throw new CustomError(ERROR_CODE.REQUIRED_INPUT_NULL);
+  }
 
   const now = new Date();
   const dueDate = new Date().setDate(now.getDate() + 14); // 반납예정일(대여일로부터 14일)
@@ -50,16 +62,23 @@ const rentalOnWaitingBook = async (body) => {
   if (book.state !== BOOK_STATE.WAITING) {
     throw new CustomError(ERROR_CODE.NOT_AVAILABLE_REQUEST, '대기상태의 도서만 대출요청할 수 있습니다');
   }
-
-  await sequelize.transaction(async () => {
-    await rentalQuery.createRental({ userId, bookId, dueDate });
-    await bookQuery.updateBook(bookId, { state: BOOK_STATE.RENTALED });
-  });
+  try {
+    await sequelize.transaction(async () => {
+      await rentalQuery.createRental({ userId, bookId, dueDate });
+      await bookQuery.updateBook(bookId, { state: BOOK_STATE.RENTALED });
+    });
+  } catch (err) {
+    throw new CustomError(ERROR_CODE.DB_TRANSACTION_ERROR);
+  }
 };
 
 // 예약상태의 도서 대출로직
 const rentalOnReservatedBook = async (body) => {
   const { userId, bookId } = body;
+
+  if (!userId || !bookId) {
+    throw new CustomError(ERROR_CODE.REQUIRED_INPUT_NULL);
+  }
 
   const now = new Date();
   const dueDate = new Date().setDate(now.getDate() + 14); // 반납예정일(대여일로부터 14일)
@@ -111,22 +130,30 @@ const rentalOnReservatedBook = async (body) => {
     throw new CustomError(ERROR_CODE.NOT_ALLOWED_OTHERS, '예약 당사자가 아닙니다');
   }
 
-  await sequelize.transaction(async () => {
-    await rentalQuery.createRental({ userId, bookId, dueDate });
+  try {
+    await sequelize.transaction(async () => {
+      await rentalQuery.createRental({ userId, bookId, dueDate });
 
-    if (!isOtherWaitingExist) {
-      await bookQuery.updateBook(bookId, { state: BOOK_STATE.RENTALED });
-    }
+      if (!isOtherWaitingExist) {
+        await bookQuery.updateBook(bookId, { state: BOOK_STATE.RENTALED });
+      }
 
-    await reservationQuery.updateReservation(
-      firstWaitingReservationInfo.id,
-      { state: RESERVATION_STATE.ACTIVATED },
-    );
-  });
+      await reservationQuery.updateReservation(
+        firstWaitingReservationInfo.id,
+        { state: RESERVATION_STATE.ACTIVATED },
+      );
+    });
+  } catch (err) {
+    throw new CustomError(ERROR_CODE.DB_TRANSACTION_ERROR);
+  }
 };
 
 // 도서 반납 요청
 const checkInByBookId = async (bookId) => {
+  if (!bookId) {
+    throw new CustomError(ERROR_CODE.REQUIRED_INPUT_NULL);
+  }
+
   const now = new Date();
 
   const rentalInfoList = await rentalQuery.getListByInputData({ bookId });
@@ -167,22 +194,29 @@ const checkInByBookId = async (bookId) => {
   // 1. 해당 대출이력의 returnDate를 수정한다.
   // 2. 해당 도서의 예약자를 조회 후 예약자가 더 없는 경우에만 '대기'상태로 변경.
 
-  await sequelize.transaction(async () => {
-    // 해당 대출이력의 도서반납일 수정
-    await rentalQuery.updateRental(rentalInfo.id, { returnDate: now });
+  try {
+    await sequelize.transaction(async () => {
+      // 해당 대출이력의 도서반납일 수정
+      await rentalQuery.updateRental(rentalInfo.id, { returnDate: now });
 
-    // 대기중인 예약이력이 있는지 여부
-    const isWaitingExist = waitingReservationInfoList.length !== 0;
+      // 대기중인 예약이력이 있는지 여부
+      const isWaitingExist = waitingReservationInfoList.length !== 0;
 
-    // 예약 대기자가 없는 경우에만 도서 상태를 '대기'로 변경
-    if (!isWaitingExist) {
-      await bookQuery.updateBook(bookId, { state: BOOK_STATE.WAITING });
-    }
-  });
+      // 예약 대기자가 없는 경우에만 도서 상태를 '대기'로 변경
+      if (!isWaitingExist) {
+        await bookQuery.updateBook(bookId, { state: BOOK_STATE.WAITING });
+      }
+    });
+  } catch (err) {
+    throw new CustomError(ERROR_CODE.DB_TRANSACTION_ERROR);
+  }
 };
 
 // 대출도서 연장요청
 const extendRentalPeriodByBookId = async (bookId) => {
+  if (!bookId) {
+    throw new CustomError(ERROR_CODE.REQUIRED_INPUT_NULL);
+  }
   /*
     NOTE: 도서대출 연장정책
     - 현재 대출중인 도서만 요청 가능(반납된 도서에 대출을 연장할 수는 없음)

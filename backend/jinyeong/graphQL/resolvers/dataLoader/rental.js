@@ -1,8 +1,16 @@
 const DataLoader = require('dataloader');
 const { rentalService } = require('../../../services');
+const { util, constants } = require('../../../common');
+
+const { errorHandler } = util;
+const { ERROR_CODE } = constants;
 
 // 유저별 도서대출이력 조회에 필요한 Batch Function
 const batchGetRentalsByUserIds = async (userIds) => {
+  if (!Array.isArray(userIds)) {
+    throw new errorHandler.CustomError(ERROR_CODE.INTERNAL_SERVER_ERROR);
+  }
+
   const rentalList = await rentalService.searchByQuery({ userId: userIds });
 
   const mappedList = userIds.map((userId) => {

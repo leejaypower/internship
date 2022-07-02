@@ -1,7 +1,15 @@
 const DataLoader = require('dataloader');
 const { bookCategoryService } = require('../../../services');
+const { util, constants } = require('../../../common');
+
+const { errorHandler } = util;
+const { ERROR_CODE } = constants;
 
 const batchGetBookCategory = async (bookCategoryIds) => {
+  if (!Array.isArray(bookCategoryIds)) {
+    throw new errorHandler.CustomError(ERROR_CODE.INTERNAL_SERVER_ERROR);
+  }
+
   const bookCategoryList = await bookCategoryService.getAllByIds(bookCategoryIds);
 
   const mappedList = bookCategoryIds.map((bookCategoryId) => {

@@ -14,6 +14,10 @@ const signUp = async (body) => {
     password,
   } = body;
 
+  if (!name || !contact || !email || !password) {
+    throw new CustomError(ERROR_CODE.REQUIRED_INPUT_NULL);
+  }
+
   const userInfo = await userQuery.getOneByInputData({ email });
 
   if (userInfo) {
@@ -37,6 +41,10 @@ const signUp = async (body) => {
 const logIn = async (body) => {
   // TODO: 만약 관리자와 일반유저의 액세스토큰 유효기간을 분리하여 발급한다면?
   const { email, password } = body;
+
+  if (!email || !password) {
+    throw new CustomError(ERROR_CODE.REQUIRED_INPUT_NULL);
+  }
 
   const userInfo = await userQuery.getOneByInputData({ email });
 
@@ -65,11 +73,19 @@ const getAll = async () => {
 };
 
 const getAllByIds = async (ids) => {
+  if (!Array.isArray(ids)) {
+    throw new CustomError(ERROR_CODE.INTERNAL_SERVER_ERROR);
+  }
+
   const userInfoList = await userQuery.getAllByIds(ids);
   return userInfoList;
 };
 
 const getById = async (userId) => {
+  if (!userId) {
+    throw new CustomError(ERROR_CODE.INTERNAL_SERVER_ERROR);
+  }
+
   const userInfo = await userQuery.getOneById(userId);
 
   if (!userInfo) {
@@ -83,16 +99,28 @@ const getById = async (userId) => {
 };
 
 const getOneByInputData = async (inputData) => {
+  if (typeof inputData !== 'object') {
+    throw new CustomError(ERROR_CODE.INTERNAL_SERVER_ERROR);
+  }
+
   const userInfo = await userQuery.getOneByInputData(inputData);
   return userInfo;
 };
 
 const getMypage = async (userId) => {
+  if (!userId) {
+    throw new CustomError(ERROR_CODE.INTERNAL_SERVER_ERROR);
+  }
+
   const userInfo = await userQuery.getOneById(userId);
   return userInfo;
 };
 
 const deleteMyAccount = async (userId) => {
+  if (!userId) {
+    throw new CustomError(ERROR_CODE.INTERNAL_SERVER_ERROR);
+  }
+
   await userQuery.deleteUser(userId);
 };
 
