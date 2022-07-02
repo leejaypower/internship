@@ -29,6 +29,11 @@ export default {
   },
   actions: {
     handleUnpredictableError({ commit, dispatch }, errorInfo) {
+      if (!errorInfo) {
+        dispatch('alertStore/setAlertInfo', { type: 'error', message: '알 수 없는 에러가 발생하여 처리할 수 없습니다.' }, { root: true })
+        return
+      }
+
       if (errorInfo.level < ERROR_LEVEL.FATAL) {
         dispatch('alertStore/setAlertInfo', { type: 'error', message: errorInfo.message }, { root: true })
         return
@@ -38,11 +43,17 @@ export default {
     },
 
     handlePredictableError({ commit, dispatch }, errorInfo) {
+      if (!errorInfo) {
+        dispatch('alertStore/setAlertInfo', { type: 'error', message: '알 수 없는 에러가 발생하여 처리할 수 없습니다.' }, { root: true })
+        return
+      }
+
       const errorDesc = createErrorDesc(errorInfo)
       if (errorDesc.level < ERROR_LEVEL.FATAL) {
         dispatch('alertStore/setAlertInfo', { type: 'error', message: errorDesc.message }, { root: true })
         return
       }
+      dispatch('alertStore/setAlertInfo', { type: 'error', message: '예상치 못한 에러가 발생했습니다.' }, { root: true })
       commit('ADD_ERROR', errorDesc)
       collectLog(errorDesc)
     },

@@ -2,6 +2,11 @@ import axios from '@/util/api/fakeAxios'
 import jwtDecode from 'jwt-decode'
 
 async function tryLogin(loginUser) {
+  if (!loginUser.id || !loginUser.password) {
+    const error = new Error('로그인을 시도할 정보가 없습니다.')
+    const errorObj = { error, errorCode: 500 }
+    throw errorObj
+  }
   const loginResult = await axios.post('/login', loginUser)
   return loginResult
 }

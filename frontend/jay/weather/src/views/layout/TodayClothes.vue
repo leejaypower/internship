@@ -89,6 +89,7 @@ img{
 
 .wrapper{
   padding: 14px;
+  margin: auto;
 }
 
 .clothes{

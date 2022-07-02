@@ -26,6 +26,13 @@ export default {
        * @property {string} name, id - accesstoken이 유효한 경우
        */
         const response = await tryLogin(loginData)
+
+        if (!response.message) {
+          const error = new Error('서버 응답에 문제가 발생하여 로그인을 처리할 수 없습니다. 새로고침 후 다시 시도해주세요.')
+          const errorObj = { error, errorCode: 500 }
+          throw errorObj
+        }
+
         if (response.message === 'ISSUE_VALID_FAKE_TOKEN') {
           const { name, id } = response.data.testRefreshToken
           dispatch('userStore/setUserInfo', { name, id }, { root: true })
@@ -74,6 +81,13 @@ export default {
         * @property {object} testAccessToken - testRefreshToken이 유효한 경우 testAccessToken 재발급
         */
         const response = await refreshLogin()
+
+        if (!response.message) {
+          const error = new Error('서버 응답에 문제가 발생하여 로그인을 처리할 수 없습니다. 새로고침 후 다시 시도해주세요.')
+          const errorObj = { error, errorCode: 500 }
+          throw errorObj
+        }
+
         if (response.message === 'VALID_FAKE_REFRESH_TOKEN') {
           const { name, id } = response.data
           localStorage.setItem('testAccessToken', JSON.stringify(response.data))

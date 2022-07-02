@@ -44,10 +44,18 @@ export default {
     async checkUserId({ dispatch }, userId) {
       try {
         const response = await checkUserId(userId)
+
+        if (response === userId) {
+          const error = new Error('서버 응답에 문제가 발생하여 중복검사를 처리할 수 없습니다.')
+          const errorObj = { error, errorCode: 500 }
+          throw errorObj
+        }
+
         dispatch('alertStore/setAlertInfo', {
           type: 'success',
           message: '사용 가능한 아이디입니다.',
         }, { root: true })
+
         return response
       } catch (error) {
         dispatch('errorStore/handlePredictableError', error, { root: true })
@@ -57,10 +65,18 @@ export default {
     async registerUser({ dispatch }, newUser) {
       try {
         const response = await tryRegister(newUser)
+
+        if (response !== newUser) {
+          const error = new Error('서버 응답에 문제가 발생하여 회원가입을 처리할 수 없습니다.')
+          const errorObj = { error, errorCode: 500 }
+          throw errorObj
+        }
+
         dispatch('alertStore/setAlertInfo', {
           type: 'success',
           message: '회원가입이 정상적으로 완료되었습니다!',
         }, { root: true })
+
         return response
       } catch (error) {
         dispatch('errorStore/handlePredictableError', error, { root: true })
@@ -70,6 +86,13 @@ export default {
     async checkPassword({ dispatch }, checkData) {
       try {
         const response = await matchPassword(checkData)
+
+        if (response !== checkData.id) {
+          const error = new Error('서버 응답에 문제가 발생하여 비밀번호 확인을 처리할 수 없습니다.')
+          const errorObj = { error, errorCode: 500 }
+          throw errorObj
+        }
+
         return response
       } catch (error) {
         dispatch('errorStore/handlePredictableError', error, { root: true })
@@ -79,10 +102,18 @@ export default {
     async modifyPassword({ dispatch }, modifyData) {
       try {
         const response = await modifyPassword(modifyData)
+
+        if (response !== modifyData.id) {
+          const error = new Error('서버 응답에 문제가 발생하여 비밀번호 변경을 처리할 수 없습니다.')
+          const errorObj = { error, errorCode: 500 }
+          throw errorObj
+        }
+
         dispatch('alertStore/setAlertInfo', {
           type: 'success',
           message: '비밀번호 변경이 정상적으로 완료되었습니다!',
         }, { root: true })
+
         return response
       } catch (error) {
         dispatch('errorStore/handlePredictableError', error, { root: true })

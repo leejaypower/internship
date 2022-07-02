@@ -47,14 +47,14 @@ export default {
 
         if (response.data.status.name === 'no results') {
           const error = new Error('현재 위치의 이름을 불러오지 못했습니다.')
-          Object.assign(error, { errorCode: 77 })
-          throw error
+          const errorObj = { error, errorCode: 77 }
+          throw errorObj
         }
 
         const region = `${response.data.results[0].region.area2.name} ${response.data.results[0].region.area3.name}`
         commit('SET_ADDRESS', region)
       } catch (error) {
-        dispatch('errorStore/handlePredictableError', { error, errorCode: error.errorCode }, { root: true })
+        dispatch('errorStore/handlePredictableError', error, { root: true })
       }
     },
   },
