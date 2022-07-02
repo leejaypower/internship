@@ -2,8 +2,8 @@ const { sequelize } = require('../db'); // DB sequelize 커넥션 인스턴스 �
 const { userQuery, bookQuery, reservationQuery } = require('../repository');
 const { util, constants } = require('../common');
 
-const { errorHandling } = util;
-const { BOOK_STATE, RESERVATION_STATE } = constants;
+const { CustomError } = util.errorHandler;
+const { BOOK_STATE, RESERVATION_STATE, ERROR_CODE } = constants;
 
 const getAll = async () => {
   const reservationList = await reservationQuery.getListAll();
@@ -14,7 +14,7 @@ const getById = async (id) => {
   const reservationInfo = await reservationQuery.getOneById(id);
 
   if (!reservationInfo) {
-    errorHandling.throwError(404, '입력 URI에 해당하는 결과값이 존재하지 않습니다.');
+    throw new CustomError(ERROR_CODE.NON_RESOURCE_EXIST);
   }
 
   return reservationInfo;
@@ -38,10 +38,10 @@ const createReservation = async (body) => {
   // 1. 유저 예약가능상태 여부 확인
   const userInfo = await userQuery.getOneById(userId);
   if (!userInfo) {
-    errorHandling.throwError(400, '예약신청 유저정보가 올바르지 않습니다.');
+    throw new CustomError(ERROR_CODE.INVALID_INPUT_DATA);
   }
   if (userInfo.isBlacklist === true) {
-    errorHandling.throwError(403, '해당 유저는 더 이상의 서비스가 금지되었습니다.');
+    throw new CustomError(ERROR_CODE.FORBIDDEN_USER_REQUEST);
   }
 
   // 2. 해당 도서의 예약자가 2명 이하인지(최대 3명 허용)
@@ -55,17 +55,17 @@ const createReservation = async (body) => {
   });
 
   if (waitingListOnBook.length > 2) {
-    errorHandling.throwError(400, '아쉽지만, 해당도서는 더 이상 예약하실 수 없습니다.');
+    throw new CustomError(ERROR_CODE.NOT_AVAILABLE_REQUEST, '최대 예약가능 인원 수(1권당 3명)를 초과했습니다');
   }
 
   // 3. 해당 도서가 대출상태인지(대출상태일때만 예약허용)
   const bookInfo = await bookQuery.getOneById(bookId);
 
   if (!bookInfo) {
-    errorHandling.throwError(400, '예약신청하시는 도서정보가 올바르지 않습니다.');
+    throw new CustomError(ERROR_CODE.INVALID_INPUT_DATA);
   }
   if (bookInfo.state !== BOOK_STATE.RENTALED) {
-    errorHandling.throwError(400, '예약신청은 해당도서가 대출상태일 때만 가능합니다.');
+    throw new CustomError(ERROR_CODE.NOT_AVAILABLE_REQUEST, '예약신청은 해당도서가 대출상태일 때만 가능합니다');
   }
 
   /*
@@ -89,10 +89,10 @@ const cancleReservation = async (reservationId, userId) => {
   const reservationInfo = await reservationQuery.getOneById(reservationId);
 
   if (reservationInfo.state !== RESERVATION_STATE.WAITING) {
-    errorHandling.throwError(400, '해당 도서는 예약상태가 아닙니다.');
+    throw new CustomError(ERROR_CODE.NOT_AVAILABLE_REQUEST, '해당 예약은 대기상태가 아닙니다');
   }
   if (reservationInfo.userId !== userId) {
-    errorHandling.throwError(403, '예약 당사자가 아니면, 예약을 취소할 수 없습니다.');
+    throw new CustomError(ERROR_CODE.NOT_ALLOWED_OTHERS, '예약 당사자가 아니면 예약을 취소할 수 없습니다');
   }
 
   /*

@@ -1,9 +1,11 @@
 /* eslint-disable no-useless-catch */
 const jwt = require('jsonwebtoken');
 const { adminQuery } = require('../repository');
-const { util } = require('../common');
+const { util, constants } = require('../common');
 
-const { encrypt, errorHandling } = util;
+const { encrypt, errorHandler } = util;
+const { ERROR_CODE } = constants;
+const { CustomError } = errorHandler;
 
 // 관리자 회원가입 요청에 해당하는 비지니스 로직
 const signUp = async (body) => {
@@ -17,14 +19,14 @@ const signUp = async (body) => {
 
   // 시크릿코드 일치여부 확인
   if (secretCode !== process.env.SECRET_CODE) {
-    errorHandling.throwError(403, '해당 접근은 금지되었습니다.');
+    throw new CustomError(ERROR_CODE.INVALID_ADMIN_SECRET_CODE);
   }
 
   // 이메일 중복여부 검사
   const adminInfo = await adminQuery.getOneByInputData({ email });
 
   if (adminInfo) {
-    errorHandling.throwError(400, '이미 존재하는 이메일입니다.');
+    throw new CustomError(ERROR_CODE.SIGNUP_EMAIL_REDUPLICATED);
   }
 
   const encryptedPassword = await encrypt.hashPassword(password); // 비밀번호 해시값 생성
@@ -50,14 +52,14 @@ const logIn = async (body) => {
 
   const adminInfo = await adminQuery.getOneByInputData({ email });
 
-  if (adminInfo === null) {
-    errorHandling.throwError(401, '일치하는 관리자 계정정보가 없습니다.');
+  if (!adminInfo) {
+    throw new CustomError(ERROR_CODE.INVALID_LOGIN_ACCESS);
   }
 
   const isPasswordMatchedHash = await encrypt.comparePassword(password, adminInfo.password);
 
   if (!isPasswordMatchedHash) {
-    errorHandling.throwError(401, '비밀번호가 일치하지 않습니다.');
+    throw new CustomError(ERROR_CODE.INVALID_LOGIN_ACCESS);
   }
 
   const accessToken = jwt.sign(

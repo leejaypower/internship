@@ -1,7 +1,8 @@
 const { bookCategoryQuery } = require('../repository');
-const { util } = require('../common');
+const { util, constants } = require('../common');
 
-const { errorHandling } = util;
+const { CustomError } = util.errorHandler;
+const { ERROR_CODE } = constants;
 
 const getAll = async () => {
   const bookCategoryList = await bookCategoryQuery.getListAll();
@@ -17,7 +18,7 @@ const getById = async (id) => {
   const bookCategory = await bookCategoryQuery.getOneById(id);
 
   if (!bookCategory) {
-    errorHandling.throwError(404, '요청에 해당하는 정보가 존재하지 않습니다.');
+    throw new CustomError(ERROR_CODE.NON_RESOURCE_EXIST);
   }
 
   return bookCategory;
@@ -39,7 +40,7 @@ const deleteBookCategory = async (id) => {
   const deleteTestResult = await bookCategoryQuery.getOneById(id);
 
   if (!deleteTestResult) {
-    errorHandling.throwError(404, '요청에 해당하는 정보가 존재하지 않습니다.');
+    throw new CustomError(ERROR_CODE.NON_RESOURCE_EXIST);
   }
 
   await bookCategoryQuery.deleteBookCategory(id);

@@ -7,9 +7,9 @@ const {
 } = require('../repository');
 const { util, constants } = require('../common');
 
-const { errorHandling } = util;
+const { CustomError } = util.errorHandler;
 
-const { BOOK_STATE, RESERVATION_STATE } = constants;
+const { BOOK_STATE, RESERVATION_STATE, ERROR_CODE } = constants;
 
 const getAll = async () => {
   const rentalList = await rentalQuery.getListAll();
@@ -36,19 +36,19 @@ const rentalOnWaitingBook = async (body) => {
   // NOTE: 유저 대출가능여부 검사
   const userInfo = await userQuery.getOneById(userId);
   if (!userInfo) {
-    errorHandling.throwError(404, '해당 아이디에 해당하는 유저정보는 존재하지 않습니다.');
+    throw new CustomError(ERROR_CODE.INVALID_INPUT_DATA);
   }
   if (userInfo.isBlacklist === true) {
-    errorHandling.throwError(403, '해당 유저는 블랙리스트로 더이상의 대출이 불가합니다');
+    throw new CustomError(ERROR_CODE.FORBIDDEN_USER_REQUEST);
   }
 
   // NOTE: 도서 대출가능여부 검사
   const book = await bookQuery.getOneById(bookId);
   if (!book) {
-    errorHandling.throwError(404, '해당 아이디의 도서정보는 존재하지 않습니다.');
+    throw new CustomError(ERROR_CODE.INVALID_INPUT_DATA);
   }
   if (book.state !== BOOK_STATE.WAITING) {
-    errorHandling.throwError(400, '해당 도서는 대출가능상태가 아닙니다.');
+    throw new CustomError(ERROR_CODE.NOT_AVAILABLE_REQUEST, '대기상태의 도서만 대출요청할 수 있습니다');
   }
 
   await sequelize.transaction(async () => {
@@ -67,19 +67,19 @@ const rentalOnReservatedBook = async (body) => {
   // NOTE: 유저 대출가능여부 검사
   const userInfo = await userQuery.getOneById(userId);
   if (!userInfo) {
-    errorHandling.throwError(400, '해당 아이디에 해당하는 유저정보는 존재하지 않습니다.');
+    throw new CustomError(ERROR_CODE.INVALID_INPUT_DATA);
   }
   if (userInfo.isBlacklist === true) {
-    errorHandling.throwError(403, '해당 유저는 블랙리스트로 더이상의 대출이 불가합니다');
+    throw new CustomError(ERROR_CODE.FORBIDDEN_USER_REQUEST);
   }
 
   // NOTE: 도서 대출가능여부 검사
   const book = await bookQuery.getOneById(bookId);
   if (!book) {
-    errorHandling.throwError(400, '해당 아이디의 도서정보는 존재하지 않습니다.');
+    throw new CustomError(ERROR_CODE.INVALID_INPUT_DATA);
   }
   if (book.state !== BOOK_STATE.RESERVATED) {
-    errorHandling.throwError(400, '해당 도서는 대출가능상태가 아닙니다.');
+    throw new CustomError(ERROR_CODE.NOT_AVAILABLE_REQUEST, '해당 도서는 예약상태가 아닙니다');
   }
 
   /*
@@ -108,7 +108,7 @@ const rentalOnReservatedBook = async (body) => {
   const isOtherWaitingExist = waitingNumber > 1;
 
   if (userId !== firstWaitingReservationInfo.userId) {
-    errorHandling.throwError(400, '현재 순번의 예약자가 아닙니다.');
+    throw new CustomError(ERROR_CODE.NOT_ALLOWED_OTHERS, '예약 당사자가 아닙니다');
   }
 
   await sequelize.transaction(async () => {
@@ -132,7 +132,7 @@ const checkInByBookId = async (bookId) => {
   const rentalInfoList = await rentalQuery.getListByInputData({ bookId });
 
   if (rentalInfoList.length === 0) {
-    errorHandling.throwError(404, '해당 도서의 대출이력 정보는 존재하지 않습니다.');
+    throw new CustomError(ERROR_CODE.NON_RESOURCE_EXIST);
   }
 
   /*
@@ -152,7 +152,7 @@ const checkInByBookId = async (bookId) => {
   const rentalInfo = rentalInfoList[0];
 
   if (rentalInfo.returnDate !== null) {
-    errorHandling.throwError(400, '해당 도서는 대출상태가 아닙니다.');
+    throw new CustomError(ERROR_CODE.NOT_AVAILABLE_REQUEST, '해당 도서는 대출상태가 아닙니다');
   }
 
   // 해당 도서의 예약이력
@@ -183,17 +183,29 @@ const checkInByBookId = async (bookId) => {
 
 // 대출도서 연장요청
 const extendRentalPeriodByBookId = async (bookId) => {
+  /*
+    NOTE: 도서대출 연장정책
+    - 현재 대출중인 도서만 요청 가능(반납된 도서에 대출을 연장할 수는 없음)
+    - 한번 대출에 한번만 가능 -> isExtended가 false인 경우에만 가능
+    - 해당 도서에 대한 예약 대기자가 없어야 함.
+    - 연장신청 가능기한: (도서대출 신청일(rentalDate) + 7일) ~ (도서반납예정일(dueDate) - 3일)
+    - 연장기한: 이전 dueDate + 7일(일주일)
+    - 로직: 도서대출이력 업데이트(isExtended, dueDate)
+  */
   const rentalInfoList = await rentalQuery.getListByInputData({ bookId });
 
   if (rentalInfoList.length === 0) {
-    errorHandling.throwError(404, '해당 도서의 대출이력이 존재하지 않습니다!');
+    throw new CustomError(ERROR_CODE.NON_RESOURCE_EXIST);
   }
 
   // 해당 도서의 가장 최근 대출정보
   const rentalInfo = rentalInfoList[0];
 
   if (rentalInfo.returnDate !== null) {
-    errorHandling.throwError(400, '진행중인 대출이력이 없습니다!');
+    throw new CustomError(ERROR_CODE.NOT_AVAILABLE_REQUEST, '해당 도서는 대출상태가 아닙니다');
+  }
+  if (rentalInfo.isExtended) {
+    throw new CustomError(ERROR_CODE.NOT_AVAILABLE_REQUEST, '대출 연장은 한번만 가능합니다');
   }
 
   // 해당 도서의 예약이력
@@ -204,15 +216,9 @@ const extendRentalPeriodByBookId = async (bookId) => {
     return record.state === RESERVATION_STATE.WAITING;
   });
 
-  /*
-    NOTE: 도서대출 연장정책
-    - 현재 대출중인 도서만 요청 가능(반납된 도서에 대출을 연장할 수는 없음)
-    - 한번 대출에 한번만 가능 -> isExtended가 false인 경우에만 가능
-    - 해당 도서에 대한 예약 대기자가 없어야 함.
-    - 연장신청 가능기한: (도서대출 신청일(rentalDate) + 7일) ~ (도서반납예정일(dueDate) - 3일)
-    - 연장기한: 이전 dueDate + 7일(일주일)
-    - 로직: 도서대출이력 업데이트(isExtended, dueDate)
-  */
+  if (waitingReservationInfoList.length !== 0) {
+    throw new CustomError(ERROR_CODE.NOT_AVAILABLE_REQUEST, '예약 대기자가 있어 연장할 수 없습니다');
+  }
 
   const { id, rentalDate, dueDate } = rentalInfo;
 
@@ -225,17 +231,8 @@ const extendRentalPeriodByBookId = async (bookId) => {
   // 연장신청이후 반납예정일
   const extendedDueDate = new Date(dueDate.getTime()).setDate(dueDate.getDate() + 7);
 
-  if (rentalInfo.returnDate !== null) {
-    errorHandling.throwError(400, '반납된 도서에 연장요청을 할 수 없습니다.');
-  }
-  if (rentalInfo.isExtended) {
-    errorHandling.throwError(400, '대출연장은 한번만 가능합니다.');
-  }
-  if (waitingReservationInfoList.length !== 0) {
-    errorHandling.throwError(400, '예약대기자가 있어 연장할 수 없습니다.');
-  }
   if (now < availableStartDate || now > availableEndDate) {
-    errorHandling.throwError(400, '연장신청 가능기간이 아닙니다.');
+    throw new CustomError(ERROR_CODE.NOT_AVAILABLE_REQUEST, '연장신청 가능기간이 아닙니다');
   }
 
   await rentalQuery.updateRental(id, { isExtended: true, dueDate: extendedDueDate });

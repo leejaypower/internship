@@ -41,7 +41,7 @@ const bookTypeDefs = gql`
   
   type BookCategory {
     id: ID!
-    KDC: Int
+    koreanDecimalClassificationCode: Int
     name: String
     createdAt: Date
     updatedAt: Date

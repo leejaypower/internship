@@ -1,8 +1,10 @@
 const jwt = require('jsonwebtoken');
 const { userQuery } = require('../repository');
-const { util } = require('../common');
+const { util, constants } = require('../common');
 
-const { encrypt, errorHandling } = util;
+const { encrypt, errorHandler } = util;
+const { ERROR_CODE } = constants;
+const { CustomError } = errorHandler;
 
 const signUp = async (body) => {
   const {
@@ -15,7 +17,7 @@ const signUp = async (body) => {
   const userInfo = await userQuery.getOneByInputData({ email });
 
   if (userInfo) {
-    errorHandling.throwError(400, '이미 존재하는 이메일입니다.');
+    throw new CustomError(ERROR_CODE.SIGNUP_EMAIL_REDUPLICATED);
   }
 
   const encryptedPassword = await encrypt.hashPassword(password);
@@ -39,13 +41,13 @@ const logIn = async (body) => {
   const userInfo = await userQuery.getOneByInputData({ email });
 
   if (!userInfo) {
-    errorHandling.throwError(400, '해당 이메일의 유저정보는 없습니다.');
+    throw new CustomError(ERROR_CODE.INVALID_LOGIN_ACCESS);
   }
 
   const isPasswordMatchedHash = await encrypt.comparePassword(password, userInfo.password);
 
   if (!isPasswordMatchedHash) {
-    errorHandling.throwError(401, '비밀번호를 다시 확인해주세요.');
+    throw new CustomError(ERROR_CODE.INVALID_LOGIN_ACCESS);
   }
 
   // 액세스토큰, 유효시간 30분
@@ -71,7 +73,7 @@ const getById = async (userId) => {
   const userInfo = await userQuery.getOneById(userId);
 
   if (!userInfo) {
-    errorHandling.throwError(404, '해당 아이디의 유저정보가 존재하지 않습니다.');
+    throw new CustomError(ERROR_CODE.NON_RESOURCE_EXIST);
   }
 
   const decryptContact = encrypt.decipher(userInfo.contact);

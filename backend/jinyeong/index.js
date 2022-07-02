@@ -5,7 +5,7 @@ const Koa = require('koa');
 const cors = require('@koa/cors');
 const bodyParser = require('koa-bodyparser');
 const logger = require('koa-logger');
-
+const { errorResponse } = require('./middleware');
 const { createApolloServer } = require('./graphQL');
 
 const { producers, consumers } = require('./kafka');
@@ -29,6 +29,14 @@ const startServer = async () => {
     .use(cors())
     .use(bodyParser())
     .use(logger())
+    .use(async (ctx, next) => {
+      try {
+        await next();
+      } catch (err) {
+        console.log(err);
+        errorResponse.restApiErrorResponse(ctx, err);
+      }
+    })
     .use(router.routes())
     .use(router.allowedMethods());
 

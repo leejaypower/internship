@@ -1,13 +1,13 @@
 const jwt = require('jsonwebtoken');
-const {
-  AuthenticationError,
-  ForbiddenError,
-} = require('apollo-server-koa');
+const { util, constants } = require('../../../common');
+
+const { ERROR_CODE } = constants;
+const { CustomError } = util.errorHandler;
 
 const userAuth = async (context) => {
   const { accessToken } = context.token;
   if (!accessToken) {
-    throw new AuthenticationError('인증이 필요한 요청입니다.');
+    throw new CustomError(ERROR_CODE.NEED_AUTHENTICATE);
   }
 
   const tokenMessage = jwt.verify(
@@ -15,7 +15,7 @@ const userAuth = async (context) => {
     process.env.ACCESS_TOKEN_SECRET,
     (err, decode) => {
       if (err) {
-        throw new AuthenticationError('해당 액세스토큰이 유효하지 않습니다.');
+        throw new CustomError(ERROR_CODE.INVALID_TOKEN);
       }
       return decode;
     },
@@ -24,7 +24,7 @@ const userAuth = async (context) => {
   const { id, role } = tokenMessage;
 
   if (!role.includes('user')) {
-    throw new ForbiddenError('인가되지 않은 요청입니다.');
+    throw new CustomError(ERROR_CODE.THIS_ROLE_NOT_AUTHORIZED);
   }
 
   return id;
@@ -33,7 +33,7 @@ const userAuth = async (context) => {
 const adminAuth = async (context) => {
   const { accessToken } = context.token;
   if (!accessToken) {
-    throw new AuthenticationError('인증이 필요한 요청입니다.');
+    throw new CustomError(ERROR_CODE.NEED_AUTHENTICATE);
   }
 
   const tokenMessage = jwt.verify(
@@ -41,7 +41,7 @@ const adminAuth = async (context) => {
     process.env.ACCESS_TOKEN_SECRET,
     (err, decode) => {
       if (err) {
-        throw new AuthenticationError('해당 액세스토큰이 유효하지 않습니다.');
+        throw new CustomError(ERROR_CODE.INVALID_TOKEN);
       }
       return decode;
     },
@@ -50,7 +50,7 @@ const adminAuth = async (context) => {
   const { id, role } = tokenMessage;
 
   if (!role.includes('admin')) {
-    throw new ForbiddenError('인가되지 않은 요청입니다.');
+    throw new CustomError(ERROR_CODE.THIS_ROLE_NOT_AUTHORIZED);
   }
 
   return id;

@@ -1,6 +1,9 @@
 const bcrypt = require('bcrypt');
 const CryptoJS = require('crypto-js');
-const { errorHandling } = require('./errorHandling');
+const constants = require('../constants');
+const { CustomError } = require('./errorHandler');
+
+const { ERROR_CODE } = constants;
 
 const saltRounds = Number(process.env.SALT_ROUNDS);
 const secretKey = process.env.SECRET_KEY;
@@ -8,7 +11,7 @@ const secretKey = process.env.SECRET_KEY;
 // 입력받은 비밀번호로 해시값을 만듭니다.(회원가입 시 활용)
 const hashPassword = async (password) => {
   if (!password) {
-    errorHandling.throwError(400, '비밀번호가 누락되었습니다.');
+    throw new CustomError(ERROR_CODE.INTERNAL_SERVER_ERROR);
   }
   const encryptedPassword = await bcrypt.hash(password, saltRounds);
 
@@ -18,10 +21,10 @@ const hashPassword = async (password) => {
 // 비밀번호 해시값과 입력받은 비밀번호 값을 비교하여 같은 지 검증합니다.(로그인 시 활용)
 const comparePassword = async (password, hash) => {
   if (!password) {
-    errorHandling.throwError(400, '비밀번호가 누락되었습니다.');
+    throw new CustomError(ERROR_CODE.INTERNAL_SERVER_ERROR);
   }
   if (!hash) {
-    errorHandling.throwError(500, '저장된 유저 비밀번호가 훼손되었습니다.');
+    throw new CustomError(ERROR_CODE.INTERNAL_SERVER_ERROR);
   }
   const result = await bcrypt.compare(password, hash);
 
@@ -31,7 +34,7 @@ const comparePassword = async (password, hash) => {
 // Crypto 암호화
 const cipher = (message) => {
   if (!message) {
-    errorHandling.throwError(400, '암호화 시킬 데이터가 누락되었습니다.');
+    throw new CustomError(ERROR_CODE.INTERNAL_SERVER_ERROR);
   }
 
   const ciphertext = CryptoJS.AES.encrypt(message, secretKey).toString();
@@ -41,7 +44,7 @@ const cipher = (message) => {
 // Crypto 복호화
 const decipher = (encryptedData) => {
   if (!encryptedData) {
-    errorHandling.throwError(400, '복호화 시킬 데이터가 누락되었습니다.');
+    throw new CustomError(ERROR_CODE.INTERNAL_SERVER_ERROR);
   }
 
   const bytes = CryptoJS.AES.decrypt(encryptedData, secretKey);

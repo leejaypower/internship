@@ -6,6 +6,8 @@ const { makeExecutableSchema } = require('@graphql-tools/schema');
 const typeDefs = require('./typeDefs');
 const resolvers = require('./resolvers');
 
+const { errorResponse } = require('../middleware');
+
 let schema = makeExecutableSchema({
   typeDefs: [typeDefs, constraintDirectiveTypeDefs],
   resolvers,
@@ -18,6 +20,10 @@ const createApolloServer = (httpServer) => {
   const apolloServer = new ApolloServer({
     schema,
     csrfPrevention: true,
+    formatError: (err) => {
+      console.log(err);
+      return errorResponse.graphqlApiErrorResponse(err);
+    },
     context: async ({ ctx }) => {
       const token = {};
       if (ctx.headers.authorization) {

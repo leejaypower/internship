@@ -1,7 +1,8 @@
 const { bookQuery, bookInfoQuery } = require('../repository');
-const { util } = require('../common');
+const { util, constants } = require('../common');
 
-const { errorHandling } = util;
+const { CustomError } = util.errorHandler;
+const { ERROR_CODE } = constants;
 
 const getAll = async () => {
   const bookList = await bookQuery.getListAll();
@@ -17,7 +18,7 @@ const getById = async (id) => {
   const book = await bookQuery.getOneById(id);
 
   if (!book) {
-    errorHandling.throwError(404, '요청에 해당하는 정보가 존재하지 않습니다.');
+    throw new CustomError(ERROR_CODE.NON_RESOURCE_EXIST);
   }
 
   return book;
@@ -29,7 +30,7 @@ const createBook = async (body) => {
   const bookInfo = await bookInfoQuery.getOneById(bookInfoId);
 
   if (!bookInfo) {
-    errorHandling.throwError(400, '입력하신 도서 정보 ID에 해당하는 자료를 찾을 수 없습니다.');
+    throw new CustomError(ERROR_CODE.DB_INVALID_REFERENCE);
   }
 
   const createdBook = await bookQuery.createBook({ bookInfoId });
@@ -42,7 +43,7 @@ const updateBook = async (id, body) => {
   const bookInfo = await bookInfoQuery.getOneById(bookInfoId);
 
   if (!bookInfo) {
-    errorHandling.throwError(400, '입력하신 도서 정보 ID에 해당하는 자료를 찾을 수 없습니다.');
+    throw new CustomError(ERROR_CODE.DB_INVALID_REFERENCE);
   }
 
   await bookQuery.updateBook(id, body);
@@ -52,7 +53,7 @@ const deleteBook = async (id) => {
   const deleteTestResult = await bookQuery.getOneById(id);
 
   if (!deleteTestResult) {
-    errorHandling.throwError(404, '요청에 해당하는 정보가 존재하지 않습니다.');
+    throw new CustomError(ERROR_CODE.NON_RESOURCE_EXIST);
   }
 
   await bookQuery.deleteBook(id);
