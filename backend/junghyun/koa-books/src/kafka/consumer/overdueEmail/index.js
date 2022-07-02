@@ -1,4 +1,6 @@
 require('../../../common/util/env');
+const { logger } = require('../../../../log/config/logger');
+const { CustomError, ERROR_CODE } = require('../../../common/error');
 const { overdueService } = require('../../../services/restAPI');
 
 const { kafka, topic } = require('../../index');
@@ -17,7 +19,7 @@ const consume = async () => {
     autoCommit: true,
     autoCommitThreshold: 100,
     eachMessage: async ({ topic, partition, message }) => {
-      console.log('===Metadata===: ', '\n', {
+      logger.info('===Metadata===: ', '\n', {
         topic,
         partition,
         offset: message.offset,
@@ -32,5 +34,5 @@ const consume = async () => {
 };
 
 consume().catch((err) => {
-  console.error('error in consumer: ', err);
+  throw new CustomError(ERROR_CODE.SERVER_ERROR, err.message, '[kafka/consumer/overdueEmail/SERVER_ERROR]');
 });

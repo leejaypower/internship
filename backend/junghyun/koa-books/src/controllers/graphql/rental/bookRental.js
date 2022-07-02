@@ -1,6 +1,6 @@
 const { rentalService } = require('../../../services/restAPI');
 const { graphqlRentalService } = require('../../../services/graphql');
-const { CustomError } = require('../../../common/error');
+const { CustomError, ERROR_CODE } = require('../../../common/error');
 
 const createRental = async (root, args, { ctx }) => {
   try {
@@ -60,7 +60,7 @@ const extendRental = async (root, args, { ctx }) => {
     const updated = await rentalService.extendRental(rentalId, userId);
     ctx.status = 200;
     if (!updated) {
-      throw new CustomError('update failed');
+      throw new CustomError(ERROR_CODE.SERVER_ERROR, 'failed to extend the rental period.', '[graphQL/controllers/extendRental/SERVER_ERROR]);
     }
     return 'Successfully extended';
   } catch (err) {
@@ -130,3 +130,4 @@ module.exports = {
   getUserReturns,
   getOneReturn,
 };
+ 

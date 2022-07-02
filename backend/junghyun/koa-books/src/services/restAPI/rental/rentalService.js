@@ -2,7 +2,7 @@ const {
   rentalRepository, returnRepository, reservationRepository, bookRepository, userRepository,
 } = require('../../../repository');
 const { pagination } = require('../../../common/util/pagination');
-const { CustomError } = require('../../../common/error');
+const { CustomError, ERROR_CODE } = require('../../../common/error');
 
 // 연체 체크 로직 - (연체된 고객은 [반납 / 대출 연장 / 예약]을 할 수 없음)
 const checkOverdue = async (userId) => {
@@ -22,24 +22,24 @@ const createRental = async (data) => {
   const { userId, bookId, rentalCode } = data;
   const userRental = await rentalRepository.getRentals({ userId });
   if (userRental.length >= 5) {
-    throw new CustomError(400, '이 고객은 현재 대출 가능 권수를 초과하여 대출이 불가능합니다.');
+    throw new CustomError(ERROR_CODE.INVALID_INPUT, '이 고객은 현재 대출 가능 권수를 초과하여 대출이 불가능합니다.', '[restAPI/services/rental/INVALID_INPUT]');
   }
   // 연체 체크 (모듈화 하였음)
   const isValid = await checkOverdue(userId);
   if (!isValid.status) {
-    throw new CustomError(400, '이 고객은 연체로 인해 현재 대출이 불가능합니다.');
+    throw new CustomError(ERROR_CODE.INVALID_INPUT, '이 고객은 연체로 인해 현재 대출이 불가능합니다.', '[restAPI/services/rental/INVALID_INPUT]');
   }
   // ***** ebook 대여의 경우 동시에 대출 신청이 들어올 때 트랜잭션 공유 락 걸어주는 것 추가 필요  *****
 
   const rentalByRentalCode = await rentalRepository.getOneWithBook({ rentalCode });
   if (rentalByRentalCode) {
-    throw new CustomError(400, '이미 존재하는 대출 코드입니다.');
+    throw new CustomError(ERROR_CODE.VALIDATION_ERROR, '이미 존재하는 대출 코드입니다.', '[restAPI/services/rental/VALIDATION_ERROR]');
   }
 
   const rentalByBookId = await rentalRepository.getOneWithBook({ bookId });
   const book = await bookRepository.getOneWithBookInfo(bookId);
   if (rentalByBookId) {
-    throw new CustomError(400, `< ${book.BookInfo.title} > 은 현재 대출중입니다.`);
+    throw new CustomError(ERROR_CODE.INVALID_INPUT, `< ${book.BookInfo.title} > 은 현재 대출중입니다.`, '[restAPI/services/rental/INVALID_INPUT]');
   }
   const today = new Date();
   const returnDueDate = new Date(today);
@@ -66,10 +66,10 @@ const getOneRental = async (rentalId) => {
 const extendRental = async (rentalId, userId) => {
   const rentalData = await rentalRepository.getOneWithBook({ rentalId });
   if (!rentalData) {
-    throw new CustomError(404, '존재하지 않는 대출 건입니다.');
+    throw new CustomError(ERROR_CODE.NOT_EXIST_RENTAL, '존재하지 않는 대출 건입니다.', '[restAPI/services/rental/NOT_EXIST_RENTAL]');
   }
   if (rentalData && (rentalData.extension >= 3)) {
-    throw new CustomError(400, '연장 가능한 횟수를 초과하였습니다.');
+    throw new CustomError(ERROR_CODE.INVALID_INPUT, '연장 가능한 횟수를 초과하였습니다.', '[restAPI/services/rental/INVALID_INPUT]');
   }
   const { bookInfoId } = rentalData.Book;
   const rentalState = { value: false };
@@ -78,13 +78,13 @@ const extendRental = async (rentalId, userId) => {
 
   if ((availableBooks.length - reservationsForBooks.length) < 0) {
     // 해당 bookInfo를 가지고 있는 책 목록 중 rentalState(대출중 상태) false인 갯수 - 해당 bookInfo가지고 있는 예약 목록 갯수 < 0 면 못빌림
-    throw new CustomError(400, '예약중인 책은 연장이 불가능합니다.');
+    throw new CustomError(ERROR_CODE.INVALID_INPUT, '예약중인 책은 연장이 불가능합니다.', '[restAPI/services/rental/INVALID_INPUT]');
   }
 
   // 연체 체크 (모듈화하였음)
   const isValid = await checkOverdue(userId);
   if (!isValid.status) {
-    throw new CustomError(400, '이 고객은 연체로 인해 현재 대출 기한 연장이 불가능합니다.');
+    throw new CustomError(ERROR_CODE.INVALID_INPUT, '이 고객은 연체로 인해 현재 대출 기한 연장이 불가능합니다.', '[restAPI/services/rental/INVALID_INPUT]');
   }
 
   const { returnDueDate } = rentalData;
@@ -100,7 +100,7 @@ const createBookReturn = async (data) => {
   const { bookId, userId } = data;
   const rentalData = await rentalRepository.getOneWithBook({ bookId, userId });
   if (!rentalData) {
-    throw new CustomError(404, '도서가 대출중 도서 목록에 없습니다.');
+    throw new CustomError(ERROR_CODE.NOT_EXIST_RENTAL, '도서가 대출중 도서 목록에 없습니다.', '[restAPI/services/rental/INVALID_INPUT]');
   }
   const newBookReturn = await returnRepository.createReturnTransaction(rentalData);
   return newBookReturn;

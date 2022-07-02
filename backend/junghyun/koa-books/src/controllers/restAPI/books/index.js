@@ -1,11 +1,11 @@
 const { bookService } = require('../../../services/restAPI');
-const { CustomError } = require('../../../common/error');
+const { CustomError, ERROR_CODE } = require('../../../common/error');
 
 // 도서 등록 - 관리자
 const createBook = async (ctx) => {
   try {
     if (!ctx.request.body) {
-      throw new CustomError(400, 'please provide the information');
+      throw new CustomError(ERROR_CODE.VALIDATION_ERROR, 'please provide the information', '[restAPI/controllers/createBook/VALIDATION_ERROR]');
     }
     ctx.body = await bookService.createBook(ctx.request.body);
     ctx.status = 201;
@@ -21,7 +21,7 @@ const getBooks = async (ctx) => {
   } = ctx.request.query;
   try {
     if (!page || !limit) {
-      throw new CustomError(400, 'you should provide page and limit');
+      throw new CustomError(ERROR_CODE.VALIDATION_ERROR, 'you should provide page and limit', '[restAPI/controllers/getBooks/VALIDATION_ERROR]');
     }
     ctx.body = await bookService.getBooks({
       page, limit, author, category, title,
@@ -52,7 +52,7 @@ const deleteBook = async (ctx) => {
       ctx.status = 204;
     } else {
       ctx.status = 500;
-      throw new CustomError(` Failed to deleted the book <${bookId}>.`);
+      throw new CustomError(ERROR_CODE.SERVER_ERROR, ` Failed to deleted the book <${bookId}>.`, '[restAPI/controllers/deleteBook/SERVER_ERROR]);
     }
   } catch (err) {
     ctx.throw(err);
@@ -62,9 +62,3 @@ const deleteBook = async (ctx) => {
 module.exports = {
   createBook, getBooks, getOneBook, deleteBook,
 };
-
-/*
-다음 PR에 반영할 사항들
-1. 도서 대량 등록
-2. 도서 정보 수정
-*/

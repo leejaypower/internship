@@ -1,5 +1,6 @@
 const { bookRepository } = require('../../../repository');
 const { pagination } = require('../../../common/util/pagination');
+const { CustomError, ERROR_CODE } = require('../../../common/error');
 
 const createBook = async (data) => {
   const newBook = await bookRepository.createBookTransaction(data);
@@ -8,6 +9,9 @@ const createBook = async (data) => {
 
 const getOneBook = async (bookId) => {
   const book = await bookRepository.getOne({ bookId });
+  if (!book) {
+    throw new CustomError(ERROR_CODE.NOT_EXIST_BOOK, 'This Book doesn\'t exist.', '[graphQL/services/getOneBook/NOT_EXIST_BOOK]');
+  }
   return book;
 };
 

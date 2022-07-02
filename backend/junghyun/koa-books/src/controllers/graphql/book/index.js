@@ -1,6 +1,6 @@
 const { bookService } = require('../../../services/restAPI');
 const { graphqlBookService } = require('../../../services/graphql');
-const { CustomError } = require('../../../common/error');
+const { CustomError, ERROR_CODE } = require('../../../common/error');
 
 const createBook = async (root, args, { ctx }) => {
   try {
@@ -45,7 +45,7 @@ const deleteBook = async (root, args, { ctx }) => {
     const deletedBook = await bookService.deleteBook(args.id);
     if (!deletedBook) {
       ctx.status = 500;
-      throw new CustomError(` Failed to delete the book <${args.id}>.`);
+      throw new CustomError(ERROR_CODE.SERVER_ERROR, `Failed to delete the book <${args.id}>.`, '[graphQL/controllers/deleteBook/SERVER_ERROR]);
     }
     ctx.status = 204;
     return `The book < ${args.id} > is successfully deleted.`;

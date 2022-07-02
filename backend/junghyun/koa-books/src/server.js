@@ -4,13 +4,15 @@ const http = require('http');
 const { ApolloServer } = require('apollo-server-koa');
 const depthLimit = require('graphql-depth-limit');
 const router = require('./routes');
-const { errorHandler } = require('./common/error');
+const {
+  errorHandler, errorHandlerGraphQL,
+} = require('./common/error');
 const db = require('./db/models');
 
 const { resolvers, typeDefs } = require('./graphql');
 const loaders = require('./graphql/resolvers/loaders');
 
-const port = 4000;
+const port = process.env.PORT || 4000;
 
 const app = new Koa();
 
@@ -36,6 +38,8 @@ const startServer = async () => {
       next,
       loaders,
     }),
+    cache: 'bounded',
+    formatError: errorHandlerGraphQL,
   });
 
   await server.start();

@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const { userRepository, adminUserRepository } = require('../../repository');
+const { CustomError, ERROR_CODE } = require('../error');
 
 const {
   SECRET_KEY,
@@ -27,12 +28,12 @@ const verify = (accessToken) => {
     return decodedToken;
   } catch (err) {
     if (err.name === 'TokenExpiredError') {
-      throw new Error(419, 'The Token is expired');
+      throw new CustomError(ERROR_CODE.EXPIRED_TOKEN, 'The accessToken is expired', '[JWT/EXPIRED_TOKEN]');
     }
     if (err.name === 'JsonWebTokenError') {
-      throw new Error(401, 'The Token is invalid');
+      throw new CustomError(ERROR_CODE.INVALID_TOKEN, 'The accessToken is invalid', '[JWT/INVALID_TOKEN]');
     }
-    throw new Error(`TokenError: ${err.message}`);
+    throw new CustomError(ERROR_CODE.TOKEN_VERIFY_FAIL, `TokenError: ${err.message}`, '[TOKEN_VERIFY_FAIL]');
   }
 };
 
@@ -47,12 +48,12 @@ const refreshVerify = async (refreshToken, userId) => {
     return decodedToken;
   } catch (err) {
     if (err.name === 'TokenExpiredError') {
-      throw new Error(419, 'The Token is expired');
+      throw new CustomError(ERROR_CODE.EXPIRED_TOKEN, 'The refreshToken is expired', '[JWT/EXPIRED_TOKEN]');
     }
     if (err.name === 'JsonWebTokenError') {
-      throw new Error(401, 'The Token is invalid');
+      throw new CustomError(ERROR_CODE.INVALID_TOKEN, 'The refreshToken is invalid', '[JWT/INVALID_TOKEN]');
     }
-    throw new Error(`TokenError: ${err.message}`);
+    throw new CustomError(ERROR_CODE.TOKEN_VERIFY_FAIL, `TokenError: ${err.message}`, '[TOKEN_VERIFY_FAIL]');
   }
 };
 

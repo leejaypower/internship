@@ -1,11 +1,11 @@
 const { rentalService } = require('../../../services/restAPI');
-const { CustomError } = require('../../../common/error');
+const { CustomError, ERROR_CODE } = require('../../../common/error');
 
 // 대출 데이터 생성 - 관리자
 const createRental = async (ctx) => {
   try {
     if (!ctx.request.body) {
-      throw new CustomError(400, 'please provide the information');
+      throw new CustomError(ERROR_CODE.VALIDATION_ERROR, 'please provide the information', '[restAPI/controllers/createRental/VALIDATION_ERROR]');
     }
     ctx.body = await rentalService.createRental(ctx.request.body);
     ctx.status = 201;
@@ -21,10 +21,10 @@ const getAdminRentals = async (ctx) => {
   } = ctx.request.query;
   try {
     if (!page || !limit) {
-      throw new CustomError(400, 'you should provide page and limit');
+      throw new CustomError(ERROR_CODE.VALIDATION_ERROR, 'you should provide page and limit', '[restAPI/controllers/getAdminRentals/VALIDATION_ERROR]');
     }
     if (!bookId && !userId) {
-      throw new CustomError(400, 'you should provide information');
+      throw new CustomError(ERROR_CODE.VALIDATION_ERROR, 'you should provide information', '[restAPI/controllers/getAdminRentals/VALIDATION_ERROR]');
     }
     ctx.body = await rentalService.getRentals({
       bookId,
@@ -44,7 +44,7 @@ const getUserRentals = async (ctx) => {
   const { userId } = ctx.state;
   try {
     if (!page || !limit) {
-      throw new CustomError(400, 'you should provide page and limit');
+      throw new CustomError(ERROR_CODE.VALIDATION_ERROR, 'you should provide page and limit', '[restAPI/controllers/getUserRentals/VALIDATION_ERROR]');
     }
     ctx.body = await rentalService.getRentals({
       userId,
@@ -73,7 +73,7 @@ const extendRental = async (ctx) => {
   const { userId } = ctx.state;
   try {
     if (!ctx.params.rentalId) {
-      throw new CustomError(400, 'please provide the rental information');
+      throw new CustomError(ERROR_CODE.VALIDATION_ERROR, 'please provide the rental information', '[restAPI/controllers/extendRental/VALIDATION_ERROR]');
     }
     ctx.body = await rentalService.extendRental(rentalId, userId);
     ctx.status = 200;
@@ -86,7 +86,7 @@ const extendRental = async (ctx) => {
 const createBookReturn = async (ctx) => {
   try {
     if (!ctx.request.body) {
-      throw new CustomError(400, 'please provide the information');
+      throw new CustomError(ERROR_CODE.VALIDATION_ERROR, 'please provide the information', '[restAPI/controllers/createBookReturn/VALIDATION_ERROR]');
     }
     ctx.body = await rentalService.createBookReturn(ctx.request.body);
     ctx.status = 201;
@@ -102,10 +102,10 @@ const getAdminReturns = async (ctx) => {
   } = ctx.request.query;
   try {
     if (!bookId && !userId) {
-      throw new CustomError(400, 'please provide the information');
+      throw new CustomError(ERROR_CODE.VALIDATION_ERROR, 'please provide the information', '[restAPI/controllers/getAdminReturns/VALIDATION_ERROR]');
     }
     if (!page || !limit) {
-      throw new CustomError(400, 'you should provide page and limit');
+      throw new CustomError(ERROR_CODE.VALIDATION_ERROR, 'you should provide page and limit', '[restAPI/controllers/getAdminReturns/VALIDATION_ERROR]');
     }
     ctx.body = await rentalService.getBookReturns({
       bookId,
@@ -125,7 +125,7 @@ const getUserReturns = async (ctx) => {
   const { userId } = ctx.state;
   try {
     if (!page || !limit) {
-      throw new CustomError(400, 'you should provide page and limit');
+      throw new CustomError(ERROR_CODE.VALIDATION_ERROR, 'you should provide page and limit', '[restAPI/controllers/getUserReturns/VALIDATION_ERROR]');
     }
     ctx.body = await rentalService.getBookReturns({
       userId,

@@ -1,15 +1,15 @@
 const { reservationService } = require('../../../services/restAPI');
-const { CustomError } = require('../../../common/error');
+const { CustomError, ERROR_CODE } = require('../../../common/error');
 
 // 예약 데이터 생성 - 유저
 const createReservation = async (ctx) => {
   try {
     const { reservationCode, bookInfoId } = ctx.request.body;
     if (!reservationCode) {
-      ctx.throw(400, 'please provide the reservationCode');
+      throw new CustomError(ERROR_CODE.VALIDATION_ERROR, 'please provide the reservationCode', '[restAPI/controllers/createReservation/VALIDATION_ERROR]');
     }
     if (!bookInfoId) {
-      ctx.throw(400, 'please provide the bookInfoId');
+      throw new CustomError(ERROR_CODE.VALIDATION_ERROR, 'please provide the bookInfoId', '[restAPI/controllers/createReservation/VALIDATION_ERROR]');
     }
     ctx.body = await reservationService.createReservation({
       reservationCode,
@@ -29,10 +29,10 @@ const getAdminReservations = async (ctx) => {
   } = ctx.request.query;
   try {
     if (!page || !limit) {
-      throw new CustomError(400, 'you should provide page and limit');
+      throw new CustomError(ERROR_CODE.VALIDATION_ERROR, 'you should provide page and limit', '[restAPI/controllers/getAdminReservations/VALIDATION_ERROR]');
     }
     if (!userId && !bookInfoId) {
-      throw new CustomError(400, 'please provide the information');
+      throw new CustomError(ERROR_CODE.VALIDATION_ERROR, 'please provide the information', '[restAPI/controllers/getAdminReservations/VALIDATION_ERROR]');
     }
     ctx.body = await reservationService.getReservations({
       bookInfoId,
@@ -71,7 +71,7 @@ const cancelReservation = async (ctx) => {
   try {
     const { reservationId } = ctx.params;
     if (!reservationId) {
-      throw new CustomError(400, 'please provide the reservation information');
+      throw new CustomError(ERROR_CODE.VALIDATION_ERROR, 'please provide the reservation information', '[restAPI/controllers/cancelReservation/VALIDATION_ERROR]');
     }
     ctx.body = await reservationService.cancelReservation(reservationId);
     ctx.status = 200;
@@ -87,10 +87,10 @@ const getAdminOldReservations = async (ctx) => {
   } = ctx.request.query;
   try {
     if (!page || !limit) {
-      throw new CustomError(400, 'you should provide page and limit');
+      throw new CustomError(ERROR_CODE.VALIDATION_ERROR, 'you should provide page and limit', '[restAPI/controllers/getAdminOldReservations/VALIDATION_ERROR]');
     }
     if (!userId && !bookInfoId) {
-      throw new CustomError(400, 'please provide the information');
+      throw new CustomError(ERROR_CODE.VALIDATION_ERROR, 'please provide the information', '[restAPI/controllers/getAdminOldReservations/VALIDATION_ERROR]');
     }
     ctx.body = await reservationService.getOldReservations({
       bookInfoId,

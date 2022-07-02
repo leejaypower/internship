@@ -4,26 +4,26 @@ const {
 } = require('../../../repository');
 const { checkOverdue } = require('./rentalService');
 const { pagination } = require('../../../common/util/pagination');
-const { CustomError } = require('../../../common/error');
+const { CustomError, ERROR_CODE } = require('../../../common/error');
 
 // 예약 데이터 생성
 const createReservation = async (reservationCode, bookInfoId, userId) => {
   const rentals = await rentalRepository.getRentalsByBookInfo(bookInfoId);
   if (rentals.length === 0) {
-    throw new CustomError(404, '도서가 대출중 도서 목록에 없습니다.');
+    throw new CustomError(ERROR_CODE.NOT_EXIST_RENTAL, '도서가 대출중 도서 목록에 없습니다.', '[restAPI/services/reservation/NOT_EXIST_RENTAL]');
   }
   const userReservation = await reservationRepository.getReservations({ userId });
   if (userReservation.length >= 5) {
-    throw new CustomError(400, '이 고객은 현재 예약 가능 권수를 초과하여 예약이 불가능합니다.');
+    throw new CustomError(ERROR_CODE.INVALID_INPUT, '이 고객은 현재 예약 가능 권수를 초과하여 예약이 불가능합니다.', '[restAPI/services/reservation/INVALID_INPUT]');
   }
   // 연체 체크 (모듈화하였음)
   const isValid = await checkOverdue(userId);
   if (!isValid.status) {
-    throw new CustomError(400, '이 고객은 연체로 인해 현재 예약이 불가능합니다.');
+    throw new CustomError(ERROR_CODE.INVALID_INPUT, '이 고객은 연체로 인해 현재 예약이 불가능합니다.', '[restAPI/services/reservation/INVALID_INPUT]');
   }
   const reservation = await reservationRepository.getOne({ userId, bookInfoId });
   if (reservation) {
-    throw new CustomError(400, '이미 예약한 책입니다.');
+    throw new CustomError(ERROR_CODE.VALIDATION_ERROR, '이미 예약한 책입니다.', '[restAPI/services/reservation/VALIDATION_ERROR]');
   }
   const newReservation = await reservationRepository.create({ reservationCode, bookInfoId, userId });
   return newReservation;
@@ -54,7 +54,7 @@ const getOneReservation = async (reservationId) => {
 const cancelReservation = async (reservationId) => {
   const reservationData = await reservationRepository.getOne({ reservationId });
   if (!reservationData) {
-    throw new CustomError(404, '예약 정보가 없습니다.');
+    throw new CustomError(ERROR_CODE.NOT_EXIST_RESERVATION, '예약 정보가 없습니다.', '[restAPI/services/reservation/NOT_EXIST_RESERVATION]');
   }
   const cancelledReservation = await reservationRepository.cancelTransaction(reservationData);
   return cancelledReservation;
