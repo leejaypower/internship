@@ -1,15 +1,22 @@
 const bcrypt = require('bcrypt');
 const { userRepository, loginInfoRepository } = require('../../repositories');
-const { authUtils } = require('../../libs');
+const { authUtils, errorHandler } = require('../../libs');
 
 const getUser = async (limit, cursor, name, email, phone) => {
   const { userList } = await userRepository.getUser(limit, cursor, name, email, phone);
+
+  if (!userList.length) {
+    throw new errorHandler.customError.NoContentError();
+  }
   const nextCursor = userList[userList.length - 1].id + 1;
   return { data: { userList, nextCursor } };
 };
 
 const getSingleUser = async (userId) => {
   const { user } = await userRepository.getSingleUser(userId);
+  if (!user) {
+    throw new errorHandler.customError.NoContentError();
+  }
   return { data: user };
 };
 
@@ -17,7 +24,7 @@ const createUser = async (userInfo) => {
   const { isCreated } = await userRepository.createUser(userInfo);
 
   if (!isCreated) {
-    throw new Error(409, 'User email already exist');
+    throw new errorHandler.customError.DataAlreadyExistsError('존재하는 아이디 입니다');
   }
   return { isCreated };
 };
@@ -27,17 +34,21 @@ const updateUser = async (userId, usrInfo) => {
     // email 중복 check
     const { user } = await userRepository.findByEmail(usrInfo.email);
     if (user) {
-      throw new Error('Email already exist');
+      throw new errorHandler.customError.DataAlreadyExistsError('이미 존재하는 이메일 입니다');
     }
   }
   const { isUpdated } = await userRepository.updateUser(userId, usrInfo);
+  if (!isUpdated) {
+    throw new errorHandler.customError.NoContentError('사용자가 없습니다');
+  }
+
   return { isUpdated };
 };
 
 const deleteUser = async (userId) => {
   const { isDeleted } = await userRepository.deleteUser(userId);
   if (!isDeleted) {
-    throw new Error('Failed to cancel membership');
+    throw new errorHandler.customError.NoContentError('사용자가 없습니다');
   }
   return { isDeleted };
 };
@@ -45,20 +56,20 @@ const deleteUser = async (userId) => {
 const signIn = async (email, password) => {
   const { user } = await userRepository.findByEmail(email);
   if (!user) {
-    throw new Error('User does not exist');
+    throw new errorHandler.customError.NoContentError();
   }
-
   const pw = user.dataValues.password;
   const userId = user.dataValues.id;
   const { groupName } = user.dataValues;
   const pwVerify = bcrypt.compareSync(password, pw);
+
   if (!pwVerify) {
-    throw new Error('Wrong user password');
+    throw new errorHandler.customError.ValidationError('비밀번호가 유효하지 않습니다');
   }
 
   const { isLogin } = await loginInfoRepository.getIsLogin(userId);
   if (isLogin) {
-    throw new Error('already logged in');
+    throw new errorHandler.customError.DataAlreadyExistsError('이미 로그인 중입니다');
   }
   // GET TOKEN
   const accessTokenExp = Number(process.env.ACCESS_EXP_DATE);
@@ -68,7 +79,10 @@ const signIn = async (email, password) => {
   const accessToken = authUtils.getToken({ userId, groupName }, process.env.ACCESS_SECRET_KEY, accessTokenExp);
   const refreshToken = authUtils.getToken({ userId, groupName, iat }, process.env.REFRESH_SECRET_KEY, refreshTokenExp);
 
-  await loginInfoRepository.createIsLogin(userId, iat);
+  const { isCreated } = await loginInfoRepository.createIsLogin(userId, iat);
+  if (!isCreated) {
+    throw new errorHandler.customError.DataAlreadyExistsError('로그인에 실패하였습니다.');
+  }
 
   return { accessToken, refreshToken };
 };
@@ -76,7 +90,7 @@ const signIn = async (email, password) => {
 const signOut = async (userId) => {
   const { user } = await userRepository.getSingleUser(userId);
   if (!user) {
-    throw new Error('user not found');
+    throw new errorHandler.customError.NoContentError();
   }
 
   await loginInfoRepository.deleteIsLogin(userId);

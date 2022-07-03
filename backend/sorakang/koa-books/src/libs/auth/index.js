@@ -1,8 +1,8 @@
 const { getToken } = require('./tokenFunc');
-const { isValidToken } = require('./isValidToken');
+const tokenFunc = require('./tokenFunc');
 const { AuthorizationDirective } = require('./AuthorizationDirective');
 const { hashFunc } = require('./hashFunc');
 
 module.exports = {
-  getToken, isValidToken, AuthorizationDirective, hashFunc,
+  getToken, tokenFunc, AuthorizationDirective, hashFunc,
 };

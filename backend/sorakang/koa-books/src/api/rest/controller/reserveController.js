@@ -1,4 +1,5 @@
 const service = require('../../../services');
+const { customError } = require('../../../libs').errorHandler;
 
 /**
  * user 또는 특정 book에 대한 전체 예약 기록 검색 - 유저, 관리자
@@ -9,7 +10,7 @@ const getAllReservation = async (ctx) => {
   const input = ctx.request.query;
 
   if (!input.userId && !input.bookId) {
-    ctx.throw(400, 'Bad Request : Invalid query');
+    throw new customError.ValidationError('유효하지 않는 id 입니다');
   }
   const { reserveList } = await service.reservation.getAllReservation(input);
 
@@ -26,7 +27,7 @@ const createReservation = async (ctx) => {
   const { userId, bookId } = ctx.request.body;
 
   if (!userId || !bookId) {
-    ctx.throw(400, 'Bad Request : Invalid body');
+    throw new customError.ValidationError('유효하지 않는 id 입니다');
   }
   const { reservationInfo } = await service.reservation.createReservation(userId, bookId);
 
@@ -51,7 +52,11 @@ const updateReservation = async (ctx) => {
  */
 const deleteReservation = async (ctx) => {
   const { reservationId } = ctx.params;
-  const { isDeleted } = await service.reservation.deleteReservation(reservationId);
+
+  if (!reservationId) {
+    throw new customError.ValidationError('유효하지 않는 id 입니다');
+  }
+  await service.reservation.deleteReservation(reservationId);
 
   ctx.body = { message: 'successfully deleted' };
 };

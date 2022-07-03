@@ -20,7 +20,6 @@ const init = async () => {
     // await kafkaClients.returnHistoryConsume.consumeMessage();
     startApolloServer(app);
   } catch (err) {
-    console.error('Initialization failed', err);
     await kafkaClients.returnHistoryProducer.producerShutdown();
     await kafkaClients.returnHistoryConsume.consumerShutdown();
     process.exit(1);

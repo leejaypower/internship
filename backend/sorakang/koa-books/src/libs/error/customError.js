@@ -128,6 +128,22 @@ class APIError extends BaseError {
   }
 }
 
+/**
+ * 외부 Library를 사용하는 경우 사용되는 Error class
+ * 외부 라이브러러의 경우 어떤 error가 발생될지 모르므로 subName을 추가할 수 있도록 함
+ * default name : API_ERROR
+ */
+class ValidationError extends BaseError {
+  constructor(subMessage, ...args) {
+    super(...args);
+    this.name = ERROR_STATE.VALIDATION_ERROR.name;
+    this.statusCode = ERROR_STATE.VALIDATION_ERROR.statusCode;
+
+    const sub = subMessage || '';
+    this.message = `${ERROR_STATE.VALIDATION_ERROR.message} : ${sub}`;
+  }
+}
+
 // Service Error CRUD Error
 
 /**
@@ -186,4 +202,5 @@ module.exports = {
   DataUnavailableError,
   DataAlreadyExistsError,
   GraphqlCustomError,
+  ValidationError,
 };

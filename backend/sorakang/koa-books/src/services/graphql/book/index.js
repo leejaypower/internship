@@ -1,6 +1,6 @@
 const { transaction, bookRepository, bookSerialRepository } = require('../../../repositories');
 const { Sequelize } = require('../../../database/models');
-const { customError } = require('../../../libs').errorHandler;
+const { errorHandler } = require('../../../libs');
 
 const { Op } = Sequelize;
 
@@ -20,7 +20,7 @@ const getAllBooks = async (parent, { limit, curCursor, bookId }, _context) => {
   const { rows, count } = await bookRepository.findAndCountAllBook(limit, whereOptions, order);
 
   if (!rows?.length) {
-    throw new customError.NoContentError();
+    throw new errorHandler.customError.NoContentError();
   }
 
   // 다음 커서 생성
@@ -51,7 +51,7 @@ const getBookBySerialId = async (serialId) => {
   const bookSerialList = await bookSerialRepository.getBooksBySerialId(options);
 
   if (!bookSerialList?.length) {
-    throw new customError.NoContentError();
+    throw new errorHandler.customError.NoContentError();
   }
 
   const book = await bookRepository.getSingleBook(bookSerialList[0]);
@@ -80,7 +80,7 @@ const createBook = async (bookList) => {
 const deleteBook = async (bookIdList) => {
   const deletedCount = await bookRepository.deleteBook(bookIdList);
   if (!deletedCount) {
-    throw new customError.NoContentError('삭제 할 데이터가 없습니다');
+    throw new errorHandler.customError.NoContentError('삭제 할 데이터가 없습니다');
   }
   return deletedCount;
 };

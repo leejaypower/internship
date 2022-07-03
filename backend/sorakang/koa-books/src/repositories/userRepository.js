@@ -25,19 +25,14 @@ const getUser = async (limit, cursor, name, email, phone) => {
 };
 
 const getSingleUser = async (userId) => {
-  try {
-    const user = await User.findByPk(userId, {
-      attributes: {
-        exclude: ['password'],
-      },
-    });
-    if (!user) {
-      throw new Error(404, 'Data not Found');
-    }
-    return { user };
-  } catch (err) {
-    throw new Error(err); // 임시 error handling
-  }
+  const user = await User.findByPk(userId, {
+    attributes: {
+      exclude: ['password'],
+      returning: ['*'],
+    },
+  });
+
+  return { user };
 };
 
 const createUser = async (userInfo) => {
@@ -65,18 +60,8 @@ const createUser = async (userInfo) => {
 };
 
 const updateUser = async (userId, userInfo) => {
-  try {
-    const user = await User.findByPk(userId).then((result) => result.dataValues);
-
-    if (!user) {
-      throw new Error('User does not exist ');
-    }
-
-    const isUpdated = await User.update({ ...userInfo }, { where: { id: userId } });
-    return { isUpdated };
-  } catch (err) {
-    throw new Error(err); // 임시 error handling
-  }
+  const isUpdated = await User.update({ ...userInfo }, { where: { id: userId } });
+  return { isUpdated };
 };
 
 const deleteUser = async (userId) => {

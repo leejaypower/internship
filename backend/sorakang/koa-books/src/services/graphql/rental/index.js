@@ -1,7 +1,7 @@
 const { rentalRepository, reserveRepository } = require('../../../repositories');
 const { Sequelize } = require('../../../database/models');
 const { commonUtils } = require('../../../libs');
-const { customError } = require('../../../libs').errorHandler;
+const { errorHandler } = require('../../../libs');
 
 const { Op } = Sequelize;
 
@@ -18,7 +18,7 @@ const getAllRental = async ({ limit, afterCursor }) => {
 
   const { rows, count } = await rentalRepository.findAndCountAllRental(options);
   if (!rows?.length) {
-    throw new customError.NoContentError();
+    throw new errorHandler.customError.NoContentError();
   }
 
   const endCursor = rows?.length
@@ -51,13 +51,13 @@ const createRental = async ({ userId, bookSerialId }) => {
   // 사용자가 대출이 가능한지 check
   if (rentalList.rentalList) {
     if (rentalList.rentalList.length > 10) {
-      throw new customError.DataUnavailableError('대여 가능한 권수를 초과 하였습니다');
+      throw new errorHandler.customError.DataUnavailableError('대여 가능한 권수를 초과 하였습니다');
     }
 
     // 연체중인 책이 있는 경우 대여 불가
     const isOverdue = rentalList.filter((rent) => rent.state === false);
     if (isOverdue.length) {
-      throw new customError.DataUnavailableError('현재 연체중인 도서가 있습니다. 반납 후 대여가 가능합니다');
+      throw new errorHandler.customError.DataUnavailableError('현재 연체중인 도서가 있습니다. 반납 후 대여가 가능합니다');
     }
   }
 
@@ -66,13 +66,13 @@ const createRental = async ({ userId, bookSerialId }) => {
 
   const reservationList = await reserveRepository.getReservation(options);
   if (reservationList?.length) {
-    throw new customError.DataUnavailableError('해당 도서는 예약이 있습니다');
+    throw new errorHandler.customError.DataUnavailableError('해당 도서는 예약이 있습니다');
   }
 
   const { rental, isCreated } = await rentalRepository.createRental(userId, bookSerialId, returnDate);
   // 이미 대여중 이라면 대여 불가
   if (!isCreated) {
-    throw new customError.DataAlreadyExistsError('이미 대여중 입니다');
+    throw new errorHandler.customError.DataAlreadyExistsError('이미 대여중 입니다');
   }
 
   const rentInfo = rental.dataValues;
@@ -84,7 +84,7 @@ const returnRentalBook = async ({ rentalId }) => {
   const { rentalList } = await rentalRepository.getRentalInfo({ id: rentalId });
 
   if (!rentalList?.length) {
-    throw new customError.NoContentError('대여 정보가 없습니다');
+    throw new errorHandler.customError.NoContentError('대여 정보가 없습니다');
   }
 
   const rentInfo = rentalList[0].dataValues;
@@ -93,7 +93,7 @@ const returnRentalBook = async ({ rentalId }) => {
 
   // 이미 반납이 되었다면 반납 중단
   if (!state) {
-    throw new customError.NoContentError('대여 정보가 없습니다');
+    throw new errorHandler.customError.NoContentError('대여 정보가 없습니다');
   }
 
   // 반납 실행

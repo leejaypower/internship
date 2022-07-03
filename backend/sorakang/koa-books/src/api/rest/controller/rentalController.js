@@ -1,4 +1,5 @@
 const service = require('../../../services');
+const { customError } = require('../../../libs').errorHandler;
 
 /**
  * 모든 대출 내역 조회
@@ -18,7 +19,7 @@ const getRentalInfo = async (ctx) => {
   const input = ctx.request.query;
 
   if (!input.userId && !input.bookId) {
-    ctx.throw(400, 'Bad Request : Invalid query');
+    throw new customError.ValidationError('유효하지 않은 id 입니다');
   }
 
   const { rentalList } = await service.rental.getRentalInfo(input);
@@ -37,10 +38,10 @@ const createRental = async (ctx) => {
   const userId = ctx.user.id; // 권한 검사 시 token에서 추출한 userId
 
   if (!bookId) {
-    ctx.throw(400, 'Bad Request : Invalid request body');
+    throw new customError.ValidationError('유효하지 않은 id 입니다');
   }
 
-  const { rental, isCreated } = await service.rental.createRental(userId, bookId);
+  const { rental } = await service.rental.createRental(userId, bookId);
 
   ctx.status = 201;
   ctx.body = { data: rental };
@@ -57,7 +58,7 @@ const extendRentDate = async (ctx) => {
   const { rentalId } = ctx.params;
 
   if (!bookId) {
-    ctx.throw(400, 'Bad Request : Invalid request query');
+    throw new customError.ValidationError('유효하지 않은 책 입니다');
   }
 
   await service.rental.extendRentDate(bookId, rentalId);
@@ -73,6 +74,9 @@ const extendRentDate = async (ctx) => {
  */
 const returnRental = async (ctx) => {
   const { rentalId } = ctx.params;
+  if (!rentalId) {
+    throw new customError.ValidationError('유효하지 않은 id입니다');
+  }
   await service.rental.returnRental(rentalId);
 
   ctx.body = { message: 'Successfully deleted' };

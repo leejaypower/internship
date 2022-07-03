@@ -36,7 +36,7 @@ async function getBookDataApi(genre, display) {
 
     return bookList;
   } catch (err) {
-    console.log(err);
+    throw err;
   }
 }
 

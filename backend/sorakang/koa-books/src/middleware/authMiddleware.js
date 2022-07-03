@@ -1,25 +1,22 @@
-const { verify } = require('jsonwebtoken');
 const service = require('../services');
 const { authRepository } = require('../repositories');
 const { customError } = require('../libs').errorHandler;
+const { tokenFunc } = require('../libs').authUtils;
 
 const verifyToken = (...auth) => async (ctx, next) => {
   const { authorization } = ctx.headers;
   const refreshToken = ctx.cookies.get('refresh_token');
 
-  const accessToken = authorization.split(' ')[1];
-
   if (!authorization) {
     throw new customError.UnauthenticatedError();
   }
-
-  const aTokenDecode = verify(accessToken, process.env.ACCESS_SECRET_KEY);
-  const rTokenDecode = verify(refreshToken, process.env.REFRESH_SECRET_KEY);
+  const accessToken = authorization.split(' ')[1];
+  const aTokenDecode = await tokenFunc.verifyTokenWrapper(accessToken, process.env.ACCESS_SECRET_KEY);
+  const rTokenDecode = await tokenFunc.verifyTokenWrapper(refreshToken, process.env.REFRESH_SECRET_KEY);
 
   if (!aTokenDecode) {
     throw new customError.UnauthenticatedError();
   }
-
   // access Token을 확인하여 verify
   const { data } = await service.user.getSingleUser(aTokenDecode.userId);
   // refresh token의 iat가 같은지 확인하여 중복 로그인 방지..

@@ -1,13 +1,12 @@
 const { bookRepository, bookSerialRepository } = require('../../repositories');
-const { commonUtils } = require('../../libs');
+const { commonUtils, errorHandler } = require('../../libs');
 const { sequelize } = require('../../database/models');
 const { customError } = require('../../libs').errorHandler;
 
 const getAllBook = async (limit, cursor, bookId, search) => {
   const bookList = await bookRepository.getAllBook(limit, cursor, bookId, search);
-
   if (!bookList.length) {
-    throw new customError.NoContentError();
+    throw new errorHandler.customError.NoContentError();
   }
   const time = bookList[bookList.length - 1].publicationDate.getTime();
   const curId = bookList[bookList.length - 1].id;
@@ -22,7 +21,7 @@ const getSingleBook = async (bookId) => {
   const bookCount = bookSerialList.length;
 
   if (bookCount === 0) {
-    throw new customError.NoContentError();
+    throw new errorHandler.customError.NoContentError();
   }
 
   return { data: { bookInfo: book, bookSerialList, bookCount } };
@@ -36,7 +35,7 @@ const getSingleBook = async (bookId) => {
 const getBooksById = async (bookIdList) => {
   const bookList = await bookRepository.getBooksById(bookIdList);
   if (!bookList?.length) {
-    throw new customError.NoContentError();
+    throw new errorHandler.customError.NoContentError();
   }
   return bookList;
 };
@@ -63,7 +62,7 @@ const createBook = async (bookList) => {
   });
 
   if (!result.state) {
-    throw new customError.DataUnavailableError('Transaction 실패', result);
+    throw new errorHandler.customError.DataUnavailableError('Transaction 실패', result);
   }
 
   return { message: 'successfully created' };
@@ -73,7 +72,7 @@ const updateBook = async (bookId, bookInfo) => {
   const isUpdated = await bookRepository.updateBook(bookId, bookInfo);
 
   if (!isUpdated) {
-    throw new customError.NoContentError();
+    throw new errorHandler.customError.NoContentError();
   }
 
   const state = 201;
@@ -84,7 +83,7 @@ const updateBook = async (bookId, bookInfo) => {
 const deleteBook = async (bookIdList) => {
   const result = await bookRepository.deleteBook(bookIdList);
   if (!result) {
-    throw new customError.NoContentError();
+    throw new errorHandler.customError.NoContentError();
   }
   return result;
 };
@@ -93,7 +92,7 @@ const deleteSingleBook = async (bookId) => {
   const result = await bookRepository.deleteSingleBook(bookId);
 
   if (!result) {
-    throw new customError.NoContentError();
+    throw new errorHandler.customError.NoContentError();
   }
   return result;
 };

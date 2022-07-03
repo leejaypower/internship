@@ -1,39 +1,39 @@
 const service = require('../../../services');
+const validator = require('../../../libs/validator');
+const { customError } = require('../../../libs').errorHandler;
 
 const getAllBook = async (ctx) => {
-  // 입력 값에 대한 Validation이 필요함. 타입에 대한 validation , err -> 해당 주차에서 진행
   const {
     limit = 10, cursor = `${new Date().getTime()}-1`, search = '',
   } = ctx.request.query;
 
-  const cursorArray = cursor.split('-');
-  const dateCursor = new Date(Number(cursorArray[0]));
-  const bookId = Number(cursorArray[1]);
+  // cursor validation
+  const { validCursor, id } = validator.cursorValidator(cursor);
 
-  ctx.body = await service.book.getAllBook(Number(limit), dateCursor, bookId, search);
+  ctx.body = await service.book.getAllBook(Number(limit), validCursor, id, search);
 };
 
 const getSingleBook = async (ctx) => {
-  // 입력 값에 대한 Validation이 필요함. 타입에 대한 validation , err -> 해당 주차에서 진행
-
   const { bookId } = ctx.params;
 
   if (!bookId) {
-    throw new Error(400, 'Invalid query params');
-    // 임시 error handling
+    throw new customError.ValidationError('유효하지 않는 id 입니다');
   }
-  // 개별 책 조회 -> 책 정보 , 동일 책  권수, 시리얼 넘버 list 반환
-  ctx.body = await service.book.getSingleBook(bookId);
+  const body = await service.book.getSingleBook(bookId);
+
+  ctx.body = { data: body };
 };
 
 const createBook = async (ctx) => {
   const { bookList } = ctx.request.body;
 
-  if (!bookList?.length === 0) { /* error handling 필요 */ }
-
+  if (!bookList?.length === 0) {
+    throw new customError.ValidationError('등록할 책을 입력 해주세요');
+  }
   const body = await service.book.createBook(bookList);
 
-  ctx.body = body;
+  ctx.status = 201;
+  ctx.body = { data: body };
 };
 
 const updateBook = async (ctx) => {
@@ -41,22 +41,20 @@ const updateBook = async (ctx) => {
   const { bookId } = ctx.params;
 
   if (!bookId || !bookInfo) {
-    throw new Error(404, 'Invalid request body or query');
+    throw new customError.ValidationError('수정할 책을 입력 해주세요');
   }
+  await service.book.updateBook(bookId, bookInfo);
 
-  const { state, message } = await service.book.updateBook(bookId, bookInfo);
-
-  ctx.status = state;
-  ctx.body = { message };
+  ctx.status = 201;
+  ctx.body = { message: 'Successfully patched' };
 };
 
 const deleteBook = async (ctx) => {
   const idList = ctx.request.body.bookIdList;
 
   if (!idList) {
-    throw new Error(404, 'Invalid request body ');
+    throw new customError.ValidationError('삭제할 책을 입력 해주세요');
   }
-
   await service.book.deleteBook(idList);
 
   ctx.body = { message: 'successfully deleted' };
@@ -66,7 +64,7 @@ const deleteSingleBook = async (ctx) => {
   const { bookId } = ctx.params;
 
   if (!bookId) {
-    throw new Error(404, 'Invalid request params ');
+    throw new customError.ValidationError('삭제할 책을 입력 해주세요');
   }
   await service.book.deleteSingleBook(bookId);
 
