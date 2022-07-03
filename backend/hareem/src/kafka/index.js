@@ -2,7 +2,7 @@
 const { TOPIC, BUSINESS } = require('../constants');
 const { User } = require('../database/models');
 const { getRentalTemplate } = require('../utils/mailer/templates');
-const { timer, mailer } = require('../utils');
+const { timer, mailer, logger } = require('../utils');
 const admin = require('./admin');
 const client = require('./client');
 const consumer = require('./consumer');
@@ -19,17 +19,25 @@ const consumerRun = async () => {
   await consumerInstance.topicsSubscribe(client.getTopics());
 
   const _noticeDueDate = async (noticeDueDateData) => {
-    const user = await User.findByPk(noticeDueDateData.userId);
-    // 반납 예정일을 알려줌
-    const mailInfo = {
-      subject: '[바로고 도서관] 반납 예정일 안내',
-      to: 'elaha00@naver.com',
-      html: getRentalTemplate({
-        email: user.email,
-        dueDate: timer.dateToString(timer.afterNDate(BUSINESS.RENTAL_PERIOD), '-'),
-      }),
-    };
-    await mailer.sendMail(mailInfo);
+    try {
+      const user = await User.findByPk(noticeDueDateData.userId);
+
+      const mailInfo = {
+        subject: '[바로고 도서관] 반납 예정일 안내',
+        to: 'elaha00@naver.com',
+        html: getRentalTemplate({
+          email: user.email,
+          dueDate: timer.dateToString(timer.afterNDate(BUSINESS.RENTAL_PERIOD), '-'),
+        }),
+      };
+
+      await mailer.sendMail(mailInfo);
+    } catch (error) {
+      logger.warn({
+        error,
+        msg: 'Send mail fail',
+      });
+    }
   };
 
   consumerInstance.addTopicHandler(

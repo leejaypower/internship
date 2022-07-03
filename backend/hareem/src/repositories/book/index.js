@@ -2,40 +2,48 @@ const {
   Sequelize: { Op }, sequelize, BookInfo, Book,
 } = require('../../database/models');
 const { timer } = require('../../utils');
-const { QUERY, BUSINESS } = require('../../constants');
+const {
+  QUERY, BUSINESS, ERROR_CODE, ERROR_MESSAGE,
+} = require('../../constants');
+const { CustomError } = require('../../errors');
 
 const createBookInfoWithBook = async (createBookInfoWithBookData) => {
-  const result = await sequelize.transaction(async (transaction) => {
-    const {
-      isbn,
-      title,
-      author,
-      publisher,
-      publishDate,
-      description,
-    } = createBookInfoWithBookData;
+  try {
+    const result = await sequelize.transaction(async (transaction) => {
+      const {
+        isbn,
+        title,
+        author,
+        publisher,
+        publishDate,
+        description,
+      } = createBookInfoWithBookData;
 
-    const bookInfo = await BookInfo.create({
-      isbn,
-      title,
-      author,
-      publisher,
-      publishDate,
-      description,
-    }, {
-      transaction,
+      const bookInfo = await BookInfo.create({
+        isbn,
+        title,
+        author,
+        publisher,
+        publishDate,
+        description,
+      }, {
+        transaction,
+      });
+
+      const book = await Book.create({
+        bookInfoId: bookInfo.id,
+      }, {
+        transaction,
+      });
+
+      bookInfo.dataValues.Books = [book];
+      return bookInfo;
     });
-
-    const book = await Book.create({
-      bookInfoId: bookInfo.id,
-    }, {
-      transaction,
-    });
-
-    bookInfo.dataValues.Books = [book];
-    return bookInfo;
-  });
-  return result;
+    return result;
+  } catch (err) {
+    console.log(err);
+    throw new CustomError(ERROR_CODE.DB_FAIL, ERROR_MESSAGE.DB_FAIL.STANDARD);
+  }
 };
 
 const getBookInfos = async (getBooksQuery) => {
@@ -116,8 +124,13 @@ const getBookInfos = async (getBooksQuery) => {
     };
   }
 
-  const bookInfos = await BookInfo.findAll(options);
-  return bookInfos;
+  try {
+    const bookInfos = await BookInfo.findAll(options);
+
+    return bookInfos;
+  } catch (err) {
+    throw new CustomError(ERROR_CODE.DB_FAIL, ERROR_MESSAGE.DB_FAIL.STANDARD);
+  }
 };
 
 const getBookInfo = async (bookInfoId, only = false) => {
@@ -126,16 +139,26 @@ const getBookInfo = async (bookInfoId, only = false) => {
     options.include = { model: Book };
   }
 
-  const bookInfo = await BookInfo.findByPk(bookInfoId, options);
-  return bookInfo;
+  try {
+    const bookInfo = await BookInfo.findByPk(bookInfoId, options);
+
+    return bookInfo;
+  } catch (err) {
+    throw new CustomError(ERROR_CODE.DB_FAIL, ERROR_MESSAGE.DB_FAIL.STANDARD);
+  }
 };
 
 const getBookInfoByISBN = async (isbn) => {
-  const bookInfo = await BookInfo.findOne({
-    where: { isbn },
-    include: { model: Book },
-  });
-  return bookInfo;
+  try {
+    const bookInfo = await BookInfo.findOne({
+      where: { isbn },
+      include: { model: Book },
+    });
+
+    return bookInfo;
+  } catch (err) {
+    throw new CustomError(ERROR_CODE.DB_FAIL, ERROR_MESSAGE.DB_FAIL.STANDARD);
+  }
 };
 
 const updateBookInfo = async (bookInfoId, updateBookData) => {
@@ -148,117 +171,160 @@ const updateBookInfo = async (bookInfoId, updateBookData) => {
     description,
   } = updateBookData;
 
-  const result = await BookInfo.update({
-    isbn,
-    title,
-    author,
-    publisher,
-    publishDate,
-    description,
-  }, {
-    where: { id: bookInfoId },
-  });
+  try {
+    const result = await BookInfo.update({
+      isbn,
+      title,
+      author,
+      publisher,
+      publishDate,
+      description,
+    }, {
+      where: { id: bookInfoId },
+    });
 
-  return result;
+    return result;
+  } catch (err) {
+    throw new CustomError(ERROR_CODE.DB_FAIL, ERROR_MESSAGE.DB_FAIL.STANDARD);
+  }
 };
 
 const createBook = async (createBookData) => {
-  const book = await Book.create(createBookData);
-  return book;
+  try {
+    const book = await Book.create(createBookData);
+
+    return book;
+  } catch (err) {
+    throw new CustomError(ERROR_CODE.DB_FAIL, ERROR_MESSAGE.DB_FAIL.STANDARD);
+  }
 };
 
 const getBooks = async (bookInfoId) => {
-  // 도서관에 등록 가능한 한 종류의 도서는 최대 5권 -> limit 옵션?? 사용하지 않음
-  const books = await Book.findAll({
-    where: { bookInfoId },
-    order: [['createdAt', 'DESC']],
-  });
+  try {
+    // 도서관에 등록 가능한 한 종류의 도서는 최대 5권 -> limit 옵션?? 사용하지 않음
+    const books = await Book.findAll({
+      where: { bookInfoId },
+      order: [['createdAt', 'DESC']],
+    });
 
-  return books;
+    return books;
+  } catch (err) {
+    throw new CustomError(ERROR_CODE.DB_FAIL, ERROR_MESSAGE.DB_FAIL.STANDARD);
+  }
 };
 
 const getBook = async (bookId) => {
-  const book = await Book.findByPk(bookId, {
-    include: {
-      model: BookInfo,
-    },
-  });
-
-  return book;
-};
-
-const deleteBook = async (id) => {
-  const result = await Book.destroy({
-    where: { id },
-  });
-
-  return result;
-};
-
-const createBookInfoWithBookGql = async (createBookInput) => {
-  const result = await sequelize.transaction(async (transaction) => {
-    const {
-      isbn,
-      title,
-      author,
-      publisher,
-      publishDate,
-      description,
-    } = createBookInput;
-
-    const bookInfo = await BookInfo.create({
-      isbn,
-      title,
-      author,
-      publisher,
-      publishDate,
-      description,
-    }, {
-      transaction,
-    });
-
-    const book = await Book.create({
-      bookInfoId: bookInfo.id,
-    }, {
-      transaction,
+  try {
+    const book = await Book.findByPk(bookId, {
+      include: {
+        model: BookInfo,
+      },
     });
 
     return book;
-  });
+  } catch (err) {
+    throw new CustomError(ERROR_CODE.DB_FAIL, ERROR_MESSAGE.DB_FAIL.STANDARD);
+  }
+};
 
-  return result;
+const deleteBook = async (id) => {
+  try {
+    const result = await Book.destroy({
+      where: { id },
+    });
+
+    return result;
+  } catch (err) {
+    throw new CustomError(ERROR_CODE.DB_FAIL, ERROR_MESSAGE.DB_FAIL.STANDARD);
+  }
+};
+
+const createBookInfoWithBookGql = async (createBookInput) => {
+  try {
+    const result = await sequelize.transaction(async (transaction) => {
+      const {
+        isbn,
+        title,
+        author,
+        publisher,
+        publishDate,
+        description,
+      } = createBookInput;
+
+      const bookInfo = await BookInfo.create({
+        isbn,
+        title,
+        author,
+        publisher,
+        publishDate,
+        description,
+      }, {
+        transaction,
+      });
+
+      const book = await Book.create({
+        bookInfoId: bookInfo.id,
+      }, {
+        transaction,
+      });
+
+      return book;
+    });
+
+    return result;
+  } catch (err) {
+    throw new CustomError(ERROR_CODE.DB_FAIL, ERROR_MESSAGE.DB_FAIL.STANDARD);
+  }
 };
 
 const getBooksByBookInfoIds = async (bookInfoIds) => {
-  const books = await Book.findAll({
-    where: {
-      bookInfoId: { [Op.in]: bookInfoIds },
-    },
-    order: [['createdAt', 'DESC']],
-  });
+  try {
+    const books = await Book.findAll({
+      where: {
+        bookInfoId: { [Op.in]: bookInfoIds },
+      },
+      order: [['createdAt', 'DESC']],
+    });
 
-  return books;
+    return books;
+  } catch (err) {
+    throw new CustomError(ERROR_CODE.DB_FAIL, ERROR_MESSAGE.DB_FAIL.STANDARD);
+  }
 };
 
 const getBookInfosByIds = async (ids) => {
-  const bookInfos = await BookInfo.findAll({
-    where: {
-      id: { [Op.in]: ids },
-    },
-    order: [['createdAt', 'DESC']],
-  });
+  try {
+    const bookInfos = await BookInfo.findAll({
+      where: {
+        id: { [Op.in]: ids },
+      },
+      order: [['createdAt', 'DESC']],
+    });
 
-  return bookInfos;
+    return bookInfos;
+  } catch (err) {
+    throw new CustomError(ERROR_CODE.DB_FAIL, ERROR_MESSAGE.DB_FAIL.STANDARD);
+  }
 };
 
 const getBooksByOptions = async (options) => {
-  const books = await Book.findAll(options);
-  return books;
+  try {
+    const books = await Book.findAll(options);
+
+    return books;
+  } catch (err) {
+    throw new CustomError(ERROR_CODE.DB_FAIL, ERROR_MESSAGE.DB_FAIL.STANDARD);
+  }
 };
 
 const getBookInfosByOptions = async (options) => {
-  const bookInfos = await BookInfo.findAll(options);
-  return bookInfos;
+  try {
+    const bookInfos = await BookInfo.findAll(options);
+
+    return bookInfos;
+  } catch (err) {
+    throw new CustomError(ERROR_CODE.DB_FAIL, ERROR_MESSAGE.DB_FAIL.STANDARD);
+  }
 };
 
 module.exports = {

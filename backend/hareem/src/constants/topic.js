@@ -1,15 +1,16 @@
-const MESSAGE_TYPE = {
-  EVENT: 'event',
-};
-
-const DATASET_NAME = 'internship-hareem';
-
-const DATA_NAME = {
-  RENTALS: 'rentals',
+const TOPIC = {
+  MESSAGE_TYPE: {
+    EVENT: 'event',
+  },
+  DATASET_NAME: 'internship-hareem',
+  DATA_NAME: {
+    USERS: 'users',
+    BOOKS: 'books',
+    RENTALS: 'rentals',
+    RESERVATIONS: 'reservations',
+  },
 };
 
 module.exports = {
-  MESSAGE_TYPE,
-  DATASET_NAME,
-  DATA_NAME,
+  TOPIC,
 };

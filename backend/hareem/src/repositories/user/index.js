@@ -2,44 +2,50 @@ const {
   User, Auth, sequelize, Sequelize: { Op },
 } = require('../../database/models');
 const { timer } = require('../../utils');
-const { QUERY, TABLE, BUSINESS } = require('../../constants');
+const { QUERY, BUSINESS, USER_ROLE } = require('../../constants');
+const { CustomError } = require('../../errors');
+const { ERROR_CODE, ERROR_MESSAGE } = require('../../constants/error');
 
 const createUser = async (createData) => {
-  const result = await sequelize.transaction(async (transaction) => {
-    const {
-      email,
-      password,
-      phone,
-      name,
-      role = TABLE.USER_ROLE.USER,
-      only = false,
-    } = createData;
+  try {
+    const result = await sequelize.transaction(async (transaction) => {
+      const {
+        email,
+        password,
+        phone,
+        name,
+        role = USER_ROLE.USER,
+        only = false,
+      } = createData;
 
-    const user = await User.create({
-      email,
-      password,
-      phone,
-      name,
-    }, {
-      transaction,
+      const user = await User.create({
+        email,
+        password,
+        phone,
+        name,
+      }, {
+        transaction,
+      });
+
+      const auth = await Auth.create({
+        role,
+        userId: user.id,
+      }, {
+        transaction,
+      });
+
+      delete user.password;
+      if (!only) {
+        user.dataValues.Auth = auth;
+      }
+
+      return user;
     });
 
-    const auth = await Auth.create({
-      role,
-      userId: user.id,
-    }, {
-      transaction,
-    });
-
-    delete user.password;
-    if (!only) {
-      user.dataValues.Auth = auth;
-    }
-
-    return user;
-  });
-
-  return result;
+    return result;
+  } catch (err) {
+    throw new CustomError(ERROR_CODE.DB_FAIL, ERROR_MESSAGE.DB_FAIL.STANDARD);
+  }
 };
 
 const getUsers = async (getUsersQuery) => {
@@ -103,9 +109,13 @@ const getUsers = async (getUsersQuery) => {
     };
   }
 
-  const users = await User.findAll(options);
+  try {
+    const users = await User.findAll(options);
 
-  return users;
+    return users;
+  } catch (err) {
+    throw new CustomError(ERROR_CODE.DB_FAIL, ERROR_MESSAGE.DB_FAIL.STANDARD);
+  }
 };
 
 const getUserById = async (id, only = false) => {
@@ -120,22 +130,30 @@ const getUserById = async (id, only = false) => {
     };
   }
 
-  const user = await User.findByPk(id, options);
+  try {
+    const user = await User.findByPk(id, options);
 
-  return user;
+    return user;
+  } catch (err) {
+    throw new CustomError(ERROR_CODE.DB_FAIL, ERROR_MESSAGE.DB_FAIL.STANDARD);
+  }
 };
 
 const getUser = async (getBy, selectPassword = false) => {
-  const user = await User.findOne({
-    where: getBy,
-    attributes: { exclude: [selectPassword ? '' : 'password'] },
-    include: {
-      model: Auth,
-      attributes: ['role', 'updatedAt'],
-    },
-  });
+  try {
+    const user = await User.findOne({
+      where: getBy,
+      attributes: { exclude: [selectPassword ? '' : 'password'] },
+      include: {
+        model: Auth,
+        attributes: ['role', 'updatedAt'],
+      },
+    });
 
-  return user;
+    return user;
+  } catch (err) {
+    throw new CustomError(ERROR_CODE.DB_FAIL, ERROR_MESSAGE.DB_FAIL.STANDARD);
+  }
 };
 
 const updateUser = async (updateBy, updateData) => {
@@ -145,65 +163,82 @@ const updateUser = async (updateBy, updateData) => {
     name,
   } = updateData;
 
-  const result = await User.update({
-    password,
-    phone,
-    name,
-  }, {
-    where: updateBy,
-  });
+  try {
+    const result = await User.update({
+      password,
+      phone,
+      name,
+    }, {
+      where: updateBy,
+    });
 
-  return result;
+    return result;
+  } catch (err) {
+    throw new CustomError(ERROR_CODE.DB_FAIL, ERROR_MESSAGE.DB_FAIL.STANDARD);
+  }
 };
 
 const updateUserByAdmin = async (id, updateData) => {
-  const result = await sequelize.transaction(async (transaction) => {
-    const {
-      password,
-      phone,
-      name,
-      isBlack = false,
-      rentalCount,
-      role,
-      refreshToken,
-    } = updateData;
+  try {
+    const result = await sequelize.transaction(async (transaction) => {
+      const {
+        password,
+        phone,
+        name,
+        isBlack = false,
+        rentalCount,
+        role,
+        refreshToken,
+      } = updateData;
 
-    const updateResult = await User.update({
-      password,
-      phone,
-      name,
-      isBlack,
-      rentalCount,
-    }, {
-      where: { id },
-      transaction,
+      const updateResult = await User.update({
+        password,
+        phone,
+        name,
+        isBlack,
+        rentalCount,
+      }, {
+        where: { id },
+        transaction,
+      });
+
+      await Auth.update({
+        role,
+        refreshToken,
+      }, {
+        where: { userId: id },
+        transaction,
+      });
+
+      return updateResult;
     });
 
-    await Auth.update({
-      role,
-      refreshToken,
-    }, {
-      where: { userId: id },
-      transaction,
-    });
-
-    return updateResult;
-  });
-
-  return result;
+    return result;
+  } catch (err) {
+    throw new CustomError(ERROR_CODE.DB_FAIL, ERROR_MESSAGE.DB_FAIL.STANDARD);
+  }
 };
 
 const deleteUser = async (deleteBy) => {
-  const result = await User.destroy({
-    where: deleteBy,
-  });
+  try {
+    const result = await User.destroy({
+      where: deleteBy,
+    });
 
-  return result;
+    return result;
+  } catch (err) {
+    throw new CustomError(ERROR_CODE.DB_FAIL, ERROR_MESSAGE.DB_FAIL.STANDARD);
+  }
 };
 
 const getUsersByOptions = async (options) => {
-  const users = await User.findAll(options);
-  return users;
+  try {
+    const users = await User.findAll(options);
+
+    return users;
+  } catch (err) {
+    throw new CustomError(ERROR_CODE.DB_FAIL, ERROR_MESSAGE.DB_FAIL.STANDARD);
+  }
 };
 
 module.exports = {

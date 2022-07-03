@@ -28,9 +28,7 @@ input GetRentalHistoryInput {
   rentalId: Int
 }
 
-type GetRentalHistoryOutput implements CoreOutput {
-  success: Boolean!
-  error: Error
+type GetRentalHistoryOutput {
   rental: [Rental]
 }
 
@@ -48,8 +46,6 @@ input CreateRentalEndInput {
   rentalId: Int
 }
 
-type CreateRentalOutput implements CoreOutput {
-  success: Boolean!
-  error: Error
+type CreateRentalOutput {
   rental: Rental
 }

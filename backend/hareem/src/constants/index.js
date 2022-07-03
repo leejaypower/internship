@@ -1,15 +1,17 @@
-const BUSINESS = require('./business');
-const TABLE = require('./table');
-const QUERY = require('./query');
-const MESSAGE = require('./message');
-const COOKIE = require('./cookie');
-const TOPIC = require('./topic');
+const business = require('./business');
+const role = require('./role');
+const query = require('./query');
+const cookie = require('./cookie');
+const topic = require('./topic');
+const httpStatusCode = require('./httpStatusCode');
+const error = require('./error');
 
 module.exports = {
-  BUSINESS,
-  TABLE,
-  QUERY,
-  MESSAGE,
-  COOKIE,
-  TOPIC,
+  ...business,
+  ...role,
+  ...query,
+  ...cookie,
+  ...topic,
+  ...httpStatusCode,
+  ...error,
 };

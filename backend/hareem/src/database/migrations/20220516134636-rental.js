@@ -1,4 +1,4 @@
-const { TABLE } = require('../../constants');
+const { BUSINESS } = require('../../constants');
 
 module.exports = {
   async up(queryInterface, Sequelize) {
@@ -11,7 +11,7 @@ module.exports = {
       state: {
         type: Sequelize.STRING(10),
         allowNull: false,
-        defaultValue: TABLE.RENTAL_STATE.START,
+        defaultValue: BUSINESS.RENTAL_STATE.START,
         comment: '해당 컬럼은 도서의 대여 또는 연장 또는 반납 상태를 나타냅니다. (START, EXTEND, END)',
       },
       dueDate: {

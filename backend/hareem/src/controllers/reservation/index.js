@@ -1,43 +1,49 @@
 const { reservationService } = require('../../services');
 
 const createReservation = async (ctx) => {
+  const { bookInfoId } = ctx.params;
+  const { id: userId } = ctx.user;
+
   try {
-    const { bookInfoId } = ctx.params;
-    const { id: userId } = ctx.user;
     const reservation = await reservationService.createReservation(userId, bookInfoId);
+
     ctx.body = reservation;
-  } catch (error) {
-    ctx.throw(error);
+  } catch (err) {
+    ctx.throw(err);
   }
 };
 
 const getUsersReservations = async (ctx) => {
   try {
     const allReservations = await reservationService.getUsersReservations(ctx.request.query);
+
     ctx.body = allReservations;
-  } catch (error) {
-    ctx.throw(error);
+  } catch (err) {
+    ctx.throw(err);
   }
 };
 
 const getUserReservations = async (ctx) => {
+  const { id: userId } = ctx.user;
+
   try {
-    const { id: userId } = ctx.user;
     const reservations = await reservationService.getUserReservations(userId, ctx.request.query);
+
     ctx.body = reservations;
-  } catch (error) {
-    ctx.throw(error);
+  } catch (err) {
+    ctx.throw(err);
   }
 };
 
 const deleteReservation = async (ctx) => {
+  const { id } = ctx.params;
+
   try {
-    const { id } = ctx.params;
-    const { id: userId } = ctx.user;
-    const reservation = await reservationService.deleteReservation(userId, id);
+    const reservation = await reservationService.deleteReservation(id);
+
     ctx.body = reservation;
-  } catch (error) {
-    ctx.throw(error);
+  } catch (err) {
+    ctx.throw(err);
   }
 };
 

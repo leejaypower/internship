@@ -10,22 +10,24 @@ const login = async (ctx) => {
       accessToken,
       refreshTokenCookie: cookie,
     } = await authService.login(ctx.request.body);
+
     ctx.cookies.set(cookie.name, cookie.token, cookie.options);
-    ctx.body = {
-      accessToken,
-    };
-  } catch (error) {
-    ctx.throw(error);
+
+    ctx.body = { accessToken };
+  } catch (err) {
+    ctx.throw(err);
   }
 };
 
 const logout = async (ctx) => {
+  const { id: userId } = ctx.user;
+
   try {
-    const { id: userId } = ctx.user;
     await authService.logout(userId);
+
     ctx.body = '로그아웃 완료';
-  } catch (error) {
-    ctx.throw(error);
+  } catch (err) {
+    ctx.throw(err);
   }
 };
 
@@ -34,11 +36,10 @@ const refreshAccessToken = async (ctx) => {
     const {
       accessToken,
     } = await authService.refreshAccessToken(ctx.cookies.get(COOKIE.REFRESH_TOKEN));
-    ctx.body = {
-      accessToken,
-    };
-  } catch (error) {
-    ctx.throw(error);
+
+    ctx.body = { accessToken };
+  } catch (err) {
+    ctx.throw(err);
   }
 };
 

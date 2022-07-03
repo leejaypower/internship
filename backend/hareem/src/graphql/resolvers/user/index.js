@@ -1,5 +1,5 @@
 const { composeResolvers } = require('@graphql-tools/resolvers-composition');
-const { TABLE } = require('../../../constants');
+const { USER_ROLE } = require('../../../constants');
 const { authMiddleware } = require('../../../middlewares');
 const { userService } = require('../../../services');
 
@@ -16,7 +16,7 @@ const userResolver = {
     getUsers: async (_, { input }) => {
       const users = await userService.getUsers({ ...input, only: true });
 
-      return { success: true, users };
+      return { users };
     },
 
     getUser: async (_, { input }) => {
@@ -24,7 +24,7 @@ const userResolver = {
 
       const user = await userService.getUserById(userId, true);
 
-      return { success: true, user };
+      return { user };
     },
 
     getUserSelf: async (_, { input }, { ctx }) => {
@@ -32,7 +32,7 @@ const userResolver = {
 
       const user = await userService.getUserById(self.id, true);
 
-      return { success: true, user };
+      return { user };
     },
   },
 
@@ -40,7 +40,7 @@ const userResolver = {
     createUser: async (_, { input }) => {
       const user = await userService.createUser({ ...input, only: true });
 
-      return { success: true, user };
+      return { user };
     },
 
     updateUser: async (_, { input }) => {
@@ -48,7 +48,7 @@ const userResolver = {
 
       const user = await userService.updateUser(userId, { ...input, only: true });
 
-      return { success: true, user };
+      return { user };
     },
 
     deleteUser: async (_, { input }) => {
@@ -56,17 +56,17 @@ const userResolver = {
 
       const result = await userService.deleteUser(userId);
 
-      return { success: true, result };
+      return { result };
     },
   },
 };
 
 const resolversComposition = {
-  'Query.getUserSelf': [authMiddleware([TABLE.USER_ROLE.USER, TABLE.USER_ROLE.ADMIN], true)],
-  'Query.getUser': [authMiddleware([TABLE.USER_ROLE.ADMIN], true)],
-  'Query.getUsers': [authMiddleware([TABLE.USER_ROLE.ADMIN], true)],
-  'Mutation.updateUser': [authMiddleware([TABLE.USER_ROLE.USER, TABLE.USER_ROLE.ADMIN], true)],
-  'Mutation.deleteUser': [authMiddleware([TABLE.USER_ROLE.USER, TABLE.USER_ROLE.ADMIN], true)],
+  'Query.getUserSelf': [authMiddleware([USER_ROLE.USER, USER_ROLE.ADMIN], true)],
+  'Query.getUser': [authMiddleware([USER_ROLE.ADMIN], true)],
+  'Query.getUsers': [authMiddleware([USER_ROLE.ADMIN], true)],
+  'Mutation.updateUser': [authMiddleware([USER_ROLE.USER, USER_ROLE.ADMIN], true)],
+  'Mutation.deleteUser': [authMiddleware([USER_ROLE.USER, USER_ROLE.ADMIN], true)],
 };
 
 const composedUserResolver = composeResolvers(userResolver, resolversComposition);

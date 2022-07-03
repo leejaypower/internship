@@ -2,14 +2,3 @@ enum Filter {
   ALL
   DELETED
 }
-
-interface Error {
-  status: Int
-  code: String
-  message: String
-}
-
-interface CoreOutput {
-  success: Boolean!
-  error: Error
-}

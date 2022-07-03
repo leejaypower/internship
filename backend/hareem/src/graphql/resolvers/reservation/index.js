@@ -1,5 +1,5 @@
 const { composeResolvers } = require('@graphql-tools/resolvers-composition');
-const { TABLE } = require('../../../constants');
+const { USER_ROLE } = require('../../../constants');
 const { authMiddleware } = require('../../../middlewares');
 const { reservationService } = require('../../../services');
 
@@ -22,7 +22,7 @@ const reservationResolver = {
     getReservationsByUsers: async (_, { input }) => {
       const reservations = await reservationService.getUsersReservations({ ...input, only: true });
 
-      return { success: true, reservations };
+      return { reservations };
     },
   },
 
@@ -31,30 +31,27 @@ const reservationResolver = {
       const { user } = ctx;
       const { userId, bookInfoId } = input;
 
-      const reservatedUserId = user.role === TABLE.USER_ROLE.USER ? user.id : userId;
+      const reservatedUserId = user.role === USER_ROLE.USER ? user.id : userId;
 
       const reservation = await reservationService.createReservation(reservatedUserId, bookInfoId);
 
-      return { success: true, reservation };
+      return { reservation };
     },
 
     deleteReservation: async (_, { input }, { ctx }) => {
-      const { user } = ctx;
-      const { userId, reservationId } = input;
+      const { reservationId } = input;
 
-      const reservatedUserId = user.role === TABLE.USER_ROLE.USER ? user.id : userId;
+      const result = await reservationService.deleteReservation(reservationId);
 
-      const result = await reservationService.deleteReservation(reservatedUserId, reservationId);
-
-      return { success: true, result };
+      return { result };
     },
   },
 };
 
 const resolversComposition = {
-  'Query.getReservationsByUsers': [authMiddleware([TABLE.USER_ROLE.USER, TABLE.USER_ROLE.ADMIN], true)],
-  'Mutation.createReservation': [authMiddleware([TABLE.USER_ROLE.USER, TABLE.USER_ROLE.ADMIN], true)],
-  'Mutation.deleteReservation': [authMiddleware([TABLE.USER_ROLE.USER, TABLE.USER_ROLE.ADMIN], true)],
+  'Query.getReservationsByUsers': [authMiddleware([USER_ROLE.USER, USER_ROLE.ADMIN], true)],
+  'Mutation.createReservation': [authMiddleware([USER_ROLE.USER, USER_ROLE.ADMIN], true)],
+  'Mutation.deleteReservation': [authMiddleware([USER_ROLE.USER, USER_ROLE.ADMIN], true)],
 };
 
 const composedReservationResolver = composeResolvers(reservationResolver, resolversComposition);

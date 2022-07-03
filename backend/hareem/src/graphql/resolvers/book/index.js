@@ -1,5 +1,5 @@
 const { composeResolvers } = require('@graphql-tools/resolvers-composition');
-const { TABLE } = require('../../../constants');
+const { USER_ROLE } = require('../../../constants');
 const { authMiddleware } = require('../../../middlewares');
 const { bookService } = require('../../../services');
 
@@ -21,34 +21,34 @@ const bookResolver = {
   Query: {
     getBookInfosWithBooks: async (_, { input }) => {
       const bookInfos = await bookService.getBookInfos({ ...input, only: true });
-      return { success: true, bookInfos };
+      return { bookInfos };
     },
   },
 
   Mutation: {
     createBook: async (_, { input }) => {
       const book = await bookService.createBookInfoWithBookGql(input);
-      return { success: true, book };
+      return { book };
     },
 
     updateBookInfo: async (_, { input }) => {
       const { id: bookInfoId } = input;
       const bookInfo = await bookService.updateBookInfo(bookInfoId, { ...input, only: true });
-      return { success: true, bookInfo };
+      return { bookInfo };
     },
 
     deleteBook: async (_, { input }) => {
       const { bookId } = input;
       const result = await bookService.deleteBook(bookId);
-      return { success: true, result };
+      return { result };
     },
   },
 };
 
 const resolversComposition = {
-  'Mutation.createBook': [authMiddleware([TABLE.USER_ROLE.ADMIN], true)],
-  'Mutation.updateBookInfo': [authMiddleware([TABLE.USER_ROLE.ADMIN], true)],
-  'Mutation.deleteBook': [authMiddleware([TABLE.USER_ROLE.ADMIN], true)],
+  'Mutation.createBook': [authMiddleware([USER_ROLE.ADMIN], true)],
+  'Mutation.updateBookInfo': [authMiddleware([USER_ROLE.ADMIN], true)],
+  'Mutation.deleteBook': [authMiddleware([USER_ROLE.ADMIN], true)],
 };
 
 const composedBookResolver = composeResolvers(bookResolver, resolversComposition);

@@ -1,5 +1,5 @@
 /* eslint-disable no-underscore-dangle */
-const { MESSAGE } = require('../constants');
+const { ERROR_CODE, ERROR_MESSAGE } = require('../constants');
 const { CustomError } = require('../errors');
 const { jwtService } = require('../services');
 
@@ -7,7 +7,7 @@ const _authLogic = async (permissions, ctx) => {
   // Authorization 헤더가 없다면, error
   const { authorization } = ctx.headers;
   if (!authorization) {
-    throw new CustomError(401, MESSAGE.AUTH_ERROR);
+    throw new CustomError(ERROR_CODE.NOT_FOUND_TOKEN, ERROR_MESSAGE.NOT_FOUND_TOKEN.ACCESS);
   }
 
   const accessToken = authorization.substring('Bearer '.length);
@@ -20,7 +20,7 @@ const _authLogic = async (permissions, ctx) => {
 
   // 해당 경로에 대한 권한이 없다면, error
   if (!permissions.includes(role)) {
-    throw new CustomError(401, MESSAGE.AUTH_ERROR);
+    throw new CustomError(ERROR_CODE.PERMISSION_DENIED, ERROR_MESSAGE.PERMISSION_DENIED.STANDARD);
   }
 
   ctx.user = {

@@ -3,10 +3,17 @@ const {
 } = require('../../database/models');
 const { timer } = require('../../utils');
 const { QUERY, BUSINESS } = require('../../constants');
+const { CustomError } = require('../../errors');
+const { ERROR_CODE, ERROR_MESSAGE } = require('../../constants/error');
 
 const createReservation = async (createReservationData) => {
-  const newReservation = await Reservation.create(createReservationData);
-  return newReservation;
+  try {
+    const newReservation = await Reservation.create(createReservationData);
+
+    return newReservation;
+  } catch (err) {
+    throw new CustomError(ERROR_CODE.DB_FAIL, ERROR_MESSAGE.DB_FAIL.STANDARD);
+  }
 };
 
 const getUsersReservations = async (getUsersReservationsQuery) => {
@@ -65,9 +72,13 @@ const getUsersReservations = async (getUsersReservationsQuery) => {
     options.include = include;
   }
 
-  const reservations = await Reservation.findAll(options);
+  try {
+    const reservations = await Reservation.findAll(options);
 
-  return reservations;
+    return reservations;
+  } catch (err) {
+    throw new CustomError(ERROR_CODE.DB_FAIL, ERROR_MESSAGE.DB_FAIL.STANDARD);
+  }
 };
 
 const getUserReservations = async (userId, getReservationsQuery) => {
@@ -103,43 +114,62 @@ const getUserReservations = async (userId, getReservationsQuery) => {
     where.bookInfoId = { [Op.eq]: bookInfoId };
   }
 
-  const reservations = await Reservation.findAll({
-    where,
-    limit,
-    offset,
-    order,
-    include,
-    paranoid,
-  });
+  try {
+    const reservations = await Reservation.findAll({
+      where,
+      limit,
+      offset,
+      order,
+      include,
+      paranoid,
+    });
 
-  return reservations;
+    return reservations;
+  } catch (err) {
+    throw new CustomError(ERROR_CODE.DB_FAIL, ERROR_MESSAGE.DB_FAIL.STANDARD);
+  }
 };
 
 const getNextReservationByBookInfo = async (bookInfoId) => {
-  const reservation = await Reservation.findAll({
-    where: {
-      bookInfoId,
-    },
-    order: [['createdAt', 'DESC']],
-    limit: 1,
-  });
-  return reservation;
+  try {
+    const reservation = await Reservation.findAll({
+      where: {
+        bookInfoId,
+      },
+      order: [['createdAt', 'DESC']],
+      limit: 1,
+    });
+
+    return reservation;
+  } catch (err) {
+    throw new CustomError(ERROR_CODE.DB_FAIL, ERROR_MESSAGE.DB_FAIL.STANDARD);
+  }
 };
 
 const deleteReservation = async (deleteBy) => {
-  const result = await Reservation.update({
-    doneDate: new Date(),
-  }, {
-    where: deleteBy,
-  });
-  return result;
+  try {
+    const result = await Reservation.update({
+      doneDate: new Date(),
+    }, {
+      where: deleteBy,
+    });
+
+    return result;
+  } catch (err) {
+    throw new CustomError(ERROR_CODE.DB_FAIL, ERROR_MESSAGE.DB_FAIL.STANDARD);
+  }
 };
 
 const countReservation = async (countBy) => {
-  const reservationCount = await Reservation.count({
-    where: countBy,
-  });
-  return reservationCount;
+  try {
+    const reservationCount = await Reservation.count({
+      where: countBy,
+    });
+
+    return reservationCount;
+  } catch (err) {
+    throw new CustomError(ERROR_CODE.DB_FAIL, ERROR_MESSAGE.DB_FAIL.STANDARD);
+  }
 };
 
 module.exports = {

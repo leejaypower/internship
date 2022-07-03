@@ -7,6 +7,7 @@ const kafka = require('./kafka');
 const app = require('./app');
 const apollo = require('./apollo');
 const scheduler = require('./scheduler');
+const { logger } = require('./utils');
 
 const _dbInitialize = async () => {
   if (process.env.NODE_ENV === 'production') {
@@ -27,14 +28,14 @@ const _kafkaInitialize = async () => {
     await kafka.producerRun();
     await kafka.consumerRun();
   }
-  console.log('kafka is connected');
+  logger.info('Kafka is connected');
 };
 
 const _kafkaShutdown = async () => {
   await kafka.producerShutdown();
   await kafka.consumerShutdown();
 
-  console.log('kafka is shut down');
+  logger.info('Kafka is shut down');
 };
 
 const serverRun = async () => {
@@ -51,13 +52,19 @@ const serverRun = async () => {
     apollo.applyMiddleware({ app });
 
     httpServer.on('request', app.callback());
-    await new Promise((resolve) => httpServer.listen({ port: PORT }, resolve));
+    httpServer.listen({ port: PORT });
 
-    console.log(`🚀 Server ready at http://localhost:${PORT}${apollo.graphqlPath}`);
+    logger.info(`Server ready at http://localhost:${PORT}${apollo.graphqlPath}`);
 
     return { apollo, app };
   } catch (error) {
-    console.log(error);
+    logger.fatal({
+      error,
+      msg: 'Server initialize fail',
+    });
+
+    _kafkaShutdown();
+
     process.exit(1);
   }
 };
@@ -65,10 +72,10 @@ const serverRun = async () => {
 serverRun();
 
 process.on('SIGTERM', () => {
-  console.info('SIGTERM signal received');
+  logger.info('SIGTERM signal received');
   _kafkaShutdown();
   httpServer.close(() => {
-    console.log('Http server closed');
+    logger.info('Http server closed');
     process.exit(0);
   });
 });

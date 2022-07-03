@@ -1,8 +1,10 @@
+/* eslint-disable max-len */
 const { userService, bookService, reservationService } = require('../index');
 const { reservationRepository, rentalRepository } = require('../../repositories');
 const { timer } = require('../../utils');
-const { BUSINESS, TABLE } = require('../../constants');
+const { BUSINESS } = require('../../constants');
 const { CustomError } = require('../../errors');
+const { ERROR_CODE, ERROR_MESSAGE } = require('../../constants/error');
 
 const createRentalStart = async (userId, createRentalData) => {
   const { bookInfoId } = createRentalData;
@@ -10,25 +12,25 @@ const createRentalStart = async (userId, createRentalData) => {
   // 경고가 일정 이상 있는데 빌리려 한다면, error
   const user = await userService.getUserById(userId);
   if (user.isBlack) {
-    throw new CustomError(400, '연체 이력이 많아 대여할 수 없습니다');
+    throw new CustomError(ERROR_CODE.INVALID_REQUEST, ERROR_MESSAGE.INVALID_REQUEST.BLACK_USER_CAN_NOT_RENTAL);
   }
 
   // 유저가 빌릴 수 있는 최대 권수를 이미 빌리고 있다면, error
   if (BUSINESS.MAX_RENTAL_NUM === user.rentalCount) {
-    throw new CustomError(400, '가능한 대여 권 수 이상으로 대여 할 수 없습니다');
+    throw new CustomError(ERROR_CODE.INVALID_REQUEST, ERROR_MESSAGE.INVALID_REQUEST.ALREADY_RENTAL_LIMIT);
   }
 
   // 대여 가능한 book이 있는지, 없다면 error
   const bookInfo = await bookService.getBookInfo(bookInfoId);
   const rentalableBooks = bookInfo.Books.filter((book) => book.isRentaled === false);
   if (rentalableBooks.length === 0) {
-    throw new CustomError(400, '대여 가능한 도서 재고가 없습니다');
+    throw new CustomError(ERROR_CODE.INVALID_REQUEST, ERROR_MESSAGE.INVALID_REQUEST.NOT_EXIST_RENTALABLE_BOOK);
   }
 
   // 도서 예약이 되어 있고, 해당 예약자가 아니라면, error
   const reservations = await reservationRepository.getNextReservationByBookInfo(bookInfoId);
   if (reservations?.length > 0 && reservations[0]?.userId !== userId) {
-    throw new CustomError(400, '도서가 전부 예약이 되어 있습니다');
+    throw new CustomError(ERROR_CODE.INVALID_REQUEST, ERROR_MESSAGE.INVALID_REQUEST.THE_BOOK_IS_RESERVATED);
   }
 
   // 대여 시작
@@ -36,88 +38,89 @@ const createRentalStart = async (userId, createRentalData) => {
     user,
     reservationId: reservations[0]?.id,
     bookId: rentalableBooks[0]?.id,
-    state: TABLE.RENTAL_STATE.START,
+    state: BUSINESS.RENTAL_STATE.START,
     dueDate: timer.afterNDate(BUSINESS.RENTAL_PERIOD),
   };
+
   const newRental = await rentalRepository.createRentalStart(createRentalStartData);
-  console.log(newRental);
+
   return newRental;
 };
 
-const createRentalExtend = async (userId, createRentalData) => {
+const createRentalExtend = async (createRentalData) => {
   const { rentalId } = createRentalData;
 
   // 대여한 책이 있는지, 없다면 error
   const rentalHistory = await rentalRepository.getRentalHistory(rentalId);
   if (rentalHistory?.length === 0) {
-    throw new CustomError(400, '도서를 대여한 적이 없습니다');
+    throw new CustomError(ERROR_CODE.NOT_FOUND_RESOURCE, ERROR_MESSAGE.NOT_FOUND_RESOURCE.RENTAL);
   }
 
   // 이미 반납된 도서는 아닌지, 이미 반납된 것이라면 error
   const lastRentalHistory = rentalHistory[0];
-  if (lastRentalHistory.state === TABLE.RENTAL_STATE.END) {
-    throw new CustomError(400, '도서를 이미 반납했습니다');
+  if (lastRentalHistory.state === BUSINESS.RENTAL_STATE.END) {
+    throw new CustomError(ERROR_CODE.INVALID_REQUEST, ERROR_MESSAGE.INVALID_REQUEST.THE_BOOK_IS_ALREADY_RETURNED);
   }
 
   // 연장 횟수 확인, 하나의 서적에 대해 이미 연장이 3번이라면, error
-  const extendCount = rentalHistory.filter((rental) => rental.state === TABLE.RENTAL_STATE.EXTEND).length;
+  const extendCount = rentalHistory.filter((rental) => rental.state === BUSINESS.RENTAL_STATE.EXTEND).length;
   if (BUSINESS.MAX_EXTEND_COUNT === extendCount) {
-    throw new CustomError(400, '더 이상 대여를 연장 할 수 없습니다');
+    throw new CustomError(ERROR_CODE.INVALID_REQUEST, ERROR_MESSAGE.INVALID_REQUEST.NO_MORE_EXTEND_RENTAL);
   }
 
   // 반납 예정일 3(테스트 통과를 위해 현재 7)일 이내가 아니라면, error
   const nDaysBeforeDueDate = 7; // BUSINESS.DAYS_BEFORE_RETURN;
   const extendableDate = timer.beforeNDate(nDaysBeforeDueDate, lastRentalHistory.dueDate);
   if (new Date().getTime() <= extendableDate.getTime()) {
-    throw new CustomError(400, `연장은 반납 ${nDaysBeforeDueDate}일 전부터 가능합니다`);
+    throw new CustomError(ERROR_CODE.INVALID_REQUEST, ERROR_MESSAGE.INVALID_REQUEST.NOT_EXTENSION_DUE_DATE);
   }
 
   // 예약이 걸려있는 도서라면, error
   const book = await bookService.getBook(lastRentalHistory.bookId);
   const reservationCount = await reservationService.countByBookInfo(book.bookInfoId);
   if (reservationCount > 0) {
-    throw new CustomError(400, '도서가 예약되어 있어 연장할 수 없습니다');
+    throw new CustomError(ERROR_CODE.INVALID_REQUEST, ERROR_MESSAGE.INVALID_REQUEST.THE_BOOK_IS_RESERVATED);
   }
 
   // 대여 연장 진행
-  const rentalStartData = rentalHistory.filter((rental) => rental.state === TABLE.RENTAL_STATE.START)[0];
+  const rentalStartData = rentalHistory.filter((rental) => rental.state === BUSINESS.RENTAL_STATE.START)[0];
   const createRentalExtendData = {
-    userId,
+    userId: rentalStartData.userId,
     bookId: rentalStartData.bookId,
-    state: TABLE.RENTAL_STATE.EXTEND,
+    state: BUSINESS.RENTAL_STATE.EXTEND,
     dueDate: timer.afterNDate(BUSINESS.EXTEND_PERIOD),
     parentId: rentalId,
   };
 
   const rental = await rentalRepository.createRental(createRentalExtendData);
   if (!rental) {
-    throw new CustomError(400, '도서 대여 연장에 실패했습니다');
+    throw new CustomError(ERROR_CODE.INVALID_REQUEST, ERROR_MESSAGE.INVALID_REQUEST.EXTENSION_FAIL_RENTAL);
   }
 
   return rental;
 };
 
-const createRentalEnd = async (userId, createRentalData) => {
+const createRentalEnd = async (createRentalData) => {
   const { rentalId } = createRentalData;
 
   // 대여한 책이 있는지, 없다면 error
   const rentalHistory = await rentalRepository.getRentalHistory(rentalId);
   if (rentalHistory?.length === 0) {
-    throw new CustomError(400, '대여 기록을 찾을 수 없습니다');
+    throw new CustomError(ERROR_CODE.NOT_FOUND_RESOURCE, ERROR_MESSAGE.NOT_FOUND_RESOURCE.RENTAL);
   }
 
   // 이미 반납된 도서는 아닌지, 이미 반납된 것이라면 error
   const lastRentalHistory = rentalHistory[0];
-  if (lastRentalHistory.state === TABLE.RENTAL_STATE.END) {
-    throw new CustomError(400, '이미 반납된 도서입니다');
+  if (lastRentalHistory.state === BUSINESS.RENTAL_STATE.END) {
+    throw new CustomError(ERROR_CODE.INVALID_REQUEST, ERROR_MESSAGE.INVALID_REQUEST.THE_BOOK_IS_ALREADY_RETURNED);
   }
 
   // 반납 진행 (rental table insert -> 해당 도서, 상태 업데이트 -> 유저 상태 업데이트)
-  const rentalStartData = rentalHistory.filter((rental) => rental.state === TABLE.RENTAL_STATE.START)[0];
+  const rentalStartData = rentalHistory.filter((rental) => rental.state === BUSINESS.RENTAL_STATE.START)[0];
   const createRentalEndData = {
-    userId,
+    userId: rentalStartData.userId,
     bookId: rentalStartData.bookId,
-    state: TABLE.RENTAL_STATE.END,
+    state: BUSINESS.RENTAL_STATE.END,
     dueDate: null,
     parentId: rentalId,
   };

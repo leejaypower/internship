@@ -1,8 +1,9 @@
 const { composeResolvers } = require('@graphql-tools/resolvers-composition');
-const { TABLE, TOPIC } = require('../../../constants');
+const { USER_ROLE, TOPIC } = require('../../../constants');
 const kafka = require('../../../kafka');
 const { authMiddleware } = require('../../../middlewares');
 const { rentalService } = require('../../../services');
+const { logger } = require('../../../utils');
 
 const rentalResolver = {
   Rental: {
@@ -23,7 +24,7 @@ const rentalResolver = {
     getRentalHistory: async (_, { input }) => {
       const rental = await rentalService.getRentalHistory(input.rentalId);
 
-      return { success: true, rental };
+      return { rental };
     },
   },
 
@@ -31,15 +32,22 @@ const rentalResolver = {
     createRentalStart: async (_, { input }) => {
       const rental = await rentalService.createRentalStart(input.userId, input);
 
-      await kafka.sendMessage(kafka.makeMessage({
-        topic: `${TOPIC.MESSAGE_TYPE.EVENT}.${TOPIC.DATASET_NAME}.${TOPIC.DATA_NAME.RENTALS}`,
-        messages: [{
-          method: 'createRentalStart',
+      try {
+        await kafka.sendMessage(kafka.makeMessage({
+          topic: `${TOPIC.MESSAGE_TYPE.EVENT}.${TOPIC.DATASET_NAME}.${TOPIC.DATA_NAME.RENTALS}`,
+          messages: [{
+            method: 'createRentalStart',
+            data: rental,
+          }],
+        }));
+      } catch (err) {
+        logger.warn({
           data: rental,
-        }],
-      }));
+          msg: 'Kafka send message fail',
+        });
+      }
 
-      return { success: true, rental };
+      return { rental };
     },
 
     createRentalExtend: async (_, { input }, { ctx }) => {
@@ -47,30 +55,37 @@ const rentalResolver = {
 
       const rental = await rentalService.createRentalExtend(user.id, input);
 
-      await kafka.sendMessage(kafka.makeMessage({
-        topic: `${TOPIC.MESSAGE_TYPE.EVENT}.${TOPIC.DATASET_NAME}.${TOPIC.DATA_NAME.RENTALS}`,
-        messages: [{
-          method: 'createRentalExtend',
+      try {
+        await kafka.sendMessage(kafka.makeMessage({
+          topic: `${TOPIC.MESSAGE_TYPE.EVENT}.${TOPIC.DATASET_NAME}.${TOPIC.DATA_NAME.RENTALS}`,
+          messages: [{
+            method: 'createRentalExtend',
+            data: rental,
+          }],
+        }));
+      } catch (err) {
+        logger.warn({
           data: rental,
-        }],
-      }));
+          msg: 'Kafka send message fail',
+        });
+      }
 
-      return { success: true, rental };
+      return { rental };
     },
 
     createRentalEnd: async (_, { input }) => {
       const rental = await rentalService.createRentalEnd(input.userId, input);
 
-      return { success: true, rental };
+      return { rental };
     },
   },
 };
 
 const resolversComposition = {
-  'Query.getRentalHistory': [authMiddleware([TABLE.USER_ROLE.USER, TABLE.USER_ROLE.ADMIN], true)],
-  'Mutation.createRentalStart': [authMiddleware([TABLE.USER_ROLE.ADMIN], true)],
-  'Mutation.createRentalExtend': [authMiddleware([TABLE.USER_ROLE.USER, TABLE.USER_ROLE.ADMIN], true)],
-  'Mutation.createRentalEnd': [authMiddleware([TABLE.USER_ROLE.ADMIN], true)],
+  'Query.getRentalHistory': [authMiddleware([USER_ROLE.USER, USER_ROLE.ADMIN], true)],
+  'Mutation.createRentalStart': [authMiddleware([USER_ROLE.ADMIN], true)],
+  'Mutation.createRentalExtend': [authMiddleware([USER_ROLE.USER, USER_ROLE.ADMIN], true)],
+  'Mutation.createRentalEnd': [authMiddleware([USER_ROLE.ADMIN], true)],
 };
 
 const composedRentalResolver = composeResolvers(rentalResolver, resolversComposition);

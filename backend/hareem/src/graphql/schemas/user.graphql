@@ -33,9 +33,7 @@ input GetUsersInput {
   warningCount: String!
 }
 
-type GetUsersOutput implements CoreOutput {
-  success: Boolean!
-  error: Error
+type GetUsersOutput {
   users: [User]
 }
 
@@ -43,9 +41,7 @@ input GetUserInput {
   id: UUID
 }
 
-type GetUserOutput implements CoreOutput {
-  success: Boolean!
-  error: Error
+type GetUserOutput {
   user: User
 }
 
@@ -57,9 +53,7 @@ input CreateUserInput {
   role: ROLE
 }
 
-type CreateUserOutput implements CoreOutput {
-  success: Boolean!
-  error: Error
+type CreateUserOutput {
   user: User
 }
 
@@ -70,9 +64,7 @@ input UpdateUserInput {
   name: String
 }
 
-type UpdateUserOutput implements CoreOutput {
-  success: Boolean!
-  error: Error
+type UpdateUserOutput {
   user: User
 }
 
@@ -80,8 +72,6 @@ input DeleteUserInput {
   id: UUID!
 }
 
-type DeleteUserOutput implements CoreOutput {
-  success: Boolean!
-  error: Error
+type DeleteUserOutput {
   result: String
 }

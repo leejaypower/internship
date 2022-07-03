@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 const { authRepository } = require('../../repositories');
 const { userService, jwtService, hashService } = require('../index');
-const { COOKIE, MESSAGE } = require('../../constants');
+const { COOKIE, ERROR_CODE, ERROR_MESSAGE } = require('../../constants');
 const { CustomError } = require('../../errors');
 
 const _getToken = (tokenData) => {
@@ -58,7 +58,7 @@ const login = async (loginData) => {
 
   const compared = await hashService.compare(password, user.password);
   if (!compared) {
-    throw new CustomError(400, '아이디 또는 비밀번호가 틀렸습니다');
+    throw new CustomError(ERROR_CODE.LOGIN_FAIL, ERROR_MESSAGE.LOGIN_FAIL);
   }
 
   const { token: accessToken } = _getToken({
@@ -108,7 +108,7 @@ const refreshAccessToken = async (refreshToken) => {
   });
 
   if (refreshToken !== auth.refreshToken) {
-    throw new CustomError(401, MESSAGE.AUTH_ERROR);
+    throw new CustomError(ERROR_CODE.INVALID_TOKEN, ERROR_MESSAGE.INVALID_TOKEN.REFRESH_TOKEN);
   }
 
   const { token: accessToken } = _getToken({

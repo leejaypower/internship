@@ -3,71 +3,92 @@ const { userService } = require('../../services');
 const createUser = async (ctx) => {
   try {
     const user = await userService.createUser(ctx.request.body);
+
     ctx.body = user;
-  } catch (error) {
-    ctx.throw(error);
+  } catch (err) {
+    ctx.throw(err);
   }
 };
 
 const getUsers = async (ctx) => {
   try {
-    ctx.body = await userService.getUsers(ctx.request.query);
-  } catch (error) {
-    ctx.throw(error);
+    const users = await userService.getUsers(ctx.request.query);
+
+    ctx.body = users;
+  } catch (err) {
+    ctx.throw(err);
   }
 };
 
 const getUserById = async (ctx) => {
+  const { id } = ctx.params;
+
   try {
-    const { id } = ctx.params;
-    ctx.body = await userService.getUserById(id);
-  } catch (error) {
-    ctx.throw(error);
+    const user = await userService.getUserById(id);
+
+    ctx.body = user;
+  } catch (err) {
+    ctx.throw(err);
   }
 };
 
 const updateUser = async (ctx) => {
+  const { id } = ctx.params;
+
   try {
-    const { id } = ctx.params;
-    ctx.body = await userService.updateUserByAdmin(id, ctx.request.body);
-  } catch (error) {
-    ctx.throw(error);
+    const user = await userService.updateUserByAdmin(id, ctx.request.body);
+
+    ctx.body = user;
+  } catch (err) {
+    ctx.throw(err);
   }
 };
 
 const deleteUser = async (ctx) => {
+  const { id } = ctx.params;
+
   try {
-    const { id } = ctx.params;
-    ctx.body = await userService.deleteUser(id);
-  } catch (error) {
-    ctx.throw(error);
+    const user = await userService.deleteUser(id);
+
+    ctx.body = user;
+  } catch (err) {
+    ctx.throw(err);
   }
 };
 
 const getUserSelf = async (ctx) => {
+  const { id } = ctx.user;
+
   try {
-    const { id } = ctx.user;
-    ctx.body = await userService.getUserById(id);
-  } catch (error) {
-    ctx.throw(error);
+    const user = await userService.getUserById(id);
+
+    ctx.body = user;
+  } catch (err) {
+    ctx.throw(err);
   }
 };
 
 const updateUserSelf = async (ctx) => {
+  const { id } = ctx.user;
+
   try {
-    const { id } = ctx.user;
-    ctx.body = await userService.updateUser(id, ctx.request.body);
-  } catch (error) {
-    ctx.throw(error);
+    const user = await userService.updateUser(id, ctx.request.body);
+
+    ctx.body = user;
+  } catch (err) {
+    ctx.throw(err);
   }
 };
 
 const deleteUserSelf = async (ctx) => {
+  const { id } = ctx.user;
+
   try {
-    const { id } = ctx.user;
-    ctx.body = await userService.deleteUser(id);
-  } catch (error) {
-    ctx.throw(error);
+    const user = await userService.deleteUser(id);
+
+    ctx.body = user;
+  } catch (err) {
+    ctx.throw(err);
   }
 };
 

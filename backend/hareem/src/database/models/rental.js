@@ -1,5 +1,5 @@
 const { timer } = require('../../utils');
-const { TABLE, BUSINESS } = require('../../constants');
+const { BUSINESS } = require('../../constants');
 
 module.exports = (sequelize, DataTypes) => {
   const Rental = sequelize.define('Rental', {
@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
     state: {
       type: DataTypes.STRING(10),
       allowNull: false,
-      defaultValue: TABLE.RENTAL_STATE.START,
+      defaultValue: BUSINESS.RENTAL_STATE.START,
       comment: '해당 컬럼은 도서의 대여 또는 연장 또는 반납 상태를 나타냅니다. (START, EXTEND, END)',
     },
     dueDate: {

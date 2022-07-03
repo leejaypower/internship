@@ -1,5 +1,6 @@
+/* eslint-disable max-len */
 const { bookRepository } = require('../../repositories');
-const { BUSINESS } = require('../../constants');
+const { BUSINESS, ERROR_CODE, ERROR_MESSAGE } = require('../../constants');
 const { CustomError } = require('../../errors');
 
 const createBookInfoWithBook = async (createBookData) => {
@@ -14,7 +15,7 @@ const createBookInfoWithBook = async (createBookData) => {
 
   // 한 종류의 책 당 등록할 수 있는 권 수 제한을 넘어선다면, error
   if (bookInfo.Books && bookInfo.Books.length >= BUSINESS.BOOK_REGIGISTATION_LIMIT) {
-    throw new CustomError(400, '해당 책을 더 이상 등록할 수 없습니다');
+    throw new CustomError(ERROR_CODE.INVALID_REQUEST, ERROR_MESSAGE.INVALID_REQUEST.NO_MORE_REGISTER_BOOK);
   }
 
   // 정보가 등록되어 있다면, 책만 입고 처리
@@ -34,7 +35,7 @@ const getBookInfos = async (getBooksQuery) => {
 const getBookInfo = async (bookInfoId, only = false) => {
   const bookInfo = await bookRepository.getBookInfo(bookInfoId, only);
   if (!bookInfo) {
-    throw new CustomError(404, '도서 정보가 없습니다');
+    throw new CustomError(ERROR_CODE.NOT_FOUND_RESOURCE, ERROR_MESSAGE.NOT_FOUND_RESOURCE.BOOK_INFO);
   }
   return bookInfo;
 };
@@ -46,7 +47,7 @@ const updateBookInfo = async (bookInfoId, updateBookData) => {
 
   const bookInfo = await bookRepository.getBookInfo(bookInfoId, only);
   if (!bookInfo) {
-    throw new CustomError(404, '도서 정보가 없습니다');
+    throw new CustomError(ERROR_CODE.NOT_FOUND_RESOURCE, ERROR_MESSAGE.NOT_FOUND_RESOURCE.BOOK_INFO);
   }
   return bookInfo;
 };
@@ -59,7 +60,7 @@ const getBooks = async (bookInfoId) => {
 const getBook = async (bookId) => {
   const book = await bookRepository.getBook(bookId);
   if (!book) {
-    throw new CustomError(404, '도서를 찾을 수 없습니다');
+    throw new CustomError(ERROR_CODE.NOT_FOUND_RESOURCE, ERROR_MESSAGE.NOT_FOUND_RESOURCE.BOOK);
   }
   return book;
 };
@@ -67,7 +68,7 @@ const getBook = async (bookId) => {
 const deleteBook = async (bookId) => {
   const result = await bookRepository.deleteBook(bookId);
   if (!result) {
-    throw new CustomError(400, '도서 정보 말소 실패');
+    throw new CustomError(ERROR_CODE.INVALID_REQUEST, ERROR_MESSAGE.INVALID_REQUEST.DELETE_FAIL_BOOK);
   }
   return '도서 정보 말소 완료';
 };
@@ -84,7 +85,7 @@ const createBookInfoWithBookGql = async (input) => {
 
   // 한 종류의 책 당 등록할 수 있는 권 수 제한을 넘어선다면, error
   if (bookInfo.Books && bookInfo.Books.length >= BUSINESS.BOOK_REGIGISTATION_LIMIT) {
-    throw new CustomError(400, '해당 책을 더 이상 등록할 수 없습니다');
+    throw new CustomError(ERROR_CODE.INVALID_REQUEST, ERROR_MESSAGE.INVALID_REQUEST.NO_MORE_REGISTER_BOOK);
   }
 
   // 정보가 등록되어 있다면, 책만 입고 처리

@@ -1,8 +1,10 @@
+/* eslint-disable no-param-reassign */
 const { ApolloServer } = require('apollo-server-koa');
 const { makeExecutableSchema } = require('@graphql-tools/schema');
 const { resolvers: scalarResolvers, typeDefs: scalarTypeDefs } = require('graphql-scalars');
 const { typeDefs, resolvers } = require('./graphql');
 const { loaders } = require('./graphql');
+const { errorHandlerMiddleware } = require('./middlewares');
 
 const apollo = new ApolloServer({
   schema: makeExecutableSchema({
@@ -16,6 +18,8 @@ const apollo = new ApolloServer({
     ],
   }),
   csrfPrevention: true,
+  cache: 'bounded',
+  formatError: errorHandlerMiddleware(true),
   context: ({ ctx }) => ({ ctx, loaders }),
 });
 

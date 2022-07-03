@@ -29,6 +29,7 @@ const sequelize = new Sequelize(
         collate: 'utf8_general_ci',
       },
     },
+    logging: process.env.NODE_ENV !== 'production',
   },
 );
 

@@ -1,5 +1,5 @@
 // 서비스 정책 관련 상수
-module.exports = {
+const BUSINESS = {
   RENTAL_PERIOD: 7,
   EXTEND_PERIOD: 7,
   MAX_RENTAL_NUM: 3,
@@ -8,4 +8,9 @@ module.exports = {
   BOOK_REGIGISTATION_LIMIT: 5,
   PAGE_DEFAULT: 1,
   PER_PAGE: 10,
+  RENTAL_STATE: { START: 'START', EXTEND: 'EXTEND', END: 'END' },
+};
+
+module.exports = {
+  BUSINESS,
 };

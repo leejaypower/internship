@@ -24,9 +24,7 @@ input GetReservationsByUsersInput {
   bookInfoId: Int
 }
 
-type GetReservationsByUsersOutput implements CoreOutput {
-  success: Boolean!
-  error: Error
+type GetReservationsByUsersOutput {
   reservations: [Reservation]
 }
 
@@ -35,9 +33,7 @@ input CreateReservationInput {
   bookInfoId: Int
 }
 
-type CreateReservationOutput implements CoreOutput {
-  success: Boolean!
-  error: Error
+type CreateReservationOutput {
   reservation: Reservation
 }
 
@@ -46,8 +42,6 @@ input DeleteReservationInput {
   reservationId: Int
 }
 
-type DeleteReservationOutput implements CoreOutput {
-  success: Boolean!
-  error: Error
+type DeleteReservationOutput {
   result: String
 }

@@ -1,6 +1,8 @@
+/* eslint-disable max-len */
 const { hashService } = require('../index');
 const { userRepository } = require('../../repositories');
 const { CustomError } = require('../../errors');
+const { ERROR_CODE, ERROR_MESSAGE } = require('../../constants/error');
 
 const createUser = async (createData) => {
   const {
@@ -11,7 +13,7 @@ const createUser = async (createData) => {
   const getBy = { email };
   const user = await userRepository.getUser(getBy);
   if (user?.email === email) {
-    throw new CustomError(400, '이미 등록된 이메일입니다');
+    throw new CustomError(ERROR_CODE.ALREADY_REGISTED_RESOURCE, ERROR_MESSAGE.ALREADY_REGISTED_RESOURCE.EMAIL);
   }
 
   const hashedPassword = await hashService.hash(password);
@@ -32,7 +34,7 @@ const getUsers = async (query) => {
 const getUser = async (getBy, selectPassword = false) => {
   const user = await userRepository.getUser(getBy, selectPassword);
   if (!user) {
-    throw new CustomError(404, '회원 정보를 찾을 수 없습니다');
+    throw new CustomError(ERROR_CODE.NOT_FOUND_RESOURCE, ERROR_MESSAGE.NOT_FOUND_RESOURCE.USER);
   }
 
   return user;
@@ -41,7 +43,7 @@ const getUser = async (getBy, selectPassword = false) => {
 const getUserById = async (id, only = false) => {
   const user = await userRepository.getUserById(id, only);
   if (!user) {
-    throw new CustomError(404, '회원 정보를 찾을 수 없습니다');
+    throw new CustomError(ERROR_CODE.NOT_FOUND_RESOURCE, ERROR_MESSAGE.NOT_FOUND_RESOURCE.USER);
   }
 
   return user;
@@ -56,7 +58,7 @@ const updateUser = async (id, updateData) => {
 
   const user = await userRepository.getUserById(id, only);
   if (!user) {
-    throw new CustomError(404, '회원 정보를 찾을 수 없습니다');
+    throw new CustomError(ERROR_CODE.NOT_FOUND_RESOURCE, ERROR_MESSAGE.NOT_FOUND_RESOURCE.USER);
   }
 
   return user;
@@ -67,7 +69,7 @@ const updateUserByAdmin = async (id, updateData) => {
 
   const user = await userRepository.getUserById(id);
   if (!user) {
-    throw new CustomError(404, '회원 정보를 찾을 수 없습니다');
+    throw new CustomError(ERROR_CODE.NOT_FOUND_RESOURCE, ERROR_MESSAGE.NOT_FOUND_RESOURCE.USER);
   }
 
   return user;
@@ -76,7 +78,7 @@ const updateUserByAdmin = async (id, updateData) => {
 const deleteUser = async (id) => {
   const result = await userRepository.deleteUser({ id });
   if (!result) {
-    throw new CustomError(400, '회원 탈퇴 실패');
+    throw new CustomError(ERROR_CODE.INVALID_REQUEST, ERROR_MESSAGE.INVALID_REQUEST.USER);
   }
 
   return '회원 탈퇴 완료';

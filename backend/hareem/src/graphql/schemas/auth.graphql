@@ -19,21 +19,15 @@ input LoginInput {
   password: String
 }
 
-type LoginOutput implements CoreOutput {
-  success: Boolean!
-  error: Error
+type LoginOutput {
   accessToken: JWT
 }
 
-type LogoutOutput implements CoreOutput {
-  success: Boolean!
-  error: Error
+type LogoutOutput {
   result: String
 }
 
-type RefreshAccessTokenOutput implements CoreOutput {
-  success: Boolean!
-  error: Error
+type RefreshAccessTokenOutput {
   accessToken: JWT
 }
 

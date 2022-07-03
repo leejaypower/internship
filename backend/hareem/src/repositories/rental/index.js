@@ -3,98 +3,128 @@ const {
 } = require('../../database/models');
 const { timer } = require('../../utils');
 const { BUSINESS } = require('../../constants');
+const { CustomError } = require('../../errors');
+const { ERROR_CODE, ERROR_MESSAGE } = require('../../constants/error');
 
 const createRental = async (createRentalData) => {
-  const rental = await Rental.create(createRentalData);
-  return rental;
+  try {
+    const rental = await Rental.create(createRentalData);
+
+    return rental;
+  } catch (err) {
+    throw new CustomError(ERROR_CODE.DB_FAIL, ERROR_MESSAGE.DB_FAIL.STANDARD);
+  }
 };
 
 const createRentalStart = async (createRentalStartData) => {
-  const result = await sequelize.transaction(async (transaction) => {
-    const {
-      user,
-      reservationId,
-      bookId,
-      state,
-      dueDate,
-    } = createRentalStartData;
-    // 예약자였다면, 해당 예약 완료 처리 (soft delete)
-    if (reservationId) {
-      await Reservation.destroy(reservationId, { transaction });
-    }
-    // book을 빌릴 수 있다면, 해당 book 업데이트 (isRentaled = true)
-    await Book.update({
-      isRentaled: true,
-    }, {
-      where: { id: bookId },
-      transaction,
-    });
-    // user의 rentalCount 업데이트
-    await User.update({
-      rentalCount: (user.rentalCount + 1),
-    }, {
-      where: { id: user.id },
-      transaction,
-    });
-    // rental table에 추가
-    const rental = await Rental.create({
-      state,
-      userId: user.id,
-      bookId,
-      dueDate,
-    }, {
-      transaction,
+  try {
+    const result = await sequelize.transaction(async (transaction) => {
+      const {
+        user,
+        reservationId,
+        bookId,
+        state,
+        dueDate,
+      } = createRentalStartData;
+
+      // 예약자였다면, 해당 예약 완료 처리 (soft delete)
+      if (reservationId) {
+        await Reservation.destroy(reservationId, { transaction });
+      }
+
+      // book을 빌릴 수 있다면, 해당 book 업데이트 (isRentaled = true)
+      await Book.update({
+        isRentaled: true,
+      }, {
+        where: { id: bookId },
+        transaction,
+      });
+
+      // user의 rentalCount 업데이트
+      await User.update({
+        rentalCount: (user.rentalCount + 1),
+      }, {
+        where: { id: user.id },
+        transaction,
+      });
+
+      // rental table에 추가
+      const rental = await Rental.create({
+        state,
+        userId: user.id,
+        bookId,
+        dueDate,
+      }, {
+        transaction,
+      });
+
+      rental.parentId = rental.id;
+
+      await rental.save();
+
+      return rental;
     });
 
-    return rental;
-  });
-  return result;
+    return result;
+  } catch (err) {
+    throw new CustomError(ERROR_CODE.DB_FAIL, ERROR_MESSAGE.DB_FAIL.STANDARD);
+  }
 };
 
 const createRentalEnd = async (createRentalEndData) => {
-  const result = await sequelize.transaction(async (transaction) => {
-    const {
-      userId,
-      bookId,
-      state,
-      parentId,
-    } = createRentalEndData;
+  try {
+    const result = await sequelize.transaction(async (transaction) => {
+      const {
+        userId,
+        bookId,
+        state,
+        parentId,
+      } = createRentalEndData;
 
-    // 반납 진행 (rental table insert -> 해당 도서, 상태 업데이트 -> 유저 상태 업데이트)
-    const rental = await Rental.create({
-      userId,
-      bookId,
-      state,
-      dueDate: new Date(),
-      parentId,
-    }, {
-      transaction,
-    });
-    await Book.update({
-      isRentaled: false,
-    }, {
-      where: { id: bookId },
-      transaction,
-    });
-    const user = await User.findByPk(userId);
-    await User.update({
-      rentalCount: (user.rentalCount - 1),
-    }, {
-      where: { id: user.id },
-      transaction,
+      // 반납 진행 (rental table insert -> 해당 도서, 상태 업데이트 -> 유저 상태 업데이트)
+      const rental = await Rental.create({
+        userId,
+        bookId,
+        state,
+        dueDate: new Date(),
+        parentId,
+      }, {
+        transaction,
+      });
+      await Book.update({
+        isRentaled: false,
+      }, {
+        where: { id: bookId },
+        transaction,
+      });
+      const user = await User.findByPk(userId);
+      await User.update({
+        rentalCount: (user.rentalCount - 1),
+      }, {
+        where: { id: user.id },
+        transaction,
+      });
+
+      return rental;
     });
 
-    return rental;
-  });
-  return result;
+    return result;
+  } catch (err) {
+    throw new CustomError(ERROR_CODE.DB_FAIL, ERROR_MESSAGE.DB_FAIL.STANDARD);
+  }
 };
 
 const getRentalHistory = async (rentalId) => {
-  const rentalHistory = await Rental.findAll({
-    where: { [Op.or]: [{ parentId: rentalId }, { id: rentalId }] },
-    order: [['createdAt', 'DESC']],
-  });
-  return rentalHistory;
+  try {
+    const rentalHistory = await Rental.findAll({
+      where: { [Op.or]: [{ parentId: rentalId }, { id: rentalId }] },
+      order: [['createdAt', 'DESC']],
+    });
+
+    return rentalHistory;
+  } catch (err) {
+    throw new CustomError(ERROR_CODE.DB_FAIL, ERROR_MESSAGE.DB_FAIL.STANDARD);
+  }
 };
 
 const getUsersRentals = async (getAllRentalsQuery) => {
@@ -141,14 +171,19 @@ const getUsersRentals = async (getAllRentalsQuery) => {
     where.createdAt = { [Op.lte]: timer.stringToDate(to) };
   }
 
-  const rentals = Rental.findAll({
-    where,
-    limit,
-    offset,
-    include,
-    order,
-  });
-  return rentals;
+  try {
+    const rentals = await Rental.findAll({
+      where,
+      limit,
+      offset,
+      include,
+      order,
+    });
+
+    return rentals;
+  } catch (err) {
+    throw new CustomError(ERROR_CODE.DB_FAIL, ERROR_MESSAGE.DB_FAIL.STANDARD);
+  }
 };
 
 const getUserRentals = async (userId, getRentalsQuery) => {
@@ -178,14 +213,19 @@ const getUserRentals = async (userId, getRentalsQuery) => {
   }
   if (created) { where.createdAt = { [Op.gte]: timer.stringToDate(created) }; }
 
-  const rentals = Rental.findAll({
-    where,
-    limit,
-    offset,
-    include,
-    order,
-  });
-  return rentals;
+  try {
+    const rentals = await Rental.findAll({
+      where,
+      limit,
+      offset,
+      include,
+      order,
+    });
+
+    return rentals;
+  } catch (err) {
+    throw new CustomError(ERROR_CODE.DB_FAIL, ERROR_MESSAGE.DB_FAIL.STANDARD);
+  }
 };
 
 module.exports = {
