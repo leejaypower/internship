@@ -4,10 +4,18 @@ const { CustomError, ERROR_CODE } = require('../../../common/error');
 // 대출 데이터 생성 - 관리자
 const createRental = async (ctx) => {
   try {
-    if (!ctx.request.body) {
-      throw new CustomError(ERROR_CODE.VALIDATION_ERROR, 'please provide the information', '[restAPI/controllers/createRental/VALIDATION_ERROR]');
+    const { rentalCode, userId, bookId } = ctx.request.body;
+    if (!rentalCode || !userId || !bookId) {
+      throw new CustomError(ERROR_CODE.VALIDATION_ERROR, 'please provide the rental information', '[restAPI/controllers/createRental/VALIDATION_ERROR]');
     }
-    ctx.body = await rentalService.createRental(ctx.request.body);
+    const newRental = await rentalService.createRental(ctx.request.body);
+    const {
+      rentalDate, returnDueDate,
+    } = newRental;
+    if (!rentalDate || !returnDueDate) {
+      throw new CustomError(ERROR_CODE.VALIDATION_ERROR, 'Invalid Output', '[restAPI/controllers/createRental/VALIDATION_ERROR]');
+    }
+    ctx.body = newRental;
     ctx.status = 201;
   } catch (err) {
     ctx.throw(err);
@@ -26,12 +34,16 @@ const getAdminRentals = async (ctx) => {
     if (!bookId && !userId) {
       throw new CustomError(ERROR_CODE.VALIDATION_ERROR, 'you should provide information', '[restAPI/controllers/getAdminRentals/VALIDATION_ERROR]');
     }
-    ctx.body = await rentalService.getRentals({
+    const rentals = await rentalService.getRentals({
       bookId,
       userId,
       page,
       limit,
     });
+    if (rentals.length <= 0) {
+      throw new CustomError(ERROR_CODE.NOT_EXIST_RENTAL, 'Rental information doesn\'t exist.', '[restAPI/controllers/getAdminRentals/NOT_EXIST_RENTAL]');
+    }
+    ctx.body = rentals;
     ctx.status = 200;
   } catch (err) {
     ctx.throw(err);
@@ -46,11 +58,15 @@ const getUserRentals = async (ctx) => {
     if (!page || !limit) {
       throw new CustomError(ERROR_CODE.VALIDATION_ERROR, 'you should provide page and limit', '[restAPI/controllers/getUserRentals/VALIDATION_ERROR]');
     }
-    ctx.body = await rentalService.getRentals({
+    const rentals = await rentalService.getRentals({
       userId,
       page,
       limit,
     });
+    if (rentals.length <= 0) {
+      throw new CustomError(ERROR_CODE.NOT_EXIST_RENTAL, 'Rental information doesn\'t exist.', '[restAPI/controllers/getUserRentals/NOT_EXIST_RENTAL]');
+    }
+    ctx.body = rentals;
     ctx.status = 200;
   } catch (err) {
     ctx.throw(err);
@@ -60,7 +76,14 @@ const getUserRentals = async (ctx) => {
 // 단일 대출 조회
 const getOneRental = async (ctx) => {
   try {
-    ctx.body = await rentalService.getOneRental(ctx.params.rentalId);
+    if (!ctx.params.rentalId) {
+      throw new CustomError(ERROR_CODE.VALIDATION_ERROR, 'you should provide information.', '[restAPI/controllers/getOneRental/VALIDATION_ERROR]');
+    }
+    const rental = await rentalService.getOneRental(ctx.params.rentalId);
+    if (!rental) {
+      throw new CustomError(ERROR_CODE.NOT_EXIST_RENTAL, 'Rental information doesn\'t exist.', '[restAPI/controllers/getOneRental/NOT_EXIST_RENTAL]');
+    }
+    ctx.body = rental;
     ctx.status = 200;
   } catch (err) {
     ctx.throw(err);
@@ -75,7 +98,11 @@ const extendRental = async (ctx) => {
     if (!ctx.params.rentalId) {
       throw new CustomError(ERROR_CODE.VALIDATION_ERROR, 'please provide the rental information', '[restAPI/controllers/extendRental/VALIDATION_ERROR]');
     }
-    ctx.body = await rentalService.extendRental(rentalId, userId);
+    const rentalInfo = await rentalService.extendRental(rentalId, userId);
+    if (rentalInfo.length <= 0) {
+      throw new CustomError(ERROR_CODE.NOT_EXIST_RENTAL, 'Rental information doesn\'t exist.', '[restAPI/controllers/extendRental/NOT_EXIST_RENTAL]');
+    }
+    ctx.body = rentalInfo;
     ctx.status = 200;
   } catch (err) {
     ctx.throw(err);
@@ -85,10 +112,12 @@ const extendRental = async (ctx) => {
 // 반납 데이터 생성 - 관리자
 const createBookReturn = async (ctx) => {
   try {
-    if (!ctx.request.body) {
+    const { rentalCode, userId } = ctx.request.body;
+    if (!rentalCode || !userId) {
       throw new CustomError(ERROR_CODE.VALIDATION_ERROR, 'please provide the information', '[restAPI/controllers/createBookReturn/VALIDATION_ERROR]');
     }
-    ctx.body = await rentalService.createBookReturn(ctx.request.body);
+    const bookReturn = await rentalService.createBookReturn(ctx.request.body);
+    ctx.body = bookReturn;
     ctx.status = 201;
   } catch (err) {
     ctx.throw(err);
@@ -107,12 +136,16 @@ const getAdminReturns = async (ctx) => {
     if (!page || !limit) {
       throw new CustomError(ERROR_CODE.VALIDATION_ERROR, 'you should provide page and limit', '[restAPI/controllers/getAdminReturns/VALIDATION_ERROR]');
     }
-    ctx.body = await rentalService.getBookReturns({
+    const bookReturnList = await rentalService.getBookReturns({
       bookId,
       userId,
       page,
       limit,
     });
+    if (bookReturnList.length <= 0) {
+      throw new CustomError(ERROR_CODE.NOT_EXIST_BOOK_RETURN, 'Book return information doesn\'t exist.', '[restAPI/controllers/getAdminReturns/NOT_EXIST_BOOK_RETURN]');
+    }
+    ctx.body = bookReturnList;
     ctx.status = 200;
   } catch (err) {
     ctx.throw(err);
@@ -127,11 +160,15 @@ const getUserReturns = async (ctx) => {
     if (!page || !limit) {
       throw new CustomError(ERROR_CODE.VALIDATION_ERROR, 'you should provide page and limit', '[restAPI/controllers/getUserReturns/VALIDATION_ERROR]');
     }
-    ctx.body = await rentalService.getBookReturns({
+    const bookReturnList = await rentalService.getBookReturns({
       userId,
       page,
       limit,
     });
+    if (bookReturnList.length <= 0) {
+      throw new CustomError(ERROR_CODE.NOT_EXIST_BOOK_RETURN, 'Book return information doesn\'t exist.', '[restAPI/controllers/getUserReturns/NOT_EXIST_BOOK_RETURN]');
+    }
+    ctx.body = bookReturnList;
     ctx.status = 200;
   } catch (err) {
     ctx.throw(err);
@@ -141,12 +178,18 @@ const getUserReturns = async (ctx) => {
 // 단일 반납 조회
 const getOneReturn = async (ctx) => {
   try {
-    ctx.body = await rentalService.getOneReturn(ctx.params.rentalId);
+    if (!ctx.params.rentalId) {
+      throw new CustomError(ERROR_CODE.VALIDATION_ERROR, 'please provide the information', '[restAPI/controllers/getOneReturn/VALIDATION_ERROR]');
+    }
+    const bookReturn = await rentalService.getOneReturn(ctx.params.rentalId);
+    if (!bookReturn) {
+      throw new CustomError(ERROR_CODE.NOT_EXIST_BOOK_RETURN, 'Book return information doesn\'t exist.', '[restAPI/controllers/getOneReturn/NOT_EXIST_BOOK_RETURN]');
+    }
+    ctx.body = bookReturn;
     ctx.status = 200;
   } catch (err) {
     ctx.throw(err);
-  }
-};
+	
 
 module.exports = {
   createRental,

@@ -52,7 +52,7 @@ const deleteBook = async (ctx) => {
       ctx.status = 204;
     } else {
       ctx.status = 500;
-      throw new CustomError(ERROR_CODE.SERVER_ERROR, ` Failed to deleted the book <${bookId}>.`, '[restAPI/controllers/deleteBook/SERVER_ERROR]);
+      throw new CustomError(ERROR_CODE.SERVER_ERROR, ` Failed to deleted the book <${bookId}>.`, '[restAPI/controllers/deleteBook/SERVER_ERROR]');
     }
   } catch (err) {
     ctx.throw(err);

@@ -1,4 +1,5 @@
 const nodemailer = require('nodemailer');
+const logger = require('../../../../log/config/logger');
 
 const sendOverDueEmail = async (email) => {
   const transport = nodemailer.createTransport({
@@ -30,8 +31,7 @@ const sendOverDueEmail = async (email) => {
 
   const sendResult = await transport.sendMail(mailOptions);
 
-  // 보낸 메일의 id를 로깅 -> 에러/로그 처리 모듈이 아직 merge되지 않아 console.log로 임시 대체
-  console.log('Email sent: %s', sendResult.messageId);
+  logger.info('Email sent: %s', sendResult.messageId);
 };
 
 module.exports = { sendOverDueEmail };

@@ -6,7 +6,7 @@ const authorize = async (ctx) => {
   if (!ctx.req.headers?.authorization) {
     throw new CustomError(ERROR_CODE.AUTHORIZATION_INFO_MISSING, 'Authorization header is missing', '[restAPI/Auth/AUTHORIZATION_INFO_MISSING]');
   }
-  const { accessToken } = ctx.req.headers.authorization;
+  const accessToken = ctx.req.headers.authorization;
   const decodedToken = JwtService.verify(accessToken);
   return decodedToken;
 };

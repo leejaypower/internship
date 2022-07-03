@@ -5,11 +5,11 @@ const { userAdminAuthorized, adminAuthorized } = require('../../common/auth');
 const rentalRouter = new Router();
 
 // Admin - book-rental
-rentalRouter.post('/book-rentals', adminAuthorized, rentalController.createRental);
+rentalRouter.post('/book-rental', adminAuthorized, rentalController.createRental);
 rentalRouter.get('/book-rentals/admin', adminAuthorized, rentalController.getAdminRentals);
 
 // Admin - book-return
-rentalRouter.post('/book-returns', adminAuthorized, rentalController.createBookReturn);
+rentalRouter.post('/book-return', adminAuthorized, rentalController.createBookReturn);
 rentalRouter.get('/book-returns/admin', adminAuthorized, rentalController.getAdminReturns);
 
 // User - book-rental

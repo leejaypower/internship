@@ -28,7 +28,6 @@ const adminSignInService = async (userData) => {
   const accessToken = JwtService.issue({ id: user.id, role: 'ADMIN' });
   const refreshToken = JwtService.refresh();
   const updateToken = await adminUserRepository.updateRefreshToken({ userId: user.id, refreshToken });
-
   return { Authorization: { accessToken, refreshToken } };
 };
 
@@ -45,7 +44,6 @@ const userSignInService = async (userData) => {
   const accessToken = JwtService.issue({ id: user.id, role: 'USER' });
   const refreshToken = JwtService.refresh();
   const updateToken = await userRepository.updateRefreshToken({ userId: user.id, refreshToken });
-
   return { Authorization: { accessToken, refreshToken } };
 };
 
