@@ -6,17 +6,16 @@ const Sequelize = require('sequelize');
 require('../../config/env');
 
 const basename = path.basename(__filename);
-
 const db = {};
 
 const sequelize = new Sequelize(
-  process.env.DATABASE_NAME,
-  process.env.DATABASE_USERNAME,
-  process.env.DATABASE_PASSWORD,
+  process.env.DATABASE_NAME || 'internship-sora',
+  process.env.DATABASE_USERNAME || 'intern',
+  process.env.DATABASE_PASSWORD || 'intern',
   {
-    host: process.env.DATABASE_HOST,
-    dialect: process.env.DATABASE_DIALECT,
-    port: process.env.DATABASE_PORT,
+    host: process.env.DATABASE_HOST || '127.0.0.1',
+    dialect: process.env.DATABASE_DIALECT || 'postgres',
+    port: process.env.DATABASE_PORT || '6432',
     pool: {
       max: 20,
       min: 0,

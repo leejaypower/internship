@@ -11,6 +11,7 @@ const { API_ERROR_CONSTANT } = constant;
  * @returns  { state: true or false, data: user or {} }
  */
 
+// 이 함수는 사실상 아래의 함수로 대체되어야 하지만, 일단 사용
 const isValidToken = async (accessToken) => {
   const decodeToken = verify(accessToken, process.env.ACCESS_SECRET_KEY);
 

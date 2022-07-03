@@ -3,4 +3,7 @@ const ROLES = {
   ADMIN: ['admin'],
 };
 
-module.exports = { ROLES };
+const EVENT = {
+  ERROR: 'error',
+};
+module.exports = { ROLES, EVENT };

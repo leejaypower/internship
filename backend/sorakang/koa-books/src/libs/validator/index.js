@@ -21,6 +21,7 @@ const emailValidator = (email) => {
   if (!emailRegExp.test(email)) {
     throw new customError.ValidationError('유효하지 않은 email 입니다');
   }
+  return true;
 };
 
 const passwordValidator = (password) => {

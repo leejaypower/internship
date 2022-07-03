@@ -1,27 +1,29 @@
-const { authRepository } = require('../../repositories');
+const { authRepository, loginInfoRepository } = require('../../repositories');
 const { errorHandler, authUtils } = require('../../libs');
 
 const getAccessToken = async (rToken) => {
   // decode rToken
-  const decode = authUtils.tokenFunc.verifyTokenWrapper(rToken, process.env.REFRESH_SECRET_KEY);
+  const decode = await authUtils.tokenFunc.verifyTokenWrapper(rToken, process.env.REFRESH_SECRET_KEY);
   if (!decode) {
     throw new errorHandler.customError.UnauthenticatedError('다시 로그인 해주세요');
   }
 
   // check userId is valid
   const { iat } = await authRepository.verifyAuth(decode.userId);
+  const dbIat = Number(iat?.iat);
 
-  if (!iat || iat !== decode.iat) {
+  if (!iat || dbIat !== decode.iat) {
+    loginInfoRepository.deleteIsLogin(decode.userId);
     throw new errorHandler.customError.UnauthenticatedError('다시 로그인 해주세요');
   }
 
-  const payload = { ...decode };
-  const exp = process.env.ACCESS_EXP_DATE;
+  const payload = { userId: decode.userId, groupName: decode.groupName };
+  const accessTokenExp = Number(process.env.ACCESS_EXP_DATE);
   const secret = process.env.ACCESS_SECRET_KEY;
 
-  const aToken = authUtils.tokenFunc.getToken(payload, secret, exp);
+  const accessToken = authUtils.tokenFunc.getToken(payload, secret, accessTokenExp);
 
-  return { aToken, iat };
+  return { accessToken };
 };
 
 module.exports = {
