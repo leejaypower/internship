@@ -46,7 +46,7 @@ services:
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'false'
     volumes:
       - internship-kafka-data:/var/lib/kafka/data
-  
+
   internship-jinyeong:
     container_name: internship-jinyeong
     build:
@@ -124,7 +124,7 @@ services:
       - internship-postgres
     build:
       context: ../backend/sorakang/koa-books
-    
+
   internship-deokhyeong:
     container_name: deokhyeong-weather-app
     build:
@@ -157,8 +157,8 @@ services:
       context: ../frontend/jay/weather
       dockerfile: Dockerfile
     ports:
-     - "8088:8088"
-     
+      - "8088:8088"
+
 volumes:
   internship-pgdb:
   internship-zk-data:

@@ -6,6 +6,7 @@ const db = require('./database/models');
 const kafka = require('./kafka');
 const app = require('./app');
 const apollo = require('./apollo');
+const scheduler = require('./scheduler');
 
 const _dbInitialize = async () => {
   if (process.env.NODE_ENV === 'production') {
@@ -37,10 +38,14 @@ const serverRun = async () => {
 
     await _kafkaInitialize();
 
+    scheduler.start();
+
     await apollo.start();
     apollo.applyMiddleware({ app });
+
     httpServer.on('request', app.callback());
     await new Promise((resolve) => httpServer.listen({ port: PORT }, resolve));
+
     console.log(`🚀 Server ready at http://localhost:${PORT}${apollo.graphqlPath}`);
 
     return { apollo, app };

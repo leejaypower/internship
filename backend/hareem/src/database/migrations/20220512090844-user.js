@@ -28,11 +28,11 @@ module.exports = {
         allowNull: false,
         comment: '해당 컬럼은 사용자의 이름을 나타냅니다.',
       },
-      warningCount: {
-        type: Sequelize.INTEGER,
+      isBlack: {
+        type: Sequelize.BOOLEAN,
         allowNull: false,
-        defaultValue: 0,
-        comment: '해당 컬럼은 사용자의 경고 횟수를 나타냅니다.',
+        defaultValue: false,
+        comment: '해당 컬럼은 사용자가 블랙 유저인지를 나타냅니다.',
       },
       rentalCount: {
         type: Sequelize.INTEGER,

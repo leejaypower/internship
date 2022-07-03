@@ -16,7 +16,7 @@ module.exports = {
       },
       dueDate: {
         type: Sequelize.DATE,
-        allowNull: false,
+        allowNull: true,
         comment: '해당 컬럼은 도서의 반납 예정일을 나타냅니다.',
       },
       createdAt: {
@@ -45,7 +45,7 @@ module.exports = {
       },
       parentId: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: true,
         references: {
           model: 'Rentals',
           key: 'id',

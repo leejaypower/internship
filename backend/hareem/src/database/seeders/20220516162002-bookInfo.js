@@ -2,7 +2,7 @@ module.exports = {
   async up(queryInterface, Sequelize) {
     const dummy = [{
       id: 1,
-      isbn: '1166570428 9791166570422',
+      isbn: '1166570428 9791166570431',
       title: '상대성이론',
       author: '아인슈타인',
       publisher: '과학진흥연구소',
@@ -12,7 +12,7 @@ module.exports = {
       updatedAt: new Date(),
     }, {
       id: 2,
-      isbn: '1166570428 9712366570514',
+      isbn: '1166570428 9791166570432',
       title: '빅뱅이론',
       author: '에드윈허블',
       publisher: '과학진흥연구소',
@@ -22,7 +22,7 @@ module.exports = {
       updatedAt: new Date(),
     }, {
       id: 3,
-      isbn: '4286511670 5720286325641',
+      isbn: '1166570428 9791166570433',
       title: '윤동주가 사랑한 시인',
       author: '이상',
       publisher: '문화를 추구하는 사람들',
@@ -32,7 +32,7 @@ module.exports = {
       updatedAt: new Date(),
     }, {
       id: 4,
-      isbn: '4286511670 5720286325641',
+      isbn: '1166570428 9791166570434',
       title: '낭만적인 노래',
       author: '헤르만헤세',
       publisher: '문화를 추구하는 사람들',

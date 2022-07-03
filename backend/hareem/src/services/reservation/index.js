@@ -1,7 +1,6 @@
 const { bookService, userService } = require('../index');
 const { reservationRepository } = require('../../repositories');
 const { timer } = require('../../utils');
-const { BUSINESS } = require('../../constants');
 const { CustomError } = require('../../errors');
 
 const createReservation = async (userId, bookInfoId) => {
@@ -14,7 +13,7 @@ const createReservation = async (userId, bookInfoId) => {
 
   // 연체한 사람이라면, error
   const user = await userService.getUser({ id: userId });
-  if (user.warningCount >= BUSINESS.MAX_WARNING_COUNT) {
+  if (user.isBlack) {
     throw new CustomError(400, '연체 이력이 많아 예약을 진행 할 수 없습니다');
   }
 

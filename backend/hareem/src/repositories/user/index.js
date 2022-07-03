@@ -46,7 +46,7 @@ const getUsers = async (getUsersQuery) => {
   const {
     page = BUSINESS.PAGE_DEFAULT,
     email,
-    warningCount = 0,
+    isBlack = false,
     role,
     from,
     to,
@@ -65,9 +65,8 @@ const getUsers = async (getUsersQuery) => {
     where.email = { [Op.like]: `%${email}%` };
   }
 
-  if (warningCount !== undefined) {
-    where.warningCount = { [Op.gte]: warningCount };
-    order.push(['warningCount', 'DESC']);
+  if (isBlack) {
+    where.isBlack = { [Op.gte]: isBlack };
   }
 
   if (from && to) {
@@ -163,7 +162,7 @@ const updateUserByAdmin = async (id, updateData) => {
       password,
       phone,
       name,
-      warningCount,
+      isBlack = false,
       rentalCount,
       role,
       refreshToken,
@@ -173,7 +172,7 @@ const updateUserByAdmin = async (id, updateData) => {
       password,
       phone,
       name,
-      warningCount,
+      isBlack,
       rentalCount,
     }, {
       where: { id },

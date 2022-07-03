@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     dueDate: {
       type: DataTypes.DATE,
-      allowNull: false,
+      allowNull: true,
       defaultValue: timer.afterNDate(BUSINESS.RENTAL_PERIOD),
       comment: '해당 컬럼은 도서의 반납 예정일을 나타냅니다.',
     },

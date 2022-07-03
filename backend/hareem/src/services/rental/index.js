@@ -9,7 +9,7 @@ const createRentalStart = async (userId, createRentalData) => {
 
   // 경고가 일정 이상 있는데 빌리려 한다면, error
   const user = await userService.getUserById(userId);
-  if (user.warningCount >= BUSINESS.MAX_WARNING_COUNT) {
+  if (user.isBlack) {
     throw new CustomError(400, '연체 이력이 많아 대여할 수 없습니다');
   }
 

@@ -1,4 +1,4 @@
-const { USER_ROLE } = require('../../utils/constants');
+const { USER_ROLE } = require('../../constants/table');
 
 module.exports = {
   async up(queryInterface, Sequelize) {
