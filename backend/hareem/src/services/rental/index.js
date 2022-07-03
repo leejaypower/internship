@@ -118,6 +118,7 @@ const createRentalEnd = async (userId, createRentalData) => {
     userId,
     bookId: rentalStartData.bookId,
     state: TABLE.RENTAL_STATE.END,
+    dueDate: null,
     parentId: rentalId,
   };
   const rental = rentalRepository.createRentalEnd(createRentalEndData);

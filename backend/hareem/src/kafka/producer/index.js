@@ -1,5 +1,5 @@
 /* eslint-disable no-underscore-dangle */
-const { getKafkaClient } = require('../client');
+const { getKafkaClient, getCompression } = require('../client');
 
 const kafka = getKafkaClient();
 
@@ -11,33 +11,48 @@ const connectProducer = async () => {
   await _producer.connect();
 };
 
-const makeKafkaMessage = (messageData) => {
-  const {
-    topic,
-    messages: originMessages,
-  } = messageData;
+const disconnectProducer = async () => {
+  await _producer.disconnect();
+};
 
-  const messages = originMessages.map((originMessage) => {
-    const message = {
-      key: originMessage.key,
-      value: JSON.stringify(originMessage.value),
+const makeMessage = (messageData) => {
+  const { topic, messages } = messageData;
+
+  const convertedMessages = messages.map((message) => {
+    const { key, method, data } = message;
+
+    const convertedMessage = {
+      value: JSON.stringify({ method, data }),
     };
-    return message;
+
+    if (key) {
+      convertedMessage.key = key;
+    }
+
+    return convertedMessage;
   });
 
   return {
     topic,
-    messages,
+    messages: convertedMessages,
   };
 };
 
 const sendMessage = async (kafkaMessage) => {
   // 들어온 토픽이 있는지 없는지 검증 가능
-  await _producer.send(kafkaMessage);
+  const { topic, messages } = kafkaMessage;
+
+  await _producer.send({
+    topic,
+    messages,
+    compression: getCompression(),
+    ack: 1,
+  });
 };
 
 module.exports = {
   connectProducer,
-  makeKafkaMessage,
+  disconnectProducer,
+  makeMessage,
   sendMessage,
 };

@@ -1,5 +1,6 @@
 const { composeResolvers } = require('@graphql-tools/resolvers-composition');
-const { TABLE } = require('../../../constants');
+const { TABLE, TOPIC } = require('../../../constants');
+const kafka = require('../../../kafka');
 const { authMiddleware } = require('../../../middlewares');
 const { rentalService } = require('../../../services');
 
@@ -30,6 +31,14 @@ const rentalResolver = {
     createRentalStart: async (_, { input }) => {
       const rental = await rentalService.createRentalStart(input.userId, input);
 
+      await kafka.sendMessage(kafka.makeMessage({
+        topic: `${TOPIC.MESSAGE_TYPE.EVENT}.${TOPIC.DATASET_NAME}.${TOPIC.DATA_NAME.RENTALS}`,
+        messages: [{
+          method: 'createRentalStart',
+          data: rental,
+        }],
+      }));
+
       return { success: true, rental };
     },
 
@@ -37,6 +46,14 @@ const rentalResolver = {
       const { user } = ctx;
 
       const rental = await rentalService.createRentalExtend(user.id, input);
+
+      await kafka.sendMessage(kafka.makeMessage({
+        topic: `${TOPIC.MESSAGE_TYPE.EVENT}.${TOPIC.DATASET_NAME}.${TOPIC.DATA_NAME.RENTALS}`,
+        messages: [{
+          method: 'createRentalExtend',
+          data: rental,
+        }],
+      }));
 
       return { success: true, rental };
     },
@@ -52,7 +69,7 @@ const rentalResolver = {
 const resolversComposition = {
   'Query.getRentalHistory': [authMiddleware([TABLE.USER_ROLE.USER, TABLE.USER_ROLE.ADMIN], true)],
   'Mutation.createRentalStart': [authMiddleware([TABLE.USER_ROLE.ADMIN], true)],
-  'Mutation.createRentalExtend': [authMiddleware([TABLE.USER_ROLE.USER], true)],
+  'Mutation.createRentalExtend': [authMiddleware([TABLE.USER_ROLE.USER, TABLE.USER_ROLE.ADMIN], true)],
   'Mutation.createRentalEnd': [authMiddleware([TABLE.USER_ROLE.ADMIN], true)],
 };
 

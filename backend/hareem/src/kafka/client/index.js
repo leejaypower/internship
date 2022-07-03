@@ -1,5 +1,5 @@
 /* eslint-disable no-underscore-dangle */
-const { Kafka } = require('kafkajs');
+const { Kafka, CompressionTypes } = require('kafkajs');
 const { TOPIC } = require('../../constants');
 
 const kafka = new Kafka({
@@ -11,6 +11,12 @@ const kafka = new Kafka({
 
 const getKafkaClient = () => kafka;
 
+const getCompression = () => {
+  const compression = CompressionTypes.GZIP;
+
+  return compression;
+};
+
 const getTopics = () => {
   const {
     MESSAGE_TYPE,
@@ -19,12 +25,12 @@ const getTopics = () => {
   } = TOPIC;
 
   return [
-    `${MESSAGE_TYPE.TRACKING}.${DATASET_NAME}.${DATA_NAME.RENTALS}`,
-    `${MESSAGE_TYPE.TRACKING}.${DATASET_NAME}.${DATA_NAME.RESERVATIONS}`,
+    `${MESSAGE_TYPE.EVENT}.${DATASET_NAME}.${DATA_NAME.RENTALS}`,
   ];
 };
 
 module.exports = {
   getKafkaClient,
+  getCompression,
   getTopics,
 };

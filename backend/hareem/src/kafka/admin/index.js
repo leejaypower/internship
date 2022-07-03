@@ -8,7 +8,7 @@ const _admin = kafka.admin();
 const _createTopics = async (topicList) => {
   const topics = topicList.map((topic) => ({
     topic,
-    numPartitions: 1,
+    numPartitions: 6,
     replicationFactor: 1,
   }));
 

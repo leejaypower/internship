@@ -30,6 +30,13 @@ const _kafkaInitialize = async () => {
   console.log('kafka is connected');
 };
 
+const _kafkaShutdown = async () => {
+  await kafka.producerShutdown();
+  await kafka.consumerShutdown();
+
+  console.log('kafka is shut down');
+};
+
 const serverRun = async () => {
   try {
     const PORT = process.env.PORT || 4001;
@@ -56,3 +63,12 @@ const serverRun = async () => {
 };
 
 serverRun();
+
+process.on('SIGTERM', () => {
+  console.info('SIGTERM signal received');
+  _kafkaShutdown();
+  httpServer.close(() => {
+    console.log('Http server closed');
+    process.exit(0);
+  });
+});

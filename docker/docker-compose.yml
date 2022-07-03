@@ -101,6 +101,11 @@ services:
       KAFKA_CLIENT_ID: internship-hareem
       KAFKA_BROKER: kafka:8094
       KAFKA_CONSUMER_GROUP_ID: internship-hareem
+      MAILER_SERVICE: gmail
+      MAILER_HOST: smtp.gmail.com
+      MAILER_AUTH_USER: hrsongdev@gmail.com
+      MAILER_AUTH_PASSWORD: zrmmtepnuortnslk
+      MAILER_FROM: '"barogo-library" <hrsong@barogo.com>'
       JWT_ACCESS_TOKEN_SECRET_KEY: intern_access
       JWT_ACCESS_TOKEN_EXPIRES_IN: 2h
       JWT_REFRESH_TOKEN_SECRET_KEY: intern_refresh

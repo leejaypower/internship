@@ -19,7 +19,7 @@ module.exports = {
       phone: `010${String(new Date().getTime() - 1).substring(5, 13)}`,
       name: 'user',
       isBlack: false,
-      rentalCount: 0,
+      rentalCount: 2,
       createdAt: new Date(),
       deletedAt: null,
     }];

@@ -12,13 +12,17 @@ const getConsumerInstance = (consumerOptions) => {
     await _consumer.connect();
   };
 
+  const disconnectConsumer = async () => {
+    await _consumer.disconnect();
+  };
+
   const topicsSubscribe = async (topics) => {
     await _consumer.subscribe({
       topics,
     });
   };
 
-  const addTopicHandler = async (topic, cb) => {
+  const addTopicHandler = (topic, cb) => {
     _topicHandlers[topic] = cb;
   };
 
@@ -27,13 +31,18 @@ const getConsumerInstance = (consumerOptions) => {
       eachMessage: async ({
         topic, partition, message, heartbeat,
       }) => {
-        await _topicHandlers[topic](topic, partition, message, heartbeat);
+        try {
+          await _topicHandlers[topic](topic, partition, message, heartbeat);
+        } catch (error) {
+          console.log(error);
+        }
       },
     });
   };
 
   return {
     connectConsumer,
+    disconnectConsumer,
     topicsSubscribe,
     addTopicHandler,
     runTopicHandler,

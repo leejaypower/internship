@@ -4,13 +4,16 @@ const stringToDate = (string = '220101') => new Date(`
   ${string.substring(4, 6)}`);
 
 // 차후, findAll의 from, to 부분을 아래 함수를 쓰지 않는 쪽으로 리팩토링 해야 함
-const dateToString = (date) => {
+const dateToString = (date, separator = '') => {
   const year = String(date.getFullYear()).substring(2, 4);
+
   let month = String(date.getMonth() + 1);
   month = month.length < 2 ? `0${month}` : month;
-  const day = String(date.getDate());
 
-  return year + month + day;
+  let day = String(date.getDate());
+  day = day.length < 2 ? `0${day}` : day;
+
+  return year + separator + month + separator + day;
 };
 
 const afterNDate = (n = 0, fromDate = new Date()) => {

@@ -1,3 +1,5 @@
+const { TOPIC } = require('../../constants');
+const kafka = require('../../kafka');
 const { rentalService } = require('../../services');
 
 const createRentalStart = async (ctx) => {
@@ -5,8 +7,17 @@ const createRentalStart = async (ctx) => {
     // 어드민 관리자가 대출 시작을 담당해주므로,
     // target userId를 받아와야 함
     const { userId } = ctx.request.body;
+
     const rental = await rentalService.createRentalStart(userId, ctx.request.body);
     ctx.body = rental;
+
+    await kafka.sendMessage(kafka.makeMessage({
+      topic: `${TOPIC.MESSAGE_TYPE.EVENT}.${TOPIC.DATASET_NAME}.${TOPIC.DATA_NAME.RENTALS}`,
+      messages: [{
+        method: 'createRentalStart',
+        data: rental,
+      }],
+    }));
   } catch (error) {
     ctx.throw(error);
   }
@@ -15,8 +26,17 @@ const createRentalStart = async (ctx) => {
 const createRentalExtend = async (ctx) => {
   try {
     const { id: userId } = ctx.user;
+
     const rental = await rentalService.createRentalExtend(userId, ctx.request.body);
     ctx.body = rental;
+
+    await kafka.sendMessage(kafka.makeMessage({
+      topic: `${TOPIC.MESSAGE_TYPE.EVENT}.${TOPIC.DATASET_NAME}.${TOPIC.DATA_NAME.RENTALS}`,
+      messages: [{
+        method: 'createRentalExtend',
+        data: rental,
+      }],
+    }));
   } catch (error) {
     ctx.throw(error);
   }
