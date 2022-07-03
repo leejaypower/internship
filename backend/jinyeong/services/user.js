@@ -39,7 +39,6 @@ const signUp = async (body) => {
 };
 
 const logIn = async (body) => {
-  // TODO: 만약 관리자와 일반유저의 액세스토큰 유효기간을 분리하여 발급한다면?
   const { email, password } = body;
 
   if (!email || !password) {

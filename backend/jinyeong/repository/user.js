@@ -67,7 +67,8 @@ const updateUser = async (id, inputData) => {
     throw new errorHandler.CustomError(ERROR_CODE.INTERNAL_SERVER_ERROR);
   }
 
-  await User.update(inputData, { where: { id } });
+  const updatedUserInfo = await User.update(inputData, { where: { id } });
+  return updatedUserInfo;
 };
 
 const deleteUser = async (id) => {

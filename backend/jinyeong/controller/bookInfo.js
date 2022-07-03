@@ -1,5 +1,6 @@
 const { bookInfoService } = require('../services');
 const { util, constants } = require('../common');
+const { restApiResponse } = require('./response');
 
 const { CustomError } = util.errorHandler;
 const { ERROR_CODE } = constants;
@@ -11,7 +12,7 @@ const getAll = async (ctx) => {
     ctx.status = 204;
   }
 
-  ctx.body = result;
+  ctx.body = restApiResponse(200, result);
 };
 
 const getById = async (ctx) => {
@@ -21,7 +22,7 @@ const getById = async (ctx) => {
 
   const result = await bookInfoService.getById(bookInfoId);
 
-  ctx.body = result;
+  ctx.body = restApiResponse(200, result);
 };
 
 const createBookInfo = async (ctx) => {
@@ -32,21 +33,22 @@ const createBookInfo = async (ctx) => {
     categoryId,
     author,
     publisher,
-    discription,
+    description,
   } = body;
 
-  if (!name || !categoryId || !author || !publisher || !discription) {
+  if (!name || !categoryId || !author || !publisher || !description) {
     throw new CustomError(ERROR_CODE.REQUIRED_INPUT_NULL);
   }
 
-  await bookInfoService.createBookInfo({
+  const result = await bookInfoService.createBookInfo({
     name,
     categoryId,
     author,
     publisher,
-    discription,
+    description,
   });
 
+  ctx.body = restApiResponse(201, result);
   ctx.status = 201;
 };
 
@@ -70,7 +72,7 @@ const updateBookInfo = async (ctx) => {
     discription,
   });
 
-  ctx.status = 200;
+  ctx.body = restApiResponse(200, '업데이트 되었습니다!');
 };
 
 const deleteBookInfo = async (ctx) => {

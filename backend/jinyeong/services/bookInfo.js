@@ -49,7 +49,8 @@ const createBookInfo = async (body) => {
     throw new CustomError(ERROR_CODE.DB_INVALID_REFERENCE);
   }
 
-  await bookInfoQuery.createBookInfo(body);
+  const createdBookInfo = await bookInfoQuery.createBookInfo(body);
+  return createdBookInfo;
 };
 
 const updateBookInfo = async (id, body) => {
@@ -67,7 +68,8 @@ const updateBookInfo = async (id, body) => {
     }
   }
 
-  await bookInfoQuery.updateBookInfo(id, body);
+  const updatedBookInfo = await bookInfoQuery.updateBookInfo(id, body);
+  return updatedBookInfo;
 };
 
 const deleteBookInfo = async (id) => {

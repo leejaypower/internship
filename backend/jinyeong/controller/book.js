@@ -1,5 +1,6 @@
 const { bookService } = require('../services');
 const { util, constants } = require('../common');
+const { restApiResponse } = require('./response');
 
 const { CustomError } = util.errorHandler;
 const { ERROR_CODE } = constants;
@@ -11,7 +12,7 @@ const getAll = async (ctx) => {
     ctx.status = 204;
   }
 
-  ctx.body = result;
+  ctx.body = restApiResponse(200, result);
 };
 
 const getById = async (ctx) => {
@@ -25,7 +26,7 @@ const getById = async (ctx) => {
 
   const result = await bookService.getById(bookId);
 
-  ctx.body = result;
+  ctx.body = restApiResponse(200, result);
 };
 
 const createBook = async (ctx) => {
@@ -39,8 +40,9 @@ const createBook = async (ctx) => {
     throw new CustomError(ERROR_CODE.REQUIRED_INPUT_NULL);
   }
 
-  await bookService.createBook({ bookInfoId });
+  const result = await bookService.createBook({ bookInfoId });
 
+  ctx.body = restApiResponse(201, result);
   ctx.status = 201;
 };
 
@@ -56,7 +58,7 @@ const updateBook = async (ctx) => {
 
   await bookService.updateBook(bookId, { bookInfoId });
 
-  ctx.status = 200;
+  ctx.body = restApiResponse(200, '업데이트 되었습니다!');
 };
 
 const deleteBook = async (ctx) => {

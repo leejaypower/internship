@@ -1,5 +1,6 @@
 const { rentalService, bookService } = require('../services');
 const { util, constants } = require('../common');
+const { restApiResponse } = require('./response');
 
 const { CustomError } = util.errorHandler;
 const { BOOK_STATE, ERROR_CODE } = constants;
@@ -14,7 +15,7 @@ const getAll = async (ctx) => {
     ctx.status = 204;
   }
 
-  ctx.body = result;
+  ctx.body = restApiResponse(200, result);
 };
 
 // 유저별 대출이력 조회
@@ -27,13 +28,13 @@ const searchByUserId = async (ctx) => {
     throw new CustomError(ERROR_CODE.INVALID_INPUT_TYPE);
   }
 
-  const queryResult = await rentalService.searchByQuery({ userId });
+  const result = await rentalService.searchByQuery({ userId });
 
-  if (queryResult.length === 0) {
+  if (result.length === 0) {
     ctx.status = 204;
   }
 
-  ctx.body = queryResult;
+  ctx.body = restApiResponse(200, result);
 };
 
 // 도서별 대출이력 조회
@@ -46,13 +47,13 @@ const searchByBookId = async (ctx) => {
     throw new CustomError(ERROR_CODE.INVALID_INPUT_TYPE);
   }
 
-  const queryResult = await rentalService.searchByQuery({ bookId });
+  const result = await rentalService.searchByQuery({ bookId });
 
-  if (queryResult.length === 0) {
+  if (result.length === 0) {
     ctx.status = 204;
   }
 
-  ctx.body = queryResult;
+  ctx.body = restApiResponse(200, result);
 };
 
 const createRental = async (ctx) => {
@@ -75,12 +76,13 @@ const createRental = async (ctx) => {
     return;
   }
 
-  await rentalService.rentalOnWaitingBook({ userId, bookId });
+  const result = await rentalService.rentalOnWaitingBook({ userId, bookId });
+
+  ctx.body = restApiResponse(201, result);
   ctx.status = 201;
 };
 
 const updateRental = async (ctx) => {
-  // TODO: 들어오는 바디의 종류에 따라 나누는게 좋을 지 고민해보기
   const { params, body } = ctx.request;
 
   const bookId = params.book_id;
@@ -93,14 +95,16 @@ const updateRental = async (ctx) => {
   // 반납요청을 받은 경우
   if (returnDate) {
     await rentalService.checkInByBookId(bookId);
-    ctx.status = 200;
+
+    ctx.body = restApiResponse(200, '도서 반납되었습니다!');
     return;
   }
 
   // 연장요청을 받은 경우
   if (isExtended) {
     await rentalService.extendRentalPeriodByBookId(bookId);
-    ctx.status = 200;
+
+    ctx.body = restApiResponse(200, '도서대출이 연장되었습니다!');
     return;
   }
 

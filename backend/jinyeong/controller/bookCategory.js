@@ -1,5 +1,6 @@
 const { bookCategoryService } = require('../services');
 const { util, constants } = require('../common');
+const { restApiResponse } = require('./response');
 
 const { CustomError } = util.errorHandler;
 const { ERROR_CODE } = constants;
@@ -11,7 +12,7 @@ const getAll = async (ctx) => {
     ctx.status = 204;
   }
 
-  ctx.body = result;
+  ctx.body = restApiResponse(200, result);
 };
 
 const getById = async (ctx) => {
@@ -25,7 +26,7 @@ const getById = async (ctx) => {
 
   const result = await bookCategoryService.getById(categoryId);
 
-  ctx.body = result;
+  ctx.body = restApiResponse(200, result);
 };
 
 const createBookCategory = async (ctx) => {
@@ -38,11 +39,12 @@ const createBookCategory = async (ctx) => {
     throw new CustomError(ERROR_CODE.REQUIRED_INPUT_NULL);
   }
 
-  await bookCategoryService.createBookCategory({
+  const result = await bookCategoryService.createBookCategory({
     koreanDecimalClassificationCode,
     name,
   });
 
+  ctx.body = restApiResponse(201, result);
   ctx.status = 201;
 };
 

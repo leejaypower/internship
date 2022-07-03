@@ -1,5 +1,6 @@
 const { mypageService } = require('../services');
 const { util, constants } = require('../common');
+const { restApiResponse } = require('./response');
 
 const { errorHandler } = util;
 const { ERROR_CODE } = constants;
@@ -15,7 +16,8 @@ const getMypage = async (ctx) => {
   }
 
   const result = await mypageService.getMypage(userId);
-  ctx.body = result;
+
+  ctx.body = restApiResponse(200, result);
 };
 
 const deleteMyAccount = async (ctx) => {

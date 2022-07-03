@@ -1,5 +1,6 @@
 const { reservationService } = require('../services');
 const { util, constants } = require('../common');
+const { restApiResponse } = require('./response');
 
 const { CustomError } = util.errorHandler;
 const { ERROR_CODE } = constants;
@@ -14,7 +15,7 @@ const getAll = async (ctx) => {
     ctx.status = 204;
   }
 
-  ctx.body = result;
+  ctx.body = restApiResponse(200, result);
 };
 
 const getById = async (ctx) => {
@@ -28,7 +29,7 @@ const getById = async (ctx) => {
 
   const result = await reservationService.getById(reservationId);
 
-  ctx.body = result;
+  ctx.body = restApiResponse(200, result);
 };
 
 // 유저별 예약이력 조회
@@ -47,7 +48,7 @@ const searchByUserId = async (ctx) => {
     ctx.status = 204;
   }
 
-  ctx.body = result;
+  ctx.body = restApiResponse(200, result);
 };
 
 // 도서별 예약이력 조회
@@ -66,7 +67,7 @@ const searchByBookId = async (ctx) => {
     ctx.status = 204;
   }
 
-  ctx.body = result;
+  ctx.body = restApiResponse(200, result);
 };
 
 // 대출도서 예약등록
@@ -86,7 +87,9 @@ const createReservation = async (ctx) => {
     throw new CustomError(ERROR_CODE.INVALID_INPUT_TYPE);
   }
 
-  await reservationService.createReservation({ userId, bookId });
+  const result = await reservationService.createReservation({ userId, bookId });
+
+  ctx.body = restApiResponse(201, result);
   ctx.status = 201;
 };
 
@@ -105,7 +108,8 @@ const cancleReservation = async (ctx) => {
   }
 
   await reservationService.cancleReservation(reservationId, userId);
-  ctx.status = 201;
+
+  ctx.body = restApiResponse(200, '도서 대출예약이 취소되었습니다!');
 };
 
 module.exports = {

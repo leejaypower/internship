@@ -12,7 +12,6 @@ const getListAll = async () => {
   });
 };
 
-// Book SELECT ALL IN ids
 const getAllByIds = async (ids) => {
   if (!Array.isArray(ids)) {
     throw new errorHandler.CustomError(ERROR_CODE.INTERNAL_SERVER_ERROR);
@@ -39,7 +38,8 @@ const createBook = async (inputData) => {
     throw new errorHandler.CustomError(ERROR_CODE.INTERNAL_SERVER_ERROR);
   }
 
-  await Book.create(inputData);
+  const createdBook = await Book.create(inputData);
+  return createdBook?.dataValues;
 };
 
 const updateBook = async (id, inputData) => {
@@ -47,7 +47,8 @@ const updateBook = async (id, inputData) => {
     throw new errorHandler.CustomError(ERROR_CODE.INTERNAL_SERVER_ERROR);
   }
 
-  await Book.update(inputData, { where: { id } });
+  const updatedBook = await Book.update(inputData, { where: { id } });
+  return updatedBook;
 };
 
 const deleteBook = async (id) => {

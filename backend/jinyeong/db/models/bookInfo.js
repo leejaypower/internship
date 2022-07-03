@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       comment: '도서 발행사',
     },
-    discription: {
+    description: {
       type: DataTypes.STRING(500),
       allowNull: false,
       comment: '도서 소개',

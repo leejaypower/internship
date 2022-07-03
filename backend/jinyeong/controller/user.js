@@ -1,5 +1,6 @@
 const { userService } = require('../services');
 const { util, constants } = require('../common');
+const { restApiResponse } = require('./response');
 
 const { CustomError } = util.errorHandler;
 const { ERROR_CODE } = constants;
@@ -33,13 +34,14 @@ const signUp = async (ctx) => {
     throw new CustomError(ERROR_CODE.INVALID_CONTACT_REGEX);
   }
 
-  await userService.signUp({
+  const result = await userService.signUp({
     name,
     email,
     password,
     contact,
   });
 
+  ctx.body = restApiResponse(201, result);
   ctx.status = 201;
 };
 
@@ -60,7 +62,7 @@ const logIn = async (ctx) => {
 
   const accessToken = await userService.logIn({ email, password });
 
-  ctx.body = { accessToken };
+  ctx.body = restApiResponse(200, { accessToken });
 };
 
 const getAll = async (ctx) => {
@@ -70,10 +72,9 @@ const getAll = async (ctx) => {
     ctx.status = 204;
   }
 
-  ctx.body = result;
+  ctx.body = restApiResponse(200, result);
 };
 
-// 관리자 계정이 특정 유저정보를 조회하는 요청
 const getById = async (ctx) => {
   const { params } = ctx.request;
 
@@ -84,7 +85,8 @@ const getById = async (ctx) => {
   }
 
   const result = await userService.getById(userId);
-  ctx.body = result;
+
+  ctx.body = restApiResponse(200, result);
 };
 
 module.exports = {

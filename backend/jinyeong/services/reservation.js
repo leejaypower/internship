@@ -49,6 +49,7 @@ const createReservation = async (body) => {
 
   // 1. 유저 예약가능상태 여부 확인
   const userInfo = await userQuery.getOneById(userId);
+
   if (!userInfo) {
     throw new CustomError(ERROR_CODE.INVALID_INPUT_DATA);
   }
@@ -85,14 +86,17 @@ const createReservation = async (body) => {
     1. 도서상태를 예약상태로 변경
     2. 예약이력 생성
   */
+  let reservationResult;
   try {
     await sequelize.transaction(async () => {
       await bookQuery.updateBook(bookId, { state: BOOK_STATE.RESERVATED });
-      await reservationQuery.createReservation({ userId, bookId });
+      reservationResult = await reservationQuery.createReservation({ userId, bookId });
     });
   } catch (err) {
-    throw new CustomError(ERROR_CODE.DB_TRANSACTION_ERROR);
+    throw new CustomError(ERROR_CODE.DB_TRANSACTION_ERROR, err.message);
   }
+
+  return reservationResult;
 };
 
 // 대출도서 예약취소
@@ -122,7 +126,11 @@ const cancleReservation = async (reservationId, userId) => {
       - 예약상황이었다면, 도서의 상태는 '예약' 상태
       - 도서 반납시점에서 예약자 유무를 확인하여, 도서의 상태를 예약자가 없다면 '대기', 있다면, '예약' 상태유지
   */
-  await reservationQuery.updateReservation(reservationId, { state: RESERVATION_STATE.CANCELED });
+  const cancleReservationResult = await reservationQuery.updateReservation(reservationId, {
+    state: RESERVATION_STATE.CANCELED,
+  });
+
+  return cancleReservationResult;
 };
 
 module.exports = {

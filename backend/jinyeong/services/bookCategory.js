@@ -42,10 +42,12 @@ const createBookCategory = async (body) => {
     throw new CustomError(ERROR_CODE.REQUIRED_INPUT_NULL);
   }
 
-  await bookCategoryQuery.createBookCategory({
+  const createdBookCategory = await bookCategoryQuery.createBookCategory({
     koreanDecimalClassificationCode,
     name,
   });
+
+  return createdBookCategory;
 };
 
 const deleteBookCategory = async (id) => {

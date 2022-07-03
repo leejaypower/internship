@@ -38,7 +38,8 @@ const createBookCategory = async (inputData) => {
     throw new errorHandler.CustomError(ERROR_CODE.INTERNAL_SERVER_ERROR);
   }
 
-  await BookCategory.create(inputData);
+  const createdBookCategory = await BookCategory.create(inputData);
+  return createdBookCategory?.dataValues;
 };
 
 const deleteBookCategory = async (id) => {

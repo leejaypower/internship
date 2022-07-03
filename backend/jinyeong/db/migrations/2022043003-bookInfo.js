@@ -35,7 +35,7 @@ module.exports = {
         allowNull: false,
         comment: '도서 발행사',
       },
-      discription: {
+      description: {
         type: Sequelize.STRING(500),
         allowNull: false,
         comment: '도서 소개',

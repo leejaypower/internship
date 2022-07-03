@@ -62,7 +62,8 @@ const updateBook = async (id, body) => {
     throw new CustomError(ERROR_CODE.DB_INVALID_REFERENCE);
   }
 
-  await bookQuery.updateBook(id, body);
+  const updatedBook = await bookQuery.updateBook(id, body);
+  return updatedBook;
 };
 
 const deleteBook = async (id) => {

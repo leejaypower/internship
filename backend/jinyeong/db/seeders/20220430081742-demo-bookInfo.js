@@ -8,7 +8,7 @@ const createDemoData = () => {
       categoryId: i,
       author: '작자 샘플',
       publisher: '발행사 샘플',
-      discription: '책 설명 샘플',
+      description: '책 설명 샘플',
       createdAt: new Date(),
       updatedAt: new Date(),
     });

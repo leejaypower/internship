@@ -62,14 +62,18 @@ const rentalOnWaitingBook = async (body) => {
   if (book.state !== BOOK_STATE.WAITING) {
     throw new CustomError(ERROR_CODE.NOT_AVAILABLE_REQUEST, '대기상태의 도서만 대출요청할 수 있습니다');
   }
+
+  let rentalResult;
   try {
     await sequelize.transaction(async () => {
-      await rentalQuery.createRental({ userId, bookId, dueDate });
+      rentalResult = await rentalQuery.createRental({ userId, bookId, dueDate });
       await bookQuery.updateBook(bookId, { state: BOOK_STATE.RENTALED });
     });
   } catch (err) {
-    throw new CustomError(ERROR_CODE.DB_TRANSACTION_ERROR);
+    throw new CustomError(ERROR_CODE.DB_TRANSACTION_ERROR, err.message);
   }
+
+  return rentalResult;
 };
 
 // 예약상태의 도서 대출로직
@@ -130,6 +134,7 @@ const rentalOnReservatedBook = async (body) => {
     throw new CustomError(ERROR_CODE.NOT_ALLOWED_OTHERS, '예약 당사자가 아닙니다');
   }
 
+  let rentalResult;
   try {
     await sequelize.transaction(async () => {
       await rentalQuery.createRental({ userId, bookId, dueDate });
@@ -144,8 +149,10 @@ const rentalOnReservatedBook = async (body) => {
       );
     });
   } catch (err) {
-    throw new CustomError(ERROR_CODE.DB_TRANSACTION_ERROR);
+    throw new CustomError(ERROR_CODE.DB_TRANSACTION_ERROR, err.message);
   }
+
+  return rentalResult;
 };
 
 // 도서 반납 요청
@@ -161,12 +168,6 @@ const checkInByBookId = async (bookId) => {
   if (rentalInfoList.length === 0) {
     throw new CustomError(ERROR_CODE.NON_RESOURCE_EXIST);
   }
-
-  /*
-    TODO: [ 아래 계획 사항 1, 2번 ]
-    1. 연체여부를 확인 -> 연체료 수납 후 반납처리(추후 구현)
-    2. 분실도서 여부를 확인 -> 분실도서 회수처리(추후 구현)
-  */
 
   /*
     NOTE
@@ -190,14 +191,11 @@ const checkInByBookId = async (bookId) => {
     return record.state === RESERVATION_STATE.WAITING;
   });
 
-  // 도서반납일(returnDate) 수정 로직 === 도서 반납 요청
-  // 1. 해당 대출이력의 returnDate를 수정한다.
-  // 2. 해당 도서의 예약자를 조회 후 예약자가 더 없는 경우에만 '대기'상태로 변경.
-
+  let checkInResult;
   try {
     await sequelize.transaction(async () => {
       // 해당 대출이력의 도서반납일 수정
-      await rentalQuery.updateRental(rentalInfo.id, { returnDate: now });
+      checkInResult = await rentalQuery.updateRental(rentalInfo.id, { returnDate: now });
 
       // 대기중인 예약이력이 있는지 여부
       const isWaitingExist = waitingReservationInfoList.length !== 0;
@@ -208,8 +206,10 @@ const checkInByBookId = async (bookId) => {
       }
     });
   } catch (err) {
-    throw new CustomError(ERROR_CODE.DB_TRANSACTION_ERROR);
+    throw new CustomError(ERROR_CODE.DB_TRANSACTION_ERROR, err.message);
   }
+
+  return checkInResult;
 };
 
 // 대출도서 연장요청
@@ -269,7 +269,12 @@ const extendRentalPeriodByBookId = async (bookId) => {
     throw new CustomError(ERROR_CODE.NOT_AVAILABLE_REQUEST, '연장신청 가능기간이 아닙니다');
   }
 
-  await rentalQuery.updateRental(id, { isExtended: true, dueDate: extendedDueDate });
+  const extendRentalResult = await rentalQuery.updateRental(id, {
+    isExtended: true,
+    dueDate: extendedDueDate,
+  });
+
+  return extendRentalResult;
 };
 
 module.exports = {

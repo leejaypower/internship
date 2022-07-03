@@ -50,7 +50,8 @@ const createRental = async (inputData) => {
     throw new errorHandler.CustomError(ERROR_CODE.INTERNAL_SERVER_ERROR);
   }
 
-  await Rental.create(inputData);
+  const createdRental = await Rental.create(inputData);
+  return createdRental?.dataValues;
 };
 
 const updateRental = async (id, inputData) => {
@@ -58,7 +59,8 @@ const updateRental = async (id, inputData) => {
     throw new errorHandler.CustomError(ERROR_CODE.INTERNAL_SERVER_ERROR);
   }
 
-  await Rental.update(inputData, { where: { id } });
+  const updatedRental = await Rental.update(inputData, { where: { id } });
+  return updatedRental;
 };
 
 // NOTE: 주말제외 평일(월화수목금) 오전 9시에 반납예정일이 하루 남은 대출자 조회

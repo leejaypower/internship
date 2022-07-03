@@ -32,7 +32,6 @@ const comparePassword = async (password, hash) => {
   return result;
 };
 
-// Crypto 암호화
 const cipher = (message) => {
   if (!message) {
     throw new CustomError(ERROR_CODE.INTERNAL_SERVER_ERROR);
@@ -42,7 +41,6 @@ const cipher = (message) => {
   return ciphertext;
 };
 
-// Crypto 복호화
 const decipher = (encryptedData) => {
   if (!encryptedData) {
     throw new CustomError(ERROR_CODE.INTERNAL_SERVER_ERROR);
