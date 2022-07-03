@@ -21,7 +21,6 @@ const createApolloServer = (httpServer) => {
     schema,
     csrfPrevention: true,
     formatError: (err) => {
-      console.log(err);
       return errorResponse.graphqlApiErrorResponse(err);
     },
     context: async ({ ctx }) => {

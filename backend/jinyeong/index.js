@@ -33,7 +33,6 @@ const startServer = async () => {
       try {
         await next();
       } catch (err) {
-        console.log(err);
         errorResponse.restApiErrorResponse(ctx, err);
       }
     })

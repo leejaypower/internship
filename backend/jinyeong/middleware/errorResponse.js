@@ -7,7 +7,21 @@ const restApiErrorResponse = (ctx, err) => {
   const errorMessage = err.inputMessage || messageErrorMapping[errorCode];
   const statusCode = httpStatusCodeErrorMapping[errorCode];
 
+  const errorStack = err.stack;
+
   ctx.status = statusCode;
+
+  let logLevel = 'INFO';
+  if (statusCode >= 500) {
+    logLevel = 'ERROR';
+  }
+
+  let logFormat = `[${logLevel}][${new Date()}] message: "${err.message || errorMessage}"`;
+  if (statusCode >= 500) {
+    logFormat = logFormat.concat(` 
+    ======> stack: ${errorStack}>`);
+  }
+  console.log(logFormat);
 
   ctx.body = {
     statusCode,
@@ -23,6 +37,23 @@ const graphqlApiErrorResponse = (err) => {
   const errorCode = err.extensions.exception.code || err.extensions.code;
   const errorMessage = err.inputMessage || messageErrorMapping[errorCode];
   const statusCode = httpStatusCodeErrorMapping[errorCode];
+
+  const errorStack = err.extensions.exception.stacktrace;
+  const errorPath = err.path;
+
+  let logLevel = 'INFO';
+  if (statusCode >= 500) {
+    logLevel = 'ERROR';
+  }
+
+  let logFormat = `[${logLevel}][${new Date()}][PATH: ${errorPath || 'SCHEMA_CONSTRAINT'}] message: "${err.message || errorMessage}"`;
+  if (statusCode >= 500) {
+    logFormat = logFormat.concat(` 
+    ======> path: ${errorPath}
+    ======> stack: ${errorStack}`);
+  }
+
+  console.log(logFormat);
 
   const response = {
     message: errorMessage,
