@@ -4,7 +4,7 @@ const { adminQuery } = require('../repository');
 const { util, constants } = require('../common');
 
 const { encrypt, errorHandler } = util;
-const { ERROR_CODE } = constants;
+const { ERROR_CODE, AUTH_ROLE } = constants;
 const { CustomError } = errorHandler;
 
 // 관리자 회원가입 요청에 해당하는 비지니스 로직
@@ -70,18 +70,10 @@ const logIn = async (body) => {
     throw new CustomError(ERROR_CODE.INVALID_LOGIN_ACCESS);
   }
 
-  const accessToken = jwt.sign(
-    { id: adminInfo.id, role: 'admin' },
-    process.env.ACCESS_TOKEN_SECRET,
-    { expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN },
-  );
-
-  /*
-    중복로그인 방지 로직
-    1. 1번 유저가 로그인하면, 액세스 토큰이 발급됨.
-    2. 2번 유저가 로그인하면, 새롭게 액세스토큰이 발급되면서 기존의 액세스토큰에 대한 정보가 지워짐.(덮어쓰기)
-    3. 미들웨어에서 액세스토큰이 유효한지 여부를 확인하는 과정을 통해, 1번 유저의 권한활동을 막음.
-  */
+  const accessToken = jwt.sign({
+    id: adminInfo.id,
+    role: [AUTH_ROLE.USER, AUTH_ROLE.ADMIN],
+  }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN });
 
   await adminQuery.updateAdmin(adminInfo.id, { accessToken });
 
@@ -89,17 +81,17 @@ const logIn = async (body) => {
 };
 
 // 관리자계정 정보조회 by adminId
-const getOneByAdminId = async (adminId) => {
-  if (!adminId) {
+const getbyId = async (id) => {
+  if (!id) {
     throw new errorHandler.CustomError(ERROR_CODE.INTERNAL_SERVER_ERROR);
   }
 
-  const adminInfo = await adminQuery.getOneByInputData({ id: adminId });
+  const adminInfo = await adminQuery.getOneById(id);
   return adminInfo;
 };
 
 module.exports = {
   signUp,
   logIn,
-  getOneByAdminId,
+  getbyId,
 };

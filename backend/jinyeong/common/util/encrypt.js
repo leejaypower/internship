@@ -26,6 +26,7 @@ const comparePassword = async (password, hash) => {
   if (!hash) {
     throw new CustomError(ERROR_CODE.INTERNAL_SERVER_ERROR);
   }
+  console.log('check!!');
   const result = await bcrypt.compare(password, hash);
 
   return result;

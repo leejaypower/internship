@@ -4,13 +4,29 @@ const { util, constants } = require('../common');
 const { errorHandler } = util;
 const { ERROR_CODE } = constants;
 
+const getOneById = async (id) => {
+  if (!id) {
+    throw new errorHandler.CustomError(ERROR_CODE.INTERNAL_SERVER_ERROR);
+  }
+
+  const adminInfo = await Admin.findOne({
+    where: { id },
+    attributes: { exclude: ['password'] },
+  });
+
+  return adminInfo?.dataValues;
+};
+
 // Admin 테이블 관리자 계정 조회 by inputQuery(객체)
 const getOneByInputData = async (inputData) => {
   if (typeof inputData !== 'object') {
     throw new errorHandler.CustomError(ERROR_CODE.INTERNAL_SERVER_ERROR);
   }
 
-  const adminInfo = await Admin.findOne({ where: inputData });
+  const adminInfo = await Admin.findOne({
+    where: inputData,
+    paranoid: false,
+  });
   return adminInfo?.dataValues;
 };
 
@@ -34,6 +50,7 @@ const updateAdmin = async (adminId, inputData) => {
 };
 
 module.exports = {
+  getOneById,
   getOneByInputData,
   createAdmin,
   updateAdmin,

@@ -36,7 +36,7 @@ const getOneById = async (id) => {
 
   const userInfo = await User.findOne({
     where: { id },
-    attributes: { exclude: ['password'] },
+    attributes: { exclude: ['password', 'contact'] },
   });
   return userInfo?.dataValues;
 };
@@ -62,6 +62,14 @@ const createUser = async (inputData) => {
   return createdUserInfo?.dataValues;
 };
 
+const updateUser = async (id, inputData) => {
+  if (!id || !inputData) {
+    throw new errorHandler.CustomError(ERROR_CODE.INTERNAL_SERVER_ERROR);
+  }
+
+  await User.update(inputData, { where: { id } });
+};
+
 const deleteUser = async (id) => {
   if (!id) {
     throw new errorHandler.CustomError(ERROR_CODE.INTERNAL_SERVER_ERROR);
@@ -76,5 +84,6 @@ module.exports = {
   getOneById,
   getOneByInputData,
   createUser,
+  updateUser,
   deleteUser,
 };

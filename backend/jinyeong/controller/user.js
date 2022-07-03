@@ -87,41 +87,9 @@ const getById = async (ctx) => {
   ctx.body = result;
 };
 
-// 유저가 자신의 회원정보를 조회하는 요청
-const getMypageByUserId = async (ctx) => {
-  // TODO: auth 구현을 통한 자기자신의 회원정보 조회 시에만 가능
-  // TODO: params을 통해 userId를 받는 것이 아닌, 액세스토큰을 통해 자신의 정보만 조회할 수 있도록 수정
-  const { params } = ctx.request;
-
-  const userId = params.user_id;
-
-  if (!uuidRegex.test(userId)) {
-    throw new CustomError(ERROR_CODE.INVALID_INPUT_TYPE);
-  }
-
-  const result = await userService.getById(userId);
-  ctx.body = result;
-};
-
-const deleteMyAccount = async (ctx) => {
-  // TODO: auth 구현을 통한 자기자신의 회원정보 조회 시에만 가능
-  const { params } = ctx.request;
-
-  const userId = params.user_id;
-
-  if (!uuidRegex.test(userId)) {
-    throw new CustomError(ERROR_CODE.INVALID_INPUT_TYPE);
-  }
-
-  await userService.deleteMyAccount(userId);
-  ctx.status = 204;
-};
-
 module.exports = {
   signUp,
   logIn,
   getAll,
   getById,
-  getMypageByUserId,
-  deleteMyAccount,
 };

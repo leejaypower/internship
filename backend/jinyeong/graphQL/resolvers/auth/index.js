@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const { util, constants } = require('../../../common');
 
-const { ERROR_CODE } = constants;
+const { ERROR_CODE, AUTH_ROLE } = constants;
 const { CustomError } = util.errorHandler;
 
 const userAuth = async (context) => {
@@ -23,7 +23,7 @@ const userAuth = async (context) => {
 
   const { id, role } = tokenMessage;
 
-  if (!role.includes('user')) {
+  if (!role.includes(AUTH_ROLE.USER)) {
     throw new CustomError(ERROR_CODE.THIS_ROLE_NOT_AUTHORIZED);
   }
 
@@ -49,7 +49,7 @@ const adminAuth = async (context) => {
 
   const { id, role } = tokenMessage;
 
-  if (!role.includes('admin')) {
+  if (!role.includes(AUTH_ROLE.ADMIN)) {
     throw new CustomError(ERROR_CODE.THIS_ROLE_NOT_AUTHORIZED);
   }
 

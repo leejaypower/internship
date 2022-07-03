@@ -3,7 +3,7 @@ const { userQuery } = require('../repository');
 const { util, constants } = require('../common');
 
 const { encrypt, errorHandler } = util;
-const { ERROR_CODE } = constants;
+const { ERROR_CODE, AUTH_ROLE } = constants;
 const { CustomError } = errorHandler;
 
 const signUp = async (body) => {
@@ -61,8 +61,10 @@ const logIn = async (body) => {
   // 액세스토큰, 유효시간 30분
   const accessToken = jwt.sign({
     id: userInfo.id,
-    role: 'user',
+    role: [AUTH_ROLE.USER],
   }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN });
+
+  await userQuery.updateUser(userInfo.id, { accessToken });
 
   return accessToken;
 };
@@ -92,9 +94,6 @@ const getById = async (userId) => {
     throw new CustomError(ERROR_CODE.NON_RESOURCE_EXIST);
   }
 
-  const decryptContact = encrypt.decipher(userInfo.contact);
-  userInfo.contact = decryptContact;
-
   return userInfo;
 };
 
@@ -107,23 +106,6 @@ const getOneByInputData = async (inputData) => {
   return userInfo;
 };
 
-const getMypage = async (userId) => {
-  if (!userId) {
-    throw new CustomError(ERROR_CODE.INTERNAL_SERVER_ERROR);
-  }
-
-  const userInfo = await userQuery.getOneById(userId);
-  return userInfo;
-};
-
-const deleteMyAccount = async (userId) => {
-  if (!userId) {
-    throw new CustomError(ERROR_CODE.INTERNAL_SERVER_ERROR);
-  }
-
-  await userQuery.deleteUser(userId);
-};
-
 module.exports = {
   signUp,
   logIn,
@@ -131,6 +113,4 @@ module.exports = {
   getAllByIds,
   getById,
   getOneByInputData,
-  getMypage,
-  deleteMyAccount,
 };

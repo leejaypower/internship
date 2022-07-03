@@ -59,6 +59,11 @@ const KAFKA_CONSUMER_GROUP_ID = {
   DUE_DATE_MAILER: 'due-date-mailer',
 };
 
+const AUTH_ROLE = {
+  USER: 'user',
+  ADMIN: 'admin',
+};
+
 module.exports = {
   ERROR_CODE,
   BOOK_STATE,
@@ -66,4 +71,5 @@ module.exports = {
   KAFKA_CLIENT_ID,
   KAFKA_TOPIC,
   KAFKA_CONSUMER_GROUP_ID,
+  AUTH_ROLE,
 };
