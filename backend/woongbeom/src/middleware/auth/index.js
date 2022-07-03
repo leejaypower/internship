@@ -1,3 +1,4 @@
 const authorization = require('./authorization');
+const gqlAuth = require('./gqlAuth');
 
-module.exports = { authorization };
+module.exports = { authorization, gqlAuth };

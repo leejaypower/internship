@@ -1,4 +1,4 @@
-const lib = require('../../../lib');
+const lib = require('../../lib');
 
 const { CustomError } = lib.error.customError;
 const { errorCode } = lib.error.errorCode;

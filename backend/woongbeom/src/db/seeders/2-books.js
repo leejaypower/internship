@@ -757,6 +757,15 @@ module.exports = {
         createdAt: new Date(),
         updatedAt: new Date(),
       },
+      {
+        title: '실습과 그림으로 배우는 리눅스 구조',
+        author: '다케우치 사토루',
+        publisher: '한빛미디어',
+        page: 304,
+        statusCode: 0,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
     ], {});
   },
 

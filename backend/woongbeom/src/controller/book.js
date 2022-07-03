@@ -22,12 +22,6 @@ const createBook = async (ctx) => {
 
 const getBooks = async (ctx) => {
   ctx.body = await service.book.getBooks(ctx.request.query);
-  if (typeof (ctx.request.body.title) !== 'string'
-  || typeof (ctx.request.body.author) !== 'string'
-  || typeof (ctx.request.body.publisher) !== 'string'
-  || typeof (ctx.request.body.page) !== 'number') {
-    throw new CustomError(errorCode.invalidInputType, '[src/controller/book.js]');
-  }
 };
 
 const getBookById = async (ctx) => {

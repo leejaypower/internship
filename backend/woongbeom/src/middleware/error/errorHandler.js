@@ -1,3 +1,7 @@
+const lib = require('../../lib');
+
+const { logger } = lib.util;
+
 const errorHandler = async (ctx, err) => {
   const errorStatusCode = err.statusCode || 500;
   const errResponse = {
@@ -8,6 +12,8 @@ const errorHandler = async (ctx, err) => {
       location: err.location,
     },
   };
+
+  await logger.logError(err);
 
   ctx.status = errorStatusCode;
   ctx.body = errResponse;

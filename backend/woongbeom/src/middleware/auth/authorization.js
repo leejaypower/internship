@@ -28,6 +28,7 @@ const authorizeUser = async (ctx, next) => {
 
 const authorizeAdmin = async (ctx, next) => {
   const decodedToken = await decodeToken(ctx);
+
   if (decodedToken.role !== role.admin) {
     throw new CustomError(errorCode.invalidToken, '[src/middleware/auth/authorization.js]');
   }

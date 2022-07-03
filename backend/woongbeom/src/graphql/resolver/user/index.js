@@ -1,7 +1,9 @@
 const { composeResolvers } = require('@graphql-tools/resolvers-composition');
 
 const service = require('../../../service');
-const auth = require('../auth');
+const middleware = require('../../../middleware');
+
+const { gqlAuth } = middleware.auth;
 
 const user = {
   Query: {
@@ -38,8 +40,8 @@ const user = {
 };
 
 const resolveComposition = {
-  'Query.*': [auth.admin()],
-  'Mutation.updateUserName': [auth.user()],
+  'Query.*': [gqlAuth.admin()],
+  'Mutation.updateUserName': [gqlAuth.user()],
 };
 
 const composedResolvers = composeResolvers(user, resolveComposition);

@@ -2,6 +2,7 @@ const Koa = require('koa');
 const bodyParser = require('koa-bodyparser');
 const http = require('http');
 const { ApolloServer } = require('apollo-server-koa');
+
 const graphql = require('./graphql');
 const router = require('./routes');
 const kafka = require('./kafka');
@@ -10,10 +11,9 @@ const middleware = require('./middleware');
 
 const { constant } = lib.common;
 const { errorHandler } = middleware.error.errorHandler;
+const { logger } = lib.util;
 
 const PORT = process.env.PORT || 4000;
-
-kafka.initkafka();
 
 const application = {
   start: async () => {
@@ -47,6 +47,8 @@ const application = {
     const serverListen = await new Promise(resolve => httpServer.listen({ port: PORT }, resolve));
     console.log(`Server is listening on PORT ${PORT}`);
     console.log(`🚀 ApolloServer ready at http://localhost:${PORT}${server.graphqlPath}`);
+    await logger.logServerOn();
+
     return { server, app };
   },
 };
