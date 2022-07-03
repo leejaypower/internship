@@ -7,12 +7,12 @@ type book {
 
 type Query {
   getBooks(title: String, author: String, publisher: String): [book]
-  getBookById(id: Int!): [book]
+  getBookById(id: Int!): book
   getBooksAllByIds(ids: [Int]): [book]
 }
 
 type Mutation {
-  createBook(createBookInput: createBookInput): [book]
+  createBook(createBookInput: createBookInput): book
   updateBook(updateBookInput: updateBookInput): [book]
 }
 

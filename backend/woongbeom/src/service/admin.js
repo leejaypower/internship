@@ -1,26 +1,27 @@
 const repository = require('../repository');
 const lib = require('../lib');
 
-const { errorHandler } = lib.util.error;
 const { hash, jwt } = lib.auth;
 const { constant } = lib.common;
+const { CustomError } = lib.error.customError;
+const { errorCode } = lib.error.errorCode;
 
 const signIn = async (email, password) => {
   const matchedAdmin = await repository.admin.getByEmail(email);
 
   if (!matchedAdmin) {
-    errorHandler(1, 'Admin email does not exist.');
+    throw new CustomError(errorCode.noDataExist, '[src/service/admin.js]');
   }
 
   const matchPassword = await hash.comparePassword(password, matchedAdmin.password);
   if (!matchPassword) {
-    errorHandler(1, 'Wrong password');
+    throw new CustomError(errorCode.loginFailed, '[src/service/admin.js]');
   }
 
   const token = jwt.sign({
     id: matchedAdmin.dataValues.id,
     email,
-    role: constant.role.user,
+    role: constant.role.admin,
   }, {
     expiresIn: constant.token.expiresIn,
   });

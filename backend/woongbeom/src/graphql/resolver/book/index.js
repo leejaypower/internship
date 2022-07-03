@@ -13,7 +13,7 @@ const book = {
     getBookById: async (_, args) => {
       const bookId = args.id;
       const result = await service.book.getBookById(bookId);
-      return [result];
+      return result;
     },
     getBooksAllByIds: async (parent, args) => {
       const { ids } = args;
@@ -26,7 +26,7 @@ const book = {
       const inputValues = args.createBookInput;
 
       const result = await service.book.createBook(inputValues);
-      return [result];
+      return result;
     },
     updateBook: async (parent, args) => {
       const updateBookId = args.updateBookInput.id;
@@ -54,9 +54,6 @@ module.exports = composedResolvers;
 
 /**
  * ToDo
- * Resolver 내 파라미터명 통일 (다른 리졸버도)
- * 파라미터 갯수에 대하여 고민
- *
  * 기본 스키마(resolver)와 확장 스키마(dataloader) 분리
  * 리소스의 컬럼
  */

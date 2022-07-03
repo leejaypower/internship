@@ -1,19 +1,16 @@
 const service = require('../service');
 const lib = require('../lib');
 
-const { errorHandler } = lib.util.error;
+const { CustomError } = lib.error.customError;
+const { errorCode } = lib.error.errorCode;
 
 const createUser = async (ctx) => {
-  try {
-    if (!ctx.request.body.name
-      || !ctx.request.body.email
-      || !ctx.request.body.password) {
-      errorHandler(1, 'User info\'s elements required.');
-    }
-    ctx.body = await service.user.createUser(ctx.request.body);
-  } catch (err) {
-    ctx.throw(err);
+  if (!ctx.request.body.name
+    || !ctx.request.body.email
+    || !ctx.request.body.password) {
+    throw new CustomError(errorCode.requiredInputNotNull, '[src/controller/user.js]');
   }
+  ctx.body = await service.user.createUser(ctx.request.body);
 };
 
 const getUsers = async (ctx) => {

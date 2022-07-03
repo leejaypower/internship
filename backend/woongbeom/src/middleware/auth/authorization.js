@@ -1,12 +1,13 @@
 const lib = require('../../lib');
 
-const { errorHandler } = lib.util.error;
+const { CustomError } = lib.error.customError;
+const { errorCode } = lib.error.errorCode;
 const { role } = lib.common.constant;
 const { jwt } = lib.auth;
 
 const decodeToken = async (ctx) => {
   if (!ctx.req.headers.authorization) {
-    errorHandler(1, 'Auth header does not exist.');
+    throw new CustomError(errorCode.requiredToken, '[src/middleware/auth/authorization.js]');
   }
   const token = ctx.req.headers.authorization;
 
@@ -18,7 +19,7 @@ const decodeToken = async (ctx) => {
 const authorizeUser = async (ctx, next) => {
   const decodedToken = await decodeToken(ctx);
   if (decodedToken.role !== role.user) {
-    errorHandler(1, 'This token is not authorized user\'s.');
+    throw new CustomError(errorCode.invalidToken, '[src/middleware/auth/authorization.js]');
   }
   ctx.decodedToken = decodedToken;
 
@@ -28,7 +29,7 @@ const authorizeUser = async (ctx, next) => {
 const authorizeAdmin = async (ctx, next) => {
   const decodedToken = await decodeToken(ctx);
   if (decodedToken.role !== role.admin) {
-    errorHandler(1, 'This token is not authorized admin\'s.');
+    throw new CustomError(errorCode.invalidToken, '[src/middleware/auth/authorization.js]');
   }
   ctx.decodedToken = decodedToken;
 

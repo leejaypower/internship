@@ -1,18 +1,20 @@
 const lib = require('../../../lib');
 
-const { errorHandler } = lib.util.error;
+const { CustomError } = lib.error.customError;
+const { errorCode } = lib.error.errorCode;
+
 const { jwt } = lib.auth;
 const { constant } = lib.common;
 
 const user = () => (next) => async (parent, args, context) => {
   const token = context.request.header.authorization;
   if (!token) {
-    errorHandler(1, 'Auth token does not exist.');
+    throw new CustomError(errorCode.requiredToken, '[src/graphql/resolver/auth/index.js]');
   }
   const decodedToken = await jwt.verify(token);
 
   if (decodedToken.role !== constant.role.user) {
-    errorHandler(1, 'This token has invalid role.');
+    throw new CustomError(errorCode.invalidRole, '[src/graphql/resolver/auth/index.js]');
   }
 
   return next(parent, args, decodedToken);
@@ -21,12 +23,12 @@ const user = () => (next) => async (parent, args, context) => {
 const admin = () => (next) => async (parent, args, context) => {
   const token = context.request.header.authorization;
   if (!token) {
-    errorHandler(1, 'Auth token does not exist.');
+    throw new CustomError(errorCode.requiredToken, '[src/graphql/resolver/auth/index.js]');
   }
   const decodedToken = await jwt.verify(token);
 
   if (decodedToken.role !== constant.role.admin) {
-    errorHandler(1, 'This token has invalid role.');
+    throw new CustomError(errorCode.invalidRole, '[src/graphql/resolver/auth/index.js]');
   }
 
   return next(parent, args, decodedToken);

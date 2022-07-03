@@ -1,19 +1,16 @@
 const service = require('../service');
 const lib = require('../lib');
 
-const { errorHandler } = lib.util.error;
+const { CustomError } = lib.error.customError;
+const { errorCode } = lib.error.errorCode;
 
 const createReturn = async (ctx) => {
-  try {
-    const { rentalId } = ctx.request.body;
-    if (typeof (rentalId) !== 'number') {
-      errorHandler(1, 'Rental Id should be type Number');
-    }
-
-    ctx.body = await service.returnBook.createReturn(rentalId);
-  } catch (err) {
-    ctx.throw(err);
+  const { rentalId } = ctx.request.body;
+  if (typeof (rentalId) !== 'number') {
+    throw new CustomError(errorCode.invalidInputType, '[src/controller/returnBook.js]');
   }
+
+  ctx.body = await service.returnBook.createReturn(rentalId);
 };
 
 module.exports = {

@@ -6,8 +6,10 @@ const graphql = require('./graphql');
 const router = require('./routes');
 const kafka = require('./kafka');
 const lib = require('./lib');
+const middleware = require('./middleware');
 
 const { constant } = lib.common;
+const { errorHandler } = middleware.error.errorHandler;
 
 const PORT = process.env.PORT || 4000;
 
@@ -28,6 +30,13 @@ const application = {
 
     app
       .use(bodyParser())
+      .use(async (ctx, next) => {
+        try {
+          await next();
+        } catch (err) {
+          errorHandler(ctx, err);
+        }
+      })
       .use(router.routes());
 
     await kafka.admin.topicCreator.createTopic(constant.topic.returnReservedBook);

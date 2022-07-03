@@ -2,8 +2,9 @@ const repository = require('../repository');
 const { sequelize } = require('../db/models');
 const lib = require('../lib');
 
+const { CustomError } = lib.error.customError;
+const { errorCode } = lib.error.errorCode;
 const { constant } = lib.common;
-const { errorHandler } = lib.util.error;
 
 /**
  * @param { Object } rentalData 도서의 id, 유저의 email
@@ -13,14 +14,14 @@ const createRental = async (rentalData) => {
 
   const book = await repository.book.getBookById(bookId);
   if (!book) {
-    errorHandler(1, 'Book does not exist');
+    throw new CustomError(errorCode.noDataExist, '[src/service/rental.js]');
   }
 
   if (book.statusCode === constant.bookStatus.currentlyBorrowed) {
-    errorHandler(1, 'This book is already occupied');
+    throw new CustomError(errorCode.alreadyOnRental, '[src/service/rental.js]');
   }
   if (book.statusCode === constant.bookStatus.reserved) {
-    errorHandler(1, 'This book is already on reservation');
+    throw new CustomError(errorCode.alreadyOnReservation, '[src/service/rental.js]');
   }
 
   const user = await repository.user.getUserByEmail(userEmail);

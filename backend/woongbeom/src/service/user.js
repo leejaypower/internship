@@ -2,8 +2,9 @@ const repository = require('../repository');
 const lib = require('../lib');
 
 const { constant } = lib.common;
-const { errorHandler } = lib.util.error;
 const { jwt, hash } = lib.auth;
+const { CustomError } = lib.error.customError;
+const { errorCode } = lib.error.errorCode;
 
 /**
  * 유저 회원가입
@@ -13,7 +14,7 @@ const createUser = async (userData) => {
   const { name, email, password } = userData;
   const emailCheck = await repository.user.getUserByEmail(email);
   if (emailCheck) {
-    errorHandler(1, 'This email already exist');
+    throw new CustomError(errorCode.alreadyExist, '[src/service/user.js]');
   }
 
   const newUserData = await repository.user.createUser({
@@ -54,12 +55,12 @@ const updateUserName = async (id, name) => {
 const signIn = async (email, password) => {
   const matchedUser = await repository.user.getUserByEmail(email);
   if (matchedUser.email !== email) {
-    errorHandler(1, 'User email does not exist.');
+    throw new CustomError(errorCode.noDataExist, '[src/service/user.js]');
   }
 
   const matchPassword = await hash.comparePassword(password, matchedUser.password);
   if (!matchPassword) {
-    errorHandler(1, 'Wrong password');
+    throw new CustomError(errorCode.loginFailed, '[src/service/user.js]');
   }
 
   const token = jwt.sign({

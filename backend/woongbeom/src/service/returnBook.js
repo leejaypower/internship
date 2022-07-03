@@ -3,8 +3,9 @@ const repository = require('../repository');
 const lib = require('../lib');
 const kafka = require('../kafka');
 
-const { errorHandler } = lib.util.error;
 const { constant } = lib.common;
+const { CustomError } = lib.error.customError;
+const { errorCode } = lib.error.errorCode;
 
 /**
  * 도서 반납
@@ -13,12 +14,12 @@ const { constant } = lib.common;
 const createReturn = async (rentalId) => {
   const rental = await repository.rental.getRentalById(rentalId);
   if (!rental) {
-    errorHandler(1, 'This rent number does not exit.');
+    throw new CustomError(errorCode.noDataExist, '[src/service/returnBook.js]');
   }
 
   const book = await repository.book.getBookById(rental.bookId);
   if (book.statusCode === constant.bookStatus.availableForRental) {
-    errorHandler(1, 'This book is already returned');
+    throw new CustomError(errorCode.alreadyReturned, '[src/service/returnBook.js]');
   }
 
   if (book.statusCode === constant.bookStatus.reserved) {
