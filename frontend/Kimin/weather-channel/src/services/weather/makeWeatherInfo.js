@@ -1,5 +1,6 @@
 import { toFixedAsFirst } from '@/utils'
 import { callAirPollutionWeatherAPI, callCurrentWeatherAPI } from '@/utils/callAPI'
+import { validateAirPollutionResponse, validateCurrentWeatherResponse } from '../validation'
 
 const IDEAL_TEMPERATURE = 20 // IDEAL 온도를 20℃ 로 결정하였고, 더 더운경우와 더 추운경우로 나누어 로직설계
 const highTempPenaltyMultiplier = 6.7
@@ -149,9 +150,12 @@ const makeWeatherInfo = async (city) => {
     throw new Error(error.message) // 추후 핸들링 로직
   }
 
-  try {
-    const apiResults = [promiseResponses[0].value, promiseResponses[1].value]
-    const weatherInfo = mapWeatherData(name, apiResults)
+  try { // eslint-disable-next-line
+    const [currentWeather, airPollution] = [promiseResponses[0].value, promiseResponses[1].value]
+    validateCurrentWeatherResponse(currentWeather)
+    validateAirPollutionResponse(airPollution)
+
+    const weatherInfo = mapWeatherData(name, [currentWeather, airPollution])
 
     weatherInfo.score = calculateScore(weatherInfo)
     weatherInfo.fill = decideColor(weatherInfo.score.totalScore)

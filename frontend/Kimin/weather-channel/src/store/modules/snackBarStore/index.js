@@ -1,4 +1,5 @@
 const snackBarStore = {
+  namespaced: true,
   state: {
     snackBarAlarm: {
       alarm: false,

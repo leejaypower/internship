@@ -16,6 +16,7 @@
         :headers="headers"
         :items="contents"
         hide-default-footer
+        mobile-breakpoint="0"
       />
     </div>
   </div>

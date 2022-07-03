@@ -34,7 +34,7 @@ const getMyInfo = async ({ commit }) => {
   try {
     const response = await fakeAxios.get('getUserInfo', ID)
     const myInfo = response.body.result
-    commit('fetchMyInfo', myInfo)
+    commit('userInfoStore/fetchMyInfo', myInfo, { root: true })
   } catch (error) {
     throw new Error(error.message)
   }

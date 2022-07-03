@@ -24,7 +24,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['getReferenceCoordinate']),
+    ...mapGetters('weatherStore', ['getReferenceCoordinate']),
     location() {
       return this.getReferenceCoordinate
     },
@@ -44,7 +44,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['getAddressByGeocode']),
+    ...mapActions('weatherStore', ['getAddressByGeocode']),
   },
 }
 </script>

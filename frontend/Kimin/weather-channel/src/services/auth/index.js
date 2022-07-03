@@ -1,5 +1,9 @@
 import {
-  addressValidationRule, IDValidationRule, passwordValidationRule, nameValidationRule,
+  addressValidationRule,
+  IDValidationRule,
+  passwordValidationRule,
+  nameValidationRule,
+  phoneNumberValidationRule,
 } from './validationRules'
 import findUserAccount from './findUserAccount'
 import {
@@ -12,6 +16,7 @@ export {
   passwordValidationRule,
   nameValidationRule,
   addressValidationRule,
+  phoneNumberValidationRule,
   authPreInterceptor,
   authPostInterceptor,
   findUserAccount,

@@ -1,7 +1,9 @@
 <template>
   <v-card
     v-show="show"
-    width="380"
+    min-width="300px"
+    width="60%"
+    class="extend-box"
   >
     <v-slide-x-reverse-transition>
       <div class="d-flex flex-column justify-space-between fill-height">
@@ -13,7 +15,11 @@
             Find Account
           </v-tab>
         </v-tabs>
-        <v-card-title>{{ functionTitle }}</v-card-title>
+        <v-card-title
+          :class="extendBoxTitle"
+        >
+          {{ functionTitle }}
+        </v-card-title>
         <div>
           <sign-up-box
             v-if="signIn"
@@ -51,6 +57,12 @@ export default {
       }
       return '계정찾기'
     },
+    extendBoxTitle() {
+      if (this.$vuetify.breakpoint.height < 700) {
+        return 'extend-box__title-dispplay-none'
+      }
+      return ''
+    },
   },
   methods: {
     succeedSignUp(accountInfo) {
@@ -59,3 +71,10 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+  .extend-box__title-dispplay-none{
+    display: none;
+  }
+
+</style>

@@ -1,6 +1,7 @@
 import fakeAxios from '@/services/fakeAxios'
 
 const userInfoStore = {
+  namespaced: true,
   state: {
     myInfo: {
       ID: null,

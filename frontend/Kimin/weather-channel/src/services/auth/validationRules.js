@@ -14,6 +14,12 @@ const addressValidationRule = [
   (value) => skipNeverRule(value, '주소'),
 ]
 
+const phoneNumberValidationRule = [
+  (value) => hyphenNeverRule(value),
+  (value) => phoneNumberRule(value),
+  
+]
+
 const phoneNumberFirstRule = [
   (value) => skipNeverRule(value, '주소'),
   (value) => value === '010' || '010입력필요',
@@ -61,6 +67,19 @@ export {
   IDValidationRule, 
   passwordValidationRule, 
   nameValidationRule, 
+  phoneNumberValidationRule
+}
+
+function phoneNumberRule(value) {
+  if(value) {
+    if(value.substr(0,3) !== '010') {
+      return '010으로 시작해야합니다.'
+    }
+    const middleAndLastNumber = value.replace('010','')
+    return /(010)(\d{8})$/.test(value) || `입력정보: 010-${middleAndLastNumber.substr(0,4)}-${middleAndLastNumber.substr(4,4)}: '전화번호 형식에 맞지 않습니다.'`
+  } else {
+    return true
+  }
 }
 
 function phoneNumberFormatRule(value, kind) {
@@ -72,11 +91,11 @@ function skipNeverRule(value, kind) {
 }
 
 function minLengthRule(value, kind, min) {
-  return (value.length >= min) || `${kind} 의 최소 요구 길이는 ${min}`
+  return (!!value && value.length >= min) || `${kind} 의 최소 요구 길이는 ${min}`
 }
 
 function maxLengthRule(value, kind, max) {
-  return (value.length <= max) || `${kind} 의 최대 허용 길이는 ${max}`
+  return (!!value && value.length <= max) || `${kind} 의 최대 허용 길이는 ${max}`
 }
 
 function blankNeverStartOrFinishRule(value, kind) {
@@ -113,6 +132,10 @@ function englishNeverRule(value, kind) {
 
 function specialCharacterNeverRule(value, kind) {
   return !/[{}[\]/?.,;:|)*~`!^\-_+<>@#$%&=('"]/g.test(value) || `${kind} 에는 특수문자가 포함될 수 없습니다.`
+}
+
+function hyphenNeverRule(value, kind) {
+  return !/-/g.test(value) || `하이픈 없이 작성바랍니다.`
 }
 
 function specialCharacterEssentialRule(value, kind) {

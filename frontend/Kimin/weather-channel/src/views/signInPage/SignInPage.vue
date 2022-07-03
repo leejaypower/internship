@@ -47,9 +47,7 @@ export default {
     await this.checkLogIn()
   },
   methods: {
-    ...mapActions([
-      'getMyInfo',
-    ]),
+    ...mapActions('auth', ['getMyInfo']),
     async checkLogIn() {
       try {
         await this.getMyInfo()

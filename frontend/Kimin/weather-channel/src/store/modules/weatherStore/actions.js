@@ -1,4 +1,4 @@
-import { callAirPollutionWeatherAPI, callCurrentLocation, callCurrentWeatherAPI } from '@/utils/callAPI'
+import { callCurrentLocation } from '@/utils/callAPI'
 import { divideArray } from '@/utils'
 import {
   getFiveDaysWeather,
@@ -7,7 +7,8 @@ import {
   getReverseGeocode,
   makeWeatherInfo,
 } from '@/services/weather'
-import { validateCurrentWeatherResponse, validateAirPollutionResponse, validateCoordinate } from '@/services/validation'
+import { validateCoordinate } from '@/services/validation'
+import errorMessageMap from '@/services/errorHandling'
 
 /**
  * services에 위치한 geoLocationAPI를 호출하는 함수
@@ -23,7 +24,7 @@ const getCoordinate = async ({ dispatch, commit }) => {
     validateCoordinate(coords.latitude, coords.longitude)
     commit('saveTempLocation', location)
   } catch (error) {
-    dispatch('alertMessage', { text: '현 위치를 찾지 못하였습니다.', color: 'pink' }, { root: true })
+    dispatch('snackBarStore/alertMessage', { text: '현 위치를 찾지 못하였습니다.', color: 'pink' }, { root: true })
   }
 }
 
@@ -38,7 +39,7 @@ const getAddressByGeocode = async ({ dispatch }, coordinate) => {
     const foundedAddress = await getReverseGeocode(lat, lon)
     return foundedAddress
   } catch (error) {
-    dispatch('alertMessage', { text: '설정된 주소에 오류가 있습니다.', color: 'pink' }, { root: true })
+    dispatch('snackBarStore/alertMessage', { text: '설정된 주소에 오류가 있습니다.', color: 'pink' }, { root: true })
     return ''
   }
 }
@@ -67,7 +68,7 @@ const getCurrentWeather = async ({ dispatch, commit, getters }) => {
     commit('saveMultiDaysWeather', fiveDaysWeather)
     commit('saveMultiTimeWeather', oneDayWeather)
   } catch (error) {
-    dispatch('alertMessage', { text: '서버에 오류가 있습니다.', color: 'pink' }, { root: true })
+    dispatch('snackBarStore/alertMessage', { text: '서버에 오류가 있습니다.', color: 'pink' }, { root: true })
   }
   return null
 }
@@ -77,17 +78,14 @@ const findAddress = async ({ dispatch }, query) => {
     const { fullAddress, coordinate } = await getGeocodeByQuery(query)
     return { fullAddress, coordinate }
   } catch (error) {
-    if (error.message === 'Invalid Query') {
-      dispatch('alertMessage', { text: '잘못된 검색어입니다.', color: 'pink' }, { root: true })
-      return ''
-    }
-    dispatch('alertMessage', { text: '알수없는 오류입니다.', color: 'pink' }, { root: true })
+    dispatch('snackBarStore/alertMessage', errorMessageMap(error), { root: true })
     return ''
   }
 }
 
 const getMultiWeathers = async ({ dispatch, commit }, cities) => {
   try {
+    commit('initializeMultiWeathers')
     const dividedArray = divideArray(cities, 3)
     // 병렬통신을 위해 한번에 6개의 통신수가 가장 적정하다고 생각되며, 도시 1개당 통신 2종의 통신이 사용되기에 3개씩 분할
 
@@ -98,7 +96,7 @@ const getMultiWeathers = async ({ dispatch, commit }, cities) => {
       commit('saveCitiesWeatherInfo', results)
     }
   } catch (error) {
-    dispatch('giveMessage', { text: '날씨조회서버에 오류가 있습니다.', color: 'pink' }, { root: true })
+    dispatch('snackBarStore/alertMessage', { text: '날씨조회서버에 오류가 있습니다.', color: 'pink' }, { root: true })
   }
 }
 

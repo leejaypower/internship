@@ -84,7 +84,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['findAddress']),
+    ...mapActions('weatherStore', ['findAddress']),
     async searchAddress() {
       const validationChecked = this.$refs.form.validate()
       if (!validationChecked) {

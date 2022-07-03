@@ -102,7 +102,7 @@ export default {
 
 <style scoped>
   svg{
-    width: 60vh;
+    width: 30vw;
   }
   .lazyTransition{
     transition: 2500ms;

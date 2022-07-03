@@ -3,6 +3,7 @@ import actions from './actions'
 import mutations from './mutations'
 
 const weatherStore = {
+  namespaced: true,
   state: {
     tempLocation: {},
     currentWeather: {},

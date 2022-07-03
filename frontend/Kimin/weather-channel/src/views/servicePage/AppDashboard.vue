@@ -1,8 +1,8 @@
 <template>
-  <div class="d-flex dashboardContainer flex-column fill-height pr-15 pl-15 ">
+  <div class="d-flex dashboard-container flex-column fill-height pr-15 pl-15 ">
     <my-location />
     <div
-      class="d-flex flex-wrap justify-space-between fill-height align-content-start"
+      class="cards-container d-flex flex-wrap justify-space-between fill-height align-content-start"
     >
       <weather-card
         v-for="(property,i) in weatherProperties"
@@ -31,9 +31,8 @@ export default {
     }
   },
   computed: {
-    ...mapGetters([
-      'getStoredMyInfo', 'getTempLocation', 'getReferenceCoordinate',
-    ]),
+    ...mapGetters('userInfoStore', ['getStoredMyInfo']),
+    ...mapGetters('weatherStore', ['getTempLocation', 'getReferenceCoordinate']),
   },
   watch: {
     getReferenceCoordinate() {
@@ -46,7 +45,16 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['getCurrentWeather']),
+    ...mapActions('weatherStore', ['weatherStore', 'getCurrentWeather']),
   },
 }
 </script>
+
+<style scoped>
+ .cards-container{
+   width:100%;
+ }
+ .dashboard-container{
+   width:100%;
+ }
+</style>

@@ -18,9 +18,7 @@ export default {
     this.getCoordinate()
   },
   methods: {
-    ...mapActions([
-      'getCoordinate',
-    ]),
+    ...mapActions('weatherStore', ['getCoordinate']),
   },
 }
 
@@ -29,5 +27,8 @@ export default {
 <style scoped>
   #app{
     background-color: rgb(214, 222, 221);
+    min-width: 700px;
+    min-height: 500px;
+    overflow: scroll;
   }
 </style>

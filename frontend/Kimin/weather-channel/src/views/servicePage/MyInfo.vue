@@ -4,60 +4,88 @@
       <h1>
         개인정보
       </h1>
-      <v-btn
-        v-show="!showSaveButton"
-        @click="tryEdit"
-      >
-        개인정보수정
-      </v-btn>
-      <v-btn
-        v-show="showSaveButton"
-        color="success"
-        @click="saveContents"
-      >
-        변경사항저장
-      </v-btn>
+      <div>
+        <v-btn
+          v-show="!showSaveButton"
+          @click="tryEdit"
+        >
+          개인정보수정
+        </v-btn>
+
+        <v-btn
+          v-show="showSaveButton"
+          color="grey"
+          class="mr-13"
+          @click="cancelEdit"
+        >
+          취소
+        </v-btn>
+        <v-btn
+          v-show="showSaveButton"
+          color="success"
+          :disabled="!valid"
+          @click="saveContents"
+        >
+          변경사항저장
+        </v-btn>
+      </div>
     </v-container>
     <v-container class="mt-10">
-      <v-row
-        v-for="(row) in rows"
-        :key="row.title"
-        class="rowHeight pl-4"
+      <v-form
+        ref="form"
+        v-model="valid"
       >
-        <v-col
-          cols="1"
-          class="pa-0 pt-2 pb-2"
-          align-self="center"
+        <v-row
+          v-for="(row, i) in rows"
+          :key="i"
+          class="rowHeight pl-4"
         >
-          {{ row.title }}
-        </v-col>
-        <v-col
-          cols="9"
-          class="pa-0 pt-2 pb-2 pl-10"
-          align-self="center"
-        >
-          <v-text-field
-            v-show="showInput"
-            v-model="row.value"
-            class="pa-0 ma-0"
-            hide-details="true"
-          />
-          <span
-            v-show="!showInput"
-            class="mb-0 text-body-1 pt-2 pb-2"
+          <v-col
+            cols="1"
+            class="pa-0 pt-2 pb-2"
+            align-self="center"
           >
-            {{ row.value }}
-          </span>
-        </v-col>
-        <v-col cols="2">
-          <v-btn
-            v-show="row.title === '주소'"
-            @click="addModalToFindAddress"
+            {{ row.title }}
+          </v-col>
+          <v-col
+            cols="9"
+            class="pa-0 pt-2 pb-2 pl-10"
+            align-self="center"
           >
-            주소검색
-          </v-btn>
-        </v-col>
-      </v-row>
+            <v-text-field
+              v-show="showInput && row.title !== '주소'"
+              v-model="row.value"
+              class="pa-0 ma-0"
+              :append-icon="showEyeIcon(row)"
+              :type="selectType(row)"
+              :rules="row.rules"
+              @click:append="row.show = !row.show"
+            />
+            <span
+              v-if="row.title !== '비밀번호'"
+              v-show="!showInput || row.title === '주소'"
+              class="mb-0 text-body-1 pt-2 userInfoSpan"
+            >
+              {{ row.value }}
+            </span>
+            <span
+              v-else
+              v-show="!showInput"
+              class="mb-0 text-body-1 pt-2 userInfoSpan"
+            >
+              **********
+            </span>
+          </v-col>
+          <v-col cols="2">
+            <v-btn
+              v-show="row.title === '주소'"
+              @click="addModalToFindAddress"
+            >
+              주소검색
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-form>
     </v-container>
     <v-dialog
       v-model="dialog"
@@ -74,6 +102,7 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import FindAdressCard from '@/views/servicePage/components/FindingAddressCard.vue'
+import { nameValidationRule, passwordValidationRule, phoneNumberValidationRule } from '@/services/auth'
 
 export default {
   name: 'MyInfo',
@@ -83,79 +112,91 @@ export default {
   data() {
     return {
       address: {
-        fullAddress: null,
-        coordinate: null,
+        fullAddress: '',
+        coordinate: '',
       },
+      valid: true,
       dialog: false,
       showSaveButton: false,
       showInput: false,
       rows: [
         {
           title: '이름',
-          value: null,
+          value: '',
+          rules: nameValidationRule,
+          show: true,
         },
         {
-          title: 'password',
-          value: null,
+          title: '비밀번호',
+          value: '',
+          rules: passwordValidationRule,
+          show: false,
         },
         {
           title: '전화번호',
-          value: null,
+          value: '',
+          rules: phoneNumberValidationRule,
+          show: true,
         },
         {
           title: '프로필',
-          value: null,
+          value: '',
+          rules: [],
+          show: true,
         },
         {
           title: '주소',
-          value: null,
+          value: '',
+          rules: [],
+          show: true,
         },
       ],
     }
   },
   computed: {
-    ...mapGetters(['getStoredMyInfo']),
-    myInfo() {
-      return this.getStoredMyInfo
-    },
+    ...mapGetters('userInfoStore', ['getStoredMyInfo']),
   },
   watch: {
-    myInfo() {
-      this.fetchInfo()
+    getStoredMyInfo(value) {
+      this.fetchInfo(value)
     },
   },
   mounted() {
-    this.fetchInfo()
+    this.fetchInfo(this.getStoredMyInfo)
   },
   methods: {
-    ...mapActions([
-      'getMyInfo', 'findAddress', 'editUserInfo',
-      'alertMessage', 'logOut',
-    ]),
-    fetchInfo() {
-      const result = [
-        {
-          title: '이름',
-          value: this.myInfo.name,
-        },
-        {
-          title: 'password',
-          value: this.myInfo.password,
-        },
-        {
-          title: '전화번호',
-          value: this.myInfo.phoneNumber,
-        },
-        {
-          title: '프로필',
-          value: this.myInfo.avatarImgSrc,
-        },
-        {
-          title: '주소',
-          value: this.myInfo.address,
-        },
-      ]
-      this.rows = result
+    ...mapActions('auth', ['getMyInfo', 'logOut']),
+    ...mapActions('userInfoStore', ['editUserInfo']),
+    ...mapActions('weatherStore', ['findAddress']),
+    ...mapActions('snackBarStore', ['alertMessage']),
+    ...mapActions('snackBarStore', ['alertMessage']),
+    fetchInfo(storedUserInfo) {
+      const menuItems = ['name', 'password', 'phoneNumber', 'avatarImgSrc', 'address']
+      for (let i = 0; i < this.rows.length; i += 1) {
+        this.rows[i].value = storedUserInfo[menuItems[i]]
+      }
+    },
+    cancelEdit() {
+      this.buttonSwitch()
+      this.initializeInput()
+    },
+    initializeInput() {
+      this.fetchInfo(this.getStoredMyInfo)
+      const newRows = this.rows.map((row) => Object.assign(row, { show: false }))
+      this.rows = newRows
+    },
+    selectType(row) {
+      let type = 'text'
+      if (row.title === '비밀번호' && !row.show) {
+        type = 'password'
+      }
+      return type
+    },
+    showEyeIcon(row) {
+      if (row.title !== '비밀번호') {
+        return null
+      }
+      return row.show ? 'mdi-eye' : 'mdi-eye-off'
     },
     tryEdit() {
       this.buttonSwitch()
@@ -182,7 +223,7 @@ export default {
       const phoneNumberValue = this.rows[2].value
       const avatarSrcValue = this.rows[3].value
       const editedMyInfo = {
-        ID: this.myInfo.ID,
+        ID: this.getStoredMyInfo.ID,
         address: addressValue,
         avatarImgSrc: avatarSrcValue,
         name: nameValue,
@@ -195,6 +236,7 @@ export default {
         }
         await this.editUserInfo(editedMyInfo)
         this.getMyInfo()
+        this.initializeInput()
       } catch (error) {
         this.logOut()
         this.signing = false
@@ -216,6 +258,13 @@ export default {
   }
   .rowHeight{
     height: 50px
+  }
+  .userInfoSpan{
+    display: inline-block;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    width:100%;
   }
 
 </style>

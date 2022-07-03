@@ -49,13 +49,11 @@ export default {
   }),
   computed: {
     myAccount() {
-      return this.$store.getters.getStoredMyInfo
+      return this.$store.getters['userInfoStore/getStoredMyInfo']
     },
   },
   methods: {
-    ...mapActions([
-      'logOut',
-    ]),
+    ...mapActions('auth', ['logOut']),
     logout() {
       this.logOut()
       this.$router.go(this.$router.currentRoute)

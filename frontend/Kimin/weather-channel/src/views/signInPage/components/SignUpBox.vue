@@ -28,6 +28,7 @@
             />
             <v-btn
               :disabled="!IDvalid"
+              small
               @click="checkDuplication"
             >
               {{ 'ID 중복 조회' }}
@@ -106,9 +107,8 @@ export default {
     },
   },
   methods: {
-    ...mapActions([
-      'registerNewAccount', 'investigateID', 'alertMessage',
-    ]),
+    ...mapActions('auth', ['registerNewAccount', 'investigateID']),
+    ...mapActions('snackBarStore', ['alertMessage']),
     countIDLength() {
       const textLength = this.ID.length
       if (textLength > ID_MIN_LENGTH) {

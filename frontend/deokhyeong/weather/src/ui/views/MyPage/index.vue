@@ -36,13 +36,13 @@
   </div>
 </template>
 <script>
+import utils from '@/utils'
+import { mapActions, mapGetters } from 'vuex'
 import BottomNavigation from '@/ui/components/layout/BottomNavigation'
 import RepairCardForm from '@/ui/components/RepairCardForm'
 import ruleSentences from '@/constants/ruleSentences'
 import authApi from '@/service/api/auth'
 import auth from '@/service/domain/auth/validations'
-import utils from '@/utils'
-import { mapActions, mapGetters } from 'vuex'
 import TitleHeader from '@/ui/components/TitleHeader'
 import SelectListCardForm from '@/ui/views/MyPage/SelectedListCardForm'
 

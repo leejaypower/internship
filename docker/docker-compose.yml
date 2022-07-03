@@ -133,6 +133,7 @@ services:
     ports:
       - "8089:8089"
 
+
   internship-kimin:
     container_name: kimin-weather-app
     build:
@@ -140,6 +141,7 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8081:80"
+
 
   internship-gihwan:
     container_name: gihwan-weather-app

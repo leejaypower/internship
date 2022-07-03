@@ -6,7 +6,9 @@
   >
     <v-skeleton-loader
       v-if="!showCard"
-      class="mx-auto"
+      class="mt-2 mb-2"
+      width="100%"
+      height="100%"
       type="card"
     />
     <div
@@ -125,7 +127,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['getMultiTimeWeather', 'getCurrentWeather']),
+    ...mapGetters('weatherStore', ['getMultiTimeWeather', 'getCurrentWeather']),
   },
   watch: {
     getCurrentWeather() {

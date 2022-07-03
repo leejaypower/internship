@@ -28,7 +28,7 @@ export default {
   }),
   computed: {
     storedSnackBarInfo() {
-      return { ...this.$store.getters.getSnackBarInfo } // 얕은 복사를 우려하여 스프레드로 가져옴
+      return { ...this.$store.getters['snackBarStore/getSnackBarInfo'] } // 얕은 복사를 우려하여 스프레드로 가져옴
     },
   },
   watch: {

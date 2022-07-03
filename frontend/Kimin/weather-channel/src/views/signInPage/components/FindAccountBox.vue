@@ -97,7 +97,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['alertMessage']),
+    ...mapActions('snackBarStore', ['alertMessage']),
     initialize() {
       this.ID = ''
       this.password = ''

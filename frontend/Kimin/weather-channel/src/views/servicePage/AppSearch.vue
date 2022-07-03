@@ -1,5 +1,9 @@
 <template>
-  <div class="d-flex justify-space-between main">
+  <v-card
+    width="100%"
+    min-width="1000px"
+    class="d-flex justify-space-between pa-10"
+  >
     <div class="d-flex flex-column left-container">
       <v-btn
         v-show="!showFullTable"
@@ -13,6 +17,7 @@
       <div class="d-flex tableContainer">
         <div :class="[ showFullTable ? 'main__tableDiv' : 'main__tableDiv--short' ]">
           <v-data-table
+            mobile-breakpoint="0"
             :headers="headers"
             :page.sync="page"
             :items="contents"
@@ -35,13 +40,14 @@
     </div>
     <div class="weather-map">
       <korea-map
+        v-show="isNotMobileSize"
         :selected-city-id="selectedCityID"
         :get-cities-weather-info="getCitiesWeatherInfo"
         @markHoveredCity="markHoveredCity"
         @removeHoveredCity="removeHoveredCity"
       />
     </div>
-  </div>
+  </v-card>
 </template>
 
 <script>
@@ -66,7 +72,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['getCitiesWeatherInfo']),
+    ...mapGetters('weatherStore', ['getCitiesWeatherInfo']),
     page: {
       get() {
         const ROW_PER_PAGE = 9
@@ -91,6 +97,9 @@ export default {
     contents() {
       return this.getCitiesWeatherInfo
     },
+    isNotMobileSize() {
+      return this.$vuetify.breakpoint.width > 800
+    },
   },
   watch: {
     getCitiesWeatherInfo(value) {
@@ -103,7 +112,7 @@ export default {
     await this.getMultiWeathers(KOREA_BIG_CITIES)
   },
   methods: {
-    ...mapActions(['getMultiWeathers']),
+    ...mapActions('weatherStore', ['getMultiWeathers']),
     handleRowClick(value) {
       if (this.isLoading) {
         return
@@ -147,11 +156,7 @@ export default {
 </script>
 
 <style>
-  .main{
-    width: 100%;
-    display: flex;
-    justify-content: space-around;
-  }
+
   .main__tableDiv{
     width: 100%;
   }
@@ -167,6 +172,7 @@ export default {
 
   .main__tableDiv--short{
     width: 50%;
+    min-width: 200px;
   }
 
   .city-table tr{
@@ -174,9 +180,9 @@ export default {
   }
 
   .city-table th,td {
-    font-size: 1.5vh;
-    padding: 0.5vh 2vh;
-    height: 6vh;
+    font-size: 1vw !important;
+    padding: 0.3vw 1vw !important;
+    height: 6vh !important;
   }
 
   .scoreTableContainer{
@@ -197,9 +203,9 @@ export default {
   }
 
   .left-container .v-data-footer{
-    height: 6vh ;
-    line-height: 1.2 ;
-    font-size: 1.4vh ;
+    height: 6vh !important;
+    line-height: 1.2 !important;
+    font-size: 1vw !important;
   }
 
   .city-table .v-data-footer__select{
@@ -211,6 +217,6 @@ export default {
   }
 
   .city-table .v-data-footer__pagination{
-    margin:0;
+    margin:0 !important;
   }
 </style>
