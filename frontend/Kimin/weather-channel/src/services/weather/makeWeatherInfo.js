@@ -138,20 +138,16 @@ const makeWeatherInfo = async (city) => {
   const { name, lat, lon } = city
   let promiseResponses
   try {
-    promiseResponses = await Promise.allSettled([
+    promiseResponses = await Promise.all([
       callCurrentWeatherAPI(lat, lon),
       callAirPollutionWeatherAPI(lat, lon),
     ])
-    const isRejected = promiseResponses[0].status === 'rejected' || promiseResponses[1].status === 'rejected'
-    if (isRejected) {
-      throw new Error()
-    }
   } catch (error) {
     throw new Error(error.message) // 추후 핸들링 로직
   }
 
   try { // eslint-disable-next-line
-    const [currentWeather, airPollution] = [promiseResponses[0].value, promiseResponses[1].value]
+    const [currentWeather, airPollution] = [promiseResponses[0], promiseResponses[1]]
     validateCurrentWeatherResponse(currentWeather)
     validateAirPollutionResponse(airPollution)
 

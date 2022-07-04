@@ -1,4 +1,3 @@
-import { callCurrentLocation } from '@/utils/callAPI'
 import { divideArray } from '@/utils'
 import {
   getFiveDaysWeather,
@@ -6,9 +5,9 @@ import {
   getGeocodeByQuery,
   getReverseGeocode,
   makeWeatherInfo,
+  getCurrentLocation,
 } from '@/services/weather'
-import { validateCoordinate } from '@/services/validation'
-import errorMessageMap from '@/services/errorHandling'
+import { validateCoordinates } from '@/services/validation'
 
 /**
  * services에 위치한 geoLocationAPI를 호출하는 함수
@@ -16,15 +15,17 @@ import errorMessageMap from '@/services/errorHandling'
  */
 const getCoordinate = async ({ dispatch, commit }) => {
   try {
-    const coords = await callCurrentLocation()
+    const coords = await getCurrentLocation()
     const location = {
       lat: coords.latitude,
       lon: coords.longitude,
     }
-    validateCoordinate(coords.latitude, coords.longitude)
+    validateCoordinates(coords.latitude, coords.longitude)
     commit('saveTempLocation', location)
-  } catch (error) {
-    dispatch('snackBarStore/alertMessage', { text: '현 위치를 찾지 못하였습니다.', color: 'pink' }, { root: true })
+  } catch (customError) {
+    const customErrorObj = JSON.parse(customError.message)
+    dispatch('errorStore/recordLog', customErrorObj, { root: true })
+    dispatch('snackBarStore/alertMessage', { text: customErrorObj.alertMessage }, { root: true })
   }
 }
 
@@ -35,40 +36,35 @@ const getCoordinate = async ({ dispatch, commit }) => {
 const getAddressByGeocode = async ({ dispatch }, coordinate) => {
   try {
     const { lat, lon } = coordinate
-    validateCoordinate(lat, lon)
+    validateCoordinates(lat, lon)
     const foundedAddress = await getReverseGeocode(lat, lon)
     return foundedAddress
-  } catch (error) {
-    dispatch('snackBarStore/alertMessage', { text: '설정된 주소에 오류가 있습니다.', color: 'pink' }, { root: true })
+  } catch (customError) {
+    const customErrorObj = JSON.parse(customError.message)
+    dispatch('errorStore/recordLog', customErrorObj, { root: true })
+    dispatch('snackBarStore/alertMessage', { text: customErrorObj.alertMessage }, { root: true })
     return ''
   }
 }
 
 const getCurrentWeather = async ({ dispatch, commit, getters }) => {
-  const location = getters.getReferenceCoordinate
-  if (!location.lat || !location.lon) {
-    return null
-  }
   try {
-    const { lat, lon } = location
-    validateCoordinate(lat, lon)
+    const { lat, lon } = getters.getReferenceCoordinate
+    validateCoordinates(lat, lon)
     const currentWeatherResult = getCurrentWeatherAPI(lat, lon)
     const futureWeatherResult = getFiveDaysWeather(lat, lon)
-    const results = await Promise.allSettled([futureWeatherResult, currentWeatherResult])
+    const results = await Promise.all([futureWeatherResult, currentWeatherResult])
 
-    results.forEach((result) => {
-      if (result.status !== 'fulfilled') {
-        throw new Error()
-      }
-    })
-    const currentWeather = results[1].value
-    const { fiveDaysWeather, oneDayWeather } = results[0].value
+    const { fiveDaysWeather, oneDayWeather } = results[0]
+    const currentWeather = results[1]
 
     commit('saveCurrentWeather', currentWeather)
     commit('saveMultiDaysWeather', fiveDaysWeather)
     commit('saveMultiTimeWeather', oneDayWeather)
-  } catch (error) {
-    dispatch('snackBarStore/alertMessage', { text: '서버에 오류가 있습니다.', color: 'pink' }, { root: true })
+  } catch (customError) {
+    const customErrorObj = JSON.parse(customError.message)
+    dispatch('errorStore/recordLog', customErrorObj, { root: true })
+    dispatch('snackBarStore/alertMessage', { text: customErrorObj.alertMessage }, { root: true })
   }
   return null
 }
@@ -77,8 +73,10 @@ const findAddress = async ({ dispatch }, query) => {
   try {
     const { fullAddress, coordinate } = await getGeocodeByQuery(query)
     return { fullAddress, coordinate }
-  } catch (error) {
-    dispatch('snackBarStore/alertMessage', errorMessageMap(error), { root: true })
+  } catch (customError) {
+    const customErrorObj = JSON.parse(customError.message)
+    dispatch('errorStore/recordLog', customErrorObj, { root: true })
+    dispatch('snackBarStore/alertMessage', { text: customErrorObj.alertMessage }, { root: true })
     return ''
   }
 }
@@ -95,8 +93,10 @@ const getMultiWeathers = async ({ dispatch, commit }, cities) => {
       const results = await Promise.all(promises)
       commit('saveCitiesWeatherInfo', results)
     }
-  } catch (error) {
-    dispatch('snackBarStore/alertMessage', { text: '날씨조회서버에 오류가 있습니다.', color: 'pink' }, { root: true })
+  } catch (customError) {
+    const customErrorObj = JSON.parse(customError.message)
+    dispatch('errorStore/recordLog', customErrorObj, { root: true })
+    dispatch('snackBarStore/alertMessage', { text: customErrorObj.alertMessage }, { root: true })
   }
 }
 

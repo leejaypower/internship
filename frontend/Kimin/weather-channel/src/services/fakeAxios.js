@@ -78,6 +78,14 @@ const fakeAxios = {
 
   async post(url, data) {
     try {
+      if (url === 'saveLogs') {
+        this.header.request = {
+          method: 'post',
+          url: `${url}`,
+        }
+        const response = await fakeServer.saveLogs(this.header, data)
+        return JSON.parse(response)
+      }
       if (url === 'registerNewAccount') {
         this.header.request = {
           method: 'post',

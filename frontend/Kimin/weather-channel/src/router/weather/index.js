@@ -43,6 +43,14 @@ const weather = [
         },
         component: () => import('@/views/servicePage/AppSearch.vue'),
       },
+      {
+        path: 'TestLogging',
+        name: 'TestLogging',
+        meta: {
+          authRequired: true,
+        },
+        component: () => import('@/views/servicePage/TestLogging.vue'),
+      },
     ],
   },
 ]

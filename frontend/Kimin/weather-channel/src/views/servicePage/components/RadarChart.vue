@@ -181,9 +181,9 @@ export default {
 .finalScore {
   background-color: yellow;
 }
-.graph-container .v-data-table td,th {
-  font-size: 1.5vh !important;
-  padding: 1vh 2vh !important;
-  height: 3.5vh !important;
+.graph-container .v-data-table td, .graph-container .v-data-table th {
+  font-size: 0.6vw !important;
+  padding: 0.5vw 1vw !important;
+  height: 3vh !important;
 }
 </style>

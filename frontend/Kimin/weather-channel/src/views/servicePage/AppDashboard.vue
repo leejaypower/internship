@@ -40,9 +40,7 @@ export default {
     },
   },
   created() {
-    if (this.getReferenceCoordinate.lat && this.getReferenceCoordinate.lon) {
-      this.getCurrentWeather()
-    }
+    this.getCurrentWeather()
   },
   methods: {
     ...mapActions('weatherStore', ['weatherStore', 'getCurrentWeather']),

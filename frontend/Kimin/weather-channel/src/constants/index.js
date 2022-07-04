@@ -75,6 +75,7 @@ const CITY_TABLE_HEADERS = [
     sortable: true,
     shortVersion: true,
     value: 'no',
+    class: 'blue lighten-5',
   },
   {
     text: '도시이름',
@@ -82,6 +83,7 @@ const CITY_TABLE_HEADERS = [
     sortable: true,
     shortVersion: true,
     value: 'name',
+    class: 'blue lighten-5',
   },
   {
     text: '날씨점수',
@@ -89,36 +91,42 @@ const CITY_TABLE_HEADERS = [
     sortable: true,
     shortVersion: true,
     value: 'score.totalScore',
+    class: 'blue lighten-5',
   },
   {
     text: '온도(℃)',
     align: 'center',
     sortable: true,
     value: 'temp',
+    class: 'blue lighten-5',
   },
   {
     text: '풍량(m/s)',
     align: 'center',
     sortable: true,
     value: 'wind',
+    class: 'blue lighten-5',
   },
   {
     text: '강수(mm/1h)',
     align: 'center',
     sortable: true,
     value: 'rainOrSnow.show',
+    class: 'blue lighten-5',
   },
   {
     text: '공기질',
     align: 'center',
     sortable: true,
     value: 'airDescription',
+    class: 'blue lighten-5',
   },
   {
     text: '구름(%)',
     align: 'center',
     sortable: true,
     value: 'clouds',
+    class: 'blue lighten-5',
   },
 ]
 
@@ -128,42 +136,51 @@ const RADAR_TABLE_HEADERS = [
     align: 'center',
     sortable: false,
     value: 'name',
+    class: 'green lighten-5',
   },
   {
     text: '온도',
     align: 'center',
     sortable: false,
     value: 'temp',
+    class: 'green lighten-5',
   },
   {
     text: '구름',
     align: 'center',
     sortable: false,
     value: 'clouds',
+    class: 'green lighten-5',
   },
   {
     text: '바람',
     align: 'center',
     sortable: false,
     value: 'wind',
+    class: 'green lighten-5',
   },
   {
     text: '공기',
     align: 'center',
     sortable: false,
     value: 'air',
+    class: 'green lighten-5',
   },
   {
     text: '강수',
     align: 'center',
     sortable: false,
     value: 'rainOrSnow',
+    class: 'green lighten-5',
+
   },
   {
     text: 'Final',
     align: 'center',
     sortable: false,
     value: 'score',
+    class: 'green lighten-5',
+
   },
 ]
 
@@ -375,7 +392,97 @@ const MAP_TEXT_SRC = [
     y: '1070',
     text: '제주특별자치도',
   },
+]
 
+const ERROR_TABLE_HEADERS = [
+  {
+    text: '발생시간',
+    align: 'center',
+    sortable: true,
+    value: 'createdAt',
+    width: '150px',
+    class: 'blue lighten-5',
+  },
+  {
+    text: 'user',
+    align: 'center',
+    sortable: true,
+    value: 'user',
+    width: '100px',
+    class: 'blue lighten-5',
+  },
+  {
+    text: '종류',
+    align: 'center',
+    sortable: true,
+    value: 'name',
+    width: '100px',
+    class: 'blue lighten-5',
+  },
+  {
+    text: '레벨',
+    align: 'center',
+    sortable: true,
+    value: 'level',
+    width: '80px',
+    class: 'blue lighten-5',
+  },
+  {
+    text: '브라우저',
+    align: 'center',
+    sortable: true,
+    value: 'browserInfo',
+    width: '100px',
+    class: 'blue lighten-5',
+  },
+  {
+    text: 'message',
+    align: 'center',
+    sortable: true,
+    value: 'message',
+    width: '100px',
+    class: 'blue lighten-5',
+  },
+  {
+    text: 'stack',
+    align: 'center',
+    sortable: true,
+    value: 'stack',
+    width: '100px',
+    class: 'blue lighten-5',
+  },
+  {
+    text: 'apiCall',
+    align: 'center',
+    sortable: true,
+    value: 'apiCall',
+    width: '100px',
+    class: 'blue lighten-5',
+  },
+  {
+    text: 'status',
+    align: 'center',
+    sortable: true,
+    value: 'status',
+    width: '100px',
+    class: 'blue lighten-5',
+  },
+  {
+    text: 'responseURL',
+    align: 'center',
+    sortable: true,
+    value: 'responseURL',
+    width: '300px',
+    class: 'blue lighten-5',
+  },
+  {
+    text: 'response',
+    align: 'center',
+    sortable: true,
+    value: 'response',
+    width: '100px',
+    class: 'blue lighten-5',
+  },
 ]
 
 export {
@@ -399,4 +506,5 @@ export {
   RADAR_TABLE_HEADERS,
   MAP_SVG_SRC,
   MAP_TEXT_SRC,
+  ERROR_TABLE_HEADERS,
 }

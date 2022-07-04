@@ -3,6 +3,19 @@ import {
 } from '@/constants'
 import jwtDecode from 'jwt-decode'
 
+const saveLogs = (header, logs) => {
+  const server = JSON.parse(localStorage.getItem('savedLogs(SERVER)'))
+  let updatedLogs
+  if (server) {
+    updatedLogs = JSON.stringify([...server, ...logs])
+  } else {
+    updatedLogs = JSON.stringify([...logs])
+  }
+
+  localStorage.setItem('savedLogs(SERVER)', updatedLogs)
+  return SUCCESS_RESPONSE()
+}
+
 const findAccount = (header, accountInformation) => {
   try {
     const server = JSON.parse(localStorage.getItem('userAccount(SERVER)'))
@@ -206,6 +219,7 @@ const fakeServer = {
   registerNewAccount,
   editUserInfo,
   findAccount,
+  saveLogs,
 }
 
 export default fakeServer

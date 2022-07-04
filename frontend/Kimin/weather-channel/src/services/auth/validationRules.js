@@ -12,12 +12,14 @@ import {
 const addressValidationRule = [
   (value) => englishNeverRule(value, '주소'),
   (value) => skipNeverRule(value, '주소'),
+  (value) => blankNeverStartOrFinishRule(value, '주소'),
+  (value) => singleKoreanNeverRule(value, '주소')
 ]
+
 
 const phoneNumberValidationRule = [
   (value) => hyphenNeverRule(value),
   (value) => phoneNumberRule(value),
-  
 ]
 
 const phoneNumberFirstRule = [

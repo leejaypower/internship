@@ -115,6 +115,12 @@ export default {
           icon: 'mdi-account',
           to: '/Home/Search',
         },
+        {
+          title: 'testLogging',
+          icon: 'mdi-account',
+          to: '/Home/testLogging',
+        },
+
       ],
       myInfo: {
         avatarImgSrc: null,

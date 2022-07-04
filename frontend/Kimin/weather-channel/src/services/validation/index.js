@@ -1,5 +1,5 @@
 import validateCurrentWeatherResponse from './validateCurrentWeatherResponse'
 import validateAirPollutionResponse from './validateAirPollutionResponse'
-import validateCoordinate from './validateCoordinate'
+import validateCoordinates from './validateCoordinates'
 
-export { validateCurrentWeatherResponse, validateAirPollutionResponse, validateCoordinate }
+export { validateCurrentWeatherResponse, validateAirPollutionResponse, validateCoordinates }

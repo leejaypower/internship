@@ -1,3 +1,7 @@
-import errorMessageMap from './errorMessageMap'
+import axiosErrorMap from './axiosErrorMap'
+import customErrorMaker from './customErrorMaker'
+import errorCategoryMap from './errorCategoryMap'
 
-export default errorMessageMap
+export {
+  axiosErrorMap, customErrorMaker, errorCategoryMap,
+}

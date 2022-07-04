@@ -179,10 +179,10 @@ export default {
     line-height: 2;
   }
 
-  .city-table th,td {
-    font-size: 1vw !important;
+  .city-table th, .city-table td {
+    font-size: 0.7vw !important;
     padding: 0.3vw 1vw !important;
-    height: 6vh !important;
+    height: 5vh !important;
   }
 
   .scoreTableContainer{
