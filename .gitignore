@@ -6,6 +6,7 @@ node_modules
 dist
 built
 coverage
+.env
 
 npm-debug.log
 yarn-error.log
